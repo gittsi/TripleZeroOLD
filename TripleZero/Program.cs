@@ -126,6 +126,8 @@ namespace TripleZero
                 // rather an object stating if the command executed succesfully).
                 var result = await commands.ExecuteAsync(context, pos ,services);
 
+                Consoler.WriteLineInColor(string.Format("User : '{0}' sent the following command : '{1}'", context.Message.Author.ToString(), context.Message.ToString()),ConsoleColor.Green);
+
                 // Uncomment the following lines if you want the bot
                 // to send a message if it failed (not advised for most situations).
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
