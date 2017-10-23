@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TripleZero.Model;
+using TripleZero.Configuration;
+using TripleZero.Modules;
 
 namespace TripleZero.Infrastructure.DI
 {
@@ -10,15 +12,22 @@ namespace TripleZero.Infrastructure.DI
     {
         internal IContainer Container { get; set; }
 
-        //public sddss sss { get { return Container.Resolve<ssss>(); } }
-       
+        public ApplicationSettings applicationSettings { get { return Container.Resolve<ApplicationSettings>(); } }
+
         public static IContainer ConfigureContainer()
         {
             var builder = new ContainerBuilder();
 
             //configurations
-            builder.RegisterType<TripleZeroBot>().As<TripleZeroBot>().SingleInstance();
+            builder.RegisterType<ApplicationSettings>().SingleInstance();
+            builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();
 
+            builder.RegisterType<DiscordSocketClient>().SingleInstance();
+
+            //modules
+            builder.RegisterType<HelpModule>().InstancePerDependency();
+            builder.RegisterType<MathModule>().InstancePerDependency();
+            builder.RegisterType<TestModule>().InstancePerDependency();
 
             return builder.Build();
         }
