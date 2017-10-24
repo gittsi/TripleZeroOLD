@@ -54,6 +54,8 @@ namespace TripleZero
                 await client.LoginAsync(TokenType.Bot, appSettings.DiscordSettings.Token);
                 await client.StartAsync();
 
+                Consoler.WriteLineInColor(client.LoginState.ToString(), ConsoleColor.DarkMagenta);
+
                 //client.UserJoined += UserJoined;
             }
 
