@@ -23,11 +23,7 @@ namespace TripleZero.Infrastructure.DI
             builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();
 
             builder.RegisterType<DiscordSocketClient>().SingleInstance();
-
-            //modules
-            builder.RegisterType<HelpModule>().InstancePerDependency();
-            builder.RegisterType<MathModule>().InstancePerDependency();
-            builder.RegisterType<TestModule>().InstancePerDependency();
+            
 
             return builder.Build();
         }

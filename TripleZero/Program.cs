@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Discord;
@@ -11,6 +10,16 @@ using System.Reflection;
 using TripleZero.Modules;
 using TripleZero.Configuration;
 using TripleZero.Helper;
+using System.Net;
+using System.Text;
+using System.Web;
+using Newtonsoft.Json;
+using System.IO;
+using System.Collections.Generic;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using TripleZero.Model;
+using System.Linq;
 
 namespace TripleZero
 {
@@ -42,29 +51,76 @@ namespace TripleZero
 
                 Logo(); //prints application name,version etc 
 
-                var appSettings = applicationSettings.Get();
-
-                //client = new DiscordSocketClient();
-                //_config = BuildConfig();
-                //commands = new CommandService();
-                //services = new ServiceCollection().BuildServiceProvider();
+                var appSettings = applicationSettings.Get();                
 
                 await InstallCommands();
 
                 await client.LoginAsync(TokenType.Bot, appSettings.DiscordSettings.Token);
                 await client.StartAsync();
 
+                
+
                 Consoler.WriteLineInColor(client.LoginState.ToString(), ConsoleColor.DarkMagenta);
 
                 //client.UserJoined += UserJoined;
-            }
+                Consoler.WriteLineInColor(client.ConnectionState.ToString(), ConsoleColor.DarkMagenta);
+            }         
 
-            
+
             //client.MessageReceived += MessageReceived;
-
+            //testGuildModule("a", "grievous");
             await Task.Delay(-1);
 
         }
+
+
+       
+
+        private async static void testGuildModule(string guild, string characterName)
+        {
+
+
+            var url = "https://swgoh.gg/api/guilds/53/units/";
+            List<GuildCharacter> chars = new List<GuildCharacter>();
+            using (var client = new HttpClient())
+            {
+                HttpResponseMessage response2 = await client.GetAsync(url);
+                HttpContent content = response2.Content;
+                string reqResult = await content.ReadAsStringAsync();
+
+                JObject json = JObject.Parse(reqResult);
+
+
+
+                foreach (var row in json)
+                {
+                    GuildCharacter gc = new GuildCharacter();
+                    gc.Character = new Character() { Name = row.Key };
+
+                    List<PlayerCharacter> players = new List<PlayerCharacter>();
+                    foreach (var player in row.Value)
+                    {
+                        players.Add(new PlayerCharacter() { Name = player["player"].ToString(), Stats= new CharacterStats() { Level = (int)player["level"], Power = (int)player["power"], Rarity = (int)player["rarity"] } } );
+                        gc.Players = players;
+                    }
+                    chars.Add(gc);
+                }
+            }
+
+            var res = chars.Where(p => p.Character.Name.ToLower() == characterName.ToLower());
+
+
+            string str = res.FirstOrDefault().Character.Name;
+            
+            foreach (var player in res.FirstOrDefault().Players)
+            {
+                str += "\n";
+                str += string.Format("player : {0} - Level : {1}", player.Name,player.Stats.Level);
+            }
+
+            Console.WriteLine(str);
+        }
+        
 
         private static void Logo() //prints application name,version etc
         {
@@ -85,6 +141,7 @@ namespace TripleZero
             await commands.AddModuleAsync<MathModule>();
             await commands.AddModuleAsync<HelpModule>();
             await commands.AddModuleAsync<TestModule>();
+            await commands.AddModuleAsync<GuildModule>();
         }
 
         //public async Task MessageReceived(SocketGuildUser user)
