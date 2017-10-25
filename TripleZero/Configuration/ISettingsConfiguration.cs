@@ -8,5 +8,7 @@ namespace TripleZero.Configuration
     public interface ISettingsConfiguration
     {
         IConfigurationRoot GetConfiguration();
+
+        IConfigurationRoot GetGuildsConfiguration();
     }
 }

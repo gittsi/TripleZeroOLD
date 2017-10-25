@@ -24,5 +24,16 @@ namespace TripleZero.Configuration
 
             return Configuration;
         }
+
+        public IConfigurationRoot GetGuildsConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+             .SetBasePath(string.Concat(Directory.GetCurrentDirectory(), "/Configuration"))
+             .AddJsonFile("guilds.json", optional: false, reloadOnChange: true);
+
+            Configuration = builder.Build();
+
+            return Configuration;
+        }
     }
 }

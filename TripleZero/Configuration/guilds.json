@@ -1,0 +1,18 @@
+﻿{
+  "Guilds": {
+    "Order 66 41st": {
+      "Keys": [
+        "\"41st",
+        "Order 66 41st"
+      ],
+      "SWGoHId": "53"
+    },
+    "TestGuild": {
+      "Keys": [
+        "\"TestGuild",
+        "Test"
+      ],
+      "SWGoHId": "152"
+    }
+  }
+}

@@ -4,8 +4,10 @@ using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TripleZero._Mapping;
 using TripleZero.Configuration;
 using TripleZero.Modules;
+using TripleZero.Repository.SWGoHRepository;
 
 namespace TripleZero.Infrastructure.DI
 {
@@ -17,7 +19,9 @@ namespace TripleZero.Infrastructure.DI
 
             builder.RegisterType<IResolver>().As<IStartable>().SingleInstance();
 
+            builder.RegisterType<MappingConfiguration>().As<IMappingConfiguration>().SingleInstance();
             builder.RegisterType<ApplicationSettings>().SingleInstance();
+            builder.RegisterType<GuildSettings>().SingleInstance();
             builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();
 
             //modules
@@ -29,6 +33,9 @@ namespace TripleZero.Infrastructure.DI
             builder.RegisterType<DiscordSocketClient>().SingleInstance();
 
             builder.RegisterType<CommandService>().InstancePerDependency();
+
+            //repositories
+            builder.RegisterType<SWGoHRepository>().As<ISWGoHRepository>().InstancePerDependency();
 
             return builder.Build();
         }
