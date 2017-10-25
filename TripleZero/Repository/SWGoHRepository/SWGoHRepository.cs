@@ -19,13 +19,11 @@ namespace TripleZero.Repository.SWGoHRepository
         public SWGoHRepository(IMappingConfiguration mappingConfiguration)
         {
             _Mapper = mappingConfiguration.GetConfigureMapper();
-        }
+        }        
 
-        
-
-        public async Task<List<GuildCharacterDto>> GetGuild(string guildName, string characterName)
+        public async Task<List<GuildCharacterDto>> GetGuild(int guildId, string characterName)
         {
-            var url = string.Format("https://swgoh.gg/api/guilds/{0}/units/", guildName);
+            var url = string.Format("https://swgoh.gg/api/guilds/{0}/units/", guildId.ToString());
             List<GuildCharacterDto> chars = new List<GuildCharacterDto>();
             using (var client = new HttpClient())
             {
@@ -33,7 +31,17 @@ namespace TripleZero.Repository.SWGoHRepository
                 HttpContent content = response2.Content;
                 string reqResult = await content.ReadAsStringAsync();
 
-                JObject json = JObject.Parse(reqResult);
+
+                JObject json = new JObject();
+                try
+                {
+                    json = JObject.Parse(reqResult);
+                }
+                catch(Exception ex)
+                {
+                    //swallow the error
+                    return chars;
+                }                
 
                 foreach (var row in json)
                 {

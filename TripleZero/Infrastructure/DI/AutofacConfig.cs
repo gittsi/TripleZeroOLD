@@ -22,6 +22,7 @@ namespace TripleZero.Infrastructure.DI
             builder.RegisterType<MappingConfiguration>().As<IMappingConfiguration>().SingleInstance();
             builder.RegisterType<ApplicationSettings>().SingleInstance();
             builder.RegisterType<GuildSettings>().SingleInstance();
+            builder.RegisterType<CharacterSettings>().SingleInstance();
             builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();
 
             //modules

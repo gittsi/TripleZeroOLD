@@ -9,6 +9,8 @@ namespace TripleZero.Configuration
     {
         IConfigurationRoot GetConfiguration();
 
-        IConfigurationRoot GetGuildsConfiguration();
+        //IConfigurationRoot GetGuildsConfiguration();
+
+        //IConfigurationRoot GetCharactersConfiguration();
     }
 }

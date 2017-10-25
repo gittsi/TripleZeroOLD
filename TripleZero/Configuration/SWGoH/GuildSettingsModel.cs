@@ -7,13 +7,13 @@ namespace TripleZero.Configuration
 {
     public class GuildSettingsModel
     {
-        public List<SWGohGuildSettings> GuildsSettings { get; set; }        
+        public List<SWGohGuildSettings> Guilds { get; set; }        
     }
 
     public class SWGohGuildSettings
     {
         public string Name { get; set; }
-        public List<string> Keys { get; set; }
+        public List<string> Aliases { get; set; }
         public string SWGoHId { get; set; }
     }
 

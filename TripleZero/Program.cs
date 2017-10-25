@@ -44,11 +44,10 @@ namespace TripleZero
             autoFacContainer = AutofacConfig.ConfigureContainer();
             using (var scope = autoFacContainer.BeginLifetimeScope())
             {
-                applicationSettings = scope.Resolve<ApplicationSettings>();
-                var aaaa = scope.Resolve<GuildSettings>();
+                applicationSettings = scope.Resolve<ApplicationSettings>();                
                 commands = scope.Resolve<CommandService>();                
                 client = scope.Resolve<DiscordSocketClient>();                
-                var aaa = scope.Resolve<IMappingConfiguration>();
+                scope.Resolve<IMappingConfiguration>();
 
 
                 Logo(); //prints application name,version etc 
@@ -70,8 +69,9 @@ namespace TripleZero
 
 
             //client.MessageReceived += MessageReceived;
-            await Task.Delay(2000);
-            await TestGuildModule("a", "grievous");
+
+            //await Task.Delay(3000);
+            //await TestGuildModule("a", "gk");
 
             await Task.Delay(-1);
 
@@ -143,7 +143,7 @@ namespace TripleZero
 
 
             /////////////////////////////Don't forget to exclude bots///////////////////////
-            //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+            if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
 
 
 

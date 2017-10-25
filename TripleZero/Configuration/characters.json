@@ -1,0 +1,23 @@
+﻿{
+  "Characters": [
+    {
+      "Name": "Commander Luke SkyWalker",
+      "Command":  "commanderlukeskywalker",
+      "Aliases": [
+        "luke",
+        "cls",
+        "commanderlukeskywalker"
+      ]
+    },
+    {
+      "Name": "General Kenobi",
+      "Command": "generalkenobi",
+      "Aliases": [
+        "gk",
+        "generalkenobi",
+        "kenobi"
+      ]
+    }
+  ]
+}
+

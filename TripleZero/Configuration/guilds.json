@@ -1,18 +1,20 @@
 ﻿{
-  "Guilds": {
-    "Order 66 41st": {
-      "Keys": [
-        "\"41st",
-        "Order 66 41st"
+  "Guilds": [
+    {
+      "Name": "Order 66 41st",      
+      "Aliases": [
+        "41st",
+        "order_66_41st"
       ],
       "SWGoHId": "53"
     },
-    "TestGuild": {
-      "Keys": [
-        "\"TestGuild",
-        "Test"
+    {
+      "Name": "TestGuild",      
+      "Aliases": [
+        "testGuild",
+        "test"
       ],
       "SWGoHId": "152"
     }
-  }
+  ]
 }
