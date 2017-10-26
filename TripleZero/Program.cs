@@ -70,8 +70,9 @@ namespace TripleZero
 
             //client.MessageReceived += MessageReceived;
 
-            //await Task.Delay(3000);
-            //await TestGuildModule("a", "gk");
+            await Task.Delay(3000);
+            //await TestGuildModule("41s", "gk");
+            //await TestCharacterModule("tsitas_66", "cls");
 
             await Task.Delay(-1);
 
@@ -84,9 +85,16 @@ namespace TripleZero
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync("^guild 53 greedo");
+            await channel.SendMessageAsync(string.Format("^guild {0} {1}", guild, characterName));
         }
-        
+
+        private async Task TestCharacterModule(string userName, string characterName)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format("^ch {0} {1}", userName, characterName));
+        }
+
 
         private static void Logo() //prints application name,version etc
         {
@@ -108,6 +116,7 @@ namespace TripleZero
             await commands.AddModuleAsync<HelpModule>();
             await commands.AddModuleAsync<TestModule>();
             await commands.AddModuleAsync<GuildModule>();
+            await commands.AddModuleAsync<CharacterModule>();
         }
 
         public async Task MessageReceived(SocketGuildUser user)
@@ -143,7 +152,7 @@ namespace TripleZero
 
 
             /////////////////////////////Don't forget to exclude bots///////////////////////
-            if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+            //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
 
 
 

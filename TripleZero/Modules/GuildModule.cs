@@ -16,47 +16,43 @@ namespace TripleZero.Modules
     [Name("Guild")]
     [Summary("Do some guild test I guess")]
     public class GuildModule : ModuleBase<SocketCommandContext>
-    {
-        //private readonly CharacterSettings _characterSettings;
-
-        //public GuildModule(CharacterSettings CharacterSettings)
-        //{
-        //    CharacterSettings = _characterSettings;
-        //}
+    {        
 
         [Command("guild")]
         [Summary("Get guild")]
         public async Task Say(string guildName , string characterName)
         {
+            //characters
             var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterName);
             string commandCharacter = characterName;
             if (matchedCharacter != null)
             {
                 commandCharacter = matchedCharacter.Command;
-                //await ReplyAsync($"You asked for character `{matched.Name} for guild {guildName}`. \n\n");
-                //await ReplyAsync($"Found character `{matched.Name}. Processing....`. \n\n");
-            }
-            else
-            {
-                //await ReplyAsync($"You asked for character `{characterName} for guild {guildName}`. \n\n");
             }
             var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name!=null ? matchedCharacter.Name : characterName : characterName;
 
 
-            var matchedGuild = IResolver.Current.GuildSettings.Get(guildName);
-            string commandGuild = guildName;
-            if (matchedGuild != null)
+            //guilds
+            string fullGuildName = "";
+            string guildCommand = "";
+
+            var boolISInt = int.TryParse(guildName,out int guildID);
+            if(boolISInt)
             {
-                commandGuild = matchedGuild.SWGoHId;
-                //await ReplyAsync($"You asked for character `{matched.Name} for guild {guildName}`. \n\n");
-                //await ReplyAsync($"Found character `{matched.Name}. Processing....`. \n\n");
+                guildCommand = guildID.ToString();
+                fullGuildName = string.Format("id:{0}",guildID.ToString());
             }
             else
             {
-                //await ReplyAsync($"You asked for character `{characterName} for guild {guildName}`. \n\n");
+                var matchedGuild = IResolver.Current.GuildSettings.Get(guildName);                
+                if (matchedGuild != null)
+                {
+                    guildName = matchedGuild.SWGoHId;
+                }
+
+                fullGuildName = matchedGuild != null ? matchedGuild.Name != null ? matchedGuild.Name : guildName : guildName;
+                guildCommand = matchedGuild != null ? matchedGuild.SWGoHId != null ? matchedGuild.SWGoHId : guildName : guildName;
             }
-            var fullGuildName = matchedGuild != null ? matchedGuild.Name != null ? matchedGuild.Name : guildName : guildName;
-            var guildCommand = matchedGuild != null ? matchedGuild.SWGoHId != null ? matchedGuild.SWGoHId : guildName : guildName;
 
             int guildId = 0;
             int.TryParse(guildCommand, out guildId);
@@ -80,7 +76,7 @@ namespace TripleZero.Modules
             else
             {
                 
-                retStr = $"I didn't found any players having `{fullCharacterName} for guild {fullGuildName}`";
+                retStr = $"I didn't find any players having `{fullCharacterName} for guild {fullGuildName}`";
                 await ReplyAsync($"{retStr}");
             }
 

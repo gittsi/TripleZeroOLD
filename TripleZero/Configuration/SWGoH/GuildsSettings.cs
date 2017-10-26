@@ -21,7 +21,11 @@ namespace TripleZero.Configuration
                 try
                 {
                     GuildSettingsModel results = JsonConvert.DeserializeObject<GuildSettingsModel>(json);
-                    var matched = results.Guilds.Where(p => p.Aliases.Contains(alias)).FirstOrDefault();
+                    //var matched = results.Guilds.Where(p => p.Aliases.Contains(alias)).FirstOrDefault();
+
+                    var matched = results.Guilds.Where(p => p.Aliases.IndexOf(alias) !=1).FirstOrDefault();
+
+                    //var matched2 = results.Guilds.Select(p=>p.Aliases).Where(t => t.IndexOf(alias) != -1);
 
                     return matched;
                 }

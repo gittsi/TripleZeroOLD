@@ -2,7 +2,8 @@
   "Characters": [
     {
       "Name": "Commander Luke SkyWalker",
-      "Command":  "commanderlukeskywalker",
+      "SWGoHUrl": "238/commander-luke-skywalker",
+      "Command": "commanderlukeskywalker",
       "Aliases": [
         "luke",
         "cls",
@@ -11,11 +12,22 @@
     },
     {
       "Name": "General Kenobi",
+      "SWGoHUrl": "213/general-kenobi",
       "Command": "generalkenobi",
       "Aliases": [
         "gk",
         "generalkenobi",
         "kenobi"
+      ]
+    },
+    {
+      "Name": "R2-D2",
+      "SWGoHUrl": "235/r2-d2",
+      "Command": "r2d2_legendary",
+      "Aliases": [
+        "r2",
+        "r2d2",
+        "r2-d2"
       ]
     }
   ]

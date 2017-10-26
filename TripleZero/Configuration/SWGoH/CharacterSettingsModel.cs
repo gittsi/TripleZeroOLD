@@ -15,6 +15,8 @@ namespace TripleZero.Configuration.SWGoH
         public string Name { get; set; }
         public string Command { get; set; }
         public List<string> Aliases { get; set; }        
+        
+        public string SWGoHUrl { get; set; }
     }
 
 
