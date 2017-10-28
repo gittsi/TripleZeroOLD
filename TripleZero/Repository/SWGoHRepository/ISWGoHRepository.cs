@@ -8,7 +8,8 @@ namespace TripleZero.Repository.SWGoHRepository
 {
     public interface ISWGoHRepository
     {
-        Task<List<GuildCharacterDto>> GetGuild(int guildName, string characterName);
+        Task<List<GuildCharacterDto>> GetGuildCharacters(int guildName);
+        Task<GuildCharacterDto> GetGuildCharacter(int guildName, string characterName);
         Task<CharacterDto> GetCharacter(string userName, string characterName);
     }
 }
