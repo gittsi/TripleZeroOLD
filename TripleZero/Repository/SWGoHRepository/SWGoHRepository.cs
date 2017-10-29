@@ -45,7 +45,8 @@ namespace TripleZero.Repository.SWGoHRepository
                             health += retver[i];
                         }
                     }
-                    character.Health = health;
+                    int.TryParse(health, out int healthValue);
+                    character.Health = healthValue;
 
                     index = retver.IndexOf("Health");
                     if (index != -1)
@@ -59,7 +60,8 @@ namespace TripleZero.Repository.SWGoHRepository
                                 protection += retver[i];
                             }
                         }
-                        character.Protection = protection;
+                        int.TryParse(protection, out int protectionValue);
+                        character.Protection = protectionValue;
 
                     }
 
