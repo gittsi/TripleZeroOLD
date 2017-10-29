@@ -1,0 +1,63 @@
+{
+  "PlayerName": "tsitas_66",
+  "Characters": [
+    {
+      "Name": "R2-D2",
+      "SWGoHUrl": "235/r2-d2/",
+      "Level": "85",
+      "Gear": "XII",
+      "Health": "28605",
+      "Protection": "39091",
+      "Speed": "260",
+      "CriticalDamage": "150%",
+      "Potency": "68.45%",
+      "Tenacity": "57.61%",
+      "HealthSteal": "10%",
+      "PhysicalDamage": "2541",
+      "PhysicalCriticalChance": "34.5%",
+      "ArmorPenetration": "10",
+      "PhysicalAccuracy": "0%",
+      "CharacterMods": [
+        {
+          "Name": "Mk V-A Speed Transmitter",
+          "Star": 5,
+          "Level": 15,
+          "Rarity": "A",
+          "Slot": 1,
+          "PrimaryStat": {
+            "StatType": 8,
+            "ValueType": 1,
+            "Value": 5.88
+          },
+          "SecondaryStat": [
+            {
+              "StatType": 9,
+              "ValueType": 1,
+              "Value": 1.65
+            },
+            {
+              "StatType": 1,
+              "ValueType": 0,
+              "Value": 11
+            },
+            {
+              "StatType": 8,
+              "ValueType": 0,
+              "Value": 74
+            },
+            {
+              "StatType": 4,
+              "ValueType": 1,
+              "Value": 1.45
+            }
+          ]
+        },
+        { "2o mod": "blabla" },
+        { "3o mod": "blabla" },
+        { "4o mod": "blabla" },
+        { "5o mod": "blabla" },
+        { "6o mod": "blabla" }
+      ]
+    }
+  ]
+}

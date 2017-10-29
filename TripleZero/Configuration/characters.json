@@ -5,8 +5,7 @@
       "Command": "commanderlukeskywalker",
       "Aliases": [
         "luke",
-        "cls",
-        "commanderlukeskywalker"
+        "cls"
       ],
       "SWGoHUrl": "238/commander-luke-skywalker"
     },
@@ -15,7 +14,6 @@
       "Command": "generalkenobi",
       "Aliases": [
         "gk",
-        "generalkenobi",
         "kenobi"
       ],
       "SWGoHUrl": "213/general-kenobi"
@@ -35,7 +33,6 @@
       "Command": "grandadmiralthrawn",
       "Aliases": [
         "gat",
-        "grandadmiralthrawn",
         "thrawn"
       ],
       "SWGoHUrl": "237/grand-admiral-thrawn/"
@@ -45,8 +42,7 @@
       "Command": "hansolo",
       "Aliases": [
         "rhan",
-        "han",
-        "hansolo"
+        "han"
       ],
       "SWGoHUrl": "41/han-solo/"
     },
@@ -55,46 +51,52 @@
       "Command": "darthnihilus",
       "Aliases": [
         "dn",
-        "darthnihilus",
         "nihilus"
       ],
       "SWGoHUrl": "222/darth-nihilus/"
     },
     {
       "Name": "Qui-Gon Jinn",
-      "Command": "", 
-      "Aliases": [
-        "Empty"
+      "Command": "quigonjinn",
+      "Aliases": [        
+        "jinn",
+        "quigon"
       ],
       "SWGoHUrl": "44/qui-gon-jinn/"
     },
     {
       "Name": "Darth Vader",
-      "Command": "", 
+      "Command": "vader", 
       "Aliases": [
-        "Empty"
+        "dv",
+        "vader"
       ],
       "SWGoHUrl": "200/darth-vader/"
     },
     {
       "Name": "Darth Maul",
-      "Command": "", 
+      "Command": "maul", 
       "Aliases": [
-        "Empty"
+        "maul",
+        "dm"
       ],
       "SWGoHUrl": "82/darth-maul/"
     },
     {
       "Name": "Darth Sidious",
-      "Command": "", "Aliases": [
-        "Empty"
+      "Command": "darthsidious",
+      "Aliases": [
+        "ds"
+        "sid",
+        "sidious"
       ],
       "SWGoHUrl": "73/darth-sidious/"
-    },    
+    },
     {
       "Name": "Grand Moff Tarkin",
-      "Command": "", "Aliases": [
-        "Empty"
+      "Command": "grandmofftarkin",
+      "Aliases": [
+        "tarkin"
       ],
       "SWGoHUrl": "138/grand-moff-tarkin/"
     },

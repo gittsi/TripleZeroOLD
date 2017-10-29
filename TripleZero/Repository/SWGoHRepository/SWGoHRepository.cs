@@ -125,5 +125,9 @@ namespace TripleZero.Repository.SWGoHRepository
             return chars;
         }
 
+        public Task<List<CharacterDto>> GetPlayer(string userName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
