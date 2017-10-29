@@ -14,7 +14,7 @@ namespace TripleZero.Repository.Dto
     {
         public string Name { get; set; }
         public int Gear { get; set; }
-        public CharacterMods CharacterMods { get; set; }
+        public List<Mod> Mods { get; set; }
         public int ArmorPenetration { get; set; }
         public int CriticalDamage { get; set; }
         public int HealthSteal { get; set; }
@@ -29,11 +29,6 @@ namespace TripleZero.Repository.Dto
         public decimal Tenacity { get; set; }
     }
 
-    public partial class CharacterMods
-    {
-        public List<Mod> Mod { get; set; }
-    }
-
     public partial class Mod
     {
         public string Name { get; set; }
@@ -41,24 +36,24 @@ namespace TripleZero.Repository.Dto
         public List<ModStat> SecondaryStat { get; set; }
         public long Level { get; set; }
         public long Star { get; set; }
-        public Slot Type { get; set; }
+        public ModSlot Type { get; set; }
         public string Rarity { get; set; }
     }
 
     public partial class ModStat
     {
-        public ValueType ValueType { get; set; }
-        public StatType StatType { get; set; }
+        public ModValueType ValueType { get; set; }
+        public ModStatType StatType { get; set; }
         public decimal Value { get; set; }
     }
 
-    public enum ValueType
+    public enum ModValueType
     {
         Flat=0,
         Percentage=1
     }
 
-    public enum StatType
+    public enum ModStatType
     {
         Speed=1,
         CriticalChance=2,
@@ -73,7 +68,7 @@ namespace TripleZero.Repository.Dto
         Protection=11
     }
 
-    public enum Slot
+    public enum ModSlot
     {
         Transmitter=1 ,
         Receiver=2,
@@ -84,7 +79,7 @@ namespace TripleZero.Repository.Dto
 
     }
 
-    public enum Set
+    public enum ModSet
     {
         Health=1,
         Defense=2,
