@@ -10,6 +10,8 @@ namespace ConsoleSwGohParser
 {
     public partial class PlayerDto
     {
+        private System.Net.WebClient web = null;
+
         public PlayerDto(string name)
         {
             PlayerName = name;
@@ -19,8 +21,17 @@ namespace ConsoleSwGohParser
         public DateTime LastUpdated { get; set; }
         public List<CharacterDto> Characters { get; set; }
 
-        private System.Net.WebClient web = null;
 
+        public void Import()
+        {
+            string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
+            string fname = directory + "\\" + PlayerName + @".json";
+            if (File.Exists(fname))
+            {
+                var lines = File.ReadAllText(fname);
+                PlayerDto ret = JsonConvert.DeserializeObject<PlayerDto>(lines, Converter.Settings);
+            }
+        }
         public void Export()
         {
             try
@@ -31,7 +42,6 @@ namespace ConsoleSwGohParser
                     Directory.CreateDirectory(directory);
                 }
 
-
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Ignore;
                 serializer.Formatting = Formatting.Indented;
@@ -40,7 +50,6 @@ namespace ConsoleSwGohParser
                 using (StreamWriter sw = new StreamWriter(fname))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
-                    sw.WriteLine(this.LastUpdated.ToString("yyyy-MM-dd,HH:mm:ss"));
                     serializer.Serialize(writer, this);
                 }
 
@@ -68,7 +77,8 @@ namespace ConsoleSwGohParser
             int Position = 0;
             FillPlayerData(html, out Position);
             bool ret = CheckLastUpdateWithCurrent();
-            if (ret) FillPlayerCharacters(html,Position);
+            if (ret) 
+                 FillPlayerCharacters(html,Position);
             //else load json
             web = null;
         }
@@ -80,11 +90,22 @@ namespace ConsoleSwGohParser
 
             if (File.Exists(fname))
             {
-                string firstLine = "";
                 using (StreamReader reader = new StreamReader(fname))
                 {
-                    firstLine = reader.ReadLine() ?? "";
-                    DateTime filelastupdated = DateTime.ParseExact(firstLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    string firstLine = reader.ReadLine() ?? "";
+                    string secondLine = reader.ReadLine() ?? "";
+                    string ThirdLine = reader.ReadLine() ?? "";
+
+                    ThirdLine = ThirdLine.Trim();
+                    ThirdLine = ThirdLine.Remove(0, 16);
+                    ThirdLine = ThirdLine.TrimEnd(',');
+                    ThirdLine = ThirdLine.TrimEnd('\"');
+
+                    ThirdLine = ThirdLine.Replace('\"', ' ');
+                    ThirdLine = ThirdLine.Replace('T', ',');
+                    ThirdLine = ThirdLine.Trim();
+
+                    DateTime filelastupdated = DateTime.ParseExact(ThirdLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                     if (filelastupdated.CompareTo(this.LastUpdated) == 0) return false;
                 }
             }
@@ -148,6 +169,7 @@ namespace ConsoleSwGohParser
                 }
             }
         }
+
         private CharacterDto GetChar(string html, out int Position)
         {
             CharacterDto ret = new CharacterDto();
@@ -228,8 +250,6 @@ namespace ConsoleSwGohParser
 
             return ret;
         }
-
-       
 
         private bool FillCharData(CharacterDto newchar)
         {
@@ -438,7 +458,6 @@ namespace ConsoleSwGohParser
 
             return true;
         }
-
         private void LoadMods(string html, CharacterDto newchar)
         {
             int count = 0;

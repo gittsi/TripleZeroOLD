@@ -15,8 +15,9 @@ namespace ConsoleSwGohParser
             if (args.Length != 0) pname = args[0];
 
             PlayerDto player = new PlayerDto(pname);
-            player.ParseSwGoh();
-            player.Export();
+            //player.ParseSwGoh();
+            //player.Export();
+            player.Import();
             Environment.Exit(0);
         }
     }
