@@ -10,14 +10,14 @@ namespace ConsoleSwGohParser
     {
         static void Main(string[] args)
         {
-            string pname = "newholborn";
+            string pname = "tsitas_66";
 
             if (args.Length != 0) pname = args[0];
 
             PlayerDto player = new PlayerDto(pname);
-            //player.ParseSwGoh();
-            //player.Export();
-            player.Import();
+            player.ParseSwGoh();
+            player.Export();
+            //player.Import();
             Environment.Exit(0);
         }
     }

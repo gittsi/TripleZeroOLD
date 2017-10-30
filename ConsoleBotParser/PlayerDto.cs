@@ -130,6 +130,7 @@ namespace ConsoleSwGohParser
             while (!exit)
             {
                 CharacterDto newchar = GetChar(html, out Position);
+                Console.WriteLine(string.Format("Parsing {0}", newchar.Name));
                 bool ret = FillCharData(newchar);
                 if (Position > 0) html = html.Substring(Position);
                 else exit = true;
