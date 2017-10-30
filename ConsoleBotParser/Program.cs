@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleSwGohParser
+namespace SwGoh
 {
     public enum Command
     {
@@ -32,13 +32,14 @@ namespace ConsoleSwGohParser
                 case Command.UpdatePlayer:
                     {
                         PlayerDto player = new PlayerDto(pname);
-                        player.ParseSwGoh();
-                        player.Export();
+                        bool ret = player.ParseSwGoh();
+                        if (ret) player.Export();
                         Environment.Exit(0);
                         break;
                     }
                 case Command.UpdateGuild:
                     {
+                        
                         Environment.Exit(0);
                         break;
                     }

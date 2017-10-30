@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleSwGohParser
+namespace SwGoh
 {
     public partial class PlayerDto
     {
@@ -63,9 +63,10 @@ namespace ConsoleSwGohParser
                 //Error Occured , Contact Developer
             }
         }
-        public void ParseSwGoh()
+        public bool ParseSwGoh()
         {
-            if (PlayerName == null || PlayerName == "") return;
+            if (PlayerName == null || PlayerName == "") return false;
+            bool retbool = true;
 
             web = new System.Net.WebClient();
             Uri uri = new Uri("https://swgoh.gg/u/" + PlayerName + "/collection/");
@@ -75,14 +76,15 @@ namespace ConsoleSwGohParser
             {
                 html = web.DownloadString(uri);
             }
-            catch { return; }
+            catch { return false; }
 
             int Position = 0;
             FillPlayerData(html, out Position);
             bool ret = CheckLastUpdateWithCurrent();
-            if (ret) FillPlayerCharacters(html, Position);
-            else Import();
+            if (ret) { FillPlayerCharacters(html, Position); retbool = true; }
+            else { Import(); retbool = false; }
             web = null;
+            return retbool;
         }
 
         private bool CheckLastUpdateWithCurrent()
