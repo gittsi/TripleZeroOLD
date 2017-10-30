@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SwGoh;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

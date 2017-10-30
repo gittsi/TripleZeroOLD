@@ -120,6 +120,7 @@ namespace TripleZero
             await commands.AddModuleAsync<FunModule>();
             await commands.AddModuleAsync<GuildModule>();
             await commands.AddModuleAsync<CharacterModule>();
+            await commands.AddModuleAsync<PlayerModule>();
         }
 
         public async Task MessageReceived(SocketGuildUser user)
