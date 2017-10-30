@@ -36,11 +36,15 @@ namespace ConsoleSwGohParser
                 serializer.NullValueHandling = NullValueHandling.Ignore;
                 serializer.Formatting = Formatting.Indented;
 
-                using (StreamWriter sw = new StreamWriter(directory + "\\" + PlayerName + @".json"))
+                string fname = directory + "\\" + PlayerName + @".json";
+                using (StreamWriter sw = new StreamWriter(fname))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
+                    sw.WriteLine(this.LastUpdated.ToString("yyyy-MM-dd,HH:mm:ss"));
                     serializer.Serialize(writer, this);
                 }
+
+                
             }
             catch
             {
@@ -63,9 +67,31 @@ namespace ConsoleSwGohParser
 
             int Position = 0;
             FillPlayerData(html, out Position);
-            FillPlayerCharacters(html,Position);
+            bool ret = CheckLastUpdateWithCurrent();
+            if (ret) FillPlayerCharacters(html,Position);
+            //else load json
             web = null;
         }
+
+        private bool CheckLastUpdateWithCurrent()
+        {
+            string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
+            string fname = directory + "\\" + PlayerName + @".json";
+
+            if (File.Exists(fname))
+            {
+                string firstLine = "";
+                using (StreamReader reader = new StreamReader(fname))
+                {
+                    firstLine = reader.ReadLine() ?? "";
+                    DateTime filelastupdated = DateTime.ParseExact(firstLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    if (filelastupdated.CompareTo(this.LastUpdated) == 0) return false;
+                }
+            }
+            else return true;
+            return true;
+        }
+
         /// <summary>
         /// Fills Players characters
         /// </summary>
@@ -115,7 +141,10 @@ namespace ConsoleSwGohParser
                     string value = rest.Substring(start, length);
                     Position = restindexEnd;
                     //DateTime updated = DateTime.from
-                    LastUpdated = DateTime.ParseExact(value, "yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
+                    value = value.Replace('T', ',');
+                    value = value.Replace('Z', ' ');
+                    value = value.Trim();
+                    LastUpdated = DateTime.ParseExact(value, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 }
             }
         }
