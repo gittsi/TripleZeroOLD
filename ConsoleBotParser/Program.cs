@@ -10,7 +10,11 @@ namespace ConsoleSwGohParser
     {
         static void Main(string[] args)
         {
-            PlayerDto newholborn = new PlayerDto("tsitas_66");
+            string pname = "newholborn";
+
+            if (args.Length != 0) pname = args[0];
+
+            PlayerDto newholborn = new PlayerDto(pname);
             newholborn.ParseSwGoh();
             newholborn.Export();
             Environment.Exit(0);
