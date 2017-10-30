@@ -18,8 +18,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
-using TripleZero.Model;
 using System.Linq;
+using TripleZero._Mapping;
 
 namespace TripleZero
 {
@@ -29,7 +29,7 @@ namespace TripleZero
         static ApplicationSettings applicationSettings = null;
         static HelpModule helpModule = null;
         static MathModule mathModule = null;
-        static TestModule testModule = null;
+        static FunModule testModule = null;
 
         private DiscordSocketClient client;        
         private IServiceProvider services;
@@ -40,13 +40,17 @@ namespace TripleZero
 
         public async Task MainAsync()
         {
+            Repository.SWGoHRepository.ISWGoHRepository repo = new Repository.SWGoHRepository.SWGoHRepository(new MappingConfiguration());
+            var a = repo.GetPlayer("tsitas_66");
+
             ///////////initialize autofac
             autoFacContainer = AutofacConfig.ConfigureContainer();
             using (var scope = autoFacContainer.BeginLifetimeScope())
             {
-                applicationSettings = scope.Resolve<ApplicationSettings>();
+                applicationSettings = scope.Resolve<ApplicationSettings>();                
                 commands = scope.Resolve<CommandService>();                
-                client = scope.Resolve<DiscordSocketClient>();
+                client = scope.Resolve<DiscordSocketClient>();                
+                scope.Resolve<IMappingConfiguration>();
 
 
                 Logo(); //prints application name,version etc 
@@ -64,11 +68,15 @@ namespace TripleZero
 
                 //client.UserJoined += UserJoined;
                 Consoler.WriteLineInColor(client.ConnectionState.ToString(), ConsoleColor.DarkMagenta);
-            }         
+            }
 
 
             //client.MessageReceived += MessageReceived;
-            //testGuildModule("a", "grievous");
+
+            await Task.Delay(3000);
+            //await TestGuildModule("41s", "gk");
+            //await TestCharacterModule("tsitas_66", "cls");
+
             await Task.Delay(-1);
 
         }
@@ -76,51 +84,20 @@ namespace TripleZero
 
        
 
-        private async static void testGuildModule(string guild, string characterName)
+        private async Task TestGuildModule(string guild, string characterName)
         {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-
-            var url = "https://swgoh.gg/api/guilds/53/units/";
-            List<GuildCharacter> chars = new List<GuildCharacter>();
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage response2 = await client.GetAsync(url);
-                HttpContent content = response2.Content;
-                string reqResult = await content.ReadAsStringAsync();
-
-                JObject json = JObject.Parse(reqResult);
-
-
-
-                foreach (var row in json)
-                {
-                    GuildCharacter gc = new GuildCharacter();
-                    gc.Character = new Character() { Name = row.Key };
-
-                    List<PlayerCharacter> players = new List<PlayerCharacter>();
-                    foreach (var player in row.Value)
-                    {
-                        players.Add(new PlayerCharacter() { Name = player["player"].ToString(), Stats= new CharacterStats() { Level = (int)player["level"], Power = (int)player["power"], Rarity = (int)player["rarity"] } } );
-                        gc.Players = players;
-                    }
-                    chars.Add(gc);
-                }
-            }
-
-            var res = chars.Where(p => p.Character.Name.ToLower() == characterName.ToLower());
-
-
-            string str = res.FirstOrDefault().Character.Name;
-            
-            foreach (var player in res.FirstOrDefault().Players)
-            {
-                str += "\n";
-                str += string.Format("player : {0} - Level : {1}", player.Name,player.Stats.Level);
-            }
-
-            Console.WriteLine(str);
+            await channel.SendMessageAsync(string.Format("^guild {0} {1}", guild, characterName));
         }
-        
+
+        private async Task TestCharacterModule(string userName, string characterName)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format("^ch {0} {1}", userName, characterName));
+        }
+
 
         private static void Logo() //prints application name,version etc
         {
@@ -140,16 +117,17 @@ namespace TripleZero
             client.MessageReceived += HandleCommandAsync;
             await commands.AddModuleAsync<MathModule>();
             await commands.AddModuleAsync<HelpModule>();
-            await commands.AddModuleAsync<TestModule>();
+            await commands.AddModuleAsync<FunModule>();
             await commands.AddModuleAsync<GuildModule>();
+            await commands.AddModuleAsync<CharacterModule>();
         }
 
-        //public async Task MessageReceived(SocketGuildUser user)
-        //{
-        //    var channel = client.GetChannel(370581837560676354) as SocketTextChannel;
+        public async Task MessageReceived(SocketGuildUser user)
+        {
+            var channel = client.GetChannel(370581837560676354) as SocketTextChannel;
 
-        //    await channel.SendMessageAsync("safsgasgags");
-        //}
+            await channel.SendMessageAsync("safsgasgags");
+        }
 
         //public async Task UserJoined(SocketGuildUser user)
         //{
@@ -157,7 +135,7 @@ namespace TripleZero
 
         //    await channel.SendMessageAsync("safsgasgags");
         //}
-        
+
 
         private async Task HandleCommandAsync(SocketMessage arg)
         {
@@ -168,7 +146,23 @@ namespace TripleZero
             // We don't want the bot to respond to itself or other bots.
             // NOTE: Selfbots should invert this first check and remove the second
             // as they should ONLY be allowed to respond to messages from the same account.
-            if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+
+
+
+
+
+
+
+
+            /////////////////////////////Don't forget to exclude bots///////////////////////
+            //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+
+
+
+
+
+
+            
 
             // Create a number to track where the prefix ends and the command begins
             int pos = 0;

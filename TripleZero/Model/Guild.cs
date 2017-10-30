@@ -7,5 +7,6 @@ namespace TripleZero.Model
     public class Guild
     {
         public string Name { get; set; }
+        public string SWGoHId { get; set; }
     }
 }

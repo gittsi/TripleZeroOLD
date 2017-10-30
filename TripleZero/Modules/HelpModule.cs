@@ -26,7 +26,7 @@ namespace TripleZero.Modules
         public async Task HelpAsync()
         {
             
-            string prefix = IResolver.Current.applicationSettings.Get().DiscordSettings.Prefix;
+            string prefix = IResolver.Current.ApplicationSettings.Get().DiscordSettings.Prefix;
             var builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),
@@ -115,7 +115,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            string prefix = IResolver.Current.applicationSettings.Get().DiscordSettings.Prefix;
+            string prefix = IResolver.Current.ApplicationSettings.Get().DiscordSettings.Prefix;
             var builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),

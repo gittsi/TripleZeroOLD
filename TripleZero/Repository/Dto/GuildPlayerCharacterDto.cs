@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TripleZero.Model
+namespace TripleZero.Repository.Dto
 {
-    public class CharacterStats
+    public class GuildPlayerCharacterDto
     {
+        public string Name { get; set; }
         public int Rarity { get; set; }
         public int Power { get; set; }
         public int Level { get; set; }
