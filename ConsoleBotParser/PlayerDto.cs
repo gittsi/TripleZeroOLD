@@ -25,11 +25,18 @@ namespace ConsoleSwGohParser
         {
             try
             {
+                string directory = AppDomain.CurrentDomain.BaseDirectory +  "PlayerJsons";
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Ignore;
                 serializer.Formatting = Formatting.Indented;
 
-                using (StreamWriter sw = new StreamWriter(PlayerName + @".json"))
+                using (StreamWriter sw = new StreamWriter(directory + "\\" + PlayerName + @".json"))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
                     serializer.Serialize(writer, this);

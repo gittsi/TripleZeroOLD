@@ -14,9 +14,9 @@ namespace ConsoleSwGohParser
 
             if (args.Length != 0) pname = args[0];
 
-            PlayerDto newholborn = new PlayerDto(pname);
-            newholborn.ParseSwGoh();
-            newholborn.Export();
+            PlayerDto player = new PlayerDto(pname);
+            player.ParseSwGoh();
+            player.Export();
             Environment.Exit(0);
         }
     }
