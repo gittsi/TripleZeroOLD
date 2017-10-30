@@ -19,7 +19,7 @@ namespace SwGoh
             string pname = "newholborn";
             Command command = Command.UpdatePlayer;
 
-            if (args.Length == 1)
+            if (args.Length == 2)
             {
                 string commandstr = args[0];
                 if (commandstr == "up") command = Command.UpdatePlayer;
@@ -31,7 +31,7 @@ namespace SwGoh
             {
                 case Command.UpdatePlayer:
                     {
-                        PlayerDto player = new PlayerDto(pname);
+                        SwGoh.PlayerDto player = new PlayerDto(pname);
                         bool ret = player.ParseSwGoh();
                         if (ret) player.Export();
                         Environment.Exit(0);
@@ -39,7 +39,9 @@ namespace SwGoh
                     }
                 case Command.UpdateGuild:
                     {
-                        
+                        SwGoh.GuildDto guild = new GuildDto(pname);
+                        guild.ParseSwGoh();
+                        if (guild.Players.Count > 0) guild.UpdateAllPlayers();
                         Environment.Exit(0);
                         break;
                     }

@@ -76,7 +76,7 @@ namespace SwGoh
             {
                 html = web.DownloadString(uri);
             }
-            catch { return false; }
+            catch { web = null; return false; }
 
             int Position = 0;
             FillPlayerData(html, out Position);
