@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Discord;
@@ -11,6 +10,16 @@ using System.Reflection;
 using TripleZero.Modules;
 using TripleZero.Configuration;
 using TripleZero.Helper;
+using System.Net;
+using System.Text;
+using System.Web;
+using Newtonsoft.Json;
+using System.IO;
+using System.Collections.Generic;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using TripleZero._Mapping;
 
 namespace TripleZero
 {
@@ -20,7 +29,7 @@ namespace TripleZero
         static ApplicationSettings applicationSettings = null;
         static HelpModule helpModule = null;
         static MathModule mathModule = null;
-        static TestModule testModule = null;
+        static FunModule testModule = null;
 
         private DiscordSocketClient client;        
         private IServiceProvider services;
@@ -31,40 +40,64 @@ namespace TripleZero
 
         public async Task MainAsync()
         {
+            Repository.SWGoHRepository.ISWGoHRepository repo = new Repository.SWGoHRepository.SWGoHRepository(new MappingConfiguration());
+            var a = repo.GetPlayer("tsitas_66");
+
             ///////////initialize autofac
             autoFacContainer = AutofacConfig.ConfigureContainer();
             using (var scope = autoFacContainer.BeginLifetimeScope())
             {
-                applicationSettings = scope.Resolve<ApplicationSettings>();
+                applicationSettings = scope.Resolve<ApplicationSettings>();                
                 commands = scope.Resolve<CommandService>();                
-                client = scope.Resolve<DiscordSocketClient>();
+                client = scope.Resolve<DiscordSocketClient>();                
+                scope.Resolve<IMappingConfiguration>();
 
 
                 Logo(); //prints application name,version etc 
 
-                var appSettings = applicationSettings.Get();
-
-                //client = new DiscordSocketClient();
-                //_config = BuildConfig();
-                //commands = new CommandService();
-                //services = new ServiceCollection().BuildServiceProvider();
+                var appSettings = applicationSettings.Get();                
 
                 await InstallCommands();
 
                 await client.LoginAsync(TokenType.Bot, appSettings.DiscordSettings.Token);
                 await client.StartAsync();
 
+                
+
                 Consoler.WriteLineInColor(client.LoginState.ToString(), ConsoleColor.DarkMagenta);
 
                 //client.UserJoined += UserJoined;
+                Consoler.WriteLineInColor(client.ConnectionState.ToString(), ConsoleColor.DarkMagenta);
             }
 
-            
+
             //client.MessageReceived += MessageReceived;
+
+            await Task.Delay(3000);
+            //await TestGuildModule("41s", "gk");
+            //await TestCharacterModule("tsitas_66", "cls");
 
             await Task.Delay(-1);
 
         }
+
+
+       
+
+        private async Task TestGuildModule(string guild, string characterName)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format("^guild {0} {1}", guild, characterName));
+        }
+
+        private async Task TestCharacterModule(string userName, string characterName)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format("^ch {0} {1}", userName, characterName));
+        }
+
 
         private static void Logo() //prints application name,version etc
         {
@@ -84,15 +117,17 @@ namespace TripleZero
             client.MessageReceived += HandleCommandAsync;
             await commands.AddModuleAsync<MathModule>();
             await commands.AddModuleAsync<HelpModule>();
-            await commands.AddModuleAsync<TestModule>();
+            await commands.AddModuleAsync<FunModule>();
+            await commands.AddModuleAsync<GuildModule>();
+            await commands.AddModuleAsync<CharacterModule>();
         }
 
-        //public async Task MessageReceived(SocketGuildUser user)
-        //{
-        //    var channel = client.GetChannel(370581837560676354) as SocketTextChannel;
+        public async Task MessageReceived(SocketGuildUser user)
+        {
+            var channel = client.GetChannel(370581837560676354) as SocketTextChannel;
 
-        //    await channel.SendMessageAsync("safsgasgags");
-        //}
+            await channel.SendMessageAsync("safsgasgags");
+        }
 
         //public async Task UserJoined(SocketGuildUser user)
         //{
@@ -100,7 +135,7 @@ namespace TripleZero
 
         //    await channel.SendMessageAsync("safsgasgags");
         //}
-        
+
 
         private async Task HandleCommandAsync(SocketMessage arg)
         {
@@ -111,7 +146,23 @@ namespace TripleZero
             // We don't want the bot to respond to itself or other bots.
             // NOTE: Selfbots should invert this first check and remove the second
             // as they should ONLY be allowed to respond to messages from the same account.
-            if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+
+
+
+
+
+
+
+
+            /////////////////////////////Don't forget to exclude bots///////////////////////
+            //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+
+
+
+
+
+
+            
 
             // Create a number to track where the prefix ends and the command begins
             int pos = 0;

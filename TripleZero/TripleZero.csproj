@@ -6,7 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Client\Bot.cs" />
+    <Compile Remove="Configuration\CharacterSettingsModel.cs" />
+    <Compile Remove="Configuration\GuildSettingsModel.cs" />
+    <Compile Remove="Configuration\GuildsSettings.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
+    <Compile Remove="Model\Character.cs" />
+    <Compile Remove="Model\CharacterStats.cs" />
+    <Compile Remove="Model\GuildCharacter.cs" />
+    <Compile Remove="Model\Player.cs" />
+    <Compile Remove="Model\PlayerCharacter.cs" />
+    <Compile Remove="Model\SwGohPlayer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,10 +28,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\" />
+    <Folder Include="Client\" />
   </ItemGroup>
 
 </Project>
