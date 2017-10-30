@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TripleZero.Repository.Dto
+namespace ConsoleSwGohParser
 {
 
     using System;
@@ -13,6 +13,7 @@ namespace TripleZero.Repository.Dto
     public partial class CharacterDto
     {
         public string Name { get; set; }
+        public string SWGoHUrl { get; set; }
         public int Gear { get; set; }
         public List<Mod> Mods { get; set; }
         public int ArmorPenetration { get; set; }
