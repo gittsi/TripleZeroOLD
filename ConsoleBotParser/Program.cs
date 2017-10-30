@@ -6,19 +6,44 @@ using System.Threading.Tasks;
 
 namespace ConsoleSwGohParser
 {
+    public enum Command
+    {
+        UpdatePlayer = 1,
+        UpdateGuild = 2,
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
             string pname = "newholborn";
+            Command command = Command.UpdatePlayer;
 
-            if (args.Length != 0) pname = args[0];
+            if (args.Length == 1)
+            {
+                string commandstr = args[0];
+                if (commandstr == "up") command = Command.UpdatePlayer;
+                else if (commandstr == "ug") command = Command.UpdateGuild;
+                pname = args[1];
+            }
 
-            PlayerDto player = new PlayerDto(pname);
-            //player.ParseSwGoh();
-            //player.Export();
-            player.Import();
-            Environment.Exit(0);
+            switch (command )
+            {
+                case Command.UpdatePlayer:
+                    {
+                        PlayerDto player = new PlayerDto(pname);
+                        player.ParseSwGoh();
+                        player.Export();
+                        Environment.Exit(0);
+                        break;
+                    }
+                case Command.UpdateGuild:
+                    {
+                        Environment.Exit(0);
+                        break;
+                    }
+            }
+            
         }
     }
 }

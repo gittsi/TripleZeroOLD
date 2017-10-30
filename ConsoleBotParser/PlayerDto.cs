@@ -29,7 +29,10 @@ namespace ConsoleSwGohParser
             if (File.Exists(fname))
             {
                 var lines = File.ReadAllText(fname);
-                PlayerDto ret = JsonConvert.DeserializeObject<PlayerDto>(lines, Converter.Settings);
+                //PlayerDto ret = JsonConvert.DeserializeObject<PlayerDto>(lines, Converter.Settings);
+                JsonConvert.PopulateObject(lines, this);
+
+
             }
         }
         public void Export()
@@ -77,9 +80,8 @@ namespace ConsoleSwGohParser
             int Position = 0;
             FillPlayerData(html, out Position);
             bool ret = CheckLastUpdateWithCurrent();
-            if (ret) 
-                 FillPlayerCharacters(html,Position);
-            //else load json
+            if (ret) FillPlayerCharacters(html, Position);
+            else Import();
             web = null;
         }
 
