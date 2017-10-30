@@ -15,7 +15,6 @@ namespace ConsoleSwGohParser
         public string Name { get; set; }
         public string SWGoHUrl { get; set; }
         public int Gear { get; set; }
-        public List<Mod> Mods { get; set; }
         public int ArmorPenetration { get; set; }
         public int CriticalDamage { get; set; }
         public int HealthSteal { get; set; }
@@ -28,17 +27,18 @@ namespace ConsoleSwGohParser
         public int Protection { get; set; }
         public int Speed { get; set; }
         public decimal Tenacity { get; set; }
+        public List<Mod> Mods { get; set; }
     }
 
     public partial class Mod
     {
         public string Name { get; set; }
-        public ModStat PrimaryStat { get; set; }
-        public List<ModStat> SecondaryStat { get; set; }
         public long Level { get; set; }
         public long Star { get; set; }
         public ModSlot Type { get; set; }
         public string Rarity { get; set; }
+        public ModStat PrimaryStat { get; set; }
+        public List<ModStat> SecondaryStat { get; set; }
     }
 
     public partial class ModStat
