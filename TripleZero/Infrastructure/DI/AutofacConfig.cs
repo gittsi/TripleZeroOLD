@@ -28,7 +28,7 @@ namespace TripleZero.Infrastructure.DI
             //modules
             builder.RegisterType<HelpModule>().InstancePerDependency();
             builder.RegisterType<MathModule>().InstancePerDependency();
-            builder.RegisterType<TestModule>().InstancePerDependency();
+            builder.RegisterType<FunModule>().InstancePerDependency();
             builder.RegisterType<GuildModule>().InstancePerDependency();
             builder.RegisterType<CharacterModule>().InstancePerDependency();
 

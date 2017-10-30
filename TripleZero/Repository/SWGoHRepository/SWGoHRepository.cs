@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -127,9 +129,23 @@ namespace TripleZero.Repository.SWGoHRepository
             return chars;
         }
 
-        public Task<List<CharacterDto>> GetPlayer(string userName)
+        public async Task<PlayerDto> GetPlayer(string userName)
         {
-            throw new NotImplementedException();
+            await Task.FromResult(1);
+
+            string directory = Directory.GetCurrentDirectory() + "/_Data/Order 66 41st/";
+            string fname = directory + userName + @".json";
+            if (File.Exists(fname))
+            {
+                var lines = File.ReadAllText(fname);
+                PlayerDto ret = JsonConvert.DeserializeObject<PlayerDto>(lines, Converter.Settings);
+                return ret;
+            }
+
+
+            return null;
+
+            
         }
     }
 }

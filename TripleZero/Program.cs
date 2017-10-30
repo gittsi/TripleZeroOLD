@@ -29,7 +29,7 @@ namespace TripleZero
         static ApplicationSettings applicationSettings = null;
         static HelpModule helpModule = null;
         static MathModule mathModule = null;
-        static TestModule testModule = null;
+        static FunModule testModule = null;
 
         private DiscordSocketClient client;        
         private IServiceProvider services;
@@ -40,6 +40,9 @@ namespace TripleZero
 
         public async Task MainAsync()
         {
+            Repository.SWGoHRepository.ISWGoHRepository repo = new Repository.SWGoHRepository.SWGoHRepository(new MappingConfiguration());
+            var a = repo.GetPlayer("tsitas_66");
+
             ///////////initialize autofac
             autoFacContainer = AutofacConfig.ConfigureContainer();
             using (var scope = autoFacContainer.BeginLifetimeScope())
@@ -114,7 +117,7 @@ namespace TripleZero
             client.MessageReceived += HandleCommandAsync;
             await commands.AddModuleAsync<MathModule>();
             await commands.AddModuleAsync<HelpModule>();
-            await commands.AddModuleAsync<TestModule>();
+            await commands.AddModuleAsync<FunModule>();
             await commands.AddModuleAsync<GuildModule>();
             await commands.AddModuleAsync<CharacterModule>();
         }
