@@ -71,13 +71,16 @@ namespace SwGoh
 
         public void UpdateAllPlayers()
         {
+            int count = 0;
             foreach (string item in Players)
             {
+                count++;
+                Console.WriteLine(count.ToString () + ") Reading Player : " + item);
                 SwGoh.PlayerDto player = new PlayerDto(item);
                 bool ret = player.ParseSwGoh();
                 if (ret) player.Export();
                 Thread.Sleep(5000);
-                Console.WriteLine("Created : " + item +"'s json File");
+                
             }
         }
     }

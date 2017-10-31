@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -56,8 +57,8 @@ namespace SwGoh
                 {
                     serializer.Serialize(writer, this);
                 }
+                Console.WriteLine("Created : " + PlayerName + "'s json File");
 
-                
             }
             catch
             {
@@ -71,8 +72,6 @@ namespace SwGoh
 
             web = new System.Net.WebClient();
             Uri uri = new Uri("https://swgoh.gg/u/" + PlayerName + "/collection/");
-
-            Console.WriteLine("Reading Player : " + this.PlayerName);
 
             string html = "";
             try
@@ -134,16 +133,18 @@ namespace SwGoh
             html = html.Substring(Position);
 
             bool exit = false;
+            int count = 0;
             while (!exit)
             {
+                count++;
                 CharacterDto newchar = GetChar(html, out Position);
                 bool ret = FillCharData(newchar);
                 if (Position > 0) html = html.Substring(Position);
                 else exit = true;
                 if (newchar.Name != null) Characters.Add(newchar);
                 if (html.Length < 500) exit = true;
-                Console.WriteLine("Added character : " + newchar.Name);
-                Thread.Sleep(1000);
+                Console.WriteLine("          " + count.ToString () + ") Added character : " + newchar.Name);
+                Thread.Sleep(5000);
             }
         }
 
@@ -272,8 +273,9 @@ namespace SwGoh
             {
                 html = web.DownloadString(uri);
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine("Exception : " + e.Message);
                 return false;
             }
 
@@ -356,8 +358,8 @@ namespace SwGoh
                     int length = restindexEnd - start;
                     value = rest.Substring(start, length);
                     Position = restindexEnd;
-
-                    ret1 = decimal.TryParse(value.Replace ('%',' ').Trim (), out valuedecimal);
+                    
+                    ret1 = decimal.TryParse(value.Replace ('%',' ').Trim (), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Potency = valuedecimal;
                 }
 
@@ -372,7 +374,7 @@ namespace SwGoh
                     value = rest.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), out valuedecimal);
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Tenacity = valuedecimal;
                 }
 
@@ -427,7 +429,7 @@ namespace SwGoh
                     value = rest.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), out valuedecimal);
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.PhysicalCriticalChance = valuedecimal;
                 }
 
@@ -516,6 +518,8 @@ namespace SwGoh
 
                 count++;
 
+                int endofmod = rest.IndexOf("</div></div></div>", Position);
+
                 reststrTosearchStart = "statmod-title\">";
                 restindexStart = rest.IndexOf(reststrTosearchStart, Position);
                 string reststrTosearchEnd = "</div>";
@@ -550,129 +554,144 @@ namespace SwGoh
 
                 reststrTosearchStart = "statmod-stat-value\">";
                 restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
+                if (restindexStart < endofmod)
                 {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
-                    Position = restindexEnd;
-                }
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
 
-                reststrTosearchStart = "statmod-stat-label\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
-                {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value1 = rest.Substring(start, length);
-                    Position = restindexEnd;
+                    reststrTosearchStart = "statmod-stat-label\">";
+                    restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value1 = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
+                    mod.PrimaryStat = GetModFromString(value, value1);
                 }
-                mod.PrimaryStat = GetModFromString(value, value1);
-
-                reststrTosearchStart = "statmod-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
-                {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
-                    Position = restindexEnd;
-                }
-
-                reststrTosearchStart = "statmod-stat-label\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
-                {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value1 = rest.Substring(start, length);
-                    Position = restindexEnd;
-                }
-                mod.SecondaryStat = new List<ModStat>();
-                mod.SecondaryStat.Add(GetModFromString(value, value1));
 
                 reststrTosearchStart = "statmod-stat-value\">";
                 restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
+                if (restindexStart < endofmod)
                 {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
-                    Position = restindexEnd;
-                }
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
 
-                reststrTosearchStart = "statmod-stat-label\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
-                {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value1 = rest.Substring(start, length);
-                    Position = restindexEnd;
+                    reststrTosearchStart = "statmod-stat-label\">";
+                    restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value1 = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
+                    mod.SecondaryStat = new List<ModStat>();
+                    mod.SecondaryStat.Add(GetModFromString(value, value1));
                 }
-                mod.SecondaryStat.Add(GetModFromString(value, value1));
-
-                reststrTosearchStart = "statmod-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
-                {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
-                    Position = restindexEnd;
-                }
-
-                reststrTosearchStart = "statmod-stat-label\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
-                {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value1 = rest.Substring(start, length);
-                    Position = restindexEnd;
-                }
-                mod.SecondaryStat.Add(GetModFromString(value, value1));
 
                 reststrTosearchStart = "statmod-stat-value\">";
                 restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
+                if (restindexStart < endofmod)
                 {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
-                    Position = restindexEnd;
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
+
+                    reststrTosearchStart = "statmod-stat-label\">";
+                    restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value1 = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
+                    mod.SecondaryStat.Add(GetModFromString(value, value1));
                 }
 
-                reststrTosearchStart = "statmod-stat-label\">";
+                reststrTosearchStart = "statmod-stat-value\">";
                 restindexStart = rest.IndexOf(reststrTosearchStart, Position);
-                reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
-                if (restindexStart != -1 && restindexEnd != -1)
+                if (restindexStart < endofmod)
                 {
-                    int start = restindexStart + reststrTosearchStart.Length;
-                    int length = restindexEnd - start;
-                    value1 = rest.Substring(start, length);
-                    Position = restindexEnd;
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
+
+                    reststrTosearchStart = "statmod-stat-label\">";
+                    restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value1 = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
+                    mod.SecondaryStat.Add(GetModFromString(value, value1));
                 }
-                mod.SecondaryStat.Add(GetModFromString(value, value1));
+
+                reststrTosearchStart = "statmod-stat-value\">";
+                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                if (restindexStart < endofmod)
+                {
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
+
+                    reststrTosearchStart = "statmod-stat-label\">";
+                    restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                    reststrTosearchEnd = "</span>";
+                    restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value1 = rest.Substring(start, length);
+                        Position = restindexEnd;
+                    }
+                    mod.SecondaryStat.Add(GetModFromString(value, value1));
+                }
 
                 return mod;
             }
@@ -706,7 +725,7 @@ namespace SwGoh
             val = val.Replace('+', ' ');
             val = val.Trim();
             decimal dec = 0;
-            bool boolret = decimal.TryParse(val,out dec);
+            bool boolret = decimal.TryParse(val, NumberStyles.Any, new CultureInfo("en-US"), out dec);
             if (boolret) ret.Value = dec;
 
             return ret;
