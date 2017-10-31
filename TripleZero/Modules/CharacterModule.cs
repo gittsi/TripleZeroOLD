@@ -31,11 +31,13 @@ namespace TripleZero.Modules
             {
                 commandCharacter = matchedCharacter.SWGoHUrl;
             }
-            var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name!=null ? matchedCharacter.Name : characterName : characterName;
+            var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterName : characterName;
 
 
-            CharacterDto character = new CharacterDto();
-            character.Name = fullCharacterName;
+            CharacterDto character = new CharacterDto
+            {
+                Name = fullCharacterName
+            };
             character = IResolver.Current.SWGoHRepository.GetCharacter(username, commandCharacter).Result;
 
 

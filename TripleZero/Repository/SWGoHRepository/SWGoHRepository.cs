@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TripleZero._Mapping;
+using TripleZero.Helper;
 using TripleZero.Repository.Dto;
 
 namespace TripleZero.Repository.SWGoHRepository
@@ -109,13 +110,16 @@ namespace TripleZero.Repository.SWGoHRepository
                 catch(Exception ex)
                 {
                     //swallow the error
+                    Consoler.WriteLineInColor(ex.Message, ConsoleColor.Red);
                     return chars;
                 }                
 
                 foreach (var row in json)
                 {
-                    GuildCharacterDto gc = new GuildCharacterDto();
-                    gc.Name = row.Key;
+                    GuildCharacterDto gc = new GuildCharacterDto
+                    {
+                        Name = row.Key
+                    };
 
                     List<GuildPlayerCharacterDto> players = new List<GuildPlayerCharacterDto>();
                     foreach (var player in row.Value)

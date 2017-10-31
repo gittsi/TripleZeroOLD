@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TripleZero.Helper;
 
 namespace TripleZero.Configuration
 {
@@ -31,6 +32,7 @@ namespace TripleZero.Configuration
                 }
                 catch (Exception ex)
                 {
+                    Consoler.WriteLineInColor(string.Format("GuildSettings Get : {0}", ex.Message), ConsoleColor.Red);
                     return null;
                 }
             }            

@@ -16,8 +16,8 @@ namespace SwGoh
     {
         static void Main(string[] args)
         {
-            string pname = "newholborn";
-            Command command = Command.UpdatePlayer;
+            string pname = "41st";
+            Command command = Command.UpdateGuild;
 
             if (args.Length == 2)
             {

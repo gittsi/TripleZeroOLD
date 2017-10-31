@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SwGoh
@@ -133,6 +134,8 @@ namespace SwGoh
             bool exit = false;
             while (!exit)
             {
+                Thread.Sleep(1500);
+
                 CharacterDto newchar = GetChar(html, out Position);
                 Console.WriteLine(string.Format("Parsing {0}", newchar.Name));
                 bool ret = FillCharData(newchar);

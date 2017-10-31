@@ -26,14 +26,11 @@ namespace TripleZero
     class Program
     {
         static Autofac.IContainer autoFacContainer = null;
-        static ApplicationSettings applicationSettings = null;
-        static HelpModule helpModule = null;
-        static MathModule mathModule = null;
-        static FunModule testModule = null;
+        static ApplicationSettings applicationSettings = null;        
 
-        private DiscordSocketClient client;        
-        private IServiceProvider services;
-        private CommandService commands;
+        private DiscordSocketClient client=null;        
+        private IServiceProvider services=null;
+        private CommandService commands=null;
 
         static void Main(string[] args)
             => new Program().MainAsync().GetAwaiter().GetResult();        
@@ -74,6 +71,7 @@ namespace TripleZero
             //client.MessageReceived += MessageReceived;
 
             await Task.Delay(3000);
+            await TestPlayerMods("tsitas_66");
             //await TestGuildModule("41s", "gk");
             //await TestCharacterModule("tsitas_66", "cls");
 
@@ -82,7 +80,12 @@ namespace TripleZero
         }
 
 
-       
+        private async Task TestPlayerMods(string username)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format("^mods -speed {0} 10", username));
+        }
 
         private async Task TestGuildModule(string guild, string characterName)
         {
@@ -114,13 +117,12 @@ namespace TripleZero
 
         public async Task InstallCommands()
         {
-            client.MessageReceived += HandleCommandAsync;
-            await commands.AddModuleAsync<MathModule>();
+            client.MessageReceived += HandleCommandAsync;            
             await commands.AddModuleAsync<HelpModule>();
             await commands.AddModuleAsync<FunModule>();
             await commands.AddModuleAsync<GuildModule>();
             await commands.AddModuleAsync<CharacterModule>();
-            await commands.AddModuleAsync<PlayerModule>();
+            await commands.AddModuleAsync<ModsModule>();
         }
 
         public async Task MessageReceived(SocketGuildUser user)

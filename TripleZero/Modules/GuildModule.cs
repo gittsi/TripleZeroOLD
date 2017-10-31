@@ -10,6 +10,7 @@ using System.Linq;
 using TripleZero.Repository.SWGoHRepository;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Configuration;
+using TripleZero.Helper;
 
 namespace TripleZero.Modules
 {
@@ -29,7 +30,7 @@ namespace TripleZero.Modules
             {
                 commandCharacter = matchedCharacter.Command;
             }
-            var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name!=null ? matchedCharacter.Name : characterName : characterName;
+            var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterName : characterName;
 
 
             //guilds
@@ -50,12 +51,11 @@ namespace TripleZero.Modules
                     guildName = matchedGuild.SWGoHId;
                 }
 
-                fullGuildName = matchedGuild != null ? matchedGuild.Name != null ? matchedGuild.Name : guildName : guildName;
-                guildCommand = matchedGuild != null ? matchedGuild.SWGoHId != null ? matchedGuild.SWGoHId : guildName : guildName;
+                fullGuildName = matchedGuild != null ? matchedGuild.Name ?? guildName : guildName;
+                guildCommand = matchedGuild != null ? matchedGuild.SWGoHId ?? guildName : guildName;
             }
 
-            int guildId = 0;
-            int.TryParse(guildCommand, out guildId);
+            int.TryParse(guildCommand, out int guildId);
 
             var res = IResolver.Current.SWGoHRepository.GetGuildCharacter(guildId, commandCharacter).Result;
             //var res =_SWGoHRepository.GetGuild(guildName, characterName).Result;
@@ -105,12 +105,11 @@ namespace TripleZero.Modules
                     guildName = matchedGuild.SWGoHId;
                 }
 
-                fullGuildName = matchedGuild != null ? matchedGuild.Name != null ? matchedGuild.Name : guildName : guildName;
-                guildCommand = matchedGuild != null ? matchedGuild.SWGoHId != null ? matchedGuild.SWGoHId : guildName : guildName;
+                fullGuildName = matchedGuild != null ? matchedGuild.Name ?? guildName : guildName;
+                guildCommand = matchedGuild != null ? matchedGuild.SWGoHId ?? guildName : guildName;
             }
 
-            int guildId = 0;
-            int.TryParse(guildCommand, out guildId);
+            int.TryParse(guildCommand, out int guildId);
 
             var res = IResolver.Current.SWGoHRepository.GetGuildCharacters(guildId).Result;
 
@@ -123,11 +122,7 @@ namespace TripleZero.Modules
             try
             {
                 for (int level = 1; level < 100; level++)
-                {
-                    if (level == 39)
-                    {
-                        var a = 1;
-                    }
+                {                   
                     foreach (var guildCharacter in res)
                     {
                         foreach (var player in guildCharacter.Players)
@@ -148,7 +143,7 @@ namespace TripleZero.Modules
             }
             catch(Exception ex)
             {
-                var a = 1;
+                Consoler.WriteLineInColor(string.Format("Slackers say : {0}", ex.Message), ConsoleColor.Red);
             }
             
 
