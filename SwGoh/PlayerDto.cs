@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SwGoh
@@ -70,6 +71,8 @@ namespace SwGoh
 
             web = new System.Net.WebClient();
             Uri uri = new Uri("https://swgoh.gg/u/" + PlayerName + "/collection/");
+
+            Console.WriteLine("Reading Player : " + this.PlayerName);
 
             string html = "";
             try
@@ -139,6 +142,8 @@ namespace SwGoh
                 else exit = true;
                 if (newchar.Name != null) Characters.Add(newchar);
                 if (html.Length < 500) exit = true;
+                Console.WriteLine("Added character : " + newchar.Name);
+                Thread.Sleep(1000);
             }
         }
 
