@@ -14,6 +14,7 @@ namespace SwGoh
     {
         public string Name { get; set; }
         public string SWGoHUrl { get; set; }
+        public int Stars { get; set; }
         public int Gear { get; set; }
         public int ArmorPenetration { get; set; }
         public int CriticalDamage { get; set; }

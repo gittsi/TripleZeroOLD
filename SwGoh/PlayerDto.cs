@@ -13,7 +13,8 @@ namespace SwGoh
     public partial class PlayerDto
     {
         private System.Net.WebClient web = null;
-
+        private int mDelayCharacter = 4000;
+        private int mDelayError = 600000;
         public PlayerDto(string name)
         {
             PlayerName = name;
@@ -68,6 +69,7 @@ namespace SwGoh
         public bool ParseSwGoh()
         {
             if (PlayerName == null || PlayerName == "") return false;
+            Console.WriteLine("Reading Player : " + PlayerName);
             bool retbool = true;
 
             web = new System.Net.WebClient();
@@ -78,7 +80,11 @@ namespace SwGoh
             {
                 html = web.DownloadString(uri);
             }
-            catch { web = null; return false; }
+            catch
+            {
+                web = null;
+                return false;
+            }
 
             int Position = 0;
             FillPlayerData(html, out Position);
@@ -134,17 +140,29 @@ namespace SwGoh
 
             bool exit = false;
             int count = 0;
+            int previousPosition = 0;
             while (!exit)
             {
-                count++;
+                previousPosition = Position;
                 CharacterDto newchar = GetChar(html, out Position);
                 bool ret = FillCharData(newchar);
-                if (Position > 0) html = html.Substring(Position);
-                else exit = true;
-                if (newchar.Name != null) Characters.Add(newchar);
-                if (html.Length < 500) exit = true;
-                Console.WriteLine("          " + count.ToString () + ") Added character : " + newchar.Name);
-                Thread.Sleep(5000);
+                if (ret && Position > 0) html = html.Substring(Position);
+                if (Position < 0) exit = true;
+                if (ret)
+                {
+                    if (newchar.Name != null)
+                    {
+                        count++;
+                        Characters.Add(newchar);
+                        Console.WriteLine("          " + count.ToString() + ") Added character : " + newchar.Name);
+                        Thread.Sleep(mDelayCharacter);
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(mDelayError);
+                    Position = previousPosition;
+                }
             }
         }
 
@@ -281,10 +299,41 @@ namespace SwGoh
 
             string value;
 
-            #region General
-            string strtosearch = "<h5>General</h5>";
+
+            #region GP BreakDown
+            
+            string strtosearch = "<h4>Galactic Power Breakdown</h4>";
             int index = html.IndexOf(strtosearch);
             int Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                strtosearch = "Stars";
+                index = html.IndexOf(strtosearch,Position);
+                Position = index + strtosearch.Length;
+                if (index != -1)
+                {
+                    string rest = html.Substring(Position);
+                    string reststrTosearchStart = "gp-stat-amount-current\">";
+                    int restindexStart = rest.IndexOf(reststrTosearchStart);
+                    string reststrTosearchEnd = "</span>";
+                    int restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value = rest.Substring(start, length);
+                        Position = restindexEnd;
+
+                        newchar.Stars = GetStarsFromValue(value);
+                    }
+                }
+            }
+            #endregion
+
+            #region General
+            strtosearch = "<h5>General</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
             if (index != -1)
             {
                 string rest = html.Substring(Position);
@@ -469,6 +518,7 @@ namespace SwGoh
 
             return true;
         }
+
         private void LoadMods(string html, CharacterDto newchar)
         {
             int count = 0;
@@ -479,25 +529,47 @@ namespace SwGoh
             {
                 int Position = index + strtosearch.Length;
 
-                newchar.Mods = new List<Mod>();
-
                 Mod mod1 = FetchMod(html, newchar, ref Position, "1");
-                if (mod1 != null) { newchar.Mods.Add(mod1); count++; }
+                if (mod1 != null)
+                {
+                    if (newchar.Mods == null) newchar.Mods = new List<Mod>();
+                    newchar.Mods.Add(mod1);count++;
+                }
 
                 Mod mod2 = FetchMod(html, newchar, ref Position, "2");
-                if (mod2 != null) { newchar.Mods.Add(mod2); count++; }
+                if (mod2 != null)
+                {
+                    if (newchar.Mods == null) newchar.Mods = new List<Mod>();
+                    newchar.Mods.Add(mod2); count++;
+                }
 
                 Mod mod3 = FetchMod(html, newchar, ref Position, "3");
-                if (mod3 != null) { newchar.Mods.Add(mod3); count++; }
+                if (mod3 != null)
+                {
+                    if (newchar.Mods == null) newchar.Mods = new List<Mod>();
+                    newchar.Mods.Add(mod3); count++;
+                }
 
                 Mod mod4 = FetchMod(html, newchar, ref Position, "4");
-                if (mod4 != null) { newchar.Mods.Add(mod4); count++; }
+                if (mod4 != null)
+                {
+                    if (newchar.Mods == null) newchar.Mods = new List<Mod>();
+                    newchar.Mods.Add(mod4); count++;
+                }
 
                 Mod mod5 = FetchMod(html, newchar, ref Position, "5");
-                if (mod5 != null) { newchar.Mods.Add(mod5); count++; }
+                if (mod5 != null)
+                {
+                    if (newchar.Mods == null) newchar.Mods = new List<Mod>();
+                    newchar.Mods.Add(mod5); count++;
+                }
 
                 Mod mod6 = FetchMod(html, newchar, ref Position, "6");
-                if (mod6 != null) { newchar.Mods.Add(mod6); count++; }
+                if (mod6 != null)
+                {
+                    if (newchar.Mods == null) newchar.Mods = new List<Mod>();
+                    newchar.Mods.Add(mod6); count++;
+                }
             }
         }
 
@@ -702,6 +774,7 @@ namespace SwGoh
             }
         }
 
+        #region Convertions
         private ModStat GetModFromString(string value, string value1)
         {
             ModStat ret = new ModStat();
@@ -762,6 +835,25 @@ namespace SwGoh
             return ModSlot.Transmitter;
         }
 
+        private int GetStarsFromValue(string value)
+        {
+            string tmp = value.Replace("," , "");
+
+            int valueint = 0;
+            bool ret1 = int.TryParse(tmp, out valueint);
+            if (ret1)
+            {
+                if (valueint > 4000) return 7;
+                else if (valueint > 2500) return 6; //(2660)
+                else if (valueint > 1400) return 5; //(1520)
+                else if (valueint > 1000) return 4; //(1013)
+                else if (valueint > 670) return 3; //(675)
+                else if (valueint > 400) return 2; //(450)
+                else if (valueint > 0) return 1; //(1520)
+            }
+            return 0;
+        }
+
         private int ConvertGearStr(string roman)
         {
             int ret = 0;
@@ -779,5 +871,6 @@ namespace SwGoh
             }
             return ret;
         }
+        #endregion
     }
 }
