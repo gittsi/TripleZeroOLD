@@ -200,6 +200,12 @@ namespace TripleZero.Modules
 
             var res = IResolver.Current.SWGoHRepository.GetPlayer(playerUserName).Result;
 
+            if(res==null)
+            {
+                await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
+                return;
+            }
+
             string retStr = string.Format("Last update : {0}(UTC)\n\n", res.LastUpdated.ToString("yyyy-MM-dd HH:mm:ss")) ;
 
             var notActivatedChars = res.Characters.Where(p => p.Level == 0).ToList();
@@ -214,15 +220,32 @@ namespace TripleZero.Modules
             var chars7star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 7).ToList();
 
             //abilities
-            var _allAbilities = (from _Character in res.Characters.Where(p => p.ab != null)
-                            from _Mods in _Character.Mods
+            var _allAbilities = (from _Character in res.Characters.Where(p => p.Abilities != null)
+                            from _Abilities in _Character.Abilities
                             select new
                             {
                                 _Character.Name,
-                                _Mods
+                                _Abilities
                             }
                             ).ToList();
-            var charsMissing7Abilities = res.Characters.Where(p => p.Level > 0 && p.Level < 50).ToList();
+            var missingAbilitiesTop10 = _allAbilities.GroupBy(d => d.Name)
+                        .Select(
+                            g => new
+                            {
+                                Key = g.Key,                                
+                                SumLevels = g.Sum(s => s._Abilities.Level),
+                                SumMaxLevels = g.Sum(s => s._Abilities.MaxLevel),
+                                MissingLevels = g.Sum(s => s._Abilities.MaxLevel)- g.Sum(s => s._Abilities.Level)
+                            }).OrderByDescending(p=>p.MissingLevels).Take(10);
+            //var charsMissing7Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 7).ToList();
+            //var charsMissing6Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 6).ToList();
+            //var charsMissing5Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 5).ToList();
+            //var charsMissing4Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 4).ToList();
+            //var charsMissing3Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 3).ToList();
+            //var charsMissing2Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 2).ToList();
+            //var charsMissing1Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 1).ToList();
+            //var charsMissing0Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 0).ToList();
+
 
             //level
             var charsLessThan50Level = res.Characters.Where(p => p.Level > 0 && p.Level < 50).ToList();
@@ -273,6 +296,20 @@ namespace TripleZero.Modules
             retStr += string.Format("{0} characters at **5***\n", chars5star.Count());
             retStr += string.Format("{0} characters at **6***\n", chars6star.Count());
             retStr += string.Format("{0} characters at **7***\n", chars7star.Count());
+
+            retStr += "\n**Abilities**\n";
+            foreach(var character in missingAbilitiesTop10)
+            {
+                retStr += string.Format("{0} is missing **{1} abilities**\n", character.Key, character.MissingLevels);
+            }
+            //retStr += string.Format("{0} characters missing **7 abilities**\n", charsMissing7Abilities.Count());
+            //retStr += string.Format("{0} characters missing **6 abilities**\n", charsMissing6Abilities.Count());
+            //retStr += string.Format("{0} characters missing **5 abilities**\n", charsMissing5Abilities.Count());
+            //retStr += string.Format("{0} characters missing **4 abilities**\n", charsMissing4Abilities.Count());
+            //retStr += string.Format("{0} characters missing **3 abilities**\n", charsMissing3Abilities.Count());
+            //retStr += string.Format("{0} characters missing **2 abilities**\n", charsMissing2Abilities.Count());
+            //retStr += string.Format("{0} characters missing **1 ability**\n", charsMissing1Abilities.Count());
+            //retStr += string.Format("{0} characters having **all abilities**\n", charsMissing0Abilities.Count());
 
 
             retStr += "\n**Levels**\n";
