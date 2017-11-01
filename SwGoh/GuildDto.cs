@@ -9,6 +9,8 @@ namespace SwGoh
 {
     public class GuildDto
     {
+        private int mDelayPlayer = 10000;
+        private int mDelayError = 600000;
         public GuildDto(string name)
         {
             Name = name;
@@ -71,13 +73,21 @@ namespace SwGoh
 
         public void UpdateAllPlayers()
         {
-            foreach (string item in Players)
+            int count = 0;
+            for(int i=0;i<Players.Count;i++)
             {
-                SwGoh.PlayerDto player = new PlayerDto(item);
+                count++;
+                SwGoh.PlayerDto player = new PlayerDto(Players[i]);
                 bool ret = player.ParseSwGoh();
-                if (ret) player.Export();
-                Thread.Sleep(5000);
-                Console.WriteLine("Created : " + item +"'s json File");
+                if (ret)
+                    player.Export();
+                else
+                {
+                    Thread.Sleep(mDelayError);
+                    i--;
+                }
+                Thread.Sleep(mDelayPlayer);
+                
             }
         }
     }
