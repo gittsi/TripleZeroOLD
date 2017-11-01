@@ -134,6 +134,22 @@ namespace TripleZero.Repository.SWGoHRepository
             return chars;
         }
 
+        public async Task<List<string>> GetGuildPlayers(string guildName)
+        {
+            await Task.FromResult(1);
+
+            var filter = "*.json";
+            string path = string.Format("{0}/_Data/{1}/", Directory.GetCurrentDirectory(), guildName);
+            string[] files = Directory.GetFiles(path, filter);
+
+            for (int i = 0; i < files.Length; i++)
+            {                
+                var lastUpdate = File.GetLastWriteTimeUtc(files[i]).ToString("yyyy-MM-dd HH:mm:ss");
+                files[i] = string.Format("{0} - Last update : {1}", Path.GetFileName(files[i].Replace(".json", "")), lastUpdate);
+            }
+            return files.ToList();
+        }
+
         public async Task<PlayerDto> GetPlayer(string userName)
         {
             await Task.FromResult(1);

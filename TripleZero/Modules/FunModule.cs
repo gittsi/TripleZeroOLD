@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace TripleZero.Modules
 {
     [Name("Fun")]
-    [Summary("Have some fun!!!")]
+    [Summary("Have some fun with commands!!!")]
     public class FunModule : ModuleBase<SocketCommandContext>
     {
         [Command("roll")]
@@ -22,10 +22,10 @@ namespace TripleZero.Modules
         }
 
         [Command("imba")]
-        [Summary("Rolls a dice")]
+        [Summary("Shows who is imba currently by analyzing all data")]
         public async Task SayImba()
         { 
-            await ReplyAsync("TSiTaS is imba!!everyone knows that!!!");
+            await ReplyAsync("TSiTaS is imba!\nNo need to retrieve any data!\nFor now and till the end of time!!!");
         }
     }
 }

@@ -13,6 +13,8 @@ namespace TripleZero.Repository.SWGoHRepository
         Task<GuildCharacterDto> GetGuildCharacter(int guildName, string characterName);
         Task<CharacterDto> GetCharacter(string userName, string characterName);
         Task<PlayerDto> GetPlayer(string userName);
-        
+
+        Task<List<String>> GetGuildPlayers(string guildName);
+
     }
 }

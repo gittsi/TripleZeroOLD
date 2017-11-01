@@ -20,47 +20,43 @@ namespace TripleZero.Modules
     public class CharacterModule : ModuleBase<SocketCommandContext>
     {        
 
-        [Command("ch")]
-        [Summary("Get ch")]
-        public async Task Say(string username, string characterName)
+        [Command("characterstats")]
+        [Summary("Get character stats.\nUsage : ***$characterstats {playerUserName} {characterAlias}***")]
+        public async Task Say(string playerUserName, string characterAlias)
         {
             //characters
-            var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterName);
-            string commandCharacter = characterName;
+            var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterAlias);
+            string commandCharacter = characterAlias;
             if (matchedCharacter != null)
             {
                 commandCharacter = matchedCharacter.SWGoHUrl;
             }
-            var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterName : characterName;
+            var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterAlias : characterAlias;
 
 
             CharacterDto character = new CharacterDto
             {
                 Name = fullCharacterName
             };
-            character = IResolver.Current.SWGoHRepository.GetCharacter(username, commandCharacter).Result;
+            character = IResolver.Current.SWGoHRepository.GetCharacter(playerUserName, commandCharacter).Result;
 
 
             string retStr = "";
             if (character!=null)
             {
-                await ReplyAsync($"***User : {username} - Character : {fullCharacterName}***");
+                await ReplyAsync($"***User : {playerUserName} - Character : {fullCharacterName}***");
                 
-                retStr += string.Format("\n Protection : {0}", character.Protection);
-                retStr += string.Format("\n Health : {0}", character.Health);
-
+                retStr += string.Format("\nProtection : {0}", character.Protection);
+                retStr += string.Format("\nHealth : {0}", character.Health);
 
                 await ReplyAsync($"{retStr}");
             }
             else
             {
 
-                retStr = $"I didn't find `{username} having {fullCharacterName}`";
+                retStr = $"I didn't find `{playerUserName} having {fullCharacterName}`";
                 await ReplyAsync($"{retStr}");
-            }
-
-//            await ReplyAsync($"{matchedCharacter}");
-            
+            }            
         }
     }
 }

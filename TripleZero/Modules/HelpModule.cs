@@ -33,10 +33,7 @@ namespace TripleZero.Modules
                 Description = "These are the commands you can use :"                
             };
 
-            builder.Description += "\n dsagsdgsdg";
-
-
-
+            //builder.Description += "\n dsagsdgsdg";
 
             foreach (var module in _service.Modules)
             {
@@ -46,11 +43,11 @@ namespace TripleZero.Modules
                     {
                         builder.AddField(x =>
                         {
-                            x.Name = string.Join(", ", cmd.Aliases);
+                            x.Name = string.Concat(prefix, string.Join(", ", cmd.Aliases));
                             //x.Value = $"Parameters: {string.Join(", ", cmd.Parameters.Select(p => p.Name))}\n" +
                             //          $"Summary: {cmd.Summary}";
-                            x.Value = $"{cmd.Summary}";
-                            x.IsInline = true;
+                            x.Value = $"{cmd.Summary}\n";
+                            x.IsInline = false;
                         });
                     }                    
                 }

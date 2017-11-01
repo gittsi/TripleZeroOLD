@@ -20,61 +20,23 @@ namespace TripleZero.Modules
     public class ModsModule : ModuleBase<SocketCommandContext>
     {
 
-        [Command("mods -check")]
-        [Summary("Get mods with speed secondary")]
-        public async Task CheckSlacker(string username)
-        {
-            var res = IResolver.Current.SWGoHRepository.GetPlayer(username).Result;
-
-
-            var noMods = (from Character in res.Characters.Where(p => p.Mods == null)
-                              select Character).ToList();
-
-            var oneMod = (from Character in res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 1)
-                         select Character).ToList();
-
-            var twoMod = (from Character in res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 2)
-                          select Character).ToList();
-
-            var threeMod = (from Character in res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 3)
-                          select Character).ToList();
-
-            var fourMod = (from Character in res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 4)
-                          select Character).ToList();
-
-            var fiveMod = (from Character in res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 5)
-                          select Character).ToList();
-
-            var sixMod = (from Character in res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 6)
-                           select Character).ToList();
-
-            string retStr = string.Format("Checking mods for player : {0}\n", username) ;
-            retStr += string.Format("{0} characters with no mods\n", noMods.Count());            
-            retStr += string.Format("{0} characters with 1 mod\n", oneMod.Count());            
-            retStr += string.Format("{0} characters with 2 mods\n", twoMod.Count());            
-            retStr += string.Format("{0} characters with 3 mods\n", threeMod.Count());            
-            retStr += string.Format("{0} characters with 4 mods\n", fourMod.Count());            
-            retStr += string.Format("{0} characters with 5 mods\n", fiveMod.Count());            
-            retStr += string.Format("{0} characters with 6 mods\n", sixMod.Count());            
-
-            await ReplyAsync($"{retStr}");
-        }
+        
 
         [Command("mods -speed")]
-        [Summary("Get mods with speed secondary")]
-        public async Task GetMods(string username,int topRows=1000)
+        [Summary("Get mods sorted with speed secondary of a given player.\nUsage : ***mods -speed {playerUserName} {rows(optional)}***")]
+        public async Task GetSpeedMods(string playerUserName, int rows = 20)
         {
-            var res = IResolver.Current.SWGoHRepository.GetPlayer(username).Result;            
+            var res = IResolver.Current.SWGoHRepository.GetPlayer(playerUserName).Result;
 
-            var sortedMods = (from Character in res.Characters.Where(p=>p.Mods!=null)
-                        from Mod in Character.Mods.Where(p=>p.SecondaryStat!=null)
-                        from Stats in Mod.SecondaryStat.Where(p=>p.StatType== ModStatType.Speed)
-                        select new
-                        {
-                            Character.Name,
-                            Mod
-                        }
-                        ).OrderByDescending(t=>t.Mod.SecondaryStat.Where(p=>p.StatType==ModStatType.Speed).FirstOrDefault().Value).Take(topRows).ToList();
+            var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
+                              from Mod in Character.Mods.Where(p => p.SecondaryStat != null)
+                              from Stats in Mod.SecondaryStat.Where(p => p.StatType == ModStatType.Speed)
+                              select new
+                              {
+                                  Character.Name,
+                                  Mod
+                              }
+                        ).OrderByDescending(t => t.Mod.SecondaryStat.Where(p => p.StatType == ModStatType.Speed).FirstOrDefault().Value).Take(rows).ToList();
 
             string retStr = "";
             if (res != null)
@@ -84,8 +46,13 @@ namespace TripleZero.Modules
                 foreach (var row in sortedMods)
                 {
                     var speedModStats = row.Mod.SecondaryStat.Where(p => p.StatType == ModStatType.Speed).FirstOrDefault();
+                    var newString = string.Format("Speed:{2} {1} {0}", row.Name.PadRight(25), row.Mod.Type.ToString().PadRight(10), speedModStats.Value.ToString().PadRight(2));
+
+                    if (retStr.Length + newString.Length > 2000)
+                        break;
                     retStr += "\n";
-                    retStr += string.Format("{0} :  {1} {2} speed:{3}", row.Name, row.Mod.Type.ToString(), row.Mod.Name , speedModStats.Value) ;
+                    retStr += newString;
+                    
                 }
 
                 await ReplyAsync($"{retStr}");
@@ -93,10 +60,12 @@ namespace TripleZero.Modules
             else
             {
 
-                retStr = $"I didn't find any mods for username {username}`";
+                retStr = $"I didn't find any mods for username {playerUserName}`";
                 await ReplyAsync($"{retStr}");
-            }            
-            
+            }
+
         }
+
+
     }
 }
