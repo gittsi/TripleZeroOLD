@@ -16,7 +16,7 @@ namespace TripleZero.Modules
         {
             Random rand1 = new Random();
 
-            int roll= rand1.Next(0, 100);                        
+            int roll= rand1.Next(0, 100);
 
             await ReplyAsync($"You rolled {roll}!!!");
         }

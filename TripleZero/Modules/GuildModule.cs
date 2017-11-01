@@ -21,7 +21,7 @@ namespace TripleZero.Modules
 
         [Command("guildCharacter")]
         [Summary("Get report for specific character in the given guild.\nUsage : ***$guildCharacter {guildAlias or guildId} {characterAlias}***")]
-        public async Task Say(string guildAlias , string characterAlias)
+        public async Task GetGuildCharacter(string guildAlias , string characterAlias)
         {
             //characters
             var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterAlias);
@@ -192,35 +192,35 @@ namespace TripleZero.Modules
 
         [Command("playerReport")]
         [Summary("Get full report for a player. You can check available players of a guild by using ***$guildPlayers*** command.\nUsage : ***$playerReport {playerUserName}***")]
-        public async Task CheckSlacker(string playerUserName)
+        public async Task CheckPlayer(string playerUserName)
         {
             string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
 
             await ReplyAsync($"{loadingStr}");
+            //fil data
+            var playerData = IResolver.Current.SWGoHRepository.GetPlayer(playerUserName).Result;
 
-            var res = IResolver.Current.SWGoHRepository.GetPlayer(playerUserName).Result;
-
-            if(res==null)
+            if(playerData==null)
             {
                 await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
                 return;
             }
 
-            string retStr = string.Format("Last update : {0}(UTC)\n\n", res.LastUpdated.ToString("yyyy-MM-dd HH:mm:ss")) ;
+            string retStr = string.Format("Last update : {0}(UTC)\n\n", playerData.LastUpdated.ToString("yyyy-MM-dd HH:mm:ss")) ;
 
-            var notActivatedChars = res.Characters.Where(p => p.Level == 0).ToList();
+            var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();
 
             //stars
-            var chars1star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 1).ToList();
-            var chars2star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 2).ToList();
-            var chars3star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 3).ToList();
-            var chars4star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 4).ToList();
-            var chars5star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 5).ToList();
-            var chars6star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 6).ToList();
-            var chars7star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 7).ToList();
+            var chars1star = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 1).ToList();
+            var chars2star = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 2).ToList();
+            var chars3star = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 3).ToList();
+            var chars4star = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 4).ToList();
+            var chars5star = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 5).ToList();
+            var chars6star = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 6).ToList();
+            var chars7star = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 7).ToList();
 
             //abilities
-            var _allAbilities = (from _Character in res.Characters.Where(p => p.Abilities != null)
+            var _allAbilities = (from _Character in playerData.Characters.Where(p => p.Abilities != null)
                             from _Abilities in _Character.Abilities
                             select new
                             {
@@ -237,56 +237,48 @@ namespace TripleZero.Modules
                                 SumMaxLevels = g.Sum(s => s._Abilities.MaxLevel),
                                 MissingLevels = g.Sum(s => s._Abilities.MaxLevel)- g.Sum(s => s._Abilities.Level)
                             }).OrderByDescending(p=>p.MissingLevels).Take(10);
-            //var charsMissing7Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 7).ToList();
-            //var charsMissing6Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 6).ToList();
-            //var charsMissing5Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 5).ToList();
-            //var charsMissing4Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 4).ToList();
-            //var charsMissing3Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 3).ToList();
-            //var charsMissing2Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 2).ToList();
-            //var charsMissing1Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 1).ToList();
-            //var charsMissing0Abilities = _allAbilities.Where(p => p._Abilities.MaxLevel - p._Abilities.Level == 0).ToList();
-
 
             //level
-            var charsLessThan50Level = res.Characters.Where(p => p.Level > 0 && p.Level < 50).ToList();
-            var chars50_59Level = res.Characters.Where(p => p.Level >= 50 && p.Level < 60).ToList();
-            var chars60_69Level = res.Characters.Where(p => p.Level >= 60 && p.Level < 70).ToList();
-            var chars70_79Level = res.Characters.Where(p => p.Level >= 70 && p.Level < 80).ToList();
-            var chars80_84Level = res.Characters.Where(p => p.Level >= 80 && p.Level < 85).ToList();
-            var chars85Level = res.Characters.Where(p => p.Level == 85).ToList();
+            var charsLessThan50Level = playerData.Characters.Where(p => p.Level > 0 && p.Level < 50).ToList();
+            var chars50_59Level = playerData.Characters.Where(p => p.Level >= 50 && p.Level < 60).ToList();
+            var chars60_69Level = playerData.Characters.Where(p => p.Level >= 60 && p.Level < 70).ToList();
+            var chars70_79Level = playerData.Characters.Where(p => p.Level >= 70 && p.Level < 80).ToList();
+            var chars80_84Level = playerData.Characters.Where(p => p.Level >= 80 && p.Level < 85).ToList();
+            var chars85Level = playerData.Characters.Where(p => p.Level == 85).ToList();
 
             //number of mods
-            var noMods = res.Characters.Where(p => p.Level != 0).Where(p => p.Mods == null || p.Mods.Count == 0).ToList();
-            var oneMod = res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 1).ToList();
-            var twoMod = res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 2).ToList();
-            var threeMod = res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 3).ToList();
-            var fourMod = res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 4).ToList();
-            var fiveMod = res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 5).ToList();
-            var sixMod = res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 6).ToList();
+            var noMods = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Mods == null || p.Mods.Count == 0).ToList();
+            var oneMod = playerData.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 1).ToList();
+            var twoMod = playerData.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 2).ToList();
+            var threeMod = playerData.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 3).ToList();
+            var fourMod = playerData.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 4).ToList();
+            var fiveMod = playerData.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 5).ToList();
+            var sixMod = playerData.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 6).ToList();
 
 
-            var _allMods = (from _Character in res.Characters.Where(p => p.Mods != null)
+            //mods level
+            var _allMods = (from _Character in playerData.Characters.Where(p => p.Mods != null)
                             from _Mods in _Character.Mods
                             select new
                             {
                                 _Character.Name,
                                 _Mods
                             }
-                            ).ToList();
-            //mods level
+                            ).ToList();            
             var modsLevelLessThan9 = _allMods.Where(p => p._Mods.Level < 9).ToList();
             var modsLevel9_12 = _allMods.Where(p => p._Mods.Level >= 9 && p._Mods.Level <= 12).ToList();
             var modsLevel13_15 = _allMods.Where(p => p._Mods.Level >= 13 && p._Mods.Level <= 15).ToList();
 
-            var gear5orLess = res.Characters.Where(p => p.Level != 0).Where(p => p.Gear <= 5).ToList();
-            var gear6_8 = res.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 6 && p.Gear <= 8).ToList();
-            var gear9_10 = res.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 9 && p.Gear <= 10).ToList();
-            var gear11 = res.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 11).ToList();
-            var gear12 = res.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 12).ToList();
+            //gear
+            var gear5orLess = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear <= 5).ToList();
+            var gear6_8 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 6 && p.Gear <= 8).ToList();
+            var gear9_10 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 9 && p.Gear <= 10).ToList();
+            var gear11 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 11).ToList();
+            var gear12 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 12).ToList();            
 
-            
 
-            retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), res.Characters.Count());
+            //build post string
+            retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
 
             retStr += "\n**Stars**\n";
             retStr += string.Format("{0} characters at **1***\n", chars1star.Count());
@@ -302,15 +294,6 @@ namespace TripleZero.Modules
             {
                 retStr += string.Format("{0} is missing **{1} abilities**\n", character.Key, character.MissingLevels);
             }
-            //retStr += string.Format("{0} characters missing **7 abilities**\n", charsMissing7Abilities.Count());
-            //retStr += string.Format("{0} characters missing **6 abilities**\n", charsMissing6Abilities.Count());
-            //retStr += string.Format("{0} characters missing **5 abilities**\n", charsMissing5Abilities.Count());
-            //retStr += string.Format("{0} characters missing **4 abilities**\n", charsMissing4Abilities.Count());
-            //retStr += string.Format("{0} characters missing **3 abilities**\n", charsMissing3Abilities.Count());
-            //retStr += string.Format("{0} characters missing **2 abilities**\n", charsMissing2Abilities.Count());
-            //retStr += string.Format("{0} characters missing **1 ability**\n", charsMissing1Abilities.Count());
-            //retStr += string.Format("{0} characters having **all abilities**\n", charsMissing0Abilities.Count());
-
 
             retStr += "\n**Levels**\n";
             retStr += string.Format("{0} characters with **lvl<50**\n", charsLessThan50Level.Count());

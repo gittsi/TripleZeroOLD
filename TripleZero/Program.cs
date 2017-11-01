@@ -169,9 +169,8 @@ namespace TripleZero
 
 
 
-
             /////////////////////////////Don't forget to exclude bots///////////////////////
-            //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+            if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
 
 
 

@@ -21,11 +21,22 @@ namespace TripleZero.Modules
     {        
 
         [Command("characterstats")]
-        [Summary("Get character stats.\nUsage : ***$characterstats {playerUserName} {characterAlias}***")]
-        public async Task Say(string playerUserName, string characterAlias)
+        [Summary("Get character stats for specific player.\nUsage : ***$characterstats {playerUserName} {characterAlias}***")]
+        public async Task GetCharacterStats(string playerUserName, string characterAlias)
         {
-            //characters
-            var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterAlias);
+            string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
+
+            await ReplyAsync($"{loadingStr}");
+            //fil data
+            var playerData = IResolver.Current.SWGoHRepository.GetPlayer(playerUserName).Result;
+
+            if (playerData == null)
+            {
+                await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
+                return;
+            }
+
+            var matchedCharacter = IResolver.Current.CharacterSettings.Get(characterAlias);
             string commandCharacter = characterAlias;
             if (matchedCharacter != null)
             {
@@ -33,30 +44,69 @@ namespace TripleZero.Modules
             }
             var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterAlias : characterAlias;
 
+            var character = playerData.Characters.Where(p => p.Name.ToLower() == fullCharacterName.ToLower()).FirstOrDefault();
 
-            CharacterDto character = new CharacterDto
+            if(character==null)
             {
-                Name = fullCharacterName
-            };
-            character = IResolver.Current.SWGoHRepository.GetCharacter(playerUserName, commandCharacter).Result;
-
+                await ReplyAsync($"I couldn't find data for character : ***{fullCharacterName}*** for player : ***{playerUserName}***.");
+                return;
+            }
 
             string retStr = "";
-            if (character!=null)
-            {
-                await ReplyAsync($"***User : {playerUserName} - Character : {fullCharacterName}***");
-                
-                retStr += string.Format("\nProtection : {0}", character.Protection);
-                retStr += string.Format("\nHealth : {0}", character.Health);
+            retStr += string.Format("\n{0} - {1}* g{2} lvl:{3}", character.Name,character.Stars,character.Gear,character.Level);
+            retStr += "\n\n**General**";
+            retStr += $"\nProtection : {character.Protection}";
+            retStr += $"\nHealth : {character.Health}";
+            retStr += $"\nSpeed : {character.Speed}";
+            retStr += $"\nHealth Steal : {character.HealthSteal} %";
+            retStr += $"\nCritical Damage : {character.CriticalDamage} %";
+            retStr += $"\nPotency : {character.Potency} %";
+            retStr += $"\nTenacity : {character.Tenacity} %";
 
-                await ReplyAsync($"{retStr}");
-            }
-            else
-            {
+            retStr += "\n\n**Physical Offense**";
+            retStr += $"\nPhysical Damage : {character.PhysicalDamage}";
+            retStr += $"\nPhysical Critical Chance: {character.PhysicalCriticalChance}";
+            retStr += $"\nPhysical Accuracy: {character.PhysicalAccuracy} %";
+            retStr += $"\nArmor Penetration: {character.ArmorPenetration} %";
 
-                retStr = $"I didn't find `{playerUserName} having {fullCharacterName}`";
-                await ReplyAsync($"{retStr}");
-            }            
+            await ReplyAsync($"{retStr}");
         }
+
+        //public async Task GetCharacterStats(string playerUserName, string characterAlias)
+        //{
+        //    //characters
+        //    var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterAlias);
+        //    string commandCharacter = characterAlias;
+        //    if (matchedCharacter != null)
+        //    {
+        //        commandCharacter = matchedCharacter.SWGoHUrl;
+        //    }
+        //    var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterAlias : characterAlias;
+
+
+        //    CharacterDto character = new CharacterDto
+        //    {
+        //        Name = fullCharacterName
+        //    };
+        //    character = IResolver.Current.SWGoHRepository.GetCharacter(playerUserName, commandCharacter).Result;
+
+
+        //    string retStr = "";
+        //    if (character!=null)
+        //    {
+        //        await ReplyAsync($"***User : {playerUserName} - Character : {fullCharacterName}***");
+
+        //        retStr += string.Format("\nProtection : {0}", character.Protection);
+        //        retStr += string.Format("\nHealth : {0}", character.Health);
+
+        //        await ReplyAsync($"{retStr}");
+        //    }
+        //    else
+        //    {
+
+        //        retStr = $"I didn't find `{playerUserName} having {fullCharacterName}`";
+        //        await ReplyAsync($"{retStr}");
+        //    }            
+        //}
     }
 }
