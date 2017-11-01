@@ -200,10 +200,31 @@ namespace TripleZero.Modules
 
             var res = IResolver.Current.SWGoHRepository.GetPlayer(playerUserName).Result;
 
-            string retStr = string.Format("Last update : {0}(UTC)\n",res.LastUpdated.ToString("yyyy-MM-dd HH:mm:ss")) ;
+            string retStr = string.Format("Last update : {0}(UTC)\n\n", res.LastUpdated.ToString("yyyy-MM-dd HH:mm:ss")) ;
 
             var notActivatedChars = res.Characters.Where(p => p.Level == 0).ToList();
 
+            //stars
+            var chars1star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 1).ToList();
+            var chars2star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 2).ToList();
+            var chars3star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 3).ToList();
+            var chars4star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 4).ToList();
+            var chars5star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 5).ToList();
+            var chars6star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 6).ToList();
+            var chars7star = res.Characters.Where(p => p.Level != 0).Where(p => p.Stars == 7).ToList();
+
+            //abilities
+            var _allAbilities = (from _Character in res.Characters.Where(p => p.ab != null)
+                            from _Mods in _Character.Mods
+                            select new
+                            {
+                                _Character.Name,
+                                _Mods
+                            }
+                            ).ToList();
+            var charsMissing7Abilities = res.Characters.Where(p => p.Level > 0 && p.Level < 50).ToList();
+
+            //level
             var charsLessThan50Level = res.Characters.Where(p => p.Level > 0 && p.Level < 50).ToList();
             var chars50_59Level = res.Characters.Where(p => p.Level >= 50 && p.Level < 60).ToList();
             var chars60_69Level = res.Characters.Where(p => p.Level >= 60 && p.Level < 70).ToList();
@@ -211,6 +232,7 @@ namespace TripleZero.Modules
             var chars80_84Level = res.Characters.Where(p => p.Level >= 80 && p.Level < 85).ToList();
             var chars85Level = res.Characters.Where(p => p.Level == 85).ToList();
 
+            //number of mods
             var noMods = res.Characters.Where(p => p.Level != 0).Where(p => p.Mods == null || p.Mods.Count == 0).ToList();
             var oneMod = res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 1).ToList();
             var twoMod = res.Characters.Where(p => p.Mods != null).Where(p => p.Mods.Count() == 2).ToList();
@@ -228,7 +250,7 @@ namespace TripleZero.Modules
                                 _Mods
                             }
                             ).ToList();
-
+            //mods level
             var modsLevelLessThan9 = _allMods.Where(p => p._Mods.Level < 9).ToList();
             var modsLevel9_12 = _allMods.Where(p => p._Mods.Level >= 9 && p._Mods.Level <= 12).ToList();
             var modsLevel13_15 = _allMods.Where(p => p._Mods.Level >= 13 && p._Mods.Level <= 15).ToList();
@@ -242,6 +264,16 @@ namespace TripleZero.Modules
             
 
             retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), res.Characters.Count());
+
+            retStr += "\n**Stars**\n";
+            retStr += string.Format("{0} characters at **1***\n", chars1star.Count());
+            retStr += string.Format("{0} characters at **2***\n", chars2star.Count());
+            retStr += string.Format("{0} characters at **3***\n", chars3star.Count());
+            retStr += string.Format("{0} characters at **4***\n", chars4star.Count());
+            retStr += string.Format("{0} characters at **5***\n", chars5star.Count());
+            retStr += string.Format("{0} characters at **6***\n", chars6star.Count());
+            retStr += string.Format("{0} characters at **7***\n", chars7star.Count());
+
 
             retStr += "\n**Levels**\n";
             retStr += string.Format("{0} characters with **lvl<50**\n", charsLessThan50Level.Count());
