@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,7 +59,7 @@ namespace SwGoh
                 {
                     serializer.Serialize(writer, this);
                 }
-                Console.WriteLine("Created : " + PlayerName + "'s json File");
+                ConsoleMessage("Created : " + PlayerName + "'s json File");
 
             }
             catch
@@ -69,7 +70,7 @@ namespace SwGoh
         public bool ParseSwGoh()
         {
             if (PlayerName == null || PlayerName == "") return false;
-            Console.WriteLine("Reading Player : " + PlayerName);
+            ConsoleMessage("Reading Player : " + PlayerName);
             bool retbool = true;
 
             web = new System.Net.WebClient();
@@ -80,8 +81,9 @@ namespace SwGoh
             {
                 html = web.DownloadString(uri);
             }
-            catch
+            catch (Exception e)
             {
+                ConsoleMessage("Exception : " + e.Message);
                 web = null;
                 return false;
             }
@@ -154,7 +156,7 @@ namespace SwGoh
                     {
                         count++;
                         Characters.Add(newchar);
-                        Console.WriteLine("          " + count.ToString() + ") Added character : " + newchar.Name);
+                        ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
                         Thread.Sleep(mDelayCharacter);
                     }
                 }
@@ -268,7 +270,7 @@ namespace SwGoh
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    string name = rest.Substring(start, length);
+                    string name = WebUtility.HtmlDecode(rest.Substring(start, length));
                     ret.Name = name;
                 }
 
@@ -293,15 +295,14 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception : " + e.Message);
+                ConsoleMessage("Exception : " + e.Message);
                 return false;
             }
 
             string value;
 
 
-            #region GP BreakDown
-            
+            #region GP BreakDown // Stars
             string strtosearch = "<h4>Galactic Power Breakdown</h4>";
             int index = html.IndexOf(strtosearch);
             int Position = index + strtosearch.Length;
@@ -330,7 +331,57 @@ namespace SwGoh
             }
             #endregion
 
-            #region General
+            strtosearch = "<h4>Skills</h4>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                bool exit = false;
+                string rest = html.Substring(Position); Position = 0;
+                strtosearch = "<h4>Gear Needed</h4>";
+                int EndIndex = rest.IndexOf(strtosearch);
+                if (EndIndex != -1)
+                {
+                    while (!exit)
+                    {
+                        Ability abil = new Ability();
+
+                        string reststrTosearchStart = "data-title=\"";
+                        int restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                        string reststrTosearchEnd = "\">";
+                        int restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                        if (restindexStart != -1 && restindexEnd != -1)
+                        {
+                            int start = restindexStart + reststrTosearchStart.Length;
+                            int length = restindexEnd - start;
+                            value = rest.Substring(start, length);
+                            Position = restindexEnd;
+                            SetAbilityPropertiesFromString(abil, value);
+                        }
+                        else exit = true;
+
+                        reststrTosearchStart = "pc-skill-name\">";
+                        restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                        reststrTosearchEnd = "</div>";
+                        restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                        if (restindexStart != -1 && restindexEnd != -1)
+                        {
+                            int start = restindexStart + reststrTosearchStart.Length;
+                            int length = restindexEnd - start;
+                            value = rest.Substring(start, length);
+                            Position = restindexEnd;
+                            abil.Name = value;
+                            if (newchar.Abilities == null) newchar.Abilities = new List<Ability>();
+                            newchar.Abilities.Add(abil);
+                        }
+                        else exit = true;
+
+                        if (Position == -1 || Position > EndIndex) exit = true;
+                    }
+                }
+            }
+
+                #region General
             strtosearch = "<h5>General</h5>";
             index = html.IndexOf(strtosearch);
             Position = index + strtosearch.Length;
@@ -853,7 +904,25 @@ namespace SwGoh
             }
             return 0;
         }
-
+        private void SetAbilityPropertiesFromString(Ability abil, string value)
+        {
+            string[] values = value.Split(new char[] {'o', 'f' });
+            if (values.Length != 3) return;
+            string value1 = values[0];
+            value1 = value1.Replace("Level", "");
+            value1 = value1.Trim();
+            int lvl = 0;
+            bool ret = int.TryParse(value1, out lvl);
+            if (!ret) return;
+            string value2 = values[2];
+            value2 = value2.Replace("(MAXED)", "");
+            value2 = value2.Trim();
+            int maxlvl = 0;
+            ret = int.TryParse(value2, out maxlvl);
+            if (!ret) return;
+            abil.Level = lvl;
+            abil.MaxLevel = maxlvl;
+        }
         private int ConvertGearStr(string roman)
         {
             int ret = 0;
@@ -872,5 +941,10 @@ namespace SwGoh
             return ret;
         }
         #endregion
+
+        private void ConsoleMessage(string message)
+        {
+            Console.WriteLine(message + "  Time:" + DateTime.Now.TimeOfDay.ToString("h':'m':'s''"));
+        }
     }
 }

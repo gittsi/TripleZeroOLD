@@ -19,7 +19,7 @@ namespace SwGoh
             //string pname = "41st";
             //Command command = Command.UpdateGuild;
 
-            string pname = "newholborn";
+            string pname = "tsitas_66";
             Command command = Command.UpdatePlayer;
 
             if (args.Length == 2)

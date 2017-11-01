@@ -16,6 +16,7 @@ namespace SwGoh
         public string SWGoHUrl { get; set; }
         public int Stars { get; set; }
         public int Gear { get; set; }
+        public List<Ability> Abilities { get; set; }
         public int ArmorPenetration { get; set; }
         public int CriticalDamage { get; set; }
         public int HealthSteal { get; set; }
@@ -48,6 +49,14 @@ namespace SwGoh
         public ModStatType StatType { get; set; }
         public decimal Value { get; set; }
     }
+
+    public partial class Ability
+    {
+        public string Name { get; set; }
+        public int Level { get; set; }
+        public int MaxLevel { get; set; }
+    }
+
 
     public enum ModValueType
     {
