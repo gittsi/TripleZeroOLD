@@ -79,15 +79,13 @@ namespace SwGoh
                 count++;
                 SwGoh.PlayerDto player = new PlayerDto(Players[i]);
                 bool ret = player.ParseSwGoh();
-                if (ret)
-                    player.Export();
+                if (ret) player.Export();
                 else
                 {
                     Thread.Sleep(mDelayError);
                     i--;
                 }
                 Thread.Sleep(mDelayPlayer);
-                
             }
         }
     }

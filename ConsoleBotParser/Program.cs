@@ -10,6 +10,7 @@ namespace SwGoh
     {
         UpdatePlayer = 1,
         UpdateGuild = 2,
+        UpdatePlayers = 3,
     }
 
     class Program
@@ -19,13 +20,14 @@ namespace SwGoh
             //string pname = "41st";
             //Command command = Command.UpdateGuild;
 
-            string pname = "tsitas_66";
+            string pname = "briglja";
             Command command = Command.UpdatePlayer;
 
-            if (args.Length == 2)
+            if (args.Length > 1)
             {
                 string commandstr = args[0];
-                if (commandstr == "up") command = Command.UpdatePlayer;
+                if (args.Length > 2 && commandstr == "ups") command = Command.UpdatePlayers;
+                else if (commandstr == "up") command = Command.UpdatePlayer;
                 else if (commandstr == "ug") command = Command.UpdateGuild;
                 pname = args[1];
             }
@@ -46,6 +48,16 @@ namespace SwGoh
                         guild.ParseSwGoh();
                         if (guild.Players.Count > 0) guild.UpdateAllPlayers();
                         Environment.Exit(0);
+                        break;
+                    }
+                case Command.UpdatePlayers:
+                    {
+                        for(int i = 1; i < args.Length; i++)
+                        {
+                            SwGoh.PlayerDto player = new PlayerDto(args[i]);
+                            bool ret = player.ParseSwGoh();
+                            if (ret) player.Export();
+                        }
                         break;
                     }
             }
