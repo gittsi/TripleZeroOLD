@@ -92,7 +92,7 @@ namespace SwGoh
             FillPlayerData(html, out Position);
             bool ret = CheckLastUpdateWithCurrent();
             if (ret) { FillPlayerCharacters(html, Position); retbool = true; }
-            else { Import(); retbool = false; }
+            else { Import(); retbool = true; }
             web = null;
             return retbool;
         }

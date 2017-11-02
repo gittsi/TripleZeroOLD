@@ -46,7 +46,7 @@ namespace SwGoh
                     {
                         SwGoh.GuildDto guild = new GuildDto(pname);
                         guild.ParseSwGoh();
-                        if (guild.Players.Count > 0) guild.UpdateAllPlayers();
+                        if (guild.PlayerNames.Count > 0) guild.UpdateAllPlayers();
                         Environment.Exit(0);
                         break;
                     }
@@ -56,7 +56,10 @@ namespace SwGoh
                         {
                             SwGoh.PlayerDto player = new PlayerDto(args[i]);
                             bool ret = player.ParseSwGoh();
-                            if (ret) player.Export();
+                            if (ret)
+                            {
+                                player.Export();
+                            }
                         }
                         break;
                     }
