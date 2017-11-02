@@ -12,13 +12,17 @@ namespace SwGoh
         UpdateGuild = 2,
         UpdatePlayers = 3,
     }
+    
 
     class Program
     {
+        
         static void Main(string[] args)
         {
             //string pname = "41st";
             //Command command = Command.UpdateGuild;
+
+            ExportMethodEnum mExportMethod  = ExportMethodEnum.Database;
 
             string pname = "briglja";
             Command command = Command.UpdatePlayer;
@@ -37,8 +41,8 @@ namespace SwGoh
                 case Command.UpdatePlayer:
                     {
                         SwGoh.PlayerDto player = new PlayerDto(pname);
-                        bool ret = player.ParseSwGoh();
-                        if (ret) player.Export();
+                        int ret = player.ParseSwGoh();
+                        if (ret == 1) player.Export(mExportMethod);
                         Environment.Exit(0);
                         break;
                     }
@@ -46,7 +50,7 @@ namespace SwGoh
                     {
                         SwGoh.GuildDto guild = new GuildDto(pname);
                         guild.ParseSwGoh();
-                        if (guild.PlayerNames.Count > 0) guild.UpdateAllPlayers();
+                        if (guild.PlayerNames.Count > 0) guild.UpdateAllPlayers(mExportMethod);
                         Environment.Exit(0);
                         break;
                     }
@@ -55,10 +59,10 @@ namespace SwGoh
                         for(int i = 1; i < args.Length; i++)
                         {
                             SwGoh.PlayerDto player = new PlayerDto(args[i]);
-                            bool ret = player.ParseSwGoh();
-                            if (ret)
+                            int ret = player.ParseSwGoh();
+                            if (ret==1)
                             {
-                                player.Export();
+                                player.Export(mExportMethod);
                             }
                         }
                         break;

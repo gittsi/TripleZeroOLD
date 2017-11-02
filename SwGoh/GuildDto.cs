@@ -96,33 +96,38 @@ namespace SwGoh
                         int length = restindexEnd - start;
                         value = WebUtility.HtmlDecode(rest.Substring(start, length));
                         restposition = restindexEnd;
-                        PlayerNames.Add(value);
+                        PlayerNames.Add(WebUtility.HtmlDecode(value));
                     }
                     else exit = true;
                 }
             }
         }
 
-        public void UpdateAllPlayers()
+        public void UpdateAllPlayers(ExportMethodEnum ExportToFile)
         {
             int count = 0;
             for(int i=0;i<PlayerNames.Count;i++)
             {
                 count++;
                 SwGoh.PlayerDto player = new PlayerDto(PlayerNames[i]);
-                bool ret = player.ParseSwGoh();
-                if (ret)
+                int ret = player.ParseSwGoh();
+                if (ret == 1)
                 {
-                    player.Export();
+                    player.Export(ExportToFile);
                     if (Players == null) Players = new List<PlayerDto>();
                     Players.Add(player);
+                    Thread.Sleep(mDelayPlayer);
                 }
-                else
+                else if (ret == 0)
                 {
                     Thread.Sleep(mDelayError);
                     i--;
                 }
-                Thread.Sleep(mDelayPlayer);
+                else
+                {
+                    if (Players == null) Players = new List<PlayerDto>();
+                    Players.Add(player);
+                }
             }
             Export();
         }

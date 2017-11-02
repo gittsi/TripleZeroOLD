@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,11 +23,12 @@ namespace SwGoh
         }
 
         public string PlayerName { get; set; }
-        public DateTime LastUpdated { get; set; }
+        public DateTime LastSwGohUpdated { get; set; }
+        public DateTime LastClassUpdated { get; set; }
         public List<CharacterDto> Characters { get; set; }
+        public string Id { get; set; }
 
-
-        public void Import()
+    public void Import()
         {
             string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
             string fname = directory + "\\" + PlayerName + @".json";
@@ -39,39 +41,63 @@ namespace SwGoh
 
             }
         }
-        public void Export()
+        public void Export(ExportMethodEnum ExportMethod)
         {
-            try
+            if (ExportMethod == ExportMethodEnum.File)
             {
-                string directory = AppDomain.CurrentDomain.BaseDirectory +  "PlayerJsons";
-                if (!Directory.Exists(directory))
+                try
                 {
-                    Directory.CreateDirectory(directory);
+                    string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
+                    if (!Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.NullValueHandling = NullValueHandling.Ignore;
+                    serializer.Formatting = Formatting.Indented;
+
+                    string fname = directory + "\\" + PlayerName + @".json";
+                    using (StreamWriter sw = new StreamWriter(fname))
+                    using (JsonWriter writer = new JsonTextWriter(sw))
+                    {
+                        serializer.Serialize(writer, this);
+                    }
+                    ConsoleMessage("Created : " + PlayerName + "'s json File");
                 }
-
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-                serializer.Formatting = Formatting.Indented;
-
-                string fname = directory + "\\" + PlayerName + @".json";
-                using (StreamWriter sw = new StreamWriter(fname))
-                using (JsonWriter writer = new JsonTextWriter(sw))
+                catch (Exception e)
                 {
-                    serializer.Serialize(writer, this);
+                    ConsoleMessage("Error : " + e.Message);
+                    //Error Occured , Contact Developer
                 }
-                ConsoleMessage("Created : " + PlayerName + "'s json File");
-
             }
-            catch
+            else if (ExportMethod == ExportMethodEnum.Database)
             {
-                //Error Occured , Contact Developer
+                using (HttpClient client = new HttpClient())
+                {
+                    this.LastClassUpdated = DateTime.Now;
+                    this.Id = new Guid().ToString();
+
+                    string json = JsonConvert.SerializeObject(this, Converter.Settings);
+
+                    client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                    HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ConsoleMessage("Added To Database : " + PlayerName);
+                    }
+                    else
+                    {
+                        ConsoleMessage("Error Adding To Database : " + PlayerName);
+                    }
+                }
             }
         }
-        public bool ParseSwGoh()
+        public int ParseSwGoh()
         {
-            if (PlayerName == null || PlayerName == "") return false;
+            if (PlayerName == null || PlayerName == "") return 0;
             ConsoleMessage("Reading Player : " + PlayerName);
-            bool retbool = true;
+            int retbool = -1;
 
             web = new System.Net.WebClient();
             Uri uri = new Uri("https://swgoh.gg/u/" + PlayerName + "/collection/");
@@ -85,20 +111,29 @@ namespace SwGoh
             {
                 ConsoleMessage("Exception : " + e.Message);
                 web = null;
-                return false;
+                return 0;
             }
 
             int Position = 0;
             FillPlayerData(html, out Position);
             bool ret = CheckLastUpdateWithCurrent();
-            if (ret) { FillPlayerCharacters(html, Position); retbool = true; }
-            else { Import(); retbool = true; }
+            if (ret)
+            {
+                FillPlayerCharacters(html, Position);
+                retbool = 1;
+            }
+            else
+            {
+                Import();
+                retbool = 2;
+            }
             web = null;
             return retbool;
         }
 
         private bool CheckLastUpdateWithCurrent()
         {
+            return true;
             string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
             string fname = directory + "\\" + PlayerName + @".json";
 
@@ -120,7 +155,7 @@ namespace SwGoh
                     ThirdLine = ThirdLine.Trim();
 
                     DateTime filelastupdated = DateTime.ParseExact(ThirdLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                    if (filelastupdated.CompareTo(this.LastUpdated) == 0) return false;
+                    if (filelastupdated.CompareTo(this.LastSwGohUpdated) == 0) return false;
                 }
             }
             else return true;
@@ -195,7 +230,7 @@ namespace SwGoh
                     value = value.Replace('T', ',');
                     value = value.Replace('Z', ' ');
                     value = value.Trim();
-                    LastUpdated = DateTime.ParseExact(value, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    LastSwGohUpdated = DateTime.ParseExact(value, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 }
             }
         }
@@ -946,5 +981,10 @@ namespace SwGoh
         {
             Console.WriteLine(message + "  Time:" + DateTime.Now.TimeOfDay.ToString("h':'m':'s''"));
         }
+    }
+    public enum ExportMethodEnum
+    {
+        File = 1,
+        Database = 2,
     }
 }
