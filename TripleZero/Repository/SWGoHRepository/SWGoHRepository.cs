@@ -8,9 +8,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using TripleZero._Mapping;
 using TripleZero.Helper;
+using TripleZero.Model;
 using TripleZero.Repository.Dto;
 
 namespace TripleZero.Repository.SWGoHRepository
@@ -155,7 +157,16 @@ namespace TripleZero.Repository.SWGoHRepository
         {
             await Task.FromResult(1);
 
-            string url = @"https://api.mlab.com/api/1/databases/triplezero/collections/Player/?q={""PlayerName"":""tsitas_66""}&s={""LastUpdated"": 1}&l=1&apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+            //..var friendlist =[{ "friendlist":{ "friendid":"2","friendname":"Ashish Kalla","friendplace":"Malad","friendmobile":"777777777"} },  
+  
+            var queryData = string.Concat("{\"PlayerName\":\"",userName,"\"}");
+            var orderby= "{\"LastUpdated\":1}";
+            //StringBuilder sb="";
+
+            string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?q={0}&s={1}&l=1&apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O", queryData, orderby);
+         //   string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?q=\{\PlayerName{0}\}&s={LastUpdated1}&l=1&apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O", "aaaaa");
+
+            string url2 = @"https://api.mlab.com/api/1/databases/triplezero/collections/Player/?q={""PlayerName"":""tsitas_66""}&s={""LastUpdated"": 1}&l=1&apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
             using (var client = new HttpClient())
             {
