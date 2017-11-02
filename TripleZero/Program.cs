@@ -37,9 +37,6 @@ namespace TripleZero
 
         public async Task MainAsync()
         {
-            Repository.SWGoHRepository.ISWGoHRepository repo = new Repository.SWGoHRepository.SWGoHRepository(new MappingConfiguration());
-            var a = repo.GetPlayer("tsitas_66");
-
             ///////////initialize autofac
             autoFacContainer = AutofacConfig.ConfigureContainer();
             using (var scope = autoFacContainer.BeginLifetimeScope())
@@ -71,7 +68,7 @@ namespace TripleZero
             //client.MessageReceived += MessageReceived;
 
             await Task.Delay(3000);
-            //await TestPlayerMods2("tsitas_66");
+            await TestPlayer("tsitas_66");
             //await TestGuildModule("41s", "gk");
             //await TestCharacterModule("tsitas_66", "cls");
 
@@ -81,11 +78,11 @@ namespace TripleZero
 
         #region "tests"
 
-        private async Task TestPlayerMods2(string username)
+        private async Task TestPlayer(string username)
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("^mods -check {0}", username));
+            await channel.SendMessageAsync(string.Format("$playerreport {0}", username));
         }
 
         private async Task TestPlayerMods(string username)
@@ -170,7 +167,7 @@ namespace TripleZero
 
 
             /////////////////////////////Don't forget to exclude bots///////////////////////
-            if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+            //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
 
 
 

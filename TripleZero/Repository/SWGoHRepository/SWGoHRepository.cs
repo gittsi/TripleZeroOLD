@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TripleZero._Mapping;
@@ -153,6 +154,30 @@ namespace TripleZero.Repository.SWGoHRepository
         public async Task<PlayerDto> GetPlayer(string userName)
         {
             await Task.FromResult(1);
+
+            string url = @"https://api.mlab.com/api/1/databases/triplezero/collections/Player/?q={""PlayerName"":""tsitas_66""}&s={""LastUpdated"": 1}&l=1&apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+
+            using (var client = new HttpClient())
+            {
+                var response =
+                    await client.GetStringAsync(url);
+                // The response object is a string that looks like this:
+                // "{ message: 'Hello world!' }"
+                List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
+            }
+
+
+
+            //var str = "";
+
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            //request.Method = "GET";
+            //request.ContentType = "application/json";
+            ////request.ContentLength = DATA.Length;
+            //StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+            //requestWriter.Write(str);
+            //requestWriter.Close();
+
 
             string directory = Directory.GetCurrentDirectory() + "/_Data/Order 66 41st/";
             string fname = directory + userName + @".json";

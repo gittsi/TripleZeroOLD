@@ -21,6 +21,9 @@ namespace SwGoh
             PlayerName = name;
         }
 
+        [JsonProperty(PropertyName = "Id")]
+        [JsonIgnore]        
+        public string Id { get; set; }
         public string PlayerName { get; set; }
         public DateTime LastUpdated { get; set; }
         public List<CharacterDto> Characters { get; set; }
