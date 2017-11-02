@@ -1,6 +1,6 @@
 {
   "PlayerName": "dhonuts",
-  "LastUpdated": "2017-10-31T23:13:46",
+  "LastUpdated": "2017-11-01T23:12:40",
   "Characters": [
     {
       "Name": "R2-D2",
@@ -1755,7 +1755,7 @@
       ]
     },
     {
-      "Name": "Chirrut ÃŽmwe",
+      "Name": "Chirrut Γmwe",
       "SWGoHUrl": "/u/dhonuts/collection/215/chirrut-imwe/",
       "Stars": 7,
       "Gear": 11,
@@ -22174,6 +22174,327 @@
       ]
     },
     {
+      "Name": "Dengar",
+      "SWGoHUrl": "/u/dhonuts/collection/115/dengar/",
+      "Stars": 4,
+      "Gear": 6,
+      "Abilities": [
+        {
+          "Name": "Target Spotted",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Blast &amp; Smash",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Mini-Mine Mayhem",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Grizzled Veteran",
+          "Level": 3,
+          "MaxLevel": 7
+        }
+      ],
+      "ArmorPenetration": 0,
+      "CriticalDamage": 150,
+      "HealthSteal": 5,
+      "Health": 8683,
+      "Level": 50,
+      "Potency": 4.4,
+      "PhysicalCriticalChance": 21.23,
+      "PhysicalAccuracy": 0,
+      "PhysicalDamage": 796,
+      "Protection": 532,
+      "Speed": 103,
+      "Tenacity": 43.0,
+      "Mods": [
+        {
+          "Name": "Mk V-D Potency Transmitter",
+          "Level": 1,
+          "Star": 5,
+          "Type": 1,
+          "Rarity": "D",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 0.63
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 1.25
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-C Crit Damage Processor",
+          "Level": 1,
+          "Star": 5,
+          "Type": 3,
+          "Rarity": "C",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 9,
+            "Value": 1.25
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.4
+            },
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 359.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-C Crit Chance Data-Bus",
+          "Level": 6,
+          "Star": 5,
+          "Type": 5,
+          "Rarity": "C",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 10,
+            "Value": 2.5
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 1.03
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.4
+            }
+          ]
+        },
+        {
+          "Name": "Mk IV-A Health Multiplexer",
+          "Level": 15,
+          "Star": 4,
+          "Type": 6,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 5,
+            "Value": 21.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 1.81
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.4
+            },
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 532.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Pao",
+      "SWGoHUrl": "/u/dhonuts/collection/228/pao/",
+      "Stars": 4,
+      "Gear": 5,
+      "Abilities": [
+        {
+          "Name": "Strident Strike",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Sa&#39;kalla!",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Sonic Grenade",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "For Pipada",
+          "Level": 3,
+          "MaxLevel": 8
+        }
+      ],
+      "ArmorPenetration": 13,
+      "CriticalDamage": 150,
+      "HealthSteal": 5,
+      "Health": 5355,
+      "Level": 50,
+      "Potency": 11.29,
+      "PhysicalCriticalChance": 21.21,
+      "PhysicalAccuracy": 0,
+      "PhysicalDamage": 855,
+      "Protection": 1395,
+      "Speed": 127,
+      "Tenacity": 25.4,
+      "Mods": [
+        {
+          "Name": "Mk IV-A Potency Transmitter",
+          "Level": 15,
+          "Star": 4,
+          "Type": 1,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 4.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 1.29
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 12.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 203.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 1.93
+            }
+          ]
+        },
+        {
+          "Name": "Mk IV-A Crit Chance Processor",
+          "Level": 15,
+          "Star": 4,
+          "Type": 3,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 9,
+            "Value": 8.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 933.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 2.86
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.29
+            },
+            {
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 1.76
+            }
+          ]
+        },
+        {
+          "Name": "Mk IV-A Speed Data-Bus",
+          "Level": 15,
+          "Star": 4,
+          "Type": 5,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 11,
+            "Value": 16.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 2.96
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.86
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.43
+            },
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 462.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk IV-A Potency Multiplexer",
+          "Level": 15,
+          "Star": 4,
+          "Type": 6,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 11,
+            "Value": 16.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 1.61
+            },
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 81.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.94
+            },
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 1.14
+            }
+          ]
+        }
+      ]
+    },
+    {
       "Name": "Stormtrooper",
       "SWGoHUrl": "/u/dhonuts/collection/55/stormtrooper/",
       "Stars": 4,
@@ -22455,261 +22776,6 @@
       ]
     },
     {
-      "Name": "Cad Bane",
-      "SWGoHUrl": "/u/dhonuts/collection/121/cad-bane/",
-      "Stars": 3,
-      "Gear": 6,
-      "Abilities": [
-        {
-          "Name": "Gun Slinger",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Stun Glove",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Hunter&#39;s Reflexes",
-          "Level": 3,
-          "MaxLevel": 7
-        },
-        {
-          "Name": "Jedi Hunter",
-          "Level": 3,
-          "MaxLevel": 8
-        }
-      ],
-      "ArmorPenetration": 19,
-      "CriticalDamage": 150,
-      "HealthSteal": 5,
-      "Health": 3833,
-      "Level": 50,
-      "Potency": 8.0,
-      "PhysicalCriticalChance": 19.96,
-      "PhysicalAccuracy": 0,
-      "PhysicalDamage": 925,
-      "Protection": 0,
-      "Speed": 107,
-      "Tenacity": 19.0,
-      "Mods": [
-        {
-          "Name": "Mk V-E Potency Transmitter",
-          "Level": 1,
-          "Star": 5,
-          "Type": 1,
-          "Rarity": "E",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 0.63
-          }
-        },
-        {
-          "Name": "Mk V-E Speed Processor",
-          "Level": 1,
-          "Star": 5,
-          "Type": 3,
-          "Rarity": "E",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 9,
-            "Value": 1.25
-          }
-        },
-        {
-          "Name": "Mk V-E Speed Data-Bus",
-          "Level": 1,
-          "Star": 5,
-          "Type": 5,
-          "Rarity": "E",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 11,
-            "Value": 2.5
-          }
-        },
-        {
-          "Name": "Mk V-E Speed Multiplexer",
-          "Level": 1,
-          "Star": 5,
-          "Type": 6,
-          "Rarity": "E",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 0.63
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.63
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.63
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.63
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.63
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Name": "Dengar",
-      "SWGoHUrl": "/u/dhonuts/collection/115/dengar/",
-      "Stars": 4,
-      "Gear": 5,
-      "Abilities": [
-        {
-          "Name": "Target Spotted",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Blast &amp; Smash",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Mini-Mine Mayhem",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Grizzled Veteran",
-          "Level": 3,
-          "MaxLevel": 7
-        }
-      ],
-      "ArmorPenetration": 0,
-      "CriticalDamage": 150,
-      "HealthSteal": 5,
-      "Health": 8311,
-      "Level": 50,
-      "Potency": 4.4,
-      "PhysicalCriticalChance": 18.69,
-      "PhysicalAccuracy": 0,
-      "PhysicalDamage": 701,
-      "Protection": 532,
-      "Speed": 103,
-      "Tenacity": 42.0,
-      "Mods": [
-        {
-          "Name": "Mk V-D Potency Transmitter",
-          "Level": 1,
-          "Star": 5,
-          "Type": 1,
-          "Rarity": "D",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 0.63
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 11,
-              "Value": 1.25
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-C Crit Damage Processor",
-          "Level": 1,
-          "Star": 5,
-          "Type": 3,
-          "Rarity": "C",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 9,
-            "Value": 1.25
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.4
-            },
-            {
-              "ValueType": 0,
-              "StatType": 10,
-              "Value": 359.0
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-C Crit Chance Data-Bus",
-          "Level": 6,
-          "Star": 5,
-          "Type": 5,
-          "Rarity": "C",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 10,
-            "Value": 2.5
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 9,
-              "Value": 1.03
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.4
-            }
-          ]
-        },
-        {
-          "Name": "Mk IV-A Health Multiplexer",
-          "Level": 15,
-          "Star": 4,
-          "Type": 6,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 5,
-            "Value": 21.0
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 0,
-              "Value": 1.81
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.4
-            },
-            {
-              "ValueType": 0,
-              "StatType": 11,
-              "Value": 532.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 10,
-              "Value": 0.64
-            }
-          ]
-        }
-      ]
-    },
-    {
       "Name": "General Grievous",
       "SWGoHUrl": "/u/dhonuts/collection/1/general-grievous/",
       "Stars": 4,
@@ -22744,7 +22810,7 @@
       "ArmorPenetration": 23,
       "CriticalDamage": 150,
       "HealthSteal": 0,
-      "Health": 4893,
+      "Health": 5173,
       "Level": 50,
       "Potency": 9.65,
       "PhysicalCriticalChance": 18.42,
@@ -22752,7 +22818,7 @@
       "PhysicalDamage": 787,
       "Protection": 0,
       "Speed": 105,
-      "Tenacity": 19.98,
+      "Tenacity": 20.98,
       "Mods": [
         {
           "Name": "Mk IV-B Crit Chance Transmitter",
@@ -22878,47 +22944,159 @@
       ]
     },
     {
-      "Name": "Pao",
-      "SWGoHUrl": "/u/dhonuts/collection/228/pao/",
-      "Stars": 4,
-      "Gear": 4,
+      "Name": "Cad Bane",
+      "SWGoHUrl": "/u/dhonuts/collection/121/cad-bane/",
+      "Stars": 3,
+      "Gear": 6,
       "Abilities": [
         {
-          "Name": "Strident Strike",
+          "Name": "Gun Slinger",
           "Level": 3,
           "MaxLevel": 8
         },
         {
-          "Name": "Sa&#39;kalla!",
+          "Name": "Stun Glove",
           "Level": 3,
           "MaxLevel": 8
         },
         {
-          "Name": "Sonic Grenade",
+          "Name": "Hunter&#39;s Reflexes",
           "Level": 3,
-          "MaxLevel": 8
+          "MaxLevel": 7
         },
         {
-          "Name": "For Pipada",
+          "Name": "Jedi Hunter",
           "Level": 3,
           "MaxLevel": 8
         }
       ],
-      "ArmorPenetration": 6,
+      "ArmorPenetration": 19,
       "CriticalDamage": 150,
       "HealthSteal": 5,
-      "Health": 5024,
+      "Health": 3833,
       "Level": 50,
-      "Potency": 11.29,
-      "PhysicalCriticalChance": 20.04,
+      "Potency": 8.0,
+      "PhysicalCriticalChance": 19.96,
       "PhysicalAccuracy": 0,
-      "PhysicalDamage": 682,
-      "Protection": 1395,
-      "Speed": 113,
-      "Tenacity": 23.4,
+      "PhysicalDamage": 925,
+      "Protection": 0,
+      "Speed": 107,
+      "Tenacity": 19.0,
       "Mods": [
         {
-          "Name": "Mk IV-A Potency Transmitter",
+          "Name": "Mk V-E Potency Transmitter",
+          "Level": 1,
+          "Star": 5,
+          "Type": 1,
+          "Rarity": "E",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 0.63
+          }
+        },
+        {
+          "Name": "Mk V-E Speed Processor",
+          "Level": 1,
+          "Star": 5,
+          "Type": 3,
+          "Rarity": "E",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 9,
+            "Value": 1.25
+          }
+        },
+        {
+          "Name": "Mk V-E Speed Data-Bus",
+          "Level": 1,
+          "Star": 5,
+          "Type": 5,
+          "Rarity": "E",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 11,
+            "Value": 2.5
+          }
+        },
+        {
+          "Name": "Mk V-E Speed Multiplexer",
+          "Level": 1,
+          "Star": 5,
+          "Type": 6,
+          "Rarity": "E",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 0.63
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.63
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.63
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.63
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.63
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Veteran Smuggler Han Solo",
+      "SWGoHUrl": "/u/dhonuts/collection/241/veteran-smuggler-han-solo/",
+      "Stars": 3,
+      "Gear": 5,
+      "Abilities": [
+        {
+          "Name": "Trueshot",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Can I Try That?",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Partner In Crime",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Swindle",
+          "Level": 3,
+          "MaxLevel": 8
+        }
+      ],
+      "ArmorPenetration": 19,
+      "CriticalDamage": 150,
+      "HealthSteal": 10,
+      "Health": 4938,
+      "Level": 50,
+      "Potency": 2.86,
+      "PhysicalCriticalChance": 28.83,
+      "PhysicalAccuracy": 0,
+      "PhysicalDamage": 690,
+      "Protection": 0,
+      "Speed": 145,
+      "Tenacity": 20.25,
+      "Mods": [
+        {
+          "Name": "Mk IV-A Health Transmitter",
           "Level": 15,
           "Star": 4,
           "Type": 1,
@@ -22932,124 +23110,124 @@
             {
               "ValueType": 1,
               "StatType": 10,
-              "Value": 1.29
+              "Value": 0.84
             },
             {
               "ValueType": 0,
-              "StatType": 9,
-              "Value": 12.0
+              "StatType": 8,
+              "Value": 27.0
             },
             {
-              "ValueType": 0,
-              "StatType": 10,
-              "Value": 203.0
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 1.7
             },
             {
               "ValueType": 1,
               "StatType": 5,
-              "Value": 1.93
+              "Value": 1.64
             }
           ]
         },
         {
-          "Name": "Mk IV-A Crit Chance Processor",
-          "Level": 15,
+          "Name": "Mk IV-A Health Processor",
+          "Level": 12,
           "Star": 4,
           "Type": 3,
           "Rarity": "A",
           "PrimaryStat": {
             "ValueType": 1,
             "StatType": 9,
-            "Value": 8.0
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 11,
-              "Value": 933.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 5,
-              "Value": 2.86
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.29
-            },
-            {
-              "ValueType": 1,
-              "StatType": 11,
-              "Value": 1.76
-            }
-          ]
-        },
-        {
-          "Name": "Mk IV-A Speed Data-Bus",
-          "Level": 15,
-          "Star": 4,
-          "Type": 5,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 11,
-            "Value": 16.0
+            "Value": 6.5
           },
           "SecondaryStat": [
             {
               "ValueType": 1,
               "StatType": 0,
-              "Value": 2.96
-            },
-            {
-              "ValueType": 1,
-              "StatType": 10,
-              "Value": 0.86
+              "Value": 1.66
             },
             {
               "ValueType": 1,
               "StatType": 8,
-              "Value": 0.43
+              "Value": 0.48
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.86
             },
             {
               "ValueType": 0,
-              "StatType": 11,
-              "Value": 462.0
+              "StatType": 10,
+              "Value": 253.0
             }
           ]
         },
         {
-          "Name": "Mk IV-A Potency Multiplexer",
+          "Name": "Mk IV-A Health Data-Bus",
+          "Level": 12,
+          "Star": 4,
+          "Type": 5,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 10,
+            "Value": 3.25
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 4.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 1.87
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.38
+            },
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 1.61
+            }
+          ]
+        },
+        {
+          "Name": "Mk IV-A Offense Multiplexer",
           "Level": 15,
           "Star": 4,
           "Type": 6,
           "Rarity": "A",
           "PrimaryStat": {
             "ValueType": 1,
-            "StatType": 11,
-            "Value": 16.0
+            "StatType": 8,
+            "Value": 4.0
           },
           "SecondaryStat": [
             {
-              "ValueType": 1,
-              "StatType": 5,
-              "Value": 1.61
-            },
-            {
               "ValueType": 0,
-              "StatType": 8,
-              "Value": 81.0
+              "StatType": 1,
+              "Value": 6.0
             },
             {
               "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.94
+              "StatType": 0,
+              "Value": 4.56
             },
             {
               "ValueType": 1,
               "StatType": 9,
-              "Value": 1.14
+              "Value": 0.84
+            },
+            {
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 2.88
             }
           ]
         }
@@ -23346,184 +23524,6 @@
               "ValueType": 0,
               "StatType": 8,
               "Value": 53.0
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Name": "Veteran Smuggler Han Solo",
-      "SWGoHUrl": "/u/dhonuts/collection/241/veteran-smuggler-han-solo/",
-      "Stars": 3,
-      "Gear": 4,
-      "Abilities": [
-        {
-          "Name": "Trueshot",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Can I Try That?",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Partner In Crime",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Swindle",
-          "Level": 3,
-          "MaxLevel": 8
-        }
-      ],
-      "ArmorPenetration": 12,
-      "CriticalDamage": 150,
-      "HealthSteal": 10,
-      "Health": 4593,
-      "Level": 50,
-      "Potency": 2.86,
-      "PhysicalCriticalChance": 26.79,
-      "PhysicalAccuracy": 0,
-      "PhysicalDamage": 547,
-      "Protection": 0,
-      "Speed": 140,
-      "Tenacity": 19.25,
-      "Mods": [
-        {
-          "Name": "Mk IV-A Health Transmitter",
-          "Level": 15,
-          "Star": 4,
-          "Type": 1,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 4.0
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 10,
-              "Value": 0.84
-            },
-            {
-              "ValueType": 0,
-              "StatType": 8,
-              "Value": 27.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 0,
-              "Value": 1.7
-            },
-            {
-              "ValueType": 1,
-              "StatType": 5,
-              "Value": 1.64
-            }
-          ]
-        },
-        {
-          "Name": "Mk IV-A Health Processor",
-          "Level": 12,
-          "Star": 4,
-          "Type": 3,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 9,
-            "Value": 6.5
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 0,
-              "Value": 1.66
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.48
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.86
-            },
-            {
-              "ValueType": 0,
-              "StatType": 10,
-              "Value": 253.0
-            }
-          ]
-        },
-        {
-          "Name": "Mk IV-A Health Data-Bus",
-          "Level": 12,
-          "Star": 4,
-          "Type": 5,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 10,
-            "Value": 3.25
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 9,
-              "Value": 4.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 0,
-              "Value": 1.87
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.38
-            },
-            {
-              "ValueType": 1,
-              "StatType": 5,
-              "Value": 1.61
-            }
-          ]
-        },
-        {
-          "Name": "Mk IV-A Offense Multiplexer",
-          "Level": 15,
-          "Star": 4,
-          "Type": 6,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 4.0
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 1,
-              "Value": 6.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 0,
-              "Value": 4.56
-            },
-            {
-              "ValueType": 1,
-              "StatType": 9,
-              "Value": 0.84
-            },
-            {
-              "ValueType": 1,
-              "StatType": 11,
-              "Value": 2.88
             }
           ]
         }

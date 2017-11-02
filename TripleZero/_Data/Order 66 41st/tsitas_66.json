@@ -1,6 +1,6 @@
 {
   "PlayerName": "tsitas_66",
-  "LastUpdated": "2017-10-31T15:00:04",
+  "LastUpdated": "2017-11-01T15:00:05",
   "Characters": [
     {
       "Name": "R2-D2",
@@ -4235,7 +4235,7 @@
       ]
     },
     {
-      "Name": "Chirrut ÃŽmwe",
+      "Name": "Chirrut Γmwe",
       "SWGoHUrl": "/u/tsitas_66/collection/215/chirrut-imwe/",
       "Stars": 7,
       "Gear": 11,
@@ -5219,7 +5219,7 @@
       ]
     },
     {
-      "Name": "CT-21-0408 &quot;Echo&quot;",
+      "Name": "CT-21-0408 \"Echo\"",
       "SWGoHUrl": "/u/tsitas_66/collection/149/ct-21-0408-echo/",
       "Stars": 7,
       "Gear": 11,
@@ -5716,7 +5716,7 @@
       ]
     },
     {
-      "Name": "CC-2224 &quot;Cody&quot;",
+      "Name": "CC-2224 \"Cody\"",
       "SWGoHUrl": "/u/tsitas_66/collection/26/cc-2224-cody/",
       "Stars": 7,
       "Gear": 10,
@@ -7311,7 +7311,7 @@
       ]
     },
     {
-      "Name": "CT-5555 &quot;Fives&quot;",
+      "Name": "CT-5555 \"Fives\"",
       "SWGoHUrl": "/u/tsitas_66/collection/189/ct-5555-fives/",
       "Stars": 7,
       "Gear": 11,
@@ -8782,7 +8782,7 @@
       ]
     },
     {
-      "Name": "CT-7567 &quot;Rex&quot;",
+      "Name": "CT-7567 \"Rex\"",
       "SWGoHUrl": "/u/tsitas_66/collection/16/ct-7567-rex/",
       "Stars": 7,
       "Gear": 11,
@@ -16762,7 +16762,7 @@
       ]
     },
     {
-      "Name": "Garazeb &quot;Zeb&quot; Orrelios",
+      "Name": "Garazeb \"Zeb\" Orrelios",
       "SWGoHUrl": "/u/tsitas_66/collection/229/garazeb-zeb-orrelios/",
       "Stars": 7,
       "Gear": 7,
@@ -26294,7 +26294,7 @@
       ]
     },
     {
-      "Name": "URoRRuR&#39;R&#39;R",
+      "Name": "URoRRuR'R'R",
       "SWGoHUrl": "/u/tsitas_66/collection/125/urorrurrr/",
       "Stars": 6,
       "Gear": 4,
@@ -28408,6 +28408,198 @@
       ]
     },
     {
+      "Name": "Nightsister Spirit",
+      "SWGoHUrl": "/u/tsitas_66/collection/244/nightsister-spirit/",
+      "Stars": 2,
+      "Gear": 7,
+      "Abilities": [
+        {
+          "Name": "Spectral Embrace",
+          "Level": 5,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Possess",
+          "Level": 5,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Malevolent Spirit",
+          "Level": 5,
+          "MaxLevel": 8
+        }
+      ],
+      "ArmorPenetration": 34,
+      "CriticalDamage": 150,
+      "HealthSteal": 5,
+      "Health": 5258,
+      "Level": 50,
+      "Potency": 40.27,
+      "PhysicalCriticalChance": 17.12,
+      "PhysicalAccuracy": 0,
+      "PhysicalDamage": 967,
+      "Protection": 4166,
+      "Speed": 142,
+      "Tenacity": 29.34,
+      "Mods": [
+        {
+          "Name": "Mk V-B Crit Damage Transmitter",
+          "Level": 9,
+          "Star": 5,
+          "Type": 1,
+          "Rarity": "B",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 3.63
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 3.73
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 8.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.56
+            }
+          ]
+        },
+        {
+          "Name": "Mk III-B Speed Receiver",
+          "Level": 9,
+          "Star": 3,
+          "Type": 2,
+          "Rarity": "B",
+          "PrimaryStat": {
+            "ValueType": 0,
+            "StatType": 1,
+            "Value": 13.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 21.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 1.28
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 5.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Crit Chance Processor",
+          "Level": 12,
+          "Star": 5,
+          "Type": 3,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 9,
+            "Value": 9.5
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 559.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 2.02
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.63
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.45
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-B Crit Damage Data-Bus",
+          "Level": 9,
+          "Star": 5,
+          "Type": 5,
+          "Rarity": "B",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 11,
+            "Value": 14.5
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 243.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 1.69
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.54
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Crit Damage Multiplexer",
+          "Level": 9,
+          "Star": 5,
+          "Type": 6,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 4,
+            "Value": 15.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.44
+            },
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 796.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 3.65
+            },
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 821.0
+            }
+          ]
+        }
+      ]
+    },
+    {
       "Name": "Kit Fisto",
       "SWGoHUrl": "/u/tsitas_66/collection/187/kit-fisto/",
       "Stars": 2,
@@ -29126,59 +29318,194 @@
       ]
     },
     {
-      "Name": "Nightsister Spirit",
-      "SWGoHUrl": "/u/tsitas_66/collection/244/nightsister-spirit/",
+      "Name": "Nightsister Zombie",
+      "SWGoHUrl": "/u/tsitas_66/collection/243/nightsister-zombie/",
       "Stars": 2,
-      "Gear": 1,
+      "Gear": 6,
       "Abilities": [
         {
-          "Name": "Spectral Embrace",
-          "Level": 1,
+          "Name": "Blight Touch",
+          "Level": 5,
           "MaxLevel": 8
         },
         {
-          "Name": "Possess",
-          "Level": 1,
+          "Name": "Feed",
+          "Level": 5,
           "MaxLevel": 8
         },
         {
-          "Name": "Malevolent Spirit",
-          "Level": 1,
+          "Name": "Endless Horde",
+          "Level": 5,
           "MaxLevel": 8
         }
       ],
-      "ArmorPenetration": 0,
-      "CriticalDamage": 150,
+      "ArmorPenetration": 5,
+      "CriticalDamage": 165,
       "HealthSteal": 0,
-      "Health": 2245,
+      "Health": 5971,
       "Level": 50,
-      "Potency": 0.0,
-      "PhysicalCriticalChance": 12.88,
+      "Potency": 8.85,
+      "PhysicalCriticalChance": 28.3,
       "PhysicalAccuracy": 0,
-      "PhysicalDamage": 262,
+      "PhysicalDamage": 765,
       "Protection": 0,
-      "Speed": 92,
-      "Tenacity": 15.0
+      "Speed": 101,
+      "Tenacity": 33.0,
+      "Mods": [
+        {
+          "Name": "Mk V-B Crit Damage Transmitter",
+          "Level": 9,
+          "Star": 5,
+          "Type": 1,
+          "Rarity": "B",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 3.63
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 66.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 2.95
+            },
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 287.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-B Crit Damage Receiver",
+          "Level": 9,
+          "Star": 5,
+          "Type": 2,
+          "Rarity": "B",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 0,
+            "Value": 15.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 1.7
+            },
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 1.07
+            },
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 3.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-B Crit Chance Processor",
+          "Level": 9,
+          "Star": 5,
+          "Type": 3,
+          "Rarity": "B",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 9,
+            "Value": 7.25
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 3.66
+            },
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 4.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 2.24
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-B Crit Damage Data-Bus",
+          "Level": 9,
+          "Star": 5,
+          "Type": 5,
+          "Rarity": "B",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 10,
+            "Value": 3.63
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.7
+            },
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 1.3
+            },
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 2.16
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-B Crit Damage Multiplexer",
+          "Level": 9,
+          "Star": 5,
+          "Type": 6,
+          "Rarity": "B",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 5,
+            "Value": 15.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 649.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 33.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.61
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.61
+            }
+          ]
+        }
+      ]
     },
     {
       "Name": "Hermit Yoda",
-      "Stars": 0,
-      "Gear": 0,
-      "ArmorPenetration": 0,
-      "CriticalDamage": 0,
-      "HealthSteal": 0,
-      "Health": 0,
-      "Level": 0,
-      "Potency": 0.0,
-      "PhysicalCriticalChance": 0.0,
-      "PhysicalAccuracy": 0,
-      "PhysicalDamage": 0,
-      "Protection": 0,
-      "Speed": 0,
-      "Tenacity": 0.0
-    },
-    {
-      "Name": "Nightsister Zombie",
       "Stars": 0,
       "Gear": 0,
       "ArmorPenetration": 0,

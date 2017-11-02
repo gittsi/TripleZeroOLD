@@ -1,6 +1,6 @@
 {
   "PlayerName": "passarelli80",
-  "LastUpdated": "2017-10-31T20:02:22",
+  "LastUpdated": "2017-11-01T20:02:14",
   "Characters": [
     {
       "Name": "Commander Luke Skywalker",
@@ -42,14 +42,14 @@
       "ArmorPenetration": 151,
       "CriticalDamage": 150,
       "HealthSteal": 10,
-      "Health": 20396,
+      "Health": 20836,
       "Level": 85,
-      "Potency": 46.96,
+      "Potency": 45.0,
       "PhysicalCriticalChance": 49.94,
       "PhysicalAccuracy": 0,
-      "PhysicalDamage": 3493,
-      "Protection": 48398,
-      "Speed": 248,
+      "PhysicalDamage": 3482,
+      "Protection": 48316,
+      "Speed": 251,
       "Tenacity": 35.04,
       "Mods": [
         {
@@ -135,22 +135,22 @@
             {
               "ValueType": 0,
               "StatType": 1,
-              "Value": 10.0
+              "Value": 13.0
             },
             {
               "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.35
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.96
+              "StatType": 10,
+              "Value": 0.67
             },
             {
               "ValueType": 0,
+              "StatType": 10,
+              "Value": 314.0
+            },
+            {
+              "ValueType": 1,
               "StatType": 11,
-              "Value": 525.0
+              "Value": 1.47
             }
           ]
         },
@@ -2252,6 +2252,252 @@
       ]
     },
     {
+      "Name": "Death Trooper",
+      "SWGoHUrl": "/u/passarelli80/collection/221/death-trooper/",
+      "Stars": 7,
+      "Gear": 11,
+      "Abilities": [
+        {
+          "Name": "Track Down",
+          "Level": 8,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Death Trooper Grenade",
+          "Level": 8,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Terminate",
+          "Level": 8,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Krennic&#39;s Guard",
+          "Level": 7,
+          "MaxLevel": 8
+        }
+      ],
+      "ArmorPenetration": 30,
+      "CriticalDamage": 150,
+      "HealthSteal": 5,
+      "Health": 25970,
+      "Level": 85,
+      "Potency": 59.41,
+      "PhysicalCriticalChance": 56.89,
+      "PhysicalAccuracy": 0,
+      "PhysicalDamage": 2327,
+      "Protection": 32594,
+      "Speed": 170,
+      "Tenacity": 30.48,
+      "Mods": [
+        {
+          "Name": "Mk V-A Crit Chance Transmitter",
+          "Level": 15,
+          "Star": 5,
+          "Type": 1,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 5.88
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 8.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 1.1
+            },
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 1.48
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 9.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk IV-A Potency Receiver",
+          "Level": 15,
+          "Star": 4,
+          "Type": 2,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 0,
+            "StatType": 1,
+            "Value": 26.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 21.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 1.75
+            },
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 446.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.3
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Health Processor",
+          "Level": 15,
+          "Star": 5,
+          "Type": 3,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 9,
+            "Value": 11.75
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 382.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.4
+            },
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 5.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.55
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Potency Holo-Array",
+          "Level": 15,
+          "Star": 5,
+          "Type": 4,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 0,
+            "Value": 12.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 7.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 7.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 268.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 27.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Speed Data-Bus",
+          "Level": 12,
+          "Star": 5,
+          "Type": 5,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 11,
+            "Value": 19.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 3.34
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.87
+            },
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 1.4
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 6.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk IV-A Health Multiplexer",
+          "Level": 15,
+          "Star": 4,
+          "Type": 6,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 4.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 1.18
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.99
+            },
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 4.84
+            },
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 0.94
+            }
+          ]
+        }
+      ]
+    },
+    {
       "Name": "Emperor Palpatine",
       "SWGoHUrl": "/u/passarelli80/collection/180/emperor-palpatine/",
       "Stars": 7,
@@ -2743,252 +2989,6 @@
               "ValueType": 1,
               "StatType": 5,
               "Value": 1.75
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Name": "Death Trooper",
-      "SWGoHUrl": "/u/passarelli80/collection/221/death-trooper/",
-      "Stars": 7,
-      "Gear": 11,
-      "Abilities": [
-        {
-          "Name": "Track Down",
-          "Level": 8,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Death Trooper Grenade",
-          "Level": 8,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Terminate",
-          "Level": 8,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Krennic&#39;s Guard",
-          "Level": 7,
-          "MaxLevel": 8
-        }
-      ],
-      "ArmorPenetration": 30,
-      "CriticalDamage": 150,
-      "HealthSteal": 5,
-      "Health": 25970,
-      "Level": 85,
-      "Potency": 56.41,
-      "PhysicalCriticalChance": 56.89,
-      "PhysicalAccuracy": 0,
-      "PhysicalDamage": 2327,
-      "Protection": 32594,
-      "Speed": 170,
-      "Tenacity": 30.48,
-      "Mods": [
-        {
-          "Name": "Mk V-A Crit Chance Transmitter",
-          "Level": 15,
-          "Star": 5,
-          "Type": 1,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 5.88
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 1,
-              "Value": 8.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 10,
-              "Value": 1.1
-            },
-            {
-              "ValueType": 1,
-              "StatType": 5,
-              "Value": 1.48
-            },
-            {
-              "ValueType": 0,
-              "StatType": 9,
-              "Value": 9.0
-            }
-          ]
-        },
-        {
-          "Name": "Mk IV-A Potency Receiver",
-          "Level": 15,
-          "Star": 4,
-          "Type": 2,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 0,
-            "StatType": 1,
-            "Value": 26.0
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 8,
-              "Value": 21.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 11,
-              "Value": 1.75
-            },
-            {
-              "ValueType": 0,
-              "StatType": 11,
-              "Value": 446.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.3
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-A Health Processor",
-          "Level": 15,
-          "Star": 5,
-          "Type": 3,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 9,
-            "Value": 11.75
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 10,
-              "Value": 382.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.4
-            },
-            {
-              "ValueType": 0,
-              "StatType": 1,
-              "Value": 5.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.55
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-A Potency Holo-Array",
-          "Level": 15,
-          "Star": 5,
-          "Type": 4,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 0,
-            "Value": 12.0
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 1,
-              "Value": 7.0
-            },
-            {
-              "ValueType": 0,
-              "StatType": 9,
-              "Value": 7.0
-            },
-            {
-              "ValueType": 0,
-              "StatType": 10,
-              "Value": 268.0
-            },
-            {
-              "ValueType": 0,
-              "StatType": 8,
-              "Value": 27.0
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-A Speed Data-Bus",
-          "Level": 12,
-          "Star": 5,
-          "Type": 5,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 11,
-            "Value": 19.0
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 0,
-              "Value": 3.34
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.87
-            },
-            {
-              "ValueType": 1,
-              "StatType": 9,
-              "Value": 1.4
-            },
-            {
-              "ValueType": 0,
-              "StatType": 9,
-              "Value": 6.0
-            }
-          ]
-        },
-        {
-          "Name": "Mk IV-A Health Multiplexer",
-          "Level": 15,
-          "Star": 4,
-          "Type": 6,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 4.0
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 11,
-              "Value": 1.18
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.99
-            },
-            {
-              "ValueType": 1,
-              "StatType": 0,
-              "Value": 4.84
-            },
-            {
-              "ValueType": 1,
-              "StatType": 9,
-              "Value": 0.94
             }
           ]
         }
@@ -3516,18 +3516,18 @@
       "ArmorPenetration": 32,
       "CriticalDamage": 150,
       "HealthSteal": 5,
-      "Health": 21339,
+      "Health": 20516,
       "Level": 85,
-      "Potency": 77.71,
-      "PhysicalCriticalChance": 33.92,
+      "Potency": 58.43,
+      "PhysicalCriticalChance": 36.07,
       "PhysicalAccuracy": 0,
-      "PhysicalDamage": 2221,
-      "Protection": 32232,
-      "Speed": 219,
-      "Tenacity": 35.37,
+      "PhysicalDamage": 2139,
+      "Protection": 33307,
+      "Speed": 237,
+      "Tenacity": 34.0,
       "Mods": [
         {
-          "Name": "Mk V-A Potency Transmitter",
+          "Name": "Mk V-A Speed Transmitter",
           "Level": 15,
           "Star": 5,
           "Type": 1,
@@ -3539,29 +3539,29 @@
           },
           "SecondaryStat": [
             {
-              "ValueType": 1,
-              "StatType": 10,
-              "Value": 0.58
-            },
-            {
-              "ValueType": 0,
-              "StatType": 8,
-              "Value": 64.0
-            },
-            {
               "ValueType": 0,
               "StatType": 1,
-              "Value": 10.0
+              "Value": 8.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 7.0
             },
             {
               "ValueType": 0,
               "StatType": 11,
-              "Value": 591.0
+              "Value": 747.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.42
             }
           ]
         },
         {
-          "Name": "Mk V-A Potency Receiver",
+          "Name": "Mk V-A Speed Receiver",
           "Level": 15,
           "Star": 5,
           "Type": 2,
@@ -3573,29 +3573,29 @@
           },
           "SecondaryStat": [
             {
-              "ValueType": 0,
-              "StatType": 8,
-              "Value": 26.0
-            },
-            {
               "ValueType": 1,
-              "StatType": 10,
-              "Value": 0.87
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.36
-            },
-            {
-              "ValueType": 0,
               "StatType": 9,
-              "Value": 9.0
+              "Value": 2.72
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.4
+            },
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 2.15
+            },
+            {
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 1.83
             }
           ]
         },
         {
-          "Name": "Mk V-A Potency Processor",
+          "Name": "Mk V-A Speed Processor",
           "Level": 15,
           "Star": 5,
           "Type": 3,
@@ -3613,18 +3613,18 @@
             },
             {
               "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.35
+            },
+            {
+              "ValueType": 1,
               "StatType": 4,
-              "Value": 1.3
+              "Value": 1.96
             },
             {
-              "ValueType": 1,
-              "StatType": 5,
-              "Value": 1.37
-            },
-            {
-              "ValueType": 1,
-              "StatType": 10,
-              "Value": 1.06
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 525.0
             }
           ]
         },
@@ -3697,7 +3697,7 @@
           ]
         },
         {
-          "Name": "Mk V-A Potency Multiplexer",
+          "Name": "Mk V-A Speed Multiplexer",
           "Level": 15,
           "Star": 5,
           "Type": 6,
@@ -3711,22 +3711,263 @@
             {
               "ValueType": 0,
               "StatType": 1,
-              "Value": 5.0
+              "Value": 10.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 1.0
             },
             {
               "ValueType": 0,
               "StatType": 9,
-              "Value": 17.0
+              "Value": 5.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 1.28
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "TIE Fighter Pilot",
+      "SWGoHUrl": "/u/passarelli80/collection/124/tie-fighter-pilot/",
+      "Stars": 7,
+      "Gear": 11,
+      "Abilities": [
+        {
+          "Name": "Targeting Computer",
+          "Level": 8,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "TIE Strike",
+          "Level": 8,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Evasive Maneuvers",
+          "Level": 8,
+          "MaxLevel": 8
+        }
+      ],
+      "ArmorPenetration": 128,
+      "CriticalDamage": 150,
+      "HealthSteal": 10,
+      "Health": 13339,
+      "Level": 85,
+      "Potency": 74.3,
+      "PhysicalCriticalChance": 35.82,
+      "PhysicalAccuracy": 0,
+      "PhysicalDamage": 2918,
+      "Protection": 23595,
+      "Speed": 199,
+      "Tenacity": 34.06,
+      "Mods": [
+        {
+          "Name": "Mk V-A Health Transmitter",
+          "Level": 15,
+          "Star": 5,
+          "Type": 1,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 5.88
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 379.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 3.63
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 8.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 4.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Potency Receiver",
+          "Level": 15,
+          "Star": 5,
+          "Type": 2,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 11,
+            "Value": 23.5
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.46
+            },
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 527.0
             },
             {
               "ValueType": 0,
               "StatType": 10,
-              "Value": 321.0
+              "Value": 244.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.61
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Potency Processor",
+          "Level": 15,
+          "Star": 5,
+          "Type": 3,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 9,
+            "Value": 11.75
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 10.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.3
+            },
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 1.37
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 1.06
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Potency Holo-Array",
+          "Level": 15,
+          "Star": 5,
+          "Type": 4,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 11,
+            "Value": 23.5
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 2.9
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 14.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 3.84
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.98
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Defense Data-Bus",
+          "Level": 15,
+          "Star": 5,
+          "Type": 5,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 11,
+            "Value": 23.5
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 9.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 1.35
+            },
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 1.69
             },
             {
               "ValueType": 0,
               "StatType": 8,
-              "Value": 25.0
+              "Value": 38.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Potency Multiplexer",
+          "Level": 15,
+          "Star": 5,
+          "Type": 6,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 10,
+            "Value": 5.88
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 6.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 34.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 354.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 6.0
             }
           ]
         }
@@ -3974,42 +4215,42 @@
       ]
     },
     {
-      "Name": "TIE Fighter Pilot",
-      "SWGoHUrl": "/u/passarelli80/collection/124/tie-fighter-pilot/",
+      "Name": "First Order TIE Pilot",
+      "SWGoHUrl": "/u/passarelli80/collection/199/first-order-tie-pilot/",
       "Stars": 7,
       "Gear": 11,
       "Abilities": [
         {
-          "Name": "Targeting Computer",
+          "Name": "Double Tap",
           "Level": 8,
           "MaxLevel": 8
         },
         {
-          "Name": "TIE Strike",
+          "Name": "Gun Down",
           "Level": 8,
           "MaxLevel": 8
         },
         {
-          "Name": "Evasive Maneuvers",
-          "Level": 8,
+          "Name": "Keen Eye",
+          "Level": 7,
           "MaxLevel": 8
         }
       ],
-      "ArmorPenetration": 128,
+      "ArmorPenetration": 51,
       "CriticalDamage": 150,
-      "HealthSteal": 10,
-      "Health": 13489,
+      "HealthSteal": 0,
+      "Health": 14039,
       "Level": 85,
-      "Potency": 61.0,
-      "PhysicalCriticalChance": 37.31,
+      "Potency": 22.91,
+      "PhysicalCriticalChance": 52.25,
       "PhysicalAccuracy": 0,
-      "PhysicalDamage": 2918,
-      "Protection": 24127,
-      "Speed": 192,
-      "Tenacity": 32.69,
+      "PhysicalDamage": 3145,
+      "Protection": 24718,
+      "Speed": 138,
+      "Tenacity": 24.96,
       "Mods": [
         {
-          "Name": "Mk V-A Health Transmitter",
+          "Name": "Mk V-A Speed Transmitter",
           "Level": 15,
           "Star": 5,
           "Type": 1,
@@ -4021,24 +4262,24 @@
           },
           "SecondaryStat": [
             {
-              "ValueType": 0,
-              "StatType": 10,
-              "Value": 379.0
+              "ValueType": 1,
+              "StatType": 9,
+              "Value": 2.95
             },
             {
               "ValueType": 1,
-              "StatType": 9,
-              "Value": 3.63
+              "StatType": 4,
+              "Value": 2.23
             },
             {
-              "ValueType": 0,
-              "StatType": 9,
-              "Value": 8.0
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.95
             },
             {
-              "ValueType": 0,
-              "StatType": 1,
-              "Value": 4.0
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 1.43
             }
           ]
         },
@@ -4050,34 +4291,34 @@
           "Rarity": "A",
           "PrimaryStat": {
             "ValueType": 1,
-            "StatType": 11,
-            "Value": 23.5
+            "StatType": 0,
+            "Value": 24.0
           },
           "SecondaryStat": [
             {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.46
-            },
-            {
               "ValueType": 0,
               "StatType": 11,
-              "Value": 527.0
-            },
-            {
-              "ValueType": 0,
-              "StatType": 10,
-              "Value": 244.0
+              "Value": 1042.0
             },
             {
               "ValueType": 1,
-              "StatType": 10,
-              "Value": 0.61
+              "StatType": 11,
+              "Value": 2.73
+            },
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 69.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 7.0
             }
           ]
         },
         {
-          "Name": "Mk V-A Speed Processor",
+          "Name": "Mk V-A Health Processor",
           "Level": 15,
           "Star": 5,
           "Type": 3,
@@ -4089,63 +4330,63 @@
           },
           "SecondaryStat": [
             {
-              "ValueType": 0,
-              "StatType": 10,
-              "Value": 271.0
-            },
-            {
-              "ValueType": 0,
+              "ValueType": 1,
               "StatType": 11,
-              "Value": 532.0
-            },
-            {
-              "ValueType": 0,
-              "StatType": 1,
-              "Value": 3.0
+              "Value": 6.76
             },
             {
               "ValueType": 1,
-              "StatType": 0,
-              "Value": 1.49
+              "StatType": 4,
+              "Value": 1.31
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.48
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 7.0
             }
           ]
         },
         {
-          "Name": "Mk V-A Potency Holo-Array",
+          "Name": "Mk V-A Crit Chance Holo-Array",
           "Level": 15,
           "Star": 5,
           "Type": 4,
           "Rarity": "A",
           "PrimaryStat": {
             "ValueType": 1,
-            "StatType": 11,
-            "Value": 23.5
+            "StatType": 8,
+            "Value": 5.88
           },
           "SecondaryStat": [
             {
               "ValueType": 1,
               "StatType": 0,
-              "Value": 2.9
+              "Value": 5.83
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.37
+            },
+            {
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 4.28
             },
             {
               "ValueType": 0,
-              "StatType": 9,
-              "Value": 14.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 9,
-              "Value": 3.84
-            },
-            {
-              "ValueType": 1,
-              "StatType": 10,
-              "Value": 0.98
+              "StatType": 8,
+              "Value": 39.0
             }
           ]
         },
         {
-          "Name": "Mk V-A Defense Data-Bus",
+          "Name": "Mk V-A Potency Data-Bus",
           "Level": 15,
           "Star": 5,
           "Type": 5,
@@ -4158,57 +4399,57 @@
           "SecondaryStat": [
             {
               "ValueType": 0,
-              "StatType": 1,
-              "Value": 9.0
+              "StatType": 9,
+              "Value": 12.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.92
             },
             {
               "ValueType": 1,
               "StatType": 9,
-              "Value": 1.35
-            },
-            {
-              "ValueType": 1,
-              "StatType": 5,
-              "Value": 1.69
+              "Value": 0.87
             },
             {
               "ValueType": 0,
-              "StatType": 8,
-              "Value": 38.0
+              "StatType": 11,
+              "Value": 803.0
             }
           ]
         },
         {
-          "Name": "Mk V-A Potency Multiplexer",
+          "Name": "Mk V-A Health Multiplexer",
           "Level": 15,
           "Star": 5,
           "Type": 6,
           "Rarity": "A",
           "PrimaryStat": {
             "ValueType": 1,
-            "StatType": 10,
+            "StatType": 8,
             "Value": 5.88
           },
           "SecondaryStat": [
             {
               "ValueType": 0,
               "StatType": 1,
-              "Value": 6.0
+              "Value": 10.0
             },
             {
               "ValueType": 0,
-              "StatType": 8,
-              "Value": 34.0
+              "StatType": 11,
+              "Value": 1061.0
             },
             {
-              "ValueType": 0,
-              "StatType": 10,
-              "Value": 354.0
+              "ValueType": 1,
+              "StatType": 11,
+              "Value": 3.58
             },
             {
-              "ValueType": 0,
-              "StatType": 9,
-              "Value": 6.0
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 1.53
             }
           ]
         }
@@ -4697,7 +4938,7 @@
       ]
     },
     {
-      "Name": "Chirrut ÃŽmwe",
+      "Name": "Chirrut Γmwe",
       "SWGoHUrl": "/u/passarelli80/collection/215/chirrut-imwe/",
       "Stars": 7,
       "Gear": 11,
@@ -4740,247 +4981,6 @@
       "Protection": 18650,
       "Speed": 147,
       "Tenacity": 25.0
-    },
-    {
-      "Name": "First Order TIE Pilot",
-      "SWGoHUrl": "/u/passarelli80/collection/199/first-order-tie-pilot/",
-      "Stars": 7,
-      "Gear": 11,
-      "Abilities": [
-        {
-          "Name": "Double Tap",
-          "Level": 8,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Gun Down",
-          "Level": 7,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Keen Eye",
-          "Level": 7,
-          "MaxLevel": 8
-        }
-      ],
-      "ArmorPenetration": 51,
-      "CriticalDamage": 150,
-      "HealthSteal": 0,
-      "Health": 14039,
-      "Level": 85,
-      "Potency": 22.91,
-      "PhysicalCriticalChance": 50.58,
-      "PhysicalAccuracy": 0,
-      "PhysicalDamage": 3097,
-      "Protection": 24718,
-      "Speed": 138,
-      "Tenacity": 24.96,
-      "Mods": [
-        {
-          "Name": "Mk V-A Speed Transmitter",
-          "Level": 15,
-          "Star": 5,
-          "Type": 1,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 5.88
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 9,
-              "Value": 2.95
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 2.23
-            },
-            {
-              "ValueType": 1,
-              "StatType": 10,
-              "Value": 0.95
-            },
-            {
-              "ValueType": 1,
-              "StatType": 5,
-              "Value": 1.43
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-A Potency Receiver",
-          "Level": 15,
-          "Star": 5,
-          "Type": 2,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 0,
-            "Value": 24.0
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 11,
-              "Value": 1042.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 11,
-              "Value": 2.73
-            },
-            {
-              "ValueType": 0,
-              "StatType": 8,
-              "Value": 69.0
-            },
-            {
-              "ValueType": 0,
-              "StatType": 9,
-              "Value": 7.0
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-A Health Processor",
-          "Level": 15,
-          "Star": 5,
-          "Type": 3,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 9,
-            "Value": 11.75
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 11,
-              "Value": 6.76
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.31
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.48
-            },
-            {
-              "ValueType": 0,
-              "StatType": 9,
-              "Value": 7.0
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-A Crit Chance Holo-Array",
-          "Level": 15,
-          "Star": 5,
-          "Type": 4,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 5.88
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 1,
-              "StatType": 0,
-              "Value": 5.83
-            },
-            {
-              "ValueType": 1,
-              "StatType": 4,
-              "Value": 1.37
-            },
-            {
-              "ValueType": 1,
-              "StatType": 11,
-              "Value": 4.28
-            },
-            {
-              "ValueType": 0,
-              "StatType": 8,
-              "Value": 39.0
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-A Potency Data-Bus",
-          "Level": 15,
-          "Star": 5,
-          "Type": 5,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 11,
-            "Value": 23.5
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 9,
-              "Value": 12.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 10,
-              "Value": 0.92
-            },
-            {
-              "ValueType": 1,
-              "StatType": 9,
-              "Value": 0.87
-            },
-            {
-              "ValueType": 0,
-              "StatType": 11,
-              "Value": 803.0
-            }
-          ]
-        },
-        {
-          "Name": "Mk V-A Health Multiplexer",
-          "Level": 15,
-          "Star": 5,
-          "Type": 6,
-          "Rarity": "A",
-          "PrimaryStat": {
-            "ValueType": 1,
-            "StatType": 8,
-            "Value": 5.88
-          },
-          "SecondaryStat": [
-            {
-              "ValueType": 0,
-              "StatType": 1,
-              "Value": 10.0
-            },
-            {
-              "ValueType": 0,
-              "StatType": 11,
-              "Value": 1061.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 11,
-              "Value": 3.58
-            },
-            {
-              "ValueType": 1,
-              "StatType": 5,
-              "Value": 1.53
-            }
-          ]
-        }
-      ]
     },
     {
       "Name": "CT-7567 \"Rex\"",
@@ -6744,14 +6744,14 @@
       "ArmorPenetration": 20,
       "CriticalDamage": 0,
       "HealthSteal": 10,
-      "Health": 17112,
+      "Health": 17433,
       "Level": 85,
       "Potency": 54.88,
-      "PhysicalCriticalChance": 33.21,
+      "PhysicalCriticalChance": 31.12,
       "PhysicalAccuracy": 0,
-      "PhysicalDamage": 1907,
-      "Protection": 11059,
-      "Speed": 182,
+      "PhysicalDamage": 1896,
+      "Protection": 10417,
+      "Speed": 187,
       "Tenacity": 23.06,
       "Mods": [
         {
@@ -6938,23 +6938,23 @@
           "SecondaryStat": [
             {
               "ValueType": 0,
-              "StatType": 8,
-              "Value": 30.0
-            },
-            {
-              "ValueType": 1,
-              "StatType": 8,
-              "Value": 0.41
+              "StatType": 1,
+              "Value": 5.0
             },
             {
               "ValueType": 0,
-              "StatType": 11,
-              "Value": 642.0
+              "StatType": 9,
+              "Value": 17.0
             },
             {
-              "ValueType": 1,
-              "StatType": 0,
-              "Value": 2.09
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 321.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 25.0
             }
           ]
         }
@@ -9001,6 +9001,247 @@
       ]
     },
     {
+      "Name": "Shoretrooper",
+      "SWGoHUrl": "/u/passarelli80/collection/212/shoretrooper/",
+      "Stars": 5,
+      "Gear": 10,
+      "Abilities": [
+        {
+          "Name": "Target Weapons",
+          "Level": 7,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Regroup",
+          "Level": 8,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Stand Guard",
+          "Level": 8,
+          "MaxLevel": 8
+        }
+      ],
+      "ArmorPenetration": 30,
+      "CriticalDamage": 150,
+      "HealthSteal": 10,
+      "Health": 24592,
+      "Level": 85,
+      "Potency": 84.12,
+      "PhysicalCriticalChance": 22.75,
+      "PhysicalAccuracy": 0,
+      "PhysicalDamage": 2018,
+      "Protection": 26006,
+      "Speed": 172,
+      "Tenacity": 27.21,
+      "Mods": [
+        {
+          "Name": "Mk V-A Potency Transmitter",
+          "Level": 15,
+          "Star": 5,
+          "Type": 1,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 8,
+            "Value": 5.88
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.58
+            },
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 64.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 10.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 591.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Potency Receiver",
+          "Level": 15,
+          "Star": 5,
+          "Type": 2,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 0,
+            "StatType": 1,
+            "Value": 30.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 26.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 10,
+              "Value": 0.87
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.36
+            },
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 9.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Speed Processor",
+          "Level": 15,
+          "Star": 5,
+          "Type": 3,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 9,
+            "Value": 11.75
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 271.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 532.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 3.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 1.49
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Speed Holo-Array",
+          "Level": 15,
+          "Star": 5,
+          "Type": 4,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 9,
+            "Value": 11.75
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 9,
+              "Value": 23.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 349.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 9.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 5,
+              "Value": 2.21
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Speed Data-Bus",
+          "Level": 15,
+          "Star": 5,
+          "Type": 5,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 10,
+            "Value": 5.88
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 1,
+              "Value": 9.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 4,
+              "Value": 1.76
+            },
+            {
+              "ValueType": 0,
+              "StatType": 10,
+              "Value": 255.0
+            },
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 423.0
+            }
+          ]
+        },
+        {
+          "Name": "Mk V-A Potency Multiplexer",
+          "Level": 15,
+          "Star": 5,
+          "Type": 6,
+          "Rarity": "A",
+          "PrimaryStat": {
+            "ValueType": 1,
+            "StatType": 4,
+            "Value": 24.0
+          },
+          "SecondaryStat": [
+            {
+              "ValueType": 0,
+              "StatType": 8,
+              "Value": 30.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 8,
+              "Value": 0.41
+            },
+            {
+              "ValueType": 0,
+              "StatType": 11,
+              "Value": 642.0
+            },
+            {
+              "ValueType": 1,
+              "StatType": 0,
+              "Value": 2.09
+            }
+          ]
+        }
+      ]
+    },
+    {
       "Name": "Qui-Gon Jinn",
       "SWGoHUrl": "/u/passarelli80/collection/44/qui-gon-jinn/",
       "Stars": 7,
@@ -9824,41 +10065,6 @@
       "Tenacity": 29.0
     },
     {
-      "Name": "Shoretrooper",
-      "SWGoHUrl": "/u/passarelli80/collection/212/shoretrooper/",
-      "Stars": 5,
-      "Gear": 10,
-      "Abilities": [
-        {
-          "Name": "Target Weapons",
-          "Level": 7,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Regroup",
-          "Level": 8,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Stand Guard",
-          "Level": 7,
-          "MaxLevel": 8
-        }
-      ],
-      "ArmorPenetration": 30,
-      "CriticalDamage": 150,
-      "HealthSteal": 10,
-      "Health": 22098,
-      "Level": 85,
-      "Potency": 47.0,
-      "PhysicalCriticalChance": 19.17,
-      "PhysicalAccuracy": 0,
-      "PhysicalDamage": 1786,
-      "Protection": 23818,
-      "Speed": 111,
-      "Tenacity": 25.0
-    },
-    {
       "Name": "Hoth Rebel Scout",
       "SWGoHUrl": "/u/passarelli80/collection/157/hoth-rebel-scout/",
       "Stars": 7,
@@ -10658,6 +10864,46 @@
       "Tenacity": 27.0
     },
     {
+      "Name": "Chief Nebit",
+      "SWGoHUrl": "/u/passarelli80/collection/93/chief-nebit/",
+      "Stars": 7,
+      "Gear": 7,
+      "Abilities": [
+        {
+          "Name": "Sheltering Shot",
+          "Level": 4,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Distracting Negotiations",
+          "Level": 6,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Desert Ambush",
+          "Level": 4,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Raiding Parties",
+          "Level": 4,
+          "MaxLevel": 7
+        }
+      ],
+      "ArmorPenetration": 5,
+      "CriticalDamage": 150,
+      "HealthSteal": 5,
+      "Health": 15486,
+      "Level": 60,
+      "Potency": 3.0,
+      "PhysicalCriticalChance": 19.42,
+      "PhysicalAccuracy": 0,
+      "PhysicalDamage": 1078,
+      "Protection": 4028,
+      "Speed": 109,
+      "Tenacity": 24.0
+    },
+    {
       "Name": "Kylo Ren",
       "SWGoHUrl": "/u/passarelli80/collection/141/kylo-ren/",
       "Stars": 7,
@@ -11185,44 +11431,44 @@
       ]
     },
     {
-      "Name": "Chief Nebit",
-      "SWGoHUrl": "/u/passarelli80/collection/93/chief-nebit/",
+      "Name": "Jawa Scavenger",
+      "SWGoHUrl": "/u/passarelli80/collection/209/jawa-scavenger/",
       "Stars": 7,
       "Gear": 7,
       "Abilities": [
         {
-          "Name": "Sheltering Shot",
+          "Name": "Dismantle",
           "Level": 4,
           "MaxLevel": 8
         },
         {
-          "Name": "Distracting Negotiations",
-          "Level": 5,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Desert Ambush",
+          "Name": "Scrap Bomb",
           "Level": 4,
           "MaxLevel": 8
         },
         {
-          "Name": "Raiding Parties",
+          "Name": "Line in the Sand",
+          "Level": 4,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Salvaged Equipment",
           "Level": 4,
           "MaxLevel": 7
         }
       ],
-      "ArmorPenetration": 5,
+      "ArmorPenetration": 15,
       "CriticalDamage": 150,
-      "HealthSteal": 5,
-      "Health": 15486,
-      "Level": 60,
-      "Potency": 3.0,
-      "PhysicalCriticalChance": 19.42,
+      "HealthSteal": 20,
+      "Health": 8439,
+      "Level": 64,
+      "Potency": 9.0,
+      "PhysicalCriticalChance": 21.92,
       "PhysicalAccuracy": 0,
-      "PhysicalDamage": 1078,
-      "Protection": 4028,
-      "Speed": 109,
-      "Tenacity": 24.0
+      "PhysicalDamage": 1269,
+      "Protection": 1743,
+      "Speed": 119,
+      "Tenacity": 21.0
     },
     {
       "Name": "Grand Master Yoda",
@@ -11420,46 +11666,6 @@
           ]
         }
       ]
-    },
-    {
-      "Name": "Jawa Scavenger",
-      "SWGoHUrl": "/u/passarelli80/collection/209/jawa-scavenger/",
-      "Stars": 7,
-      "Gear": 7,
-      "Abilities": [
-        {
-          "Name": "Dismantle",
-          "Level": 4,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Scrap Bomb",
-          "Level": 4,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Line in the Sand",
-          "Level": 4,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Salvaged Equipment",
-          "Level": 4,
-          "MaxLevel": 7
-        }
-      ],
-      "ArmorPenetration": 5,
-      "CriticalDamage": 150,
-      "HealthSteal": 20,
-      "Health": 8061,
-      "Level": 60,
-      "Potency": 9.0,
-      "PhysicalCriticalChance": 20.92,
-      "PhysicalAccuracy": 0,
-      "PhysicalDamage": 1142,
-      "Protection": 1743,
-      "Speed": 119,
-      "Tenacity": 20.0
     },
     {
       "Name": "Baze Malbus",
@@ -12104,7 +12310,7 @@
       "Abilities": [
         {
           "Name": "Miniaturized Detonator",
-          "Level": 3,
+          "Level": 5,
           "MaxLevel": 8
         },
         {
@@ -12367,6 +12573,46 @@
           ]
         }
       ]
+    },
+    {
+      "Name": "Dathcha",
+      "SWGoHUrl": "/u/passarelli80/collection/142/dathcha/",
+      "Stars": 5,
+      "Gear": 7,
+      "Abilities": [
+        {
+          "Name": "Hit and Run",
+          "Level": 5,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Scout Instincts",
+          "Level": 6,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Decommission",
+          "Level": 3,
+          "MaxLevel": 8
+        },
+        {
+          "Name": "Droid Hunter",
+          "Level": 5,
+          "MaxLevel": 7
+        }
+      ],
+      "ArmorPenetration": 21,
+      "CriticalDamage": 150,
+      "HealthSteal": 15,
+      "Health": 7348,
+      "Level": 63,
+      "Potency": 4.0,
+      "PhysicalCriticalChance": 23.75,
+      "PhysicalAccuracy": 0,
+      "PhysicalDamage": 1183,
+      "Protection": 4269,
+      "Speed": 125,
+      "Tenacity": 20.0
     },
     {
       "Name": "Chief Chirpa",
@@ -12777,46 +13023,6 @@
       "PhysicalDamage": 923,
       "Protection": 0,
       "Speed": 87,
-      "Tenacity": 19.0
-    },
-    {
-      "Name": "Dathcha",
-      "SWGoHUrl": "/u/passarelli80/collection/142/dathcha/",
-      "Stars": 5,
-      "Gear": 7,
-      "Abilities": [
-        {
-          "Name": "Hit and Run",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Scout Instincts",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Decommission",
-          "Level": 3,
-          "MaxLevel": 8
-        },
-        {
-          "Name": "Droid Hunter",
-          "Level": 3,
-          "MaxLevel": 7
-        }
-      ],
-      "ArmorPenetration": 21,
-      "CriticalDamage": 150,
-      "HealthSteal": 15,
-      "Health": 6970,
-      "Level": 63,
-      "Potency": 2.0,
-      "PhysicalCriticalChance": 23.42,
-      "PhysicalAccuracy": 0,
-      "PhysicalDamage": 1136,
-      "Protection": 1830,
-      "Speed": 125,
       "Tenacity": 19.0
     },
     {
