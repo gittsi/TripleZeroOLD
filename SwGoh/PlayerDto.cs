@@ -24,6 +24,7 @@ namespace SwGoh
         }
 
         public string PlayerName { get; set; }
+        public string PlayerNameInGame { get; set; }
         public DateTime LastSwGohUpdated { get; set; }
         public Nullable<DateTime> LastClassUpdated { get; set; }
         public int GPcharacters { get; set; }
@@ -296,15 +297,29 @@ namespace SwGoh
             Position = index + strtosearch.Length;
             if (index != -1)
             {
+                string reststrTosearchStart = "href=\"\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "</a>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    string value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    PlayerNameInGame = value;
+                }
+
                 strtosearch = "Galactic Power (Characters)";
                 index = html.IndexOf(strtosearch, Position);
                 Position = index + strtosearch.Length;
                 if (index!=-1)
                 {
-                    string reststrTosearchStart = "pull-right\">";
-                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
-                    string reststrTosearchEnd = "</strong>";
-                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    reststrTosearchStart = "pull-right\">";
+                    restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    reststrTosearchEnd = "</strong>";
+                    restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                     if (restindexStart != -1 && restindexEnd != -1)
                     {
                         int start = restindexStart + reststrTosearchStart.Length;
@@ -323,10 +338,10 @@ namespace SwGoh
                 Position = index + strtosearch.Length;
                 if (index != -1)
                 {
-                    string reststrTosearchStart = "pull-right\">";
-                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
-                    string reststrTosearchEnd = "</strong>";
-                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    reststrTosearchStart = "pull-right\">";
+                    restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    reststrTosearchEnd = "</strong>";
+                    restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                     if (restindexStart != -1 && restindexEnd != -1)
                     {
                         int start = restindexStart + reststrTosearchStart.Length;

@@ -25,7 +25,7 @@ namespace SwGoh
 
             ExportMethodEnum mExportMethod  = ExportMethodEnum.Database;
 
-            string pname = "501st";
+            string pname = "41st";
             Command command = Command.UpdateGuildWithNoChars;
 
             if (args.Length > 1)
