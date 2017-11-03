@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
-using TripleZero.Repository.SWGoHRepository;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Configuration;
 using TripleZero.Repository.Dto;
@@ -26,7 +25,7 @@ namespace TripleZero.Modules
         [Summary("Get mods sorted with speed secondary of a given player.\nUsage : ***mods -speed {playerUserName} {rows(optional)}***")]
         public async Task GetSpeedMods(string playerUserName, int rows = 20)
         {
-            var res = IResolver.Current.SWGoHRepository.GetPlayer(playerUserName).Result;
+            var res = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
                               from Mod in Character.Mods.Where(p => p.SecondaryStat != null)

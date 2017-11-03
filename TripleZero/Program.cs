@@ -26,7 +26,8 @@ namespace TripleZero
     class Program
     {
         static Autofac.IContainer autoFacContainer = null;
-        static ApplicationSettings applicationSettings = null;        
+        static ApplicationSettings applicationSettings = null;
+        static MongoDBSettings mongoDBSettings = null;
 
         private DiscordSocketClient client=null;        
         private IServiceProvider services=null;
@@ -41,7 +42,8 @@ namespace TripleZero
             autoFacContainer = AutofacConfig.ConfigureContainer();
             using (var scope = autoFacContainer.BeginLifetimeScope())
             {
-                applicationSettings = scope.Resolve<ApplicationSettings>();                
+                applicationSettings = scope.Resolve<ApplicationSettings>();
+                mongoDBSettings = scope.Resolve<MongoDBSettings>();
                 commands = scope.Resolve<CommandService>();                
                 client = scope.Resolve<DiscordSocketClient>();                
                 scope.Resolve<IMappingConfiguration>();
@@ -68,7 +70,8 @@ namespace TripleZero
             //client.MessageReceived += MessageReceived;
 
             await Task.Delay(3000);
-            await TestPlayer("tsitas_66");
+            await TestGuildPlayers("41st");
+            //await TestPlayerReport("tsitas_66");
             //await TestGuildModule("41s", "gk");
             //await TestCharacterModule("tsitas_66", "cls");
 
@@ -78,7 +81,14 @@ namespace TripleZero
 
         #region "tests"
 
-        private async Task TestPlayer(string username)
+
+        private async Task TestGuildPlayers(string guildAlias)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format("$guildPlayers {0}", guildAlias));
+        }
+        private async Task TestPlayerReport(string username)
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 

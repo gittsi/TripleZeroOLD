@@ -8,6 +8,8 @@ namespace TripleZero.Configuration
     {
         public GeneralSettings GeneralSettings { get; set; }
         public DiscordSettings DiscordSettings { get; set; }
+
+        public MongoDBSettings MongoDBSettings { get; set; }
     }
 
     public class GeneralSettings
@@ -21,5 +23,10 @@ namespace TripleZero.Configuration
     {
         public string Token { get; set; }
         public string Prefix { get; set; }
+    }
+
+    public class MongoDBSettings
+    {
+        public string ApiKey { get; set; }
     }
 }

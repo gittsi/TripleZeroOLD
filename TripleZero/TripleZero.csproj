@@ -10,6 +10,9 @@
     <Compile Remove="Configuration\CharacterSettingsModel.cs" />
     <Compile Remove="Configuration\GuildSettingsModel.cs" />
     <Compile Remove="Configuration\GuildsSettings.cs" />
+    <Compile Remove="Configuration\SWGoH\CharacterSettings.cs" />
+    <Compile Remove="Configuration\SWGoH\CharacterSettingsModel.cs" />
+    <Compile Remove="Configuration\SWGoH\GuildSettingsModel.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
     <Compile Remove="Model\Character.cs" />
     <Compile Remove="Model\CharacterStats.cs" />
@@ -19,6 +22,11 @@
     <Compile Remove="Model\SwGohPlayer.cs" />
     <Compile Remove="Repository\Dto\CharacterDto.cs" />
     <Compile Remove="Repository\Dto\PlayerDto.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Configuration\characters.json" />
+    <None Remove="Configuration\guilds.json" />
   </ItemGroup>
 
   <ItemGroup>

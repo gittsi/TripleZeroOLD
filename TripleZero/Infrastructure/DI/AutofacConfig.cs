@@ -7,7 +7,7 @@ using System.Text;
 using TripleZero._Mapping;
 using TripleZero.Configuration;
 using TripleZero.Modules;
-using TripleZero.Repository.SWGoHRepository;
+using TripleZero.Repository;
 
 namespace TripleZero.Infrastructure.DI
 {
@@ -21,8 +21,9 @@ namespace TripleZero.Infrastructure.DI
 
             builder.RegisterType<MappingConfiguration>().As<IMappingConfiguration>().SingleInstance();
             builder.RegisterType<ApplicationSettings>().SingleInstance();
-            builder.RegisterType<GuildSettings>().SingleInstance();
-            builder.RegisterType<CharacterSettings>().SingleInstance();
+            builder.RegisterType<MongoDBSettings>().SingleInstance();
+            builder.RegisterType<GuildsConfig>().SingleInstance();
+            //builder.RegisterType<CharacterSettings>().SingleInstance();
             builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();
 
             //modules
@@ -38,6 +39,7 @@ namespace TripleZero.Infrastructure.DI
 
             //repositories
             builder.RegisterType<SWGoHRepository>().As<ISWGoHRepository>().InstancePerDependency();
+            builder.RegisterType<MongoDBRepository>().As<IMongoDBRepository>().InstancePerDependency();
 
             return builder.Build();
         }
