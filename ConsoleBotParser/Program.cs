@@ -25,8 +25,8 @@ namespace SwGoh
 
             ExportMethodEnum mExportMethod  = ExportMethodEnum.Database;
 
-            string pname = "501st";
-            Command command = Command.UpdateGuildWithNoChars;
+            string pname = "tsitas_66";
+            Command command = Command.UpdatePlayer;
 
             if (args.Length > 1)
             {
@@ -45,15 +45,13 @@ namespace SwGoh
                         SwGoh.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true);
                         if (ret == 1) player.Export(mExportMethod);
-                        Environment.Exit(0);
                         break;
                     }
                 case Command.UpdateGuild:
                     {
                         SwGoh.GuildDto guild = new GuildDto(pname);
                         guild.ParseSwGoh();
-                        if (guild.PlayerNames.Count > 0) guild.UpdateAllPlayers(mExportMethod, true);
-                        Environment.Exit(0);
+                        if (guild.PlayerNames!=null && guild.PlayerNames.Count > 0) guild.UpdateAllPlayers(mExportMethod, true);
                         break;
                     }
                 case Command.UpdatePlayers:
@@ -74,8 +72,7 @@ namespace SwGoh
                         SwGoh.GuildDto guild = new GuildDto();
                         guild.Name = guild.GetGuildNameFromAlias(pname);
                         guild.ParseSwGoh();
-                        if (guild.PlayerNames.Count > 0) guild.UpdateOnlyGuildWithNoChars(mExportMethod);
-                        //Environment.Exit(0);
+                        if (guild.PlayerNames != null && guild.PlayerNames.Count > 0) guild.UpdateOnlyGuildWithNoChars(mExportMethod);
                         break;
                     }
             }

@@ -30,17 +30,39 @@ namespace SwGoh
         public int GPships { get; set; }
         public List<CharacterDto> Characters { get; set; }
 
-    public void Import()
+        public void Import(ExportMethodEnum ExportMethod)
         {
-            string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
-            string fname = directory + "\\" + PlayerName + @".json";
-            if (File.Exists(fname))
+            if (ExportMethod == ExportMethodEnum.File)
             {
-                var lines = File.ReadAllText(fname);
-                //PlayerDto ret = JsonConvert.DeserializeObject<PlayerDto>(lines, Converter.Settings);
-                JsonConvert.PopulateObject(lines, this);
+                string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
+                string fname = directory + "\\" + PlayerName + @".json";
+                if (File.Exists(fname))
+                {
+                    var lines = File.ReadAllText(fname);
+                    //PlayerDto ret = JsonConvert.DeserializeObject<PlayerDto>(lines, Converter.Settings);
+                    JsonConvert.PopulateObject(lines, this);
+                }
+            }
+            else
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
+                    var orderby = "s={\"LastSwGohUpdated\":1}";
+                    var limit = "l=1";
+                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
-
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "")
+                    {
+                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                        if (result.Count == 1)
+                        {
+                            //this = Found;
+                        }
+                    }
+                }
             }
         }
         public void Export(ExportMethodEnum ExportMethod)
@@ -126,7 +148,7 @@ namespace SwGoh
             }
             else
             {
-                Import();
+                Import(ExportMethod);
                 retbool = 2;
             }
             web = null;
@@ -170,23 +192,27 @@ namespace SwGoh
             }
             else
             {
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    this.LastClassUpdated = DateTime.Now;
+                using (HttpClient client = new HttpClient())
+                {
+                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
+                    var orderby = "s={\"LastSwGohUpdated\":1}";
+                    var limit = "l=1";
+                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
-                //    string json = JsonConvert.SerializeObject(this, Converter.Settings);
-
-                //    client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
-                //    HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        ConsoleMessage("Added To Database : " + PlayerName);
-                //    }
-                //    else
-                //    {
-                //        ConsoleMessage("Error Adding To Database : " + PlayerName);
-                //    }
-                //}
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "")
+                    {
+                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                        if (result.Count == 1)
+                        {
+                            PlayerDto Found = result[0];
+                            if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0) return false;
+                            return true;
+                        }
+                        else return true;
+                    }
+                }
                 return true;
             }
         }
