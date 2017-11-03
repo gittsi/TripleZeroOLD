@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -24,9 +25,10 @@ namespace SwGoh
 
         public string PlayerName { get; set; }
         public DateTime LastSwGohUpdated { get; set; }
-        public DateTime LastClassUpdated { get; set; }
+        public Nullable<DateTime> LastClassUpdated { get; set; }
+        public int GPcharacters { get; set; }
+        public int GPships { get; set; }
         public List<CharacterDto> Characters { get; set; }
-        public string Id { get; set; }
 
     public void Import()
         {
@@ -75,8 +77,7 @@ namespace SwGoh
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    this.LastClassUpdated = DateTime.Now;
-                    this.Id = new Guid().ToString();
+                    this.LastClassUpdated = DateTime.UtcNow;
 
                     string json = JsonConvert.SerializeObject(this, Converter.Settings);
 
@@ -93,7 +94,7 @@ namespace SwGoh
                 }
             }
         }
-        public int ParseSwGoh()
+        public int ParseSwGoh(ExportMethodEnum ExportMethod,bool AddCharacters)
         {
             if (PlayerName == null || PlayerName == "") return 0;
             ConsoleMessage("Reading Player : " + PlayerName);
@@ -116,7 +117,8 @@ namespace SwGoh
 
             int Position = 0;
             FillPlayerData(html, out Position);
-            bool ret = CheckLastUpdateWithCurrent();
+            if (!AddCharacters) return 1;
+            bool ret = CheckLastUpdateWithCurrent(ExportMethod);
             if (ret)
             {
                 FillPlayerCharacters(html, Position);
@@ -130,36 +132,63 @@ namespace SwGoh
             web = null;
             return retbool;
         }
-
-        private bool CheckLastUpdateWithCurrent()
+        /// <summary>
+        /// Returns true if the file should be updated , false not to update
+        /// </summary>
+        /// <param name="ExportMethod"></param>
+        /// <returns></returns>
+        private bool CheckLastUpdateWithCurrent(ExportMethodEnum ExportMethod)
         {
-            return true;
-            string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
-            string fname = directory + "\\" + PlayerName + @".json";
-
-            if (File.Exists(fname))
+            if (ExportMethod == ExportMethodEnum.File)
             {
-                using (StreamReader reader = new StreamReader(fname))
+                string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
+                string fname = directory + "\\" + PlayerName + @".json";
+
+                if (File.Exists(fname))
                 {
-                    string firstLine = reader.ReadLine() ?? "";
-                    string secondLine = reader.ReadLine() ?? "";
-                    string ThirdLine = reader.ReadLine() ?? "";
+                    using (StreamReader reader = new StreamReader(fname))
+                    {
+                        string firstLine = reader.ReadLine() ?? "";
+                        string secondLine = reader.ReadLine() ?? "";
+                        string ThirdLine = reader.ReadLine() ?? "";
 
-                    ThirdLine = ThirdLine.Trim();
-                    ThirdLine = ThirdLine.Remove(0, 16);
-                    ThirdLine = ThirdLine.TrimEnd(',');
-                    ThirdLine = ThirdLine.TrimEnd('\"');
+                        ThirdLine = ThirdLine.Trim();
+                        ThirdLine = ThirdLine.Remove(0, 16);
+                        ThirdLine = ThirdLine.TrimEnd(',');
+                        ThirdLine = ThirdLine.TrimEnd('\"');
 
-                    ThirdLine = ThirdLine.Replace('\"', ' ');
-                    ThirdLine = ThirdLine.Replace('T', ',');
-                    ThirdLine = ThirdLine.Trim();
+                        ThirdLine = ThirdLine.Replace('\"', ' ');
+                        ThirdLine = ThirdLine.Replace('T', ',');
+                        ThirdLine = ThirdLine.Trim();
 
-                    DateTime filelastupdated = DateTime.ParseExact(ThirdLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                    if (filelastupdated.CompareTo(this.LastSwGohUpdated) == 0) return false;
+                        DateTime filelastupdated = DateTime.ParseExact(ThirdLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                        if (filelastupdated.CompareTo(this.LastSwGohUpdated) == 0) return false;
+                        else return true;
+                    }
                 }
+                else return true;
             }
-            else return true;
-            return true;
+            else
+            {
+                //using (HttpClient client = new HttpClient())
+                //{
+                //    this.LastClassUpdated = DateTime.Now;
+
+                //    string json = JsonConvert.SerializeObject(this, Converter.Settings);
+
+                //    client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                //    HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
+                //    if (response.IsSuccessStatusCode)
+                //    {
+                //        ConsoleMessage("Added To Database : " + PlayerName);
+                //    }
+                //    else
+                //    {
+                //        ConsoleMessage("Error Adding To Database : " + PlayerName);
+                //    }
+                //}
+                return true;
+            }
         }
 
         /// <summary>
@@ -209,28 +238,80 @@ namespace SwGoh
         /// <param name="html"></param>
         private void FillPlayerData(string html, out int Position)
         {
+            bool ret1 = false;
+            int valueint = 0;
 
             string strtosearch = "Last updated:";
             int index = html.IndexOf(strtosearch);
             Position = index + strtosearch.Length;
             if (index != -1)
             {
-                string rest = html.Substring(Position);
+                //string rest = html.Substring(Position);
                 string reststrTosearchStart = "data-datetime=\"";
-                int restindexStart = rest.IndexOf(reststrTosearchStart);
+                int restindexStart = html.IndexOf(reststrTosearchStart,Position);
                 string reststrTosearchEnd = "\" data";
-                int restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    string value = rest.Substring(start, length);
+                    string value = html.Substring(start, length);
                     Position = restindexEnd;
-                    //DateTime updated = DateTime.from
+                    
                     value = value.Replace('T', ',');
                     value = value.Replace('Z', ' ');
                     value = value.Trim();
                     LastSwGohUpdated = DateTime.ParseExact(value, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                }
+            }
+
+            strtosearch = "<h5>Player Info</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                strtosearch = "Galactic Power (Characters)";
+                index = html.IndexOf(strtosearch, Position);
+                Position = index + strtosearch.Length;
+                if (index!=-1)
+                {
+                    string reststrTosearchStart = "pull-right\">";
+                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    string reststrTosearchEnd = "</strong>";
+                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        string value = html.Substring(start, length);
+                        Position = restindexEnd;
+                        value = value.Replace(",", "");
+
+                        ret1 = int.TryParse(value, out valueint);
+                        if (ret1) GPcharacters = valueint;
+                    }
+                }
+
+                strtosearch = "Galactic Power (Ships)";
+                index = html.IndexOf(strtosearch, Position);
+                Position = index + strtosearch.Length;
+                if (index != -1)
+                {
+                    string reststrTosearchStart = "pull-right\">";
+                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    string reststrTosearchEnd = "</strong>";
+                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        string value = html.Substring(start, length);
+                        Position = restindexEnd;
+                        value = value.Replace(",", "");
+
+                        ret1 = int.TryParse(value, out valueint);
+                        if (ret1) GPships = valueint;
+                    }
                 }
             }
         }
@@ -416,7 +497,7 @@ namespace SwGoh
                 }
             }
 
-                #region General
+            #region General
             strtosearch = "<h5>General</h5>";
             index = html.IndexOf(strtosearch);
             Position = index + strtosearch.Length;

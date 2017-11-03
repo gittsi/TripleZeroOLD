@@ -10,7 +10,8 @@ namespace SwGoh
     {
         UpdatePlayer = 1,
         UpdateGuild = 2,
-        UpdatePlayers = 3,
+        UpdateGuildWithNoChars = 3,
+        UpdatePlayers = 4,
     }
     
 
@@ -24,8 +25,8 @@ namespace SwGoh
 
             ExportMethodEnum mExportMethod  = ExportMethodEnum.Database;
 
-            string pname = "briglja";
-            Command command = Command.UpdatePlayer;
+            string pname = "501st";
+            Command command = Command.UpdateGuildWithNoChars;
 
             if (args.Length > 1)
             {
@@ -33,6 +34,7 @@ namespace SwGoh
                 if (args.Length > 2 && commandstr == "ups") command = Command.UpdatePlayers;
                 else if (commandstr == "up") command = Command.UpdatePlayer;
                 else if (commandstr == "ug") command = Command.UpdateGuild;
+                else if (commandstr == "ugnochars") command = Command.UpdateGuildWithNoChars;
                 pname = args[1];
             }
 
@@ -41,7 +43,7 @@ namespace SwGoh
                 case Command.UpdatePlayer:
                     {
                         SwGoh.PlayerDto player = new PlayerDto(pname);
-                        int ret = player.ParseSwGoh();
+                        int ret = player.ParseSwGoh(mExportMethod, true);
                         if (ret == 1) player.Export(mExportMethod);
                         Environment.Exit(0);
                         break;
@@ -50,7 +52,7 @@ namespace SwGoh
                     {
                         SwGoh.GuildDto guild = new GuildDto(pname);
                         guild.ParseSwGoh();
-                        if (guild.PlayerNames.Count > 0) guild.UpdateAllPlayers(mExportMethod);
+                        if (guild.PlayerNames.Count > 0) guild.UpdateAllPlayers(mExportMethod, true);
                         Environment.Exit(0);
                         break;
                     }
@@ -59,12 +61,21 @@ namespace SwGoh
                         for(int i = 1; i < args.Length; i++)
                         {
                             SwGoh.PlayerDto player = new PlayerDto(args[i]);
-                            int ret = player.ParseSwGoh();
+                            int ret = player.ParseSwGoh(mExportMethod, true);
                             if (ret==1)
                             {
                                 player.Export(mExportMethod);
                             }
                         }
+                        break;
+                    }
+                case Command.UpdateGuildWithNoChars:
+                    {
+                        SwGoh.GuildDto guild = new GuildDto();
+                        guild.Name = guild.GetGuildNameFromAlias(pname);
+                        guild.ParseSwGoh();
+                        if (guild.PlayerNames.Count > 0) guild.UpdateOnlyGuildWithNoChars(mExportMethod);
+                        //Environment.Exit(0);
                         break;
                     }
             }
