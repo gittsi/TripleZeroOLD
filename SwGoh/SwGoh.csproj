@@ -44,9 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterDto.cs" />
-    <Compile Include="GuildConfig.cs" />
+    <Compile Include="GuildsConfig.cs" />
     <Compile Include="GuildDto.cs" />
-    <Compile Include="GuildSettingsModel.cs" />
     <Compile Include="PlayerDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
