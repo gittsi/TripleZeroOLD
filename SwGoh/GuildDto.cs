@@ -28,20 +28,20 @@ namespace SwGoh
         public int GP { get; set; }
         public int GPaverage { get; set; }
         public List<string> PlayerNames { get; set; }
-
         public List<PlayerDto> Players { get; set; }
+
         public string GetGuildURLFromName(string name)
         {
             GuildConfig guild = GuildConfig.GetGuildFromName(name);
             if (guild == null) return "";
-            string URL = "https://swgoh.gg/g/" + guild.SWGoHId + "/" + guild.Name + "/";
+            string URL = "https://swgoh.gg/g" + guild.SWGoHId;
             return URL;
         }
         public string GetGuildURLFromAlias(string Alias)
         {
             GuildConfig guild = GuildConfig.GetGuildFromAllias(Alias);
             if (guild == null) return "";
-            string URL = "https://swgoh.gg/g/" + guild.SWGoHId + "/" + guild.Name + "/";
+            string URL = "https://swgoh.gg/g" + guild.SWGoHId;
             return URL;
         }
         public string GetGuildNameFromAlias(string Alias)

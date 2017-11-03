@@ -59,7 +59,7 @@ namespace SwGoh
                         List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
                         if (result.Count == 1)
                         {
-                            //this = Found;
+                            JsonConvert.PopulateObject(JsonConvert.SerializeObject (result[0]), this);
                         }
                     }
                 }
