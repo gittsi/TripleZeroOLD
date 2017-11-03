@@ -11,7 +11,7 @@ namespace TripleZero.Repository
     {
         Task<PlayerDto> GetPlayer(string userName);
 
-        Task<List<String>> GetGuildPlayers(string guildName);
+        Task<GuildDto> GetGuildPlayers(string guildName);
 
      //   Task<GuildConfig> GetConfigGuild(string guildAlias);
     }

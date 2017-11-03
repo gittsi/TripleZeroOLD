@@ -159,10 +159,10 @@ namespace TripleZero.Modules
 
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
 
-            string retStr = "";
-            foreach (var row in result)
+            string retStr = string.Format("\n These are the players of guild **{0}**\n", guildConfig.Name);
+            foreach (var player in result.Players)
             {
-                retStr += $"\n{row}";
+                retStr += $"\n{player.PlayerName}";
             }
 
             await ReplyAsync($"{retStr}");
@@ -217,7 +217,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            string retStr = string.Format("Last update : {0}(UTC)\n\n", playerData.LastUpdated.ToString("yyyy-MM-dd HH:mm:ss")) ;
+            string retStr = string.Format("Last update : {0}(UTC)\n\n", playerData.LastSwGohUpdated.ToString("yyyy-MM-dd HH:mm:ss")) ;
 
             var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();
 
@@ -290,6 +290,11 @@ namespace TripleZero.Modules
 
             //build post string
             retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
+
+
+            retStr += string.Format("Total GP: **{0}**\n", playerData.GPcharacters+ playerData.GPships);
+            retStr += string.Format("Toons GP: **{0}**\n", playerData.GPcharacters);
+            retStr += string.Format("Ships GP: **{0}**\n", playerData.GPships);
 
             retStr += "\n**Stars**\n";
             retStr += string.Format("{0} characters at **1***\n", chars1star.Count());

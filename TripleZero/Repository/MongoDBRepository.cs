@@ -62,7 +62,7 @@ namespace TripleZero.Repository
             
         }
 
-        public async Task<List<string>> GetGuildPlayers(string guildName)
+        public async Task<GuildDto> GetGuildPlayers(string guildName)
         {
             await Task.FromResult(1);
 
@@ -73,7 +73,20 @@ namespace TripleZero.Repository
 
             string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apiKey);
 
-            return null;
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+                    GuildDto ret = JsonConvert.DeserializeObject<List<GuildDto>>(response, Converter.Settings).FirstOrDefault();
+
+                    return ret;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
 
             //var filter = "*.json";
             //string path = string.Format("{0}/_Data/{1}/", Directory.GetCurrentDirectory(), guildName);
