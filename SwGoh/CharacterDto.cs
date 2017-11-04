@@ -16,19 +16,26 @@ namespace SwGoh
         public string SWGoHUrl { get; set; }
         public int Stars { get; set; }
         public int Gear { get; set; }
-        public List<Ability> Abilities { get; set; }
-        public int ArmorPenetration { get; set; }
-        public int CriticalDamage { get; set; }
-        public int HealthSteal { get; set; }
-        public int Health { get; set; }
         public int Level { get; set; }
-        public decimal Potency { get; set; }
-        public decimal PhysicalCriticalChance { get; set; }
-        public int PhysicalAccuracy { get; set; }
-        public int PhysicalDamage { get; set; }
+        public List<Ability> Abilities { get; set; }
+
+        #region General
+        public int Health { get; set; }
         public int Protection { get; set; }
         public int Speed { get; set; }
+        public int CriticalDamage { get; set; }
+        public decimal Potency { get; set; }
         public decimal Tenacity { get; set; }
+        public int HealthSteal { get; set; }
+        #endregion
+
+        #region Physical Offense
+        public int PhysicalDamage { get; set; }
+        public decimal PhysicalCriticalChance { get; set; }
+        public int ArmorPenetration { get; set; }
+        public int PhysicalAccuracy { get; set; }
+        #endregion
+
         public List<Mod> Mods { get; set; }
     }
 

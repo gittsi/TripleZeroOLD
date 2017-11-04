@@ -27,23 +27,46 @@ namespace SwGoh
         [JsonIgnore]        
         public string Id { get; set; }
         public string PlayerName { get; set; }
+        public string PlayerNameInGame { get; set; }
         public DateTime LastSwGohUpdated { get; set; }
         public Nullable<DateTime> LastClassUpdated { get; set; }
         public int GPcharacters { get; set; }
         public int GPships { get; set; }
         public List<CharacterDto> Characters { get; set; }
 
-    public void Import()
+        public void Import(ExportMethodEnum ExportMethod)
         {
-            string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
-            string fname = directory + "\\" + PlayerName + @".json";
-            if (File.Exists(fname))
+            if (ExportMethod == ExportMethodEnum.File)
             {
-                var lines = File.ReadAllText(fname);
-                //PlayerDto ret = JsonConvert.DeserializeObject<PlayerDto>(lines, Converter.Settings);
-                JsonConvert.PopulateObject(lines, this);
+                string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
+                string fname = directory + "\\" + PlayerName + @".json";
+                if (File.Exists(fname))
+                {
+                    var lines = File.ReadAllText(fname);
+                    //PlayerDto ret = JsonConvert.DeserializeObject<PlayerDto>(lines, Converter.Settings);
+                    JsonConvert.PopulateObject(lines, this);
+                }
+            }
+            else
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
+                    var orderby = "s={\"LastSwGohUpdated\":1}";
+                    var limit = "l=1";
+                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
-
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "")
+                    {
+                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                        if (result.Count == 1)
+                        {
+                            JsonConvert.PopulateObject(JsonConvert.SerializeObject (result[0]), this);
+                        }
+                    }
+                }
             }
         }
         public void Export(ExportMethodEnum ExportMethod)
@@ -100,7 +123,7 @@ namespace SwGoh
         public int ParseSwGoh(ExportMethodEnum ExportMethod,bool AddCharacters)
         {
             if (PlayerName == null || PlayerName == "") return 0;
-            ConsoleMessage("Reading Player : " + PlayerName);
+            ConsoleMessage("Reading Player : " + PlayerName + " aka " + PlayerNameInGame);
             int retbool = -1;
 
             web = new System.Net.WebClient();
@@ -129,7 +152,7 @@ namespace SwGoh
             }
             else
             {
-                Import();
+                Import(ExportMethod);
                 retbool = 2;
             }
             web = null;
@@ -173,23 +196,27 @@ namespace SwGoh
             }
             else
             {
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    this.LastClassUpdated = DateTime.Now;
+                using (HttpClient client = new HttpClient())
+                {
+                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
+                    var orderby = "s={\"LastSwGohUpdated\":1}";
+                    var limit = "l=1";
+                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
-                //    string json = JsonConvert.SerializeObject(this, Converter.Settings);
-
-                //    client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
-                //    HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        ConsoleMessage("Added To Database : " + PlayerName);
-                //    }
-                //    else
-                //    {
-                //        ConsoleMessage("Error Adding To Database : " + PlayerName);
-                //    }
-                //}
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "")
+                    {
+                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                        if (result.Count == 1)
+                        {
+                            PlayerDto Found = result[0];
+                            if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0) return false;
+                            return true;
+                        }
+                        else return true;
+                    }
+                }
                 return true;
             }
         }
@@ -273,15 +300,29 @@ namespace SwGoh
             Position = index + strtosearch.Length;
             if (index != -1)
             {
+                string reststrTosearchStart = "href=\"\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "</a>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    string value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    PlayerNameInGame = value;
+                }
+
                 strtosearch = "Galactic Power (Characters)";
                 index = html.IndexOf(strtosearch, Position);
                 Position = index + strtosearch.Length;
                 if (index!=-1)
                 {
-                    string reststrTosearchStart = "pull-right\">";
-                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
-                    string reststrTosearchEnd = "</strong>";
-                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    reststrTosearchStart = "pull-right\">";
+                    restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    reststrTosearchEnd = "</strong>";
+                    restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                     if (restindexStart != -1 && restindexEnd != -1)
                     {
                         int start = restindexStart + reststrTosearchStart.Length;
@@ -300,10 +341,10 @@ namespace SwGoh
                 Position = index + strtosearch.Length;
                 if (index != -1)
                 {
-                    string reststrTosearchStart = "pull-right\">";
-                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
-                    string reststrTosearchEnd = "</strong>";
-                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    reststrTosearchStart = "pull-right\">";
+                    restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    reststrTosearchEnd = "</strong>";
+                    restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                     if (restindexStart != -1 && restindexEnd != -1)
                     {
                         int start = restindexStart + reststrTosearchStart.Length;

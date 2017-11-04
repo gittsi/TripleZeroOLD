@@ -24,24 +24,25 @@ namespace SwGoh
             Name = name;
         }
         public string Name { get; set; }
+        public DateTime LastSwGohUpdated { get; set; }
         public DateTime LastClassUpdated { get; set; }
         public int GP { get; set; }
         public int GPaverage { get; set; }
         public List<string> PlayerNames { get; set; }
-
         public List<PlayerDto> Players { get; set; }
+
         public string GetGuildURLFromName(string name)
         {
             GuildConfig guild = GuildConfig.GetGuildFromName(name);
             if (guild == null) return "";
-            string URL = "https://swgoh.gg/g/" + guild.SWGoHId + "/" + guild.Name + "/";
+            string URL = "https://swgoh.gg/g" + guild.SWGoHId;
             return URL;
         }
         public string GetGuildURLFromAlias(string Alias)
         {
             GuildConfig guild = GuildConfig.GetGuildFromAllias(Alias);
             if (guild == null) return "";
-            string URL = "https://swgoh.gg/g/" + guild.SWGoHId + "/" + guild.Name + "/";
+            string URL = "https://swgoh.gg/g" + guild.SWGoHId;
             return URL;
         }
         public string GetGuildNameFromAlias(string Alias)
@@ -52,6 +53,7 @@ namespace SwGoh
         }
         public void ParseSwGoh()
         {
+            ConsoleMessage("Reading info for guild : " + this.Name);
             web = new System.Net.WebClient();
             string htm = GetGuildURLFromName(this.Name);
             if (htm == "") return;
@@ -65,7 +67,7 @@ namespace SwGoh
             FillGuildData(html);
         }
 
-        public void Export(ExportMethodEnum ExportMethod , bool CharactersAdded)
+        public void Export(ExportMethodEnum ExportMethod , bool FullUpdateClass)
         {
             if (ExportMethod == ExportMethodEnum.File)
             {
@@ -99,15 +101,31 @@ namespace SwGoh
             {
                 using (HttpClient client = new HttpClient())
                 {
+                    ConsoleMessage("Exporting To Database guild : " + this.Name);
                     LastClassUpdated = DateTime.UtcNow;
 
                     JsonSerializerSettings settings = new JsonSerializerSettings();
                     settings.NullValueHandling = NullValueHandling.Ignore;
-                   
+
+                    if (!FullUpdateClass)
+                    {
+                        this.PlayerNames = null;
+                        foreach (PlayerDto  item in Players)
+                        {
+                            item.Characters = null;
+                        }
+                    }
                     string json = JsonConvert.SerializeObject(this, settings);
 
-                    if (!CharactersAdded) client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Guild?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
-                    else client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/GuildWithCharacters?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                    if (!FullUpdateClass)
+                    {
+                        client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Guild?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                    }
+                    else
+                    {
+                        // NOT IMPLMEMENTED
+                        client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/GuildWithCharacters?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                    }
 
                     HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                     if (response.IsSuccessStatusCode)
@@ -120,9 +138,6 @@ namespace SwGoh
                     }
                 }
             }
-           
-
-            
         }
 
         private void FillGuildData(string html)
@@ -131,10 +146,27 @@ namespace SwGoh
             bool ret1 = false;
             int valueint = 0;
 
-            string reststrTosearchStart = "stat-item-value\">";
+            string reststrTosearchStart = "data-datetime=\"";
             int restindexStart = html.IndexOf(reststrTosearchStart);
-            string reststrTosearchEnd = "</div>";
+            string reststrTosearchEnd = ".";
             int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+            if (restindexStart != -1 && restindexEnd != -1)
+            {
+                int start = restindexStart + reststrTosearchStart.Length;
+                int length = restindexEnd - start;
+                string value = html.Substring(start, length);
+                Position = restindexEnd;
+
+                value = value.Replace('T', ',');
+                value = value.Replace('Z', ' ');
+                value = value.Trim();
+                LastSwGohUpdated = DateTime.ParseExact(value, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            reststrTosearchStart = "stat-item-value\">";
+            restindexStart = html.IndexOf(reststrTosearchStart,Position);
+            reststrTosearchEnd = "</div>";
+            restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
             if (restindexStart != -1 && restindexEnd != -1)
             {
                 int start = restindexStart + reststrTosearchStart.Length;
@@ -173,7 +205,7 @@ namespace SwGoh
             {
                 PlayerNames = new List<string>();
 
-                    string value;
+                string value;
                 int restposition = 0;
                 string rest = html.Substring(Position);
 
@@ -199,30 +231,32 @@ namespace SwGoh
         public void UpdateOnlyGuildWithNoChars(ExportMethodEnum ExportMethod)
         {
             int count = 0;
-            for (int i = 0; i < PlayerNames.Count; i++)
+            if (CheckLastUpdateWithCurrent(ExportMethodEnum.Database))
             {
-                count++;
-                SwGoh.PlayerDto player = new PlayerDto(PlayerNames[i]);
-                int ret = player.ParseSwGoh(ExportMethod, false);
-                if (ret == 1)
+                for (int i = 0; i < PlayerNames.Count; i++)
                 {
-                    if (Players == null) Players = new List<PlayerDto>();
-                    player.LastClassUpdated = null;
-                    Players.Add(player);
+                    count++;
+                    SwGoh.PlayerDto player = new PlayerDto(PlayerNames[i]);
+                    int ret = player.ParseSwGoh(ExportMethod, false);
+                    if (ret == 1)
+                    {
+                        if (Players == null) Players = new List<PlayerDto>();
+                        player.LastClassUpdated = null;
+                        Players.Add(player);
+                    }
+                    else if (ret == 0)
+                    {
+                        Thread.Sleep(mDelayError);
+                        i--;
+                    }
+                    else
+                    {
+                        if (Players == null) Players = new List<PlayerDto>();
+                        Players.Add(player);
+                    }
                 }
-                else if (ret == 0)
-                {
-                    Thread.Sleep(mDelayError);
-                    i--;
-                }
-                else
-                {
-                    if (Players == null) Players = new List<PlayerDto>();
-                    Players.Add(player);
-                }
+                Export(ExportMethod, false);
             }
-            this.PlayerNames = null;
-            Export(ExportMethod, false);
         }
         public void UpdateAllPlayers(ExportMethodEnum ExportMethod, bool AddCharacters)
         {
@@ -250,7 +284,37 @@ namespace SwGoh
                     Players.Add(player);
                 }
             }
-            Export(ExportMethod,true);
+            Export(ExportMethod,false);
+        }
+
+        private bool CheckLastUpdateWithCurrent(ExportMethodEnum ExportMethod)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var queryData = string.Concat("q={\"Name\":\"", Name, "\"}");
+                var orderby = "s={\"LastSwGohUpdated\":-1}";
+                var limit = "l=1";
+                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+
+                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
+                string response = client.GetStringAsync(url).Result;
+                if (response != "")
+                {
+                    List<GuildDto> result = JsonConvert.DeserializeObject<List<GuildDto>>(response);
+                    if (result.Count == 1)
+                    {
+                        GuildDto Found = result[0];
+                        if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
+                        {
+                            ConsoleMessage("No need to update!!!!");
+                            return false;
+                        }
+                        return true;
+                    }
+                    else return true;
+                }
+            }
+            return true;
         }
 
         private void ConsoleMessage(string message)
