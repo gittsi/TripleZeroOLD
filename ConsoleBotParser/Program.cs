@@ -27,8 +27,9 @@ namespace SwGoh
 
             ExportMethodEnum mExportMethod  = ExportMethodEnum.Database;
 
-            string pname = "41st";
-            Command command = Command.Help;
+            string pname = "tsitas_66";
+            Command command = Command.UpdatePlayer;
+
 
             if (args.Length > 0)
             {

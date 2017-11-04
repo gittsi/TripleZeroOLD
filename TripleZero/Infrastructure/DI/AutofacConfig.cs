@@ -23,6 +23,7 @@ namespace TripleZero.Infrastructure.DI
             builder.RegisterType<ApplicationSettings>().SingleInstance();
             builder.RegisterType<MongoDBSettings>().SingleInstance();
             builder.RegisterType<GuildsConfig>().SingleInstance();
+            builder.RegisterType<CharactersConfig>().SingleInstance();
             //builder.RegisterType<CharacterSettings>().SingleInstance();
             builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();
 

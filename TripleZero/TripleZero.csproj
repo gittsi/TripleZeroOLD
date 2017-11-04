@@ -10,7 +10,6 @@
     <Compile Remove="Configuration\CharacterSettingsModel.cs" />
     <Compile Remove="Configuration\GuildSettingsModel.cs" />
     <Compile Remove="Configuration\GuildsSettings.cs" />
-    <Compile Remove="Configuration\SWGoH\CharacterSettings.cs" />
     <Compile Remove="Configuration\SWGoH\CharacterSettingsModel.cs" />
     <Compile Remove="Configuration\SWGoH\GuildSettingsModel.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />

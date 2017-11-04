@@ -1,39 +1,68 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿
 using Newtonsoft.Json;
+using SwGoh;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
-using TripleZero.Configuration.SWGoH;
+using System.Threading.Tasks;
 using TripleZero.Helper;
+using TripleZero.Infrastructure.DI;
 
 namespace TripleZero.Configuration
 {
-    public class CharacterSettings
-    {        
+    public class CharactersConfig
+    {
+        public async Task<List<CharacterConfig>> GetCharactersConfig(string alias)
+        {
 
-        public SWGoHCharacterSettings Get(string alias)
-        {           
+            var apiKey = IResolver.Current.MongoDBSettings.ApiKey;
 
-            using (StreamReader r = new StreamReader("Configuration/characters.json"))
+            string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?apiKey={0}", apiKey);
+
+            try
             {
-                string json = r.ReadToEnd();
-
-                try
+                using (var client = new HttpClient())
                 {
-                    CharacterSettingsModel result = JsonConvert.DeserializeObject<CharacterSettingsModel>(json);
-                    var matched = result.Characters.Where(p => p.Aliases.Contains(alias)).FirstOrDefault();
+                    var response = await client.GetStringAsync(url);
+                    List<CharacterConfig> ret = JsonConvert.DeserializeObject<List<CharacterConfig>>(response, Converter.Settings);
 
-                    return matched;
-                }
-                catch (Exception ex)
-                {
-                    Consoler.WriteLineInColor(string.Format("CharacterSettings Get : {0}", ex.Message),ConsoleColor.Red);
-                    return null;
+                    return ret;
                 }
             }
-            
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public async Task<CharacterConfig> GetCharacterConfig(string alias)
+        {
+
+
+            var queryData = string.Concat("q={\"Aliases\":\"", alias, "\"}");
+            //var orderby = "s={\"LastUpdated\":1}";
+            //var limit = "l=1";
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+
+            string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apiKey);
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+                    CharacterConfig ret = JsonConvert.DeserializeObject<List<CharacterConfig>>(response, Converter.Settings).FirstOrDefault();
+
+                    return ret;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
         }
     }
 }
