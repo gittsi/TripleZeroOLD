@@ -14,8 +14,9 @@ namespace SwGoh
         UpdatePlayers = 4,
         Help = 5,
         UnKnown = 6,
+        Test = 7,
     }
-    
+
 
     class Program
     {
@@ -25,10 +26,12 @@ namespace SwGoh
             //string pname = "41st";
             //Command command = Command.UpdateGuild;
 
+            SwGoh.CharactersConfig.ExportCharacterFilesToDB();
+
             ExportMethodEnum mExportMethod  = ExportMethodEnum.Database;
 
-            string pname = "41st";
-            Command command = Command.UpdateGuildWithNoChars;
+            string pname = "newholborn";
+            Command command = Command.UpdatePlayer;
 
 
             if (args.Length > 0)
@@ -39,6 +42,7 @@ namespace SwGoh
                 else if (commandstr == "ug") command = Command.UpdateGuild;
                 else if (commandstr == "ugnochars") command = Command.UpdateGuildWithNoChars;
                 else if (commandstr == "help") command = Command.Help;
+                else if (commandstr == "test") command = Command.Test;
                 else command = Command.UnKnown;
                 if (args.Length > 1) pname = args[1];
             }
@@ -102,6 +106,11 @@ namespace SwGoh
                         Console.WriteLine("Command Help");
                         Console.WriteLine("Usage : <app> help");
                         Console.WriteLine("You already know this command!!!!!");
+                        break;
+                    }
+                case Command.Test:
+                    {
+                        SwGoh.CharactersConfig.ExportCharacterFilesToDB();
                         break;
                     }
                 default:

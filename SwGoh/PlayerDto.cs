@@ -16,7 +16,7 @@ namespace SwGoh
     public partial class PlayerDto
     {
         private System.Net.WebClient web = null;
-        private int mDelayCharacter = 4000;
+        private int mDelayCharacter = 3000;
         private int mDelayError = 600000;
         public PlayerDto(string name)
         {
@@ -137,9 +137,10 @@ namespace SwGoh
                 web = null;
                 return 0;
             }
-
+            
             int Position = 0;
             FillPlayerData(html, out Position);
+            ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
             if (!AddCharacters) return 1;
             bool ret = CheckLastUpdateWithCurrent(ExportMethod);
             if (ret)
@@ -470,16 +471,15 @@ namespace SwGoh
                 Position = index + strtosearch.Length;
                 if (index != -1)
                 {
-                    string rest = html.Substring(Position);
                     string reststrTosearchStart = "gp-stat-amount-current\">";
-                    int restindexStart = rest.IndexOf(reststrTosearchStart);
+                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
                     string reststrTosearchEnd = "</span>";
-                    int restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                     if (restindexStart != -1 && restindexEnd != -1)
                     {
                         int start = restindexStart + reststrTosearchStart.Length;
                         int length = restindexEnd - start;
-                        value = rest.Substring(start, length);
+                        value = html.Substring(start, length);
                         Position = restindexEnd;
 
                         newchar.Stars = GetStarsFromValue(value);
@@ -489,14 +489,13 @@ namespace SwGoh
             #endregion
 
             strtosearch = "<h4>Skills</h4>";
-            index = html.IndexOf(strtosearch);
+            index = html.IndexOf(strtosearch, Position);
             Position = index + strtosearch.Length;
             if (index != -1)
             {
                 bool exit = false;
-                string rest = html.Substring(Position); Position = 0;
                 strtosearch = "<h4>Gear Needed</h4>";
-                int EndIndex = rest.IndexOf(strtosearch);
+                int EndIndex = html.IndexOf(strtosearch, Position);
                 if (EndIndex != -1)
                 {
                     while (!exit)
@@ -504,28 +503,28 @@ namespace SwGoh
                         Ability abil = new Ability();
 
                         string reststrTosearchStart = "data-title=\"";
-                        int restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                        int restindexStart = html.IndexOf(reststrTosearchStart, Position);
                         string reststrTosearchEnd = "\">";
-                        int restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                        int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                         if (restindexStart != -1 && restindexEnd != -1)
                         {
                             int start = restindexStart + reststrTosearchStart.Length;
                             int length = restindexEnd - start;
-                            value = rest.Substring(start, length);
+                            value = html.Substring(start, length);
                             Position = restindexEnd;
                             SetAbilityPropertiesFromString(abil, value);
                         }
                         else exit = true;
 
                         reststrTosearchStart = "pc-skill-name\">";
-                        restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                        restindexStart = html.IndexOf(reststrTosearchStart, Position);
                         reststrTosearchEnd = "</div>";
-                        restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                        restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                         if (restindexStart != -1 && restindexEnd != -1)
                         {
                             int start = restindexStart + reststrTosearchStart.Length;
                             int length = restindexEnd - start;
-                            value = rest.Substring(start, length);
+                            value = html.Substring(start, length);
                             Position = restindexEnd;
                             abil.Name = value;
                             if (newchar.Abilities == null) newchar.Abilities = new List<Ability>();
@@ -538,22 +537,58 @@ namespace SwGoh
                 }
             }
 
+            strtosearch = "<h5>Power</h5>";
+            index = html.IndexOf(strtosearch, Position);
+            if (index != -1)
+            {
+                string reststrTosearchStart = "pc-stat-value\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position - 50);
+                string reststrTosearchEnd = "</span>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = int.TryParse(value, out valueint);
+                    if (ret1) newchar.Power = valueint;
+                }
+
+                reststrTosearchStart = "pc-stat-value\">";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "</span>";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = int.TryParse(value, out valueint);
+                    if (ret1) newchar.StatPower = valueint;
+                }
+            }
+
+
+
             #region General
             strtosearch = "<h5>General</h5>";
             index = html.IndexOf(strtosearch);
             Position = index + strtosearch.Length;
             if (index != -1)
             {
-                string rest = html.Substring(Position);
                 string reststrTosearchStart = "pc-stat-value\">";
-                int restindexStart = rest.IndexOf(reststrTosearchStart);
+                int restindexStart = html.IndexOf(reststrTosearchStart,Position);
                 string reststrTosearchEnd = "</span>";
-                int restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = int.TryParse(value, out valueint);
@@ -561,14 +596,14 @@ namespace SwGoh
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = int.TryParse(value, out valueint);
@@ -576,14 +611,14 @@ namespace SwGoh
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = int.TryParse(value, out valueint);
@@ -591,14 +626,14 @@ namespace SwGoh
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
@@ -606,14 +641,14 @@ namespace SwGoh
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
                     
                     ret1 = decimal.TryParse(value.Replace ('%',' ').Trim (), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
@@ -621,14 +656,14 @@ namespace SwGoh
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
@@ -636,14 +671,14 @@ namespace SwGoh
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
@@ -659,16 +694,15 @@ namespace SwGoh
             Position = index + strtosearch.Length;
             if (index != -1)
             {
-                string rest = html.Substring(Position);
                 string reststrTosearchStart = "pc-stat-value\">";
-                int restindexStart = rest.IndexOf(reststrTosearchStart);
+                int restindexStart = html.IndexOf(reststrTosearchStart,Position);
                 string reststrTosearchEnd = "</span>";
-                int restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = int.TryParse(value, out valueint);
@@ -676,14 +710,14 @@ namespace SwGoh
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
@@ -691,14 +725,14 @@ namespace SwGoh
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = int.TryParse(value, out valueint);
@@ -706,18 +740,192 @@ namespace SwGoh
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
-                restindexStart = rest.IndexOf(reststrTosearchStart, Position);
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 reststrTosearchEnd = "</span>";
-                restindexEnd = rest.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    value = rest.Substring(start, length);
+                    value = html.Substring(start, length);
                     Position = restindexEnd;
 
                     ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
                     if (ret1) newchar.PhysicalAccuracy = valueint;
+                }
+            }
+            #endregion
+
+            #region Physical Survivability
+            strtosearch = "<h5>Physical Survivability</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "pc-stat-value\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "</span>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.Armor = valuedecimal;
+                }
+
+                reststrTosearchStart = "pc-stat-value\">";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "</span>";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.DodgeChance = valuedecimal;
+                }
+
+                reststrTosearchStart = "pc-stat-value\">";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "</span>";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.PhysicalCriticalAvoidance = valuedecimal;
+                }
+            }
+            #endregion
+
+            #region Special Offense
+            strtosearch = "<h5>Special Offense</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "pc-stat-value\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "</span>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
+                    if (ret1) newchar.SpecialDamage = valueint;
+                }
+
+                reststrTosearchStart = "pc-stat-value\">";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "</span>";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.SpecialCriticalChance = valuedecimal;
+                }
+
+                reststrTosearchStart = "pc-stat-value\">";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "</span>";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
+                    if (ret1) newchar.ResistancePenetration = valueint;
+                }
+
+                reststrTosearchStart = "pc-stat-value\">";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "</span>";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.SpecialAccuracy = valuedecimal;
+                }
+            }
+            #endregion
+
+            #region Special Survivability
+            strtosearch = "<h5>Special Survivability</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "pc-stat-value\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "</span>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.Resistance = valuedecimal;
+                }
+
+                reststrTosearchStart = "pc-stat-value\">";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "</span>";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.DeflectionChance = valuedecimal;
+                }
+
+                reststrTosearchStart = "pc-stat-value\">";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "</span>";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.SpecialCriticalAvoidance = valuedecimal;
                 }
             }
             #endregion
