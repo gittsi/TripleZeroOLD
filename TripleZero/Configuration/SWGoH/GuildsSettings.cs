@@ -62,30 +62,7 @@ namespace TripleZero.Configuration
             catch (Exception ex)
             {
                 throw new ApplicationException(ex.Message);
-            }
-
-
-            //using (StreamReader r = new StreamReader("Configuration/guilds.json"))
-            //{
-            //    string json = r.ReadToEnd();
-
-            //    try
-            //    {
-            //        GuildsConfig results = JsonConvert.DeserializeObject<GuildsConfig>(json);
-            //        //var matched = results.Guilds.Where(p => p.Aliases.Contains(alias)).FirstOrDefault();
-
-            //        var matched = results.Guilds.Where(p => p.Aliases.IndexOf(alias) !=1).FirstOrDefault();
-
-            //        //var matched2 = results.Guilds.Select(p=>p.Aliases).Where(t => t.IndexOf(alias) != -1);
-
-            //        return matched;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Consoler.WriteLineInColor(string.Format("GuildSettings Get : {0}", ex.Message), ConsoleColor.Red);
-            //        return null;
-            //    }
-            //}            
+            }            
         }
     }
 }

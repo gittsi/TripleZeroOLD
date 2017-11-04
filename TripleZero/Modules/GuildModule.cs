@@ -10,6 +10,7 @@ using System.Linq;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Configuration;
 using TripleZero.Helper;
+using SwGoh;
 
 namespace TripleZero.Modules
 {
@@ -22,62 +23,30 @@ namespace TripleZero.Modules
         [Summary("Get report for specific character in the given guild.\nUsage : ***$guildCharacter {guildAlias or guildId} {characterAlias}***")]
         public async Task GetGuildCharacter(string guildAlias , string characterAlias)
         {
-            ////characters
-            //var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterAlias);
-            //string commandCharacter = characterAlias;
-            //if (matchedCharacter != null)
-            //{
-            //    commandCharacter = matchedCharacter.Command;
-            //}
-            //var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterAlias : characterAlias;
+            string retStr = "";
+            var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
+            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfig(characterAlias).Result;
 
+            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId,characterConfig.Name);
 
-            ////guilds
-            //string fullGuildName = "";
-            //string guildCommand = "";
+            if (res != null)
+            {
+                await ReplyAsync($"***Guild : {guildConfig.Name} - Character : {characterConfig.Name}***");
 
-            //var boolISInt = int.TryParse(guildAlias,out int guildID);
-            //if(boolISInt)
-            //{
-            //    guildCommand = guildID.ToString();
-            //    fullGuildName = string.Format("id:{0}",guildID.ToString());
-            //}
-            //else
-            //{
-            //    var matchedGuild = IResolver.Current.GuildSettings.Get(guildAlias);                
-            //    if (matchedGuild != null)
-            //    {
-            //        guildAlias = matchedGuild.SWGoHId;
-            //    }
+                foreach (var player in res.Players.OrderByDescending(p => p.Rarity).ThenByDescending(t => t.Power))
+                {
+                    retStr += "\n";
+                    retStr += string.Format("{3}* - {2} - {1} : {0}", player.Name, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity);
+                }
 
-            //    fullGuildName = matchedGuild != null ? matchedGuild.Name ?? guildAlias : guildAlias;
-            //    guildCommand = matchedGuild != null ? matchedGuild.SWGoHId ?? guildAlias : guildAlias;
-            //}
+                await ReplyAsync($"{retStr}");
+            }
+            else
+            {
 
-            //int.TryParse(guildCommand, out int guildId);
-
-            //var res = IResolver.Current.SWGoHRepository.GetGuildCharacter(guildId, commandCharacter).Result;
-            ////var res =_SWGoHRepository.GetGuild(guildName, characterName).Result;
-
-            //string retStr = "";
-            //if (res!=null)
-            //{                
-            //    await ReplyAsync($"***Guild : {fullGuildName} - Character : {fullCharacterName}***");                
-
-            //    foreach (var player in res.Players.OrderByDescending(p => p.Rarity).ThenByDescending(t => t.Power))
-            //    {
-            //        retStr += "\n";
-            //        retStr += string.Format("{3}* - {2} - {1} : {0}", player.Name, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity);
-            //    }
-
-            //    await ReplyAsync($"{retStr}");
-            //}
-            //else
-            //{
-                
-            //    retStr = $"I didn't find any players having `{fullCharacterName} for guild {fullGuildName}`";
-            //    await ReplyAsync($"{retStr}");
-            //}
+                retStr = $"I didn't find any players having `{guildConfig.Name} for guild {characterConfig.Name}`";
+                await ReplyAsync($"{retStr}");
+            }
 
         }
 
@@ -86,118 +55,85 @@ namespace TripleZero.Modules
         [Summary("Get all players of guild with low level characters.\nUsage : ***$slackers {guildAlias or guildId}***")]
         public async Task GetSlackers(string guildAlias)
         {
-            ////guilds
-            //string fullGuildName = "";
-            //string guildCommand = "";
+            string retStr = "";
+            var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
 
-            //var boolISInt = int.TryParse(guildAlias, out int guildID);
-            //if (boolISInt)
-            //{
-            //    guildCommand = guildID.ToString();
-            //    fullGuildName = string.Format("id:{0}", guildID.ToString());
-            //}
-            //else
-            //{
-            //    var matchedGuild = IResolver.Current.GuildSettings.Get(guildAlias);
-            //    if (matchedGuild != null)
-            //    {
-            //        guildAlias = matchedGuild.SWGoHId;
-            //    }
+            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
 
-            //    fullGuildName = matchedGuild != null ? matchedGuild.Name ?? guildAlias : guildAlias;
-            //    guildCommand = matchedGuild != null ? matchedGuild.SWGoHId ?? guildAlias : guildAlias;
-            //}
+            int counter = 1;
+            int totalRows = 25;
 
-            //int.TryParse(guildCommand, out int guildId);
+            try
+            {
+                for (int level = 1; level < 100; level++)
+                {
+                    foreach (var guildCharacter in res)
+                    {
+                        foreach (var player in guildCharacter.Players.Where(p=>p.Combat_Type==1))
+                        {
+                            if (player.Level == level)
+                            {
+                                retStr += "\n";
+                                retStr += string.Format("{0} - {1} - level:{2}", player.Name, guildCharacter.Name, player.Level);
+                                counter += 1;
+                                if (counter > totalRows) break;
+                                //Console.WriteLine(maxCounter1.ToString());
+                            }
+                        }
+                    }
+                    if (counter > totalRows) break;
+                    //Console.WriteLine("level" + level);
+                }
+            }
+            catch (Exception ex)
+            {
+                Consoler.WriteLineInColor(string.Format("Slackers say : {0}", ex.Message), ConsoleColor.Red);
+            }
 
-            //var res = IResolver.Current.SWGoHRepository.GetGuildCharacters(guildId).Result;
 
-            //string retStr = "";
-
-            //int counter = 1;
-            //int maxCounter = 25;
-            //int maxCounter1 = 0;
-
-            //try
-            //{
-            //    for (int level = 1; level < 100; level++)
-            //    {                   
-            //        foreach (var guildCharacter in res)
-            //        {
-            //            foreach (var player in guildCharacter.Players)
-            //            {
-            //                if (player.Level == level)
-            //                {
-            //                    retStr += "\n";
-            //                    retStr += string.Format("{0} - {1} - level:{2}", player.Name, guildCharacter.Name, player.Level);
-            //                    counter += 1;
-            //                    if (counter > maxCounter) break;
-            //                    //Console.WriteLine(maxCounter1.ToString());
-            //                }
-            //            }
-            //        }
-            //        if (counter > maxCounter) break;
-            //        //Console.WriteLine("level" + level);
-            //    }
-            //}
-            //catch(Exception ex)
-            //{
-            //    Consoler.WriteLineInColor(string.Format("Slackers say : {0}", ex.Message), ConsoleColor.Red);
-            //}
-            
-
-            //await ReplyAsync($"{retStr}");          
+            await ReplyAsync($"{retStr}");           
 
         }
 
 
         [Command("guildPlayers")]
-        [Summary("Get available players in specified guild.\nUsage : ***$guildPlayers {guildAlias or guildId}***")]
-        public async Task GetGuildPlayers(string guildAlias)
+        [Summary("Get available players in specified guild.\nUsage : ***$guildPlayers {guildAlias or guildId} {searchString(optional)}***")]
+        public async Task GetGuildPlayers(string guildAlias,string searchStr ="")
         {
+            string retStr = "";
             var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
-
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+            List<PlayerDto> guildPlayers=new List<PlayerDto>();
 
-            string retStr = string.Format("\n These are the players of guild **{0}**\n", guildConfig.Name);
-            foreach (var player in result.Players)
+            retStr = string.Format("\n These are the players of guild **{0}**", guildConfig.Name);
+
+            if (searchStr.Length==0)
             {
-                retStr += $"\n{player.PlayerName}";
+                guildPlayers = result.Players;    
+                
+            }else
+            {
+                if (searchStr.Length >= 2)
+                {
+                    guildPlayers = result.Players.Where(p => p.PlayerNameInGame.ToLower().Contains(searchStr.ToLower()) || p.PlayerName.ToLower().Contains(searchStr.ToLower())).ToList();
+                    retStr += $" containing \"{searchStr}\"";
+                }
+                else
+                {
+                    await ReplyAsync($"\nYour search string is not valid. You will get all players of guild {guildConfig.Name}");
+                }
+            }
+
+            retStr += "\n";
+            foreach (var player in guildPlayers)
+            {
+                
+                retStr += $"\n{player.PlayerName} ({player.PlayerNameInGame})";
+                //retStr += string.Format("\n{0} {1} {2} {3}", player.GPcharacters.ToString().PadRight(7, ' '), player.GPships.ToString().PadRight(7,' '),player.PlayerNameInGame,player.PlayerName);
             }
 
             await ReplyAsync($"{retStr}");
-
-            //// guilds
-            //string fullGuildName = "";
-            //string guildCommand = "";
-
-            //var boolISInt = int.TryParse(guildAlias, out int guildID);
-            //if (boolISInt)
-            //{
-            //    guildCommand = guildID.ToString();
-            //    fullGuildName = string.Format("id:{0}", guildID.ToString());
-            //}
-            //else
-            //{
-            //    var matchedGuild = IResolver.Current.GuildSettings.Get(guildAlias);
-            //    if (matchedGuild != null)
-            //    {
-            //        guildAlias = matchedGuild.SWGoHId;
-            //    }
-
-            //    fullGuildName = matchedGuild != null ? matchedGuild.Name ?? guildAlias : guildAlias;
-            //    guildCommand = matchedGuild != null ? matchedGuild.SWGoHId ?? guildAlias : guildAlias;
-            //}
-
-            //var result = IResolver.Current.SWGoHRepository.GetGuildPlayers(fullGuildName).Result;
-
-            //string retStr = "";
-            //foreach(var row in result)
-            //{
-            //    retStr += $"\n{row}";
-            //}
-
-            //await ReplyAsync($"{retStr}");
+           
         }
 
 

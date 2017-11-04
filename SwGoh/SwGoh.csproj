@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterConfig.cs" />
     <Compile Include="CharacterDto.cs" />
     <Compile Include="GuildsConfig.cs" />
     <Compile Include="GuildDto.cs" />

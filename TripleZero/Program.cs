@@ -70,7 +70,7 @@ namespace TripleZero
             //client.MessageReceived += MessageReceived;
 
             await Task.Delay(3000);
-            await TestGuildPlayers("41st");
+            //await TestGuildPlayers("41st");
             //await TestPlayerReport("tsitas_66");
             //await TestGuildModule("41s", "gk");
             //await TestCharacterModule("tsitas_66", "cls");

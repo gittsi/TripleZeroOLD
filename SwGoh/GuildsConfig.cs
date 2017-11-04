@@ -17,7 +17,8 @@ namespace SwGoh
     {
         public string Name { get; set; }
         public List<string> Aliases { get; set; }
-        public string SWGoHId { get; set; }
+        public int SWGoHId { get; set; }
+        public string SWGoHUrl { get; set; }
 
         public static GuildConfig GetGuildFromAllias(string allias)
         {

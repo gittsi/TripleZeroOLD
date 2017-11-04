@@ -27,10 +27,10 @@ namespace TripleZero.Repository
         }       
 
 
-        public async Task<GuildCharacterDto> GetGuildCharacter(int guildName, string characterName)
+        public async Task<GuildCharacterDto> GetGuildCharacter(int guildId, string characterName)
         {
             List<GuildCharacterDto> chars = null;
-            chars=await GetGuildCharacters(guildName);
+            chars=await GetGuildCharacters(guildId);
             var res = chars.Where(p => p.Name.ToLower() == characterName.ToLower()).FirstOrDefault();
 
             return res;
@@ -69,7 +69,7 @@ namespace TripleZero.Repository
                     List<GuildPlayerCharacterDto> players = new List<GuildPlayerCharacterDto>();
                     foreach (var player in row.Value)
                     {
-                        players.Add( new GuildPlayerCharacterDto{ Name = player["player"].ToString(), Level = (int)player["level"], Power = (int)player["power"], Rarity = (int)player["rarity"] } );
+                        players.Add( new GuildPlayerCharacterDto{ Name = player["player"].ToString(), Level = (int)player["level"], Power = (int)player["power"], Rarity = (int)player["rarity"] , Combat_Type=(int)player["combat_type"] } );
                         gc.Players = players;
                     }
                     chars.Add(gc);
