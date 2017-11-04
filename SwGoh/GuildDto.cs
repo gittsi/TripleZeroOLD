@@ -35,14 +35,14 @@ namespace SwGoh
         {
             GuildConfig guild = GuildConfig.GetGuildFromName(name);
             if (guild == null) return "";
-            string URL = "https://swgoh.gg/g" + guild.SWGoHId;
+            string URL = "https://swgoh.gg/g" + guild.SWGoHUrl;
             return URL;
         }
         public string GetGuildURLFromAlias(string Alias)
         {
             GuildConfig guild = GuildConfig.GetGuildFromAllias(Alias);
             if (guild == null) return "";
-            string URL = "https://swgoh.gg/g" + guild.SWGoHId;
+            string URL = "https://swgoh.gg/g" + guild.SWGoHUrl;
             return URL;
         }
         public string GetGuildNameFromAlias(string Alias)
@@ -243,6 +243,7 @@ namespace SwGoh
                         if (Players == null) Players = new List<PlayerDto>();
                         player.LastClassUpdated = null;
                         Players.Add(player);
+                        ConsoleMessage("Added Player : " + player.PlayerName + " aka " + player.PlayerNameInGame);
                     }
                     else if (ret == 0)
                     {
@@ -268,6 +269,7 @@ namespace SwGoh
                 int ret = player.ParseSwGoh(ExportMethod, AddCharacters);
                 if (ret == 1)
                 {
+                    player.LastClassUpdated = DateTime.UtcNow;
                     player.Export(ExportMethod);
                     if (Players == null) Players = new List<PlayerDto>();
                     Players.Add(player);

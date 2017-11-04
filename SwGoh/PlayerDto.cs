@@ -103,8 +103,6 @@ namespace SwGoh
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    this.LastClassUpdated = DateTime.UtcNow;
-
                     string json = JsonConvert.SerializeObject(this, Converter.Settings);
 
                     client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
@@ -123,7 +121,6 @@ namespace SwGoh
         public int ParseSwGoh(ExportMethodEnum ExportMethod,bool AddCharacters)
         {
             if (PlayerName == null || PlayerName == "") return 0;
-            ConsoleMessage("Reading Player : " + PlayerName + " aka " + PlayerNameInGame);
             int retbool = -1;
 
             web = new System.Net.WebClient();
