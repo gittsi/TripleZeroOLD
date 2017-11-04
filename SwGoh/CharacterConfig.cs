@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace SwGoh
 {
+    public class CharactersConfig
+    {
+        public List<CharacterConfig> Characters { get; set; }
+    }
+
     public class CharacterConfig
     {
         public string Name { get; set; }

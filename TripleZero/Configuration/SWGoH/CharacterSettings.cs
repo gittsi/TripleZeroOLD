@@ -15,10 +15,10 @@ namespace TripleZero.Configuration
 {
     public class CharactersConfig
     {
-        public async Task<List<CharacterConfig>> GetCharactersConfig(string alias)
+        public async Task<List<CharacterConfig>> GetCharactersConfig()
         {
 
-            var apiKey = IResolver.Current.MongoDBSettings.ApiKey;
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
             string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?apiKey={0}", apiKey);
 
@@ -28,6 +28,7 @@ namespace TripleZero.Configuration
                 {
                     var response = await client.GetStringAsync(url);
                     List<CharacterConfig> ret = JsonConvert.DeserializeObject<List<CharacterConfig>>(response, Converter.Settings);
+                    CharacterConfig ret2 = JsonConvert.DeserializeObject<List<CharacterConfig>>(response, Converter.Settings).FirstOrDefault();
 
                     return ret;
                 }
@@ -40,29 +41,32 @@ namespace TripleZero.Configuration
 
         public async Task<CharacterConfig> GetCharacterConfig(string alias)
         {
+            var result = GetCharactersConfig().Result;
+            return result.Where(p => p.Aliases.Contains(alias.ToLower())).FirstOrDefault();
 
 
-            var queryData = string.Concat("q={\"Aliases\":\"", alias, "\"}");
-            //var orderby = "s={\"LastUpdated\":1}";
-            //var limit = "l=1";
-            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
-            string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apiKey);
+            //var queryData = string.Concat("q={\"Aliases\":\"", alias, "\"}");
+            ////var orderby = "s={\"LastUpdated\":1}";
+            ////var limit = "l=1";
+            //var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    var response = await client.GetStringAsync(url);
-                    CharacterConfig ret = JsonConvert.DeserializeObject<List<CharacterConfig>>(response, Converter.Settings).FirstOrDefault();
+            //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apiKey);
 
-                    return ret;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException(ex.Message);
-            }
+            //try
+            //{
+            //    using (var client = new HttpClient())
+            //    {
+            //        var response = await client.GetStringAsync(url);
+            //        CharacterConfig ret = JsonConvert.DeserializeObject<List<CharacterConfig>>(response, Converter.Settings).FirstOrDefault();
+
+            //        return ret;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new ApplicationException(ex.Message);
+            //}
         }
     }
 }
