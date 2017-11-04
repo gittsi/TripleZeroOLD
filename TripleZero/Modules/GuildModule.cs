@@ -25,7 +25,18 @@ namespace TripleZero.Modules
         {
             string retStr = "";
             var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
+            if(guildConfig==null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                return;
+            }
+            
             var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfig(characterAlias).Result;
+            if (characterConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any character with alias ***{characterAlias}***");
+                return;
+            }
 
             var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId,characterConfig.Name);
 
