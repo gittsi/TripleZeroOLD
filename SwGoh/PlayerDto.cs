@@ -120,7 +120,7 @@ namespace SwGoh
         public int ParseSwGoh(ExportMethodEnum ExportMethod,bool AddCharacters)
         {
             if (PlayerName == null || PlayerName == "") return 0;
-            ConsoleMessage("Reading Player : " + PlayerName);
+            ConsoleMessage("Reading Player : " + PlayerName + " aka " + PlayerNameInGame);
             int retbool = -1;
 
             web = new System.Net.WebClient();

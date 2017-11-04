@@ -53,6 +53,7 @@ namespace SwGoh
         }
         public void ParseSwGoh()
         {
+            ConsoleMessage("Reading info for guild : " + this.Name);
             web = new System.Net.WebClient();
             string htm = GetGuildURLFromName(this.Name);
             if (htm == "") return;
@@ -66,7 +67,7 @@ namespace SwGoh
             FillGuildData(html);
         }
 
-        public void Export(ExportMethodEnum ExportMethod , bool CharactersAdded)
+        public void Export(ExportMethodEnum ExportMethod , bool FullUpdateClass)
         {
             if (ExportMethod == ExportMethodEnum.File)
             {
@@ -100,14 +101,26 @@ namespace SwGoh
             {
                 using (HttpClient client = new HttpClient())
                 {
+                    ConsoleMessage("Exporting To Database guild : " + this.Name);
                     LastClassUpdated = DateTime.UtcNow;
 
                     JsonSerializerSettings settings = new JsonSerializerSettings();
                     settings.NullValueHandling = NullValueHandling.Ignore;
-                   
+
+                    if (!FullUpdateClass)
+                    {
+                        this.PlayerNames = null;
+                        foreach (PlayerDto  item in Players)
+                        {
+                            item.Characters = null;
+                        }
+                    }
                     string json = JsonConvert.SerializeObject(this, settings);
 
-                    if (!CharactersAdded) client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Guild?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                    if (!FullUpdateClass)
+                    {
+                        client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Guild?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                    }
                     else
                     {
                         // NOT IMPLMEMENTED
@@ -242,7 +255,6 @@ namespace SwGoh
                         Players.Add(player);
                     }
                 }
-                this.PlayerNames = null;
                 Export(ExportMethod, false);
             }
         }
@@ -272,7 +284,7 @@ namespace SwGoh
                     Players.Add(player);
                 }
             }
-            Export(ExportMethod,true);
+            Export(ExportMethod,false);
         }
 
         private bool CheckLastUpdateWithCurrent(ExportMethodEnum ExportMethod)
@@ -292,7 +304,11 @@ namespace SwGoh
                     if (result.Count == 1)
                     {
                         GuildDto Found = result[0];
-                        if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0) return false;
+                        if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
+                        {
+                            ConsoleMessage("No need to update!!!!");
+                            return false;
+                        }
                         return true;
                     }
                     else return true;
