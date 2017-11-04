@@ -7,11 +7,9 @@
 
   "Discord_Settings": {
     "Token": "MzcxNzU5MjkyNzQ4OTIyODgy.DM6T_g.1CD5jJyn5k8tx4as4NwmDfRK-kQ",
-    "Prefix": "^"
+    "Prefix": "$"
   },
-
-  "Discord_Commands": {
-    "Token": "MzcxNzU5MjkyNzQ4OTIyODgy.DM6T_g.1CD5jJyn5k8tx4as4NwmDfRK-kQ",
-    "Prefix": "^"
+  "MongoDB_Settings": {
+    "ApiKey": "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O"
   }
 }

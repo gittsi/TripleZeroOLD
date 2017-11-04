@@ -7,10 +7,10 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
-using TripleZero.Repository.SWGoHRepository;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Configuration;
 using TripleZero.Repository.Dto;
+using SwGoh;
 
 namespace TripleZero.Modules
 {
@@ -19,45 +19,94 @@ namespace TripleZero.Modules
     public class CharacterModule : ModuleBase<SocketCommandContext>
     {        
 
-        [Command("ch")]
-        [Summary("Get ch")]
-        public async Task Say(string username, string characterName)
+        [Command("characterstats")]
+        [Summary("Get character stats for specific player.\nUsage : ***$characterstats {playerUserName} {characterAlias}***")]
+        public async Task GetCharacterStats(string playerUserName, string characterAlias)
         {
-            //characters
-            var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterName);
-            string commandCharacter = characterName;
-            if (matchedCharacter != null)
-            {
-                commandCharacter = matchedCharacter.SWGoHUrl;
-            }
-            var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name!=null ? matchedCharacter.Name : characterName : characterName;
+            //string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
 
+            //await ReplyAsync($"{loadingStr}");
+            ////fil data
+            //var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
 
-            CharacterDto character = new CharacterDto();
-            character.Name = fullCharacterName;
-            character = IResolver.Current.SWGoHRepository.GetCharacter(username, commandCharacter).Result;
+            //if (playerData == null)
+            //{
+            //    await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
+            //    return;
+            //}
 
+            //var matchedCharacter = IResolver.Current.CharacterSettings.Get(characterAlias);
 
-            string retStr = "";
-            if (character!=null)
-            {
-                await ReplyAsync($"***User : {username} - Character : {fullCharacterName}***");
-                
-                retStr += string.Format("\n Protection : {0}", character.Protection);
-                retStr += string.Format("\n Health : {0}", character.Health);
+            //string commandCharacter = characterAlias;
+            //if (matchedCharacter != null)
+            //{
+            //    commandCharacter = matchedCharacter.SWGoHUrl;
+            //}
+            //var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterAlias : characterAlias;
 
+            //var character = playerData.Characters.Where(p => p.Name.ToLower() == fullCharacterName.ToLower()).FirstOrDefault();
 
-                await ReplyAsync($"{retStr}");
-            }
-            else
-            {
+            //if(character==null)
+            //{
+            //    await ReplyAsync($"I couldn't find data for character : ***{fullCharacterName}*** for player : ***{playerUserName}***.");
+            //    return;
+            //}
 
-                retStr = $"I didn't find `{username} having {fullCharacterName}`";
-                await ReplyAsync($"{retStr}");
-            }
+            //string retStr = "";
+            //retStr += string.Format("\n{0} - {1}* g{2} lvl:{3}", character.Name,character.Stars,character.Gear,character.Level);
+            //retStr += "\n\n**General**";
+            //retStr += $"\nProtection : {character.Protection}";
+            //retStr += $"\nHealth : {character.Health}";
+            //retStr += $"\nSpeed : {character.Speed}";
+            //retStr += $"\nHealth Steal : {character.HealthSteal} %";
+            //retStr += $"\nCritical Damage : {character.CriticalDamage} %";
+            //retStr += $"\nPotency : {character.Potency} %";
+            //retStr += $"\nTenacity : {character.Tenacity} %";
 
-//            await ReplyAsync($"{matchedCharacter}");
-            
+            //retStr += "\n\n**Physical Offense**";
+            //retStr += $"\nPhysical Damage : {character.PhysicalDamage}";
+            //retStr += $"\nPhysical Critical Chance: {character.PhysicalCriticalChance}";
+            //retStr += $"\nPhysical Accuracy: {character.PhysicalAccuracy} %";
+            //retStr += $"\nArmor Penetration: {character.ArmorPenetration} %";
+
+            //await ReplyAsync($"{retStr}");
         }
+
+        //public async Task GetCharacterStats(string playerUserName, string characterAlias)
+        //{
+        //    //characters
+        //    var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterAlias);
+        //    string commandCharacter = characterAlias;
+        //    if (matchedCharacter != null)
+        //    {
+        //        commandCharacter = matchedCharacter.SWGoHUrl;
+        //    }
+        //    var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterAlias : characterAlias;
+
+
+        //    CharacterDto character = new CharacterDto
+        //    {
+        //        Name = fullCharacterName
+        //    };
+        //    character = IResolver.Current.SWGoHRepository.GetCharacter(playerUserName, commandCharacter).Result;
+
+
+        //    string retStr = "";
+        //    if (character!=null)
+        //    {
+        //        await ReplyAsync($"***User : {playerUserName} - Character : {fullCharacterName}***");
+
+        //        retStr += string.Format("\nProtection : {0}", character.Protection);
+        //        retStr += string.Format("\nHealth : {0}", character.Health);
+
+        //        await ReplyAsync($"{retStr}");
+        //    }
+        //    else
+        //    {
+
+        //        retStr = $"I didn't find `{playerUserName} having {fullCharacterName}`";
+        //        await ReplyAsync($"{retStr}");
+        //    }            
+        //}
     }
 }

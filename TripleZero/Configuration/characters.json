@@ -86,7 +86,7 @@
       "Name": "Darth Sidious",
       "Command": "darthsidious",
       "Aliases": [
-        "ds"
+        "ds",
         "sid",
         "sidious"
       ],
@@ -96,252 +96,285 @@
       "Name": "Grand Moff Tarkin",
       "Command": "grandmofftarkin",
       "Aliases": [
-        "tarkin"
+        "tarkin",
+        "gmf"
       ],
       "SWGoHUrl": "138/grand-moff-tarkin/"
     },
     {
       "Name": "Grand Master Yoda",
       "Command": "", "Aliases": [
-        "Empty"
+        "yoda",
+        "gmy"
       ],
       "SWGoHUrl": "144/grand-master-yoda/"
     },
     {
       "Name": "Emperor Palpatine",
       "Command": "", "Aliases": [
-        "Empty"
+        "palpa",
+        "palpatine",
+        "ep"
       ],
       "SWGoHUrl": "180/emperor-palpatine/"
     },
     {
       "Name": "Princess Leia",
       "Command": "", "Aliases": [
-        "Empty"
+        "leia",
+        "princess"
       ],
       "SWGoHUrl": "122/princess-leia/"
     },
     {
       "Name": "Jedi Knight Anakin",
       "Command": "", "Aliases": [
-        "Empty"
+        "ani",
+        "anakin",
+        "jka"
       ],
       "SWGoHUrl": "112/jedi-knight-anakin/"
     },
     {
       "Name": "Stormtrooper Han",
       "Command": "", "Aliases": [
-        "Empty"
+        "sthan",
+        "shan"
       ],
       "SWGoHUrl": "202/stormtrooper-han/"
     },
     {
       "Name": "Clone Sergeant - Phase I",
       "Command": "", "Aliases": [
-        "Empty"
+        "cs",
+        "clonesergeant"
       ],
       "SWGoHUrl": "186/clone-sergeant-phase-i/"
     },
     {
       "Name": "CC-2224 &quot;Cody&quot;",
-      "Command": "", "Aliases": [
-        "Empty"
+      "Command": "",
+      "Aliases": [
+        "cody",
+        "CC-2224"
       ],
       "SWGoHUrl": "26/cc-2224-cody/"
     },
     {
       "Name": "Wedge Antilles",
       "Command": "", "Aliases": [
-        "Empty"
+        "wedge"
       ],
       "SWGoHUrl": "191/wedge-antilles/"
     },
     {
       "Name": "Lando Calrissian",
       "Command": "", "Aliases": [
-        "Empty"
+        "lando"
       ],
       "SWGoHUrl": "4/lando-calrissian/"
     },
     {
       "Name": "Boba Fett",
       "Command": "", "Aliases": [
-        "Empty"
+        "boba",
+        "bobafett"
       ],
       "SWGoHUrl": "164/boba-fett/"
     },
     {
       "Name": "Mace Windu",
       "Command": "", "Aliases": [
-        "Empty"
+        "mace",
+        "macewindu"
       ],
       "SWGoHUrl": "70/mace-windu/"
     },
     {
       "Name": "Ezra Bridger",
       "Command": "", "Aliases": [
-        "Empty"
+        "ezra"
       ],
       "SWGoHUrl": "230/ezra-bridger/"
     },
     {
       "Name": "Finn",
       "Command": "", "Aliases": [
-        "Empty"
+        "finn"
       ],
       "SWGoHUrl": "66/finn/"
     },
     {
       "Name": "TIE Fighter Pilot",
       "Command": "", "Aliases": [
-        "Empty"
+        "tfp",
+        "tiepilot"
       ],
       "SWGoHUrl": "124/tie-fighter-pilot/"
     },
     {
       "Name": "First Order TIE Pilot",
       "Command": "", "Aliases": [
-        "Empty"
+        "fotp"        
       ],
       "SWGoHUrl": "199/first-order-tie-pilot/"
     },
     {
       "Name": "Biggs Darklighter",
       "Command": "", "Aliases": [
-        "Empty"
+        "biggs"
       ],
       "SWGoHUrl": "152/biggs-darklighter/"
     },
     {
       "Name": "Ahsoka Tano",
       "Command": "", "Aliases": [
-        "Empty"
+        "at",
+        "ahsokatano",
+        "ahsoka"
       ],
       "SWGoHUrl": "64/ahsoka-tano/"
     },
     {
       "Name": "Rey (Scavenger)",
       "Command": "", "Aliases": [
-        "Empty"
+        "srey",
+        "rey"
       ],
       "SWGoHUrl": "116/rey-scavenger/"
     },
     {
       "Name": "Death Trooper",
       "Command": "", "Aliases": [
-        "Empty"
+        "dt",
+        "deathtrooper"
       ],
       "SWGoHUrl": "221/death-trooper/"
     },
     {
       "Name": "Captain Phasma",
       "Command": "", "Aliases": [
-        "Empty"
+        "cp",
+        "phasma"
       ],
       "SWGoHUrl": "67/captain-phasma/"
     },
     {
       "Name": "CT-7567 &quot;Rex&quot;",
-      "Command": "", "Aliases": [
-        "Empty"
+      "Command": "",
+      "Aliases": [
+        "Rex",
+        "CT-7567"
       ],
       "SWGoHUrl": "16/ct-7567-rex/"
     },
     {
       "Name": "Teebo",
       "Command": "", "Aliases": [
-        "Empty"
+        "teebo"
       ],
       "SWGoHUrl": "168/teebo/"
     },
     {
       "Name": "Admiral Ackbar",
       "Command": "", "Aliases": [
-        "Empty"
+        "aa",
+        "ackbar"
       ],
       "SWGoHUrl": "169/admiral-ackbar/"
     },
     {
       "Name": "Geonosian Soldier",
       "Command": "", "Aliases": [
-        "Empty"
+        "gs"
       ],
       "SWGoHUrl": "57/geonosian-soldier/"
     },
     {
       "Name": "CT-21-0408 &quot;Echo&quot;",
-      "Command": "", "Aliases": [
-        "Empty"
+      "Command": "",
+      "Aliases": [
+        "CT-21-0408",
+        "echo"
       ],
       "SWGoHUrl": "149/ct-21-0408-echo/"
     },
     {
       "Name": "Aayla Secura",
       "Command": "", "Aliases": [
-        "Empty"
+        "Aayla",
+        "kavla"
       ],
       "SWGoHUrl": "80/aayla-secura/"
     },
     {
       "Name": "Jyn Erso",
-      "Command": "", "Aliases": [
-        "Empty"
+      "Command": "",
+      "Aliases": [
+        "jyn",
+        "Jynerso"
       ],
       "SWGoHUrl": "217/jyn-erso/"
     },
     {
       "Name": "Sith Assassin",
       "Command": "", "Aliases": [
-        "Empty"
+        "sass",
+        "sithassassin"
       ],
       "SWGoHUrl": "224/sith-assassin/"
     },
     {
       "Name": "IG-88",
       "Command": "", "Aliases": [
-        "Empty"
+        "ig88",
+        "ig-88"
       ],
       "SWGoHUrl": "143/ig-88/"
     },
     {
       "Name": "Chirrut Γmwe",
       "Command": "", "Aliases": [
-        "Empty"
+        "chirrut"
       ],
       "SWGoHUrl": "215/chirrut-imwe/"
     },
     {
       "Name": "Chief Nebit",
       "Command": "", "Aliases": [
-        "Empty"
+        "nebit"
       ],
       "SWGoHUrl": "93/chief-nebit/"
     },
     {
       "Name": "Tusken Shaman",
       "Command": "", "Aliases": [
-        "Empty"
+        "ts",
+        "shaman"
       ],
       "SWGoHUrl": "39/tusken-shaman/"
     },
     {
       "Name": "Hoth Rebel Scout",
       "Command": "", "Aliases": [
-        "Empty"
+        "hrs",
+        "hrscout",
+        "hothrebelscout"
       ],
       "SWGoHUrl": "157/hoth-rebel-scout/"
     },
     {
       "Name": "Ewok Elder",
       "Command": "", "Aliases": [
-        "Empty"
+        "ee",
+        "ewokelder"
       ],
       "SWGoHUrl": "21/ewok-elder/"
     },
     {
       "Name": "Royal Guard",
       "Command": "", "Aliases": [
-        "Empty"
+        "rg"
       ],
       "SWGoHUrl": "18/royal-guard/"
     },

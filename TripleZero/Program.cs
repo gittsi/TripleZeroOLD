@@ -27,13 +27,11 @@ namespace TripleZero
     {
         static Autofac.IContainer autoFacContainer = null;
         static ApplicationSettings applicationSettings = null;
-        static HelpModule helpModule = null;
-        static MathModule mathModule = null;
-        static TestModule testModule = null;
+        static MongoDBSettings mongoDBSettings = null;
 
-        private DiscordSocketClient client;        
-        private IServiceProvider services;
-        private CommandService commands;
+        private DiscordSocketClient client=null;        
+        private IServiceProvider services=null;
+        private CommandService commands=null;
 
         static void Main(string[] args)
             => new Program().MainAsync().GetAwaiter().GetResult();        
@@ -44,7 +42,8 @@ namespace TripleZero
             autoFacContainer = AutofacConfig.ConfigureContainer();
             using (var scope = autoFacContainer.BeginLifetimeScope())
             {
-                applicationSettings = scope.Resolve<ApplicationSettings>();                
+                applicationSettings = scope.Resolve<ApplicationSettings>();
+                mongoDBSettings = scope.Resolve<MongoDBSettings>();
                 commands = scope.Resolve<CommandService>();                
                 client = scope.Resolve<DiscordSocketClient>();                
                 scope.Resolve<IMappingConfiguration>();
@@ -71,6 +70,8 @@ namespace TripleZero
             //client.MessageReceived += MessageReceived;
 
             await Task.Delay(3000);
+            await TestGuildPlayers("41st");
+            //await TestPlayerReport("tsitas_66");
             //await TestGuildModule("41s", "gk");
             //await TestCharacterModule("tsitas_66", "cls");
 
@@ -78,8 +79,28 @@ namespace TripleZero
 
         }
 
+        #region "tests"
 
-       
+
+        private async Task TestGuildPlayers(string guildAlias)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format("$guildPlayers {0}", guildAlias));
+        }
+        private async Task TestPlayerReport(string username)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format("$playerreport {0}", username));
+        }
+
+        private async Task TestPlayerMods(string username)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format("^mods -speed {0} 10", username));
+        }
 
         private async Task TestGuildModule(string guild, string characterName)
         {
@@ -94,6 +115,10 @@ namespace TripleZero
 
             await channel.SendMessageAsync(string.Format("^ch {0} {1}", userName, characterName));
         }
+        #endregion
+
+
+
 
 
         private static void Logo() //prints application name,version etc
@@ -112,11 +137,12 @@ namespace TripleZero
         public async Task InstallCommands()
         {
             client.MessageReceived += HandleCommandAsync;
-            await commands.AddModuleAsync<MathModule>();
-            await commands.AddModuleAsync<HelpModule>();
-            await commands.AddModuleAsync<TestModule>();
             await commands.AddModuleAsync<GuildModule>();
             await commands.AddModuleAsync<CharacterModule>();
+            await commands.AddModuleAsync<ModsModule>();
+            await commands.AddModuleAsync<HelpModule>();
+            await commands.AddModuleAsync<FunModule>();
+            
         }
 
         public async Task MessageReceived(SocketGuildUser user)
@@ -150,7 +176,6 @@ namespace TripleZero
 
 
 
-
             /////////////////////////////Don't forget to exclude bots///////////////////////
             //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
 
@@ -167,7 +192,7 @@ namespace TripleZero
             // you want to prefix your commands with.
             // Uncomment the second half if you also want
             // commands to be invoked by mentioning the bot instead.
-            if (msg.HasCharPrefix('^', ref pos) /* || msg.HasMentionPrefix(_client.CurrentUser, ref pos) */)
+            if (msg.HasCharPrefix(Convert.ToChar(applicationSettings.Get().DiscordSettings.Prefix), ref pos) /* || msg.HasMentionPrefix(_client.CurrentUser, ref pos) */)
             {
                 // Create a Command Context.
                 var context = new SocketCommandContext(client, msg);

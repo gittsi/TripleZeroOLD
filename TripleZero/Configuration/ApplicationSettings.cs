@@ -37,6 +37,10 @@ namespace TripleZero.Configuration
                      Prefix = _SettingsConfigurationRoot.GetSection("Discord_Settings")["Prefix"]
 
                 },
+                MongoDBSettings = new MongoDBSettings()
+                {
+                    ApiKey=_SettingsConfigurationRoot.GetSection("MongoDB_Settings")["ApiKey"]
+                }
             };
 
             return appSettings;

@@ -23,6 +23,9 @@ namespace SwGoh
             PlayerName = name;
         }
 
+        [JsonProperty(PropertyName = "Id")]
+        [JsonIgnore]        
+        public string Id { get; set; }
         public string PlayerName { get; set; }
         public string PlayerNameInGame { get; set; }
         public DateTime LastSwGohUpdated { get; set; }

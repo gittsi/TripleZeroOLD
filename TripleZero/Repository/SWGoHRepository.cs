@@ -1,14 +1,21 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SwGoh;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using TripleZero._Mapping;
+using TripleZero.Helper;
+using TripleZero.Model;
 using TripleZero.Repository.Dto;
 
-namespace TripleZero.Repository.SWGoHRepository
+namespace TripleZero.Repository
 {
     public class SWGoHRepository : ISWGoHRepository
     {
@@ -17,65 +24,7 @@ namespace TripleZero.Repository.SWGoHRepository
         public SWGoHRepository(IMappingConfiguration mappingConfiguration)
         {
             _Mapper = mappingConfiguration.GetConfigureMapper();
-        }
-
-        public async Task<CharacterDto> GetCharacter(string userName, string characterCommand)
-        {
-
-            CharacterDto character = new CharacterDto();
-
-            var url = string.Format("https://swgoh.gg/u/{1}/collection/{0}/", characterCommand,userName);
-
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-                HttpContent content = response.Content;
-                string reqResult = await content.ReadAsStringAsync();
-
-                int index = reqResult.IndexOf("<h5>General</h5>", reqResult.Length / 2);
-
-                if (index != -1)
-                {
-                    string retver = reqResult.Substring(index);
-                    string health = "";
-                    for (int i = 17; i < 160; i++)
-                    {
-                        if (char.IsNumber(retver[i]))
-                        {
-                            health += retver[i];
-                        }
-                    }
-                    int.TryParse(health, out int healthValue);
-                    character.Health = healthValue;
-
-                    index = retver.IndexOf("Health");
-                    if (index != -1)
-                    {
-                        retver = retver.Substring(index);
-                        string protection = "";
-                        for (int i = 0; i < 150; i++)
-                        {
-                            if (char.IsNumber(retver[i]))
-                            {
-                                protection += retver[i];
-                            }
-                        }
-                        int.TryParse(protection, out int protectionValue);
-                        character.Protection = protectionValue;
-
-                    }
-
-                    
-                }
-            }
-
-            return character;
-                
-
-            
-
-
-        }
+        }       
 
 
         public async Task<GuildCharacterDto> GetGuildCharacter(int guildName, string characterName)
@@ -106,13 +55,16 @@ namespace TripleZero.Repository.SWGoHRepository
                 catch(Exception ex)
                 {
                     //swallow the error
+                    Consoler.WriteLineInColor(ex.Message, ConsoleColor.Red);
                     return chars;
                 }                
 
                 foreach (var row in json)
                 {
-                    GuildCharacterDto gc = new GuildCharacterDto();
-                    gc.Name = row.Key;
+                    GuildCharacterDto gc = new GuildCharacterDto
+                    {
+                        Name = row.Key
+                    };
 
                     List<GuildPlayerCharacterDto> players = new List<GuildPlayerCharacterDto>();
                     foreach (var player in row.Value)
@@ -127,9 +79,7 @@ namespace TripleZero.Repository.SWGoHRepository
             return chars;
         }
 
-        public Task<List<CharacterDto>> GetPlayer(string userName)
-        {
-            throw new NotImplementedException();
-        }
+       
+
     }
 }
