@@ -49,7 +49,7 @@ namespace SwGoh
                 using (HttpClient client = new HttpClient())
                 {
                     var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
-                    var orderby = "s={\"LastSwGohUpdated\":1}";
+                    var orderby = "s={\"LastSwGohUpdated\":-1}";
                     var limit = "l=1";
                     string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
@@ -108,7 +108,7 @@ namespace SwGoh
                     HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        ConsoleMessage("Added To Database : " + PlayerName);
+                        ConsoleMessage("Added To Database : " + PlayerNameInGame);
                     }
                     else
                     {

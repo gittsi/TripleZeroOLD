@@ -17,6 +17,8 @@ namespace SwGoh
         public int Stars { get; set; }
         public int Gear { get; set; }
         public int Level { get; set; }
+        //public int Power { get; set; }
+        //public int StatPower { get; set; }
         public List<Ability> Abilities { get; set; }
 
         #region General
@@ -34,6 +36,25 @@ namespace SwGoh
         public decimal PhysicalCriticalChance { get; set; }
         public int ArmorPenetration { get; set; }
         public int PhysicalAccuracy { get; set; }
+        #endregion
+
+        #region Physical Survivability
+        //public decimal Armor { get; set; }
+        //public decimal DodgeChance { get; set; }
+        //public decimal PhysicalCriticalAvoidance { get; set; }
+        #endregion
+
+        #region Special Offense
+        //public int SpecialDamage { get; set; }
+        //public decimal SpecialCriticalChance { get; set; }
+        //public int ResistancePenetration { get; set; }
+        //public decimal SpecialAccuracy { get; set; }
+        #endregion
+
+        #region Special Survivability
+        //public decimal Resistance { get; set; }
+        //public decimal DeflectionChance { get; set; }
+        //public decimal SpecialCriticalAvoidance { get; set; }
         #endregion
 
         public List<Mod> Mods { get; set; }
