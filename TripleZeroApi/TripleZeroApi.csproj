@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SwGoh\SwGoh.csproj" />
+    <ProjectReference Include="..\SWGoH.Core.Net\SWGoH.Core.Net.csproj" />
   </ItemGroup>
 
 </Project>

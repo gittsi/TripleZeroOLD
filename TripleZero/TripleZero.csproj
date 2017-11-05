@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SwGoh\SwGoh.csproj" />
+    <ProjectReference Include="..\SWGoH.Core.Net\SWGoH.Core.Net.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties Configuration_4config_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
