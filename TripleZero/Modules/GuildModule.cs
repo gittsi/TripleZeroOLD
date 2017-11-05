@@ -38,7 +38,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId,characterConfig.Name);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId,characterConfig.Command);
 
             if (res != null)
             {
@@ -136,10 +136,12 @@ namespace TripleZero.Modules
             }
 
             retStr += "\n";
+            int counter = 1;
             foreach (var player in guildPlayers)
             {
                 
-                retStr += $"\n{player.PlayerName} ({player.PlayerNameInGame})";
+                retStr += $"\n{counter}) {player.PlayerName} ({player.PlayerNameInGame})";
+                counter += 1;
                 //retStr += string.Format("\n{0} {1} {2} {3}", player.GPcharacters.ToString().PadRight(7, ' '), player.GPships.ToString().PadRight(7,' '),player.PlayerNameInGame,player.PlayerName);
             }
 

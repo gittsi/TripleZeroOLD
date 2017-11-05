@@ -88,12 +88,14 @@ namespace SwGoh
 
     public enum ModValueType
     {
+        None=-1,
         Flat = 0,
         Percentage = 1
     }
 
     public enum ModStatType
     {
+        None = 0,
         Speed = 1,
         CriticalChance = 2,
         CriticalDamage = 3,
@@ -109,6 +111,7 @@ namespace SwGoh
 
     public enum ModSlot
     {
+        None=0,
         Transmitter = 1,
         Receiver = 2,
         Processor = 3,
@@ -120,6 +123,7 @@ namespace SwGoh
 
     public enum ModSet
     {
+        None=0,
         Health = 1,
         Defense = 2,
         CriticalDamage = 3,
