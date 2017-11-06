@@ -14,72 +14,22 @@ using SwGoh;
 
 namespace TripleZero.Modules
 {
-    [Name("Character")]
-    [Summary("Do some character test I guess")]
-    public class CharacterModule : ModuleBase<SocketCommandContext>
+    [Name("Player")]
+    [Summary("Player Commands")]
+    public class PlayerModule : ModuleBase<SocketCommandContext>
     {        
 
-        [Command("characterstats")]
-        [Summary("Get character stats for specific player.\nUsage : ***$characterstats {playerUserName} {characterAlias}***")]
-        public async Task GetCharacterStats(string playerUserName, string characterAlias)
+        [Command("playerreload")]
+        [Summary("Set a player for reload.\nUsage : ***$playerreload {playerUserName}***")]
+        public async Task SetPlayerReload(string playerUserName)
         {
-            string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
-
-            await ReplyAsync($"{loadingStr}");
-
-            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
-
-            if (playerData == null)
-            {
-                await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
-                return;
-            }
-
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfig(characterAlias).Result;
-
-            var character = playerData.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
-
-            if (character == null)
-            {
-                await ReplyAsync($"I couldn't find data for character : ***{characterConfig.Name}*** for player : ***{playerUserName}***.");
-                return;
-            }
+            var result = IResolver.Current.MongoDBRepository.SendPlayerToQueue(playerUserName).Result;
 
             string retStr = "";
-            retStr += string.Format("\n{0} - {1}* g{2} lvl:{3}", character.Name, character.Stars, character.Gear, character.Level);
-            retStr += string.Format("\nPower {0} - StatPower {1}", character.Power, character.StatPower);
-
-            retStr += "\n\n**General**";
-            retStr += $"\nProtection: {character.Protection}";
-            retStr += $"\nHealth: {character.Health}";
-            retStr += $"\nSpeed: {character.Speed}";
-            retStr += $"\nHealth Steal: {character.HealthSteal} %";
-            retStr += $"\nCritical Damage: {character.CriticalDamage} %";
-            retStr += $"\nPotency: {character.Potency} %";
-            retStr += $"\nTenacity: {character.Tenacity} %";
-
-            retStr += "\n\n**Physical Offense**";
-            retStr += $"\nPhysical Damage: {character.PhysicalDamage}";
-            retStr += $"\nPhysical Critical Chance: {character.PhysicalCriticalChance}";
-            retStr += $"\nPhysical Accuracy: {character.PhysicalAccuracy} %";
-            retStr += $"\nArmor Penetration: {character.ArmorPenetration} %";
-
-            retStr += "\n\n**Special Offense**";
-            retStr += $"\nSpecial Damage: {character.SpecialDamage} %";
-            retStr += $"\nSpecial Critical Chance: {character.SpecialCriticalChance} %";
-            retStr += $"\nSpecial Accuracy: {character.SpecialAccuracy} %";
-
-            retStr += "\n\n**Physical Survivability**";
-            retStr += $"\nArmor: {character.Armor} %";
-            retStr += $"\nDodge Chance: {character.DodgeChance} %";
-            retStr += $"\nPhysical Critical Avoidance: {character.PhysicalCriticalAvoidance} %";
-
-            retStr += "\n\n**Special Survivability**";
-            retStr += $"\nResistance: {character.Resistance} %";
-            retStr += $"\nDeflection Chance: {character.DeflectionChance} %";
-            retStr += $"\nSpecial Critical Avoidance: {character.SpecialCriticalAvoidance} %";
-
-
+            if (result != null)
+                retStr = string.Format("Player {0} added to queue. Please be patient, I need some time to retrieve data!!!",playerUserName);
+            else
+                retStr = string.Format("Player {0} not added to queue!!!!!");
 
             await ReplyAsync($"{retStr}");
         }

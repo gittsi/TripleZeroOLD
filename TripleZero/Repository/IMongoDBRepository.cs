@@ -13,6 +13,8 @@ namespace TripleZero.Repository
 
         Task<GuildDto> GetGuildPlayers(string guildName);
 
+        Task<string> SendPlayerToQueue(string playerName);
+
      //   Task<GuildConfig> GetConfigGuild(string guildAlias);
     }
 }

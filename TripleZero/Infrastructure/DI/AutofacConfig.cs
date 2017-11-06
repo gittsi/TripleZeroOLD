@@ -33,6 +33,7 @@ namespace TripleZero.Infrastructure.DI
             builder.RegisterType<GuildModule>().InstancePerDependency();
             builder.RegisterType<CharacterModule>().InstancePerDependency();
             builder.RegisterType<ModsModule>().InstancePerDependency();
+            builder.RegisterType<PlayerModule>().InstancePerDependency();
 
             builder.RegisterType<DiscordSocketClient>().SingleInstance();
 
