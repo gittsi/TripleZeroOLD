@@ -133,7 +133,7 @@ namespace SwGoh
             value = value.Replace("%20", "");
             PlayerName = value;
 
-            Export(ExportMethod);
+           
 
             string html = "";
             try
