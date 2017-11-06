@@ -51,19 +51,22 @@ namespace SwGoh
         {
             using (HttpClient client = new HttpClient())
             {
-                var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
-                var orderby = "s={\"LastSwGohUpdated\":1}";
-                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                //var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
+                //var orderby = "s={\"LastSwGohUpdated\":1}";
+                //string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
-                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
-                string response = client.GetStringAsync(url).Result;
-                if (response!= "")
-                {
+                //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
+                //string response = client.GetStringAsync(url).Result;
+                //if (response!= "")
+                //{
+
+                //    WebRequest request = WebRequest.Create(url);
+                //    request.Method = "DELETE";
+                //    HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+
                     
-                    List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
                     
-                    
-                }
+                //}
             }
         }
         public void Export(ExportMethodEnum ExportMethod)
