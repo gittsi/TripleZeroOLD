@@ -47,6 +47,28 @@ namespace SwGoh
                 }
             }
         }
+        private void DeletePlayerFromDB()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                //var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
+                //var orderby = "s={\"LastSwGohUpdated\":1}";
+                //string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+
+                //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
+                //string response = client.GetStringAsync(url).Result;
+                //if (response!= "")
+                //{
+
+                //    WebRequest request = WebRequest.Create(url);
+                //    request.Method = "DELETE";
+                //    HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+
+                    
+                    
+                //}
+            }
+        }
         public void Export(ExportMethodEnum ExportMethod)
         {
             if (ExportMethod == ExportMethodEnum.File)
@@ -88,6 +110,8 @@ namespace SwGoh
                     if (response.IsSuccessStatusCode)
                     {
                         ConsoleMessage("Added To Database : " + PlayerNameInGame);
+
+                        DeletePlayerFromDB();
                     }
                     else
                     {
@@ -103,6 +127,13 @@ namespace SwGoh
 
             web = new System.Net.WebClient();
             Uri uri = new Uri("https://swgoh.gg/u/" + PlayerName + "/collection/");
+
+            string value = PlayerName;
+            value = value.Replace(" ", "");
+            value = value.Replace("%20", "");
+            PlayerName = value;
+
+           
 
             string html = "";
             try
@@ -247,12 +278,36 @@ namespace SwGoh
             bool ret1 = false;
             int valueint = 0;
 
-            string strtosearch = "Last updated:";
+            string strtosearch = "Guild <strong";
             int index = html.IndexOf(strtosearch);
             Position = index + strtosearch.Length;
             if (index != -1)
             {
-                //string rest = html.Substring(Position);
+                strtosearch = "<a href=\"";
+                index = html.IndexOf(strtosearch,Position);
+                Position = index + strtosearch.Length;
+                if (index != -1)
+                {
+                    string reststrTosearchStart = "\">";
+                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    string reststrTosearchEnd = "</a>";
+                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        string value = html.Substring(start, length);
+                        Position = restindexEnd;
+
+                        GuildName = value;
+                    }
+                }
+            }
+            strtosearch = "Last updated:";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
                 string reststrTosearchStart = "data-datetime=\"";
                 int restindexStart = html.IndexOf(reststrTosearchStart, Position);
                 string reststrTosearchEnd = "\" data";
@@ -284,7 +339,7 @@ namespace SwGoh
                 {
                     int start = restindexStart + reststrTosearchStart.Length;
                     int length = restindexEnd - start;
-                    string value = html.Substring(start, length);
+                    string value = WebUtility.HtmlDecode(html.Substring(start, length));
                     Position = restindexEnd;
 
                     PlayerNameInGame = value;

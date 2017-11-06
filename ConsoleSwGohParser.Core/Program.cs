@@ -23,8 +23,7 @@ namespace SwGoh
 
         static void Main(string[] args)
         {
-            //string pname = "41st";
-            //Command command = Command.UpdateGuild;
+            
 
             //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 
@@ -32,6 +31,8 @@ namespace SwGoh
 
             string pname = "newholborn";
             Command command = Command.UpdatePlayer;
+            //string pname = "41st";
+            //Command command = Command.UpdateGuildWithNoChars;
 
 
             if (args.Length > 0)
