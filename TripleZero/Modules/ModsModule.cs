@@ -18,7 +18,9 @@ namespace TripleZero.Modules
     [Summary("Do some player test I guess")]
     public class ModsModule : ModuleBase<SocketCommandContext>
     {
-        private async void SendModReply(string playerUserName, ModStatType modStatType, ModValueType secondaryStatValueType ,List<Tuple<string, Mod>> result)
+
+        #region "Secondary stats"
+        private async void SendSecondaryModReply(string playerUserName, ModStatType modStatType, ModValueType secondaryStatValueType ,List<Tuple<string, Mod>> result)
         {
             string retStr = "";
             if (result != null)
@@ -28,7 +30,7 @@ namespace TripleZero.Modules
                 foreach (var row in result)
                 {
                     var modStats = row.Item2.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType==secondaryStatValueType ).FirstOrDefault();
-                    var newString = string.Format("{3}: **{2}{4}** {1}{0}", row.Item1.PadRight(25), row.Item2.Type.ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), secondaryStatValueType== ModValueType.Percentage ? "%" : "");
+                    var newString = string.Format("{3}: **{2}{4}** {1} {0}", row.Item1.PadRight(25), row.Item2.Type.ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), secondaryStatValueType== ModValueType.Percentage ? "%" : "");
 
                     if (retStr.Length + newString.Length > 2000)
                         break;
@@ -51,7 +53,7 @@ namespace TripleZero.Modules
             }
         }
 
-        private async Task<List<Tuple<string, Mod>>> GetSpecificMods(string playerUserName,ModStatType modStatType, ModValueType modValueType, int rows =20)
+        private async Task<List<Tuple<string, Mod>>> GetSpecificSecondaryMods(string playerUserName,ModStatType modStatType, ModValueType modValueType, int rows =20)
         {
             var res = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
 
@@ -76,8 +78,8 @@ namespace TripleZero.Modules
         }
 
         [Command("mods -s")]
-        [Summary("Get mods sorted by a secondary stat of a given player.\nUsage : ***mods {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n examples \n1) $mods playerName defense \n2) $mods playerName defense% 5)")]
-        public async Task GetSpeedMods(string playerUserName, string modType, int rows = 20)
+        [Summary("Get mods sorted by a secondary stat of a given player.\nUsage : ***mods -s {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n examples \n1) $mods -s playerName defense \n2) $mods -s playerName defense% 5)")]
+        public async Task GetSecondaryStatMods(string playerUserName, string modType, int rows = 20)
         {
             ModStatType secondaryStatType=ModStatType.None;
             ModValueType secondaryStatValueType = ModValueType.None;
@@ -109,17 +111,98 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var result =await GetSpecificMods(playerUserName, secondaryStatType, secondaryStatValueType, rows);
-            SendModReply(playerUserName, secondaryStatType, secondaryStatValueType, result);
+            var result =await GetSpecificSecondaryMods(playerUserName, secondaryStatType, secondaryStatValueType, rows);
+            SendSecondaryModReply(playerUserName, secondaryStatType, secondaryStatValueType, result);
+        }
+        #endregion
+
+        #region "Primary stats"
+
+        private async void SendPrimaryModReply(string playerUserName, ModStatType modStatType,List<Tuple<string, Mod>> result)
+        {
+            string retStr = "";
+            if (result != null)
+            {
+                //await ReplyAsync($"***Guild : {fullGuildName} - Character : {fullCharacterName}***");
+
+                foreach (var row in result)
+                {
+                    var modStats = row.Item2.PrimaryStat;//.Where(p => p.StatType == modStatType && p.ValueType == secondaryStatValueType).FirstOrDefault();
+                    var newString = string.Format("{3}: **{2}{4}** {1} {0}", row.Item1.PadRight(25), row.Item2.Type.ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), modStats.ValueType == ModValueType.Percentage ? "%" : "");
+
+                    if (retStr.Length + newString.Length > 2000)
+                        break;
+                    retStr += "\n";
+                    retStr += newString;
+
+                }
+
+                if (retStr.Length > 0)
+                    await ReplyAsync($"{retStr}");
+                else
+                    await ReplyAsync($"No mods found!");
+
+            }
+            else
+            {
+
+                retStr = $"I didn't find any mods for username {playerUserName}`";
+                await ReplyAsync($"{retStr}");
+            }
         }
 
-        //[Command("mods -potency")]
-        //[Summary("Get mods sorted with potency secondary of a given player.\nUsage : ***mods -speed {playerUserName} {rows(optional)}***")]
-        //public async Task GetSpeedMods(string playerUserName, int rows = 20)
-        //{
-        //    var result = GetSpecificMods(playerUserName, ModStatType.Speed, rows);
-        //    SendModReply(playerUserName, ModStatType.Speed, result);
-        //}
+        private async Task<List<Tuple<string, Mod>>> GetSpecificPrimaryMods(string playerUserName, ModStatType modStatType, int rows = 20)
+        {
+            var res = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
+
+
+            if (res == null)
+            {
+                await ReplyAsync($"I couldn't find player : {playerUserName}...");
+                return null;
+            }
+
+            var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
+                              from Mod in Character.Mods.Where(p => p.PrimaryStat != null && p.PrimaryStat.StatType== modStatType)
+                              select new
+                              {
+                                  Character.Name,
+                                  Mod
+                              }
+                        ).OrderByDescending(t => t.Mod.PrimaryStat.Value).Take(rows).ToList();
+
+            return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
+        }
+
+
+        [Command("mods -p")]
+        [Summary("Get mods sorted by a primary stat of a given player.\nUsage : ***mods -p {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n examples \n1) $mods -p playerName speed 5)")]
+        public async Task GetPrimaryStatMods(string playerUserName, string modType, int rows = 20)
+        {
+            ModStatType primaryStatType = ModStatType.None;
+            
+            if (modType.ToLower() == "speed") primaryStatType = ModStatType.Speed;
+            if (modType.ToLower() == "potency") primaryStatType = ModStatType.Potency;
+            if (modType.ToLower() == "accuracy") primaryStatType = ModStatType.Accuracy;
+            if (modType.ToLower() == "criticalavoidance") primaryStatType = ModStatType.CriticalAvoidance;
+            if (modType.ToLower() == "criticalchance") primaryStatType = ModStatType.CriticalChance;
+            if (modType.ToLower() == "criticaldamage") primaryStatType = ModStatType.CriticalDamage;
+            if (modType.ToLower() == "defense") primaryStatType = ModStatType.Defense;
+            if (modType.ToLower() == "health") primaryStatType = ModStatType.Health;
+            if (modType.ToLower() == "offense") primaryStatType = ModStatType.Offense;
+            if (modType.ToLower() == "protection") primaryStatType = ModStatType.Protection;
+            if (modType.ToLower() == "tenacity") primaryStatType = ModStatType.Tenacity;
+
+            if (primaryStatType == ModStatType.None)
+            {
+                await ReplyAsync($"Something is wrong with your command...");
+                return;
+            }
+
+            var result = await GetSpecificPrimaryMods(playerUserName, primaryStatType, rows);
+            SendPrimaryModReply(playerUserName, primaryStatType, result);
+        }
+        #endregion
 
 
     }
