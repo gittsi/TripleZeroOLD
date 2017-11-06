@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace SwGoh
@@ -12,7 +15,7 @@ namespace SwGoh
         {
             PlayerName = name;
         }
-
+        public ObjectId Id { get; set; }
         public string PlayerName { get; set; }
         public string PlayerNameInGame { get; set; }
         public DateTime LastSwGohUpdated { get; set; }
