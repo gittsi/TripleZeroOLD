@@ -115,10 +115,10 @@ namespace TripleZero.Modules
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
             List<PlayerDto> guildPlayers = new List<PlayerDto>();
 
-            retStr += string.Format("\nFound **{0} players**", result.Players.Count().ToString().PadLeft(30));
-            retStr += string.Format("\nTotal GP **{0}**", result.GP.ToString().PadLeft(30));
-            retStr += string.Format("\nCharacter GP **{0}**", result.Players.Sum(p=>p.GPcharacters).ToString().PadLeft(30));
-            retStr += string.Format("\nShip GP **{0}**", result.Players.Sum(p => p.GPships).ToString().PadLeft(30));           
+            retStr += string.Format("\nFound **{0}** players for guild **{1}**\n", result.Players.Count(), guildConfig.Name);
+            retStr += string.Format("\nTotal GP **{0:n0}**", result.GP);
+            retStr += string.Format("\nCharacter GP **{0:n0}**", result.Players.Sum(p=>p.GPcharacters));
+            retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GPships));           
 
             await ReplyAsync($"{retStr}");
 
