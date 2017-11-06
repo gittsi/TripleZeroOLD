@@ -106,6 +106,24 @@ namespace TripleZero.Modules
 
         }
 
+        [Command("tb")]
+        [Summary("Get details about Galactic Power for the specified guild.\nUsage : ***$tb  {guildAlias or guildId}***")]
+        public async Task GetCharacterGP(string guildAlias)
+        {
+            string retStr = "";
+            var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
+            var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+            List<PlayerDto> guildPlayers = new List<PlayerDto>();
+
+            retStr += string.Format("\nFound **{0} players**", result.Players.Count().ToString().PadLeft(30));
+            retStr += string.Format("\nTotal GP **{0}**", result.GP.ToString().PadLeft(30));
+            retStr += string.Format("\nCharacter GP **{0}**", result.Players.Sum(p=>p.GPcharacters).ToString().PadLeft(30));
+            retStr += string.Format("\nShip GP **{0}**", result.Players.Sum(p => p.GPships).ToString().PadLeft(30));           
+
+            await ReplyAsync($"{retStr}");
+
+        }
+
 
         [Command("guildPlayers")]
         [Summary("Get available players in specified guild.\nUsage : ***$guildPlayers {guildAlias or guildId} {searchString(optional)}***")]

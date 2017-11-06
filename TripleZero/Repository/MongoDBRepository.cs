@@ -43,7 +43,7 @@ namespace TripleZero.Repository
             await Task.FromResult(1);
   
             var queryData = string.Concat("q={\"PlayerName\":\"", userName,"\"}");
-            var orderby= "s={\"LastUpdated\":1}";
+            var orderby= "s={\"LastSwGohUpdated\":-1}";
             var limit = "l=1";   
             var apiKey= IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
@@ -70,7 +70,7 @@ namespace TripleZero.Repository
             await Task.FromResult(1);
 
             var queryData = string.Concat("q={\"Name\":\"", guildName, "\"}");
-            var orderby = "s={\"LastUpdated\":1}";
+            var orderby = "s={\"LastSwGohUpdated\":-1}";
             var limit = "l=1";
             var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
