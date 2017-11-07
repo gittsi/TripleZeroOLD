@@ -16,6 +16,9 @@ using TripleZero.Infrastructure.DI;
 using TripleZero.Model;
 using TripleZero.Repository.Dto;
 using TripleZero.Repository;
+using MongoDB.Bson;
+using SWGoH;
+using MongoDB.Bson.Serialization;
 
 namespace TripleZero.Repository
 {
@@ -40,7 +43,7 @@ namespace TripleZero.Repository
             await Task.FromResult(1);
   
             var queryData = string.Concat("q={\"PlayerName\":\"", userName,"\"}");
-            var orderby= "s={\"LastUpdated\":1}";
+            var orderby= "s={\"LastSwGohUpdated\":-1}";
             var limit = "l=1";   
             var apiKey= IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
@@ -67,7 +70,7 @@ namespace TripleZero.Repository
             await Task.FromResult(1);
 
             var queryData = string.Concat("q={\"Name\":\"", guildName, "\"}");
-            var orderby = "s={\"LastUpdated\":1}";
+            var orderby = "s={\"LastSwGohUpdated\":-1}";
             var limit = "l=1";
             var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
@@ -87,19 +90,42 @@ namespace TripleZero.Repository
             {
                 throw new ApplicationException(ex.Message);
             }
-
-            //var filter = "*.json";
-            //string path = string.Format("{0}/_Data/{1}/", Directory.GetCurrentDirectory(), guildName);
-            //string[] files = Directory.GetFiles(path, filter);
-
-            //for (int i = 0; i < files.Length; i++)
-            //{
-            //    var lastUpdate = File.GetLastWriteTimeUtc(files[i]).ToString("yyyy-MM-dd HH:mm:ss");
-            //    files[i] = string.Format("{0} - Last update : {1}", Path.GetFileName(files[i].Replace(".json", "")), lastUpdate);
-            //}
-            //return files.ToList();
+            
         }
 
-        
+        public async Task<string> SendPlayerToQueue(string playerName)
+        {
+            JObject data = new JObject(
+               new JProperty("PlayerName", playerName)
+               , new JProperty("Date", DateTime.Now)
+           );
+
+            using (HttpClient client = new HttpClient())
+            {
+                var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+
+                var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player?apiKey={0}", apiKey);
+
+                try
+                {
+                    using (HttpResponseMessage response = await client.PostAsync(requestUri, httpContent))
+                    {
+                        response.EnsureSuccessStatusCode();
+                        string responseBody = await response.Content.ReadAsStringAsync();
+
+                        BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
+                        var queuePlayer = BsonSerializer.Deserialize<QueuePlayer>(document);
+
+                        return queuePlayer==null ? null : queuePlayer.Id.ToString();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    return null;
+                }
+                
+            }
+        }
     }
 }

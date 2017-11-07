@@ -169,6 +169,7 @@ namespace TripleZero
             await commands.AddModuleAsync<GuildModule>();
             await commands.AddModuleAsync<CharacterModule>();
             await commands.AddModuleAsync<ModsModule>();
+            await commands.AddModuleAsync<PlayerModule>();
             await commands.AddModuleAsync<HelpModule>();
             await commands.AddModuleAsync<FunModule>();
             
