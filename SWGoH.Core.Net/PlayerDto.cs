@@ -16,6 +16,7 @@ namespace SwGoh
             PlayerName = name;
         }
         public ObjectId Id { get; set; }
+        public string GuildName { get; set; }
         public string PlayerName { get; set; }
         public string PlayerNameInGame { get; set; }
         public DateTime LastSwGohUpdated { get; set; }

@@ -1,8 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using Newtonsoft.Json;
+using SWGoH;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -47,10 +51,26 @@ namespace SwGoh
                 }
             }
         }
-        private void DeletePlayerFromDB()
+        private async void DeletePlayerFromDBAsync()
         {
             using (HttpClient client = new HttpClient())
             {
+                var queryData = string.Concat("q={\"PlayerName\":\"", "jonni", "\"}");
+                var orderby = "s={\"Date\":1}";
+                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
+                var response = await client.GetStringAsync(url);
+                List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                var result1 = BsonSerializer.Deserialize<QueuePlayer>(document.FirstOrDefault());
+
+                if (result1 != null)
+                {
+                    var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/{0}?apiKey={1}", result1.Id, apikey);
+                    WebRequest request = WebRequest.Create(deleteurl);
+                    request.Method = "DELETE";
+                    HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                }
+
                 //var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
                 //var orderby = "s={\"LastSwGohUpdated\":1}";
                 //string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
@@ -59,13 +79,9 @@ namespace SwGoh
                 //string response = client.GetStringAsync(url).Result;
                 //if (response!= "")
                 //{
-
                 //    WebRequest request = WebRequest.Create(url);
                 //    request.Method = "DELETE";
                 //    HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
-
-                    
-                    
                 //}
             }
         }
@@ -111,7 +127,7 @@ namespace SwGoh
                     {
                         ConsoleMessage("Added To Database : " + PlayerNameInGame);
 
-                        DeletePlayerFromDB();
+                        DeletePlayerFromDBAsync();
                     }
                     else
                     {

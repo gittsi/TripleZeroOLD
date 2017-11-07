@@ -23,17 +23,12 @@ namespace SwGoh
 
         static void Main(string[] args)
         {
-            
-
-            //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
-
             ExportMethodEnum mExportMethod = ExportMethodEnum.Database;
 
             string pname = "newholborn";
             Command command = Command.UpdatePlayer;
             //string pname = "41st";
             //Command command = Command.UpdateGuildWithNoChars;
-
 
             if (args.Length > 0)
             {
