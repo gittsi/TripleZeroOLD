@@ -135,18 +135,18 @@ namespace SwGoh
                     {
                         //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 
-                        //SwGoh.GuildDto guild = new GuildDto();
-                        //guild.Name = guild.GetGuildNameFromAlias("41st");
-                        //guild.ParseSwGoh();
-                        //for (int i = 0; i < guild.PlayerNamesForURL.Count; i++)
-                        //{
-                        //    QueueMethods.AddPlayer(guild.PlayerNamesForURL[0], "up",2);
-                        //}
-                        //QueueMethods.AddPlayer("41st", "ugnochars",3);
+                        SwGoh.GuildDto guild = new GuildDto();
+                        guild.Name = guild.GetGuildNameFromAlias("41st");
+                        guild.ParseSwGoh();
+                        for (int i = 0; i < guild.PlayerNamesForURL.Count; i++)
+                        {
+                            QueueMethods.AddPlayer(guild.PlayerNamesForURL[i], "up", 2);
+                        }
+                        QueueMethods.AddPlayer("41st", "ugnochars", 1);
 
-                        QueueMethods.AddPlayer("tsitas_66", "up",2);
-                        QueueMethods.AddPlayer("tsitas_66", "up",1);
-                        QueueMethods.AddPlayer("tsitas_66", "up", 3);
+                        //QueueMethods.AddPlayer("tsitas_66", "up",2);
+                        //QueueMethods.AddPlayer("tsitas_66", "up",1);
+                        //QueueMethods.AddPlayer("tsitas_66", "up", 3);
                         //QueueMethods.AddPlayer("41st", "ugnochars");
                         //for (int i = 0; i < 10; i++)
                         //{
