@@ -23,15 +23,17 @@ namespace SwGoh
     class Program
     {
         public static bool isWorking = false;
+        
         static void Main(string[] args)
         {
-            Timer t = new Timer(TimerCallback, null, 0, 2000);
+            Timer t = new Timer(new TimerCallback(TimerProc));
+            t.Change(0, 3000);
+            
             Console.ReadLine();
         }
 
-        private static void TimerCallback(Object o)
+        private static void TimerProc(Object o)
         {
-            
             if (isWorking) return;
             isWorking = true;
             //ExecuteCommand("test", ""); return;
@@ -40,6 +42,10 @@ namespace SwGoh
             {
                 ExecuteCommand(q.Command, q.PlayerName);
                 QueueMethods.RemoveFromQueu(q);
+            }
+            else
+            {
+                Console.WriteLine("Nothing to process");
             }
             isWorking = false;
             GC.Collect();
@@ -129,17 +135,18 @@ namespace SwGoh
                     {
                         //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 
-                        SwGoh.GuildDto guild = new GuildDto();
-                        guild.Name = guild.GetGuildNameFromAlias("41st");
-                        guild.ParseSwGoh();
-                        for (int i = 0; i < guild.PlayerNamesForURL.Count; i++)
-                        {
-                            QueueMethods.AddPlayer(guild.PlayerNamesForURL[0], "up",2);
-                        }
-                        QueueMethods.AddPlayer("41st", "ugnochars",3);
+                        //SwGoh.GuildDto guild = new GuildDto();
+                        //guild.Name = guild.GetGuildNameFromAlias("41st");
+                        //guild.ParseSwGoh();
+                        //for (int i = 0; i < guild.PlayerNamesForURL.Count; i++)
+                        //{
+                        //    QueueMethods.AddPlayer(guild.PlayerNamesForURL[0], "up",2);
+                        //}
+                        //QueueMethods.AddPlayer("41st", "ugnochars",3);
 
-                        //QueueMethods.AddPlayer("tsitas_66", "up");
-                        //QueueMethods.AddPlayer("tsitas_66", "up");
+                        QueueMethods.AddPlayer("tsitas_66", "up",2);
+                        QueueMethods.AddPlayer("tsitas_66", "up",1);
+                        QueueMethods.AddPlayer("tsitas_66", "up", 3);
                         //QueueMethods.AddPlayer("41st", "ugnochars");
                         //for (int i = 0; i < 10; i++)
                         //{
