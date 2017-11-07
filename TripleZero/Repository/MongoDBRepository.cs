@@ -96,8 +96,11 @@ namespace TripleZero.Repository
         public async Task<string> SendPlayerToQueue(string playerName)
         {
             JObject data = new JObject(
-               new JProperty("PlayerName", playerName)
-               , new JProperty("Date", DateTime.Now)
+                new JProperty("PlayerName", playerName),
+                new JProperty("Date", DateTime.UtcNow),
+                new JProperty("Status", 0),
+                new JProperty("Priority", 1),
+                new JProperty("Command", "up")
            );
 
             using (HttpClient client = new HttpClient())
