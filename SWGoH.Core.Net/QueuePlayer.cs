@@ -7,8 +7,11 @@ namespace SWGoH
 {
     public class QueuePlayer
     {
-        public ObjectId Id { get; set; }
+        public Nullable <ObjectId> Id { get; set; }
         public string PlayerName { get; set; }
         public DateTime Date { get; set; }
+        public string Command { get; set; }
+        public int Priority { get; set; }
+        public int Status { get; set; }
     }
 }

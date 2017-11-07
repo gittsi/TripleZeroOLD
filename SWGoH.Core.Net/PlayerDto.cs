@@ -9,13 +9,13 @@ namespace SwGoh
     public partial class PlayerDto
     {
         private System.Net.WebClient web = null;
-        private int mDelayCharacter = 3000;
+        private int mDelayCharacter = 1000;
         private int mDelayError = 600000;
         public PlayerDto(string name)
         {
             PlayerName = name;
         }
-        public ObjectId Id { get; set; }
+        public Nullable<ObjectId> Id { get; set; }
         public string GuildName { get; set; }
         public string PlayerName { get; set; }
         public string PlayerNameInGame { get; set; }
