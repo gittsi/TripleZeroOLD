@@ -1,7 +1,9 @@
-﻿using System;
+﻿using SWGoH;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SwGoh
@@ -20,33 +22,41 @@ namespace SwGoh
 
     class Program
     {
-
+        public static bool isWorking = false;
         static void Main(string[] args)
         {
+            Timer t = new Timer(TimerCallback, null, 0, 2000);
+            Console.ReadLine();
+        }
+
+        private static void TimerCallback(Object o)
+        {
             
+            if (isWorking) return;
+            isWorking = true;
+            //ExecuteCommand("test", ""); return;
+            QueuePlayer q = QueueMethods.GetQueu();
+            if (q != null)
+            {
+                ExecuteCommand(q.Command, q.PlayerName);
+                QueueMethods.RemoveFromQueu(q);
+            }
+            isWorking = false;
+            GC.Collect();
+        }
 
-            //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
-
+        private static void ExecuteCommand(string commandstr, string pname)
+        {
             ExportMethodEnum mExportMethod = ExportMethodEnum.Database;
 
-            string pname = "newholborn";
-            Command command = Command.UpdatePlayer;
-            //string pname = "41st";
-            //Command command = Command.UpdateGuildWithNoChars;
-
-
-            if (args.Length > 0)
-            {
-                string commandstr = args[0];
-                if (args.Length > 2 && commandstr == "ups") command = Command.UpdatePlayers;
-                else if (commandstr == "up") command = Command.UpdatePlayer;
-                else if (commandstr == "ug") command = Command.UpdateGuild;
-                else if (commandstr == "ugnochars") command = Command.UpdateGuildWithNoChars;
-                else if (commandstr == "help") command = Command.Help;
-                else if (commandstr == "test") command = Command.Test;
-                else command = Command.UnKnown;
-                if (args.Length > 1) pname = args[1];
-            }
+            Command command = Command.UnKnown;
+            if (commandstr == "ups") command = Command.UpdatePlayers;
+            else if (commandstr == "up") command = Command.UpdatePlayer;
+            else if (commandstr == "ug") command = Command.UpdateGuild;
+            else if (commandstr == "ugnochars") command = Command.UpdateGuildWithNoChars;
+            else if (commandstr == "help") command = Command.Help;
+            else if (commandstr == "test") command = Command.Test;
+            else command = Command.UnKnown;
 
             switch (command)
             {
@@ -54,7 +64,11 @@ namespace SwGoh
                     {
                         SwGoh.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true);
-                        if (ret == 1) player.Export(mExportMethod);
+                        if (ret == 1)
+                        {
+                            player.LastClassUpdated = DateTime.UtcNow;
+                            player.Export(mExportMethod);
+                        }
                         break;
                     }
                 case Command.UpdateGuild:
@@ -67,12 +81,14 @@ namespace SwGoh
                     }
                 case Command.UpdatePlayers:
                     {
-                        for (int i = 1; i < args.Length; i++)
+                        string[] arg = pname.Split(',');
+                        for (int i = 0; i < arg.Length; i++)
                         {
-                            SwGoh.PlayerDto player = new PlayerDto(args[i]);
+                            SwGoh.PlayerDto player = new PlayerDto(arg[i]);
                             int ret = player.ParseSwGoh(mExportMethod, true);
                             if (ret == 1)
                             {
+                                player.LastClassUpdated = DateTime.UtcNow;
                                 player.Export(mExportMethod);
                             }
                         }
@@ -111,7 +127,24 @@ namespace SwGoh
                     }
                 case Command.Test:
                     {
-                        SwGoh.CharactersConfig.ExportCharacterFilesToDB();
+                        //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
+
+                        SwGoh.GuildDto guild = new GuildDto();
+                        guild.Name = guild.GetGuildNameFromAlias("41st");
+                        guild.ParseSwGoh();
+                        for (int i = 0; i < guild.PlayerNamesForURL.Count; i++)
+                        {
+                            QueueMethods.AddPlayer(guild.PlayerNamesForURL[0], "up",2);
+                        }
+                        QueueMethods.AddPlayer("41st", "ugnochars",3);
+
+                        //QueueMethods.AddPlayer("tsitas_66", "up");
+                        //QueueMethods.AddPlayer("tsitas_66", "up");
+                        //QueueMethods.AddPlayer("41st", "ugnochars");
+                        //for (int i = 0; i < 10; i++)
+                        //{
+                        //    QueueMethods.AddPlayer("tsitas_66", "up");
+                        //}
                         break;
                     }
                 default:
@@ -120,9 +153,6 @@ namespace SwGoh
                         break;
                     }
             }
-            Console.WriteLine("");
-            Console.WriteLine("Press Enter to close!!!!");
-            Console.Read();
         }
     }
 }

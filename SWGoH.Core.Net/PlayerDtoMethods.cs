@@ -1,8 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using Newtonsoft.Json;
+using SWGoH;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -47,26 +51,31 @@ namespace SwGoh
                 }
             }
         }
-        private void DeletePlayerFromDB()
+        private void DeletePlayerFromDBAsync()
         {
             using (HttpClient client = new HttpClient())
             {
-                //var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
-                //var orderby = "s={\"LastSwGohUpdated\":1}";
-                //string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
+                var orderby = "s={\"LastClassUpdated\":1}";
+                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
+                var response = client.GetStringAsync(url).Result;
 
-                //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
-                //string response = client.GetStringAsync(url).Result;
-                //if (response!= "")
-                //{
+                List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                if (document.Count == 1) return;
+                PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
 
-                //    WebRequest request = WebRequest.Create(url);
-                //    request.Method = "DELETE";
-                //    HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
-
-                    
-                    
-                //}
+                if (result1 != null)
+                {
+                    var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", result1.Id, apikey);
+                    WebRequest request = WebRequest.Create(deleteurl);
+                    request.Method = "DELETE";
+                    try
+                    {
+                        HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                    }
+                    catch(Exception e) { }
+                }
             }
         }
         public void Export(ExportMethodEnum ExportMethod)
@@ -103,6 +112,7 @@ namespace SwGoh
             {
                 using (HttpClient client = new HttpClient())
                 {
+                    
                     string json = JsonConvert.SerializeObject(this, Converter.Settings);
 
                     client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
@@ -111,7 +121,7 @@ namespace SwGoh
                     {
                         ConsoleMessage("Added To Database : " + PlayerNameInGame);
 
-                        DeletePlayerFromDB();
+                        DeletePlayerFromDBAsync();
                     }
                     else
                     {
@@ -133,8 +143,6 @@ namespace SwGoh
             value = value.Replace("%20", "");
             PlayerName = value;
 
-           
-
             string html = "";
             try
             {
@@ -148,7 +156,12 @@ namespace SwGoh
             }
 
             int Position = 0;
-            FillPlayerData(html, out Position);
+            bool retPlayer = FillPlayerData(html, out Position);
+            if (!retPlayer)
+            {
+                ConsoleMessage("Player NOT FOUND : " + this.PlayerName + " aka " + PlayerNameInGame);
+                return 0;
+            }
             ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
             if (!AddCharacters) return 1;
             bool ret = CheckLastUpdateWithCurrent(ExportMethod);
@@ -195,7 +208,11 @@ namespace SwGoh
                         ThirdLine = ThirdLine.Trim();
 
                         DateTime filelastupdated = DateTime.ParseExact(ThirdLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                        if (filelastupdated.CompareTo(this.LastSwGohUpdated) == 0) return false;
+                        if (filelastupdated.CompareTo(this.LastSwGohUpdated) == 0)
+                        {
+                            ConsoleMessage("No need to update!!!!");
+                            return false;
+                        }
                         else return true;
                     }
                 }
@@ -218,8 +235,13 @@ namespace SwGoh
                         if (result.Count == 1)
                         {
                             PlayerDto Found = result[0];
-                            if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0) return false;
-                            return true;
+                            if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
+                            {
+                                ConsoleMessage("No need to update!!!!");
+                                return false;
+                            }
+                            else
+                                return true;
                         }
                         else return true;
                     }
@@ -273,7 +295,7 @@ namespace SwGoh
         /// Fills player properties like LastUpdated
         /// </summary>
         /// <param name="html"></param>
-        private void FillPlayerData(string html, out int Position)
+        private bool FillPlayerData(string html, out int Position)
         {
             bool ret1 = false;
             int valueint = 0;
@@ -322,7 +344,8 @@ namespace SwGoh
                     value = value.Replace('T', ',');
                     value = value.Replace('Z', ' ');
                     value = value.Trim();
-                    LastSwGohUpdated = DateTime.ParseExact(value, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    if (value != "") LastSwGohUpdated = DateTime.ParseExact(value, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    else return false;
                 }
             }
 
@@ -389,6 +412,7 @@ namespace SwGoh
                     }
                 }
             }
+            return true;
         }
 
         private CharacterDto GetChar(string html, out int Position)

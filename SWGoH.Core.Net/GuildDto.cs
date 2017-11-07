@@ -20,7 +20,7 @@ namespace SwGoh
         public int GPaverage { get; set; }
         public List<string> PlayerNames { get; set; }
         [JsonIgnore]
-        internal List<string> PlayerNamesForURL { get; set; }
+        public List<string> PlayerNamesForURL { get; set; }
         public List<PlayerDto> Players { get; set; }
     }
 }
