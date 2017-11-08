@@ -292,9 +292,10 @@ namespace SwGoh
                 var queryData = string.Concat("q={\"Name\":\"", Name, "\"}");
                 var orderby = "s={\"LastSwGohUpdated\":-1}";
                 var limit = "l=1";
+                var field = "f={\"LastSwGohUpdated\": 1}";
                 string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
-                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
+                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&{3}&apiKey={4}", queryData,field ,orderby, limit, apikey);
                 string response = client.GetStringAsync(url).Result;
                 if (response != "")
                 {

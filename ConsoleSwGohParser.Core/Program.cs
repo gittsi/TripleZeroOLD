@@ -23,15 +23,20 @@ namespace SwGoh
     class Program
     {
         public static bool isWorking = false;
+        public static bool mPrintedNothingToProcess = false;
+        public static int mPrintedNothingToProcessdots = 0;
+        public static int mPrintedNothingToProcessdotsTotal = 4;
+
         static void Main(string[] args)
         {
-            Timer t = new Timer(TimerCallback, null, 0, 2000);
+            Timer t = new Timer(new TimerCallback(TimerProc));
+            t.Change(0, 3000);
+            
             Console.ReadLine();
         }
 
-        private static void TimerCallback(Object o)
+        private static void TimerProc(Object o)
         {
-            
             if (isWorking) return;
             isWorking = true;
             //ExecuteCommand("test", ""); return;
@@ -40,6 +45,20 @@ namespace SwGoh
             {
                 ExecuteCommand(q.Command, q.PlayerName);
                 QueueMethods.RemoveFromQueu(q);
+                mPrintedNothingToProcess = false;
+                mPrintedNothingToProcessdots = 0;
+            }
+            else
+            {
+                string mMessage = "Nothing to process";
+                if (!mPrintedNothingToProcess) Console.Write(mMessage);
+                Console.Write("."); mPrintedNothingToProcessdots++;
+                if (mPrintedNothingToProcessdots == mPrintedNothingToProcessdotsTotal)
+                {
+                    mPrintedNothingToProcessdots = 0;
+                    for (int i=0;i< mPrintedNothingToProcessdotsTotal;i++)  Console.Write("\b \b");
+                }
+                mPrintedNothingToProcess = true;
             }
             isWorking = false;
             GC.Collect();
@@ -129,18 +148,20 @@ namespace SwGoh
                     {
                         //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 
-                        SwGoh.GuildDto guild = new GuildDto();
-                        guild.Name = guild.GetGuildNameFromAlias("41st");
-                        guild.ParseSwGoh();
-                        for (int i = 0; i < guild.PlayerNamesForURL.Count; i++)
-                        {
-                            QueueMethods.AddPlayer(guild.PlayerNamesForURL[0], "up",2);
-                        }
-                        QueueMethods.AddPlayer("41st", "ugnochars",3);
+                        //SwGoh.GuildDto guild = new GuildDto();
+                        //guild.Name = guild.GetGuildNameFromAlias("41st");
+                        //guild.ParseSwGoh();
+                        //for (int i = 0; i < guild.PlayerNamesForURL.Count; i++)
+                        //{
+                        //    QueueMethods.AddPlayer(guild.PlayerNamesForURL[i], "up", 2);
+                        //}
+                        //QueueMethods.AddPlayer("41st", "ugnochars", 1);
 
-                        //QueueMethods.AddPlayer("tsitas_66", "up");
-                        //QueueMethods.AddPlayer("tsitas_66", "up");
-                        //QueueMethods.AddPlayer("41st", "ugnochars");
+                        //QueueMethods.AddPlayer("newholborn", "up",3);
+                        //QueueMethods.AddPlayer("oaraug", "up", 3);
+                        //QueueMethods.AddPlayer("tsitas_66", "up",1);
+                        //QueueMethods.AddPlayer("tsitas_66", "up", 3);
+                        QueueMethods.AddPlayer("41st", "ugnochars", 3);
                         //for (int i = 0; i < 10; i++)
                         //{
                         //    QueueMethods.AddPlayer("tsitas_66", "up");

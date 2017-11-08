@@ -44,6 +44,14 @@ namespace SwGoh
                 request.Method = "DELETE";
 
                 HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                if (response1.StatusCode == HttpStatusCode.OK)
+                {
+                    Console.WriteLine("Removed From Queu!");
+                }
+                else
+                {
+                    Console.WriteLine("Could not remove from Queu!");
+                }
             }
         }
         public static QueuePlayer GetQueu()
@@ -51,7 +59,7 @@ namespace SwGoh
             using (HttpClient client = new HttpClient())
             {
                 var queryData = string.Concat("q={\"Status\":0}");
-                var orderby = "s={\"Date\":1}";
+                var orderby = "s={\"Priority\":-1,\"Date\":1}";
                 var limit = "l=1";
                 string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
@@ -66,14 +74,17 @@ namespace SwGoh
                         //UPDATE with Status = 1
                         JObject data = new JObject(
                         new JProperty("PlayerName", result1.PlayerName),
-                        new JProperty("Date", DateTime.UtcNow),
+                        new JProperty("Date", result1.Date),
                         new JProperty("Status", 1),
                         new JProperty("Priority", result1.Priority),
                         new JProperty("Command", result1.Command));
 
-                        var httpContent = new StringContent(data.ToString (), Encoding.UTF8, "application/json");
-                        var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/?apiKey={0}", apikey);
-                        HttpResponseMessage updateresult = client.PutAsync(requestUri, httpContent).Result;
+                        //var httpContent = new StringContent(data.ToString (), Encoding.UTF8, "application/json");
+                        //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/{0}?apiKey={1}",result1.Id, apikey);
+                        //using (HttpClient client1 = new HttpClient())
+                        //{
+                        //    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                        //}
                     }
                     return result1;
                 }
