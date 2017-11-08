@@ -79,12 +79,12 @@ namespace SwGoh
                         new JProperty("Priority", result1.Priority),
                         new JProperty("Command", result1.Command));
 
-                        var httpContent = new StringContent(data.ToString (), Encoding.UTF8, "application/json");
-                        var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/?apiKey={0}", apikey);
-                        using (HttpClient client1 = new HttpClient())
-                        {
-                            HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
-                        }
+                        //var httpContent = new StringContent(data.ToString (), Encoding.UTF8, "application/json");
+                        //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/{0}?apiKey={1}",result1.Id, apikey);
+                        //using (HttpClient client1 = new HttpClient())
+                        //{
+                        //    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                        //}
                     }
                     return result1;
                 }
