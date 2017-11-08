@@ -27,7 +27,7 @@ namespace SwGoh
             {
                 string url = "https://api.mlab.com/api/1/databases/triplezero/collections/Config.Guild/?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O&q=%7B%22Aliases%22:%22" + allias + "%22%7D";
                 string response = client.GetStringAsync(url).Result;
-                if (response != "")
+                if (response != "" && response != "[  ]")
                 {
                     List<GuildConfig> result = JsonConvert.DeserializeObject< List<GuildConfig>>(response);
                     if (result.Count == 1) return result[0];
@@ -43,7 +43,7 @@ namespace SwGoh
             {
                 string url = "https://api.mlab.com/api/1/databases/triplezero/collections/Config.Guild/?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O&q=%7B%22Name%22:%22" + name + "%22%7D";
                 string response = client.GetStringAsync(url).Result;
-                if (response != "")
+                if (response != "" && response != "[  ]")
                 {
                     List<GuildConfig> result = JsonConvert.DeserializeObject<List<GuildConfig>>(response);
                     if (result.Count == 1) return result[0];

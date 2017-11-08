@@ -37,7 +37,7 @@ namespace SwGoh
             string URL = "https://swgoh.gg/g" + guild.SWGoHUrl;
             return URL;
         }
-        public string GetGuildNameFromAlias(string Alias)
+        public static string GetGuildNameFromAlias(string Alias)
         {
             GuildConfig guild = GuildConfig.GetGuildFromAllias(Alias);
             if (guild == null) return "";
@@ -45,7 +45,7 @@ namespace SwGoh
         }
         public void ParseSwGoh()
         {
-            ConsoleMessage("Reading info for guild : " + this.Name);
+            SWGoH.Core.Net.Log.ConsoleMessage("Reading info for guild : " + this.Name);
             web = new System.Net.WebClient();
             string htm = GetGuildURLFromName(this.Name);
             if (htm == "") return;
@@ -93,7 +93,7 @@ namespace SwGoh
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    ConsoleMessage("Exporting To Database guild : " + this.Name);
+                    SWGoH.Core.Net.Log.ConsoleMessage("Exporting To Database guild : " + this.Name);
                     LastClassUpdated = DateTime.UtcNow;
 
                     JsonSerializerSettings settings = new JsonSerializerSettings();
@@ -122,11 +122,11 @@ namespace SwGoh
                     HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        ConsoleMessage("Exported To Database guild : " + this.Name);
+                        SWGoH.Core.Net.Log.ConsoleMessage("Exported To Database guild : " + this.Name);
                     }
                     else
                     {
-                        ConsoleMessage("Error Exporting to Database guild : " + this.Name);
+                        SWGoH.Core.Net.Log.ConsoleMessage("Error Exporting to Database guild : " + this.Name);
                     }
                 }
             }
@@ -239,7 +239,7 @@ namespace SwGoh
                         if (Players == null) Players = new List<PlayerDto>();
                         player.LastClassUpdated = null;
                         Players.Add(player);
-                        ConsoleMessage("Added Player : " + player.PlayerName + " aka " + player.PlayerNameInGame);
+                        SWGoH.Core.Net.Log.ConsoleMessage("Added Player : " + player.PlayerName + " aka " + player.PlayerNameInGame);
                     }
                     else if (ret == 0)
                     {
@@ -297,7 +297,7 @@ namespace SwGoh
 
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&{3}&apiKey={4}", queryData,field ,orderby, limit, apikey);
                 string response = client.GetStringAsync(url).Result;
-                if (response != "")
+                if (response != "" && response != "[  ]")
                 {
                     List<GuildDto> result = JsonConvert.DeserializeObject<List<GuildDto>>(response);
                     if (result.Count == 1)
@@ -305,7 +305,7 @@ namespace SwGoh
                         GuildDto Found = result[0];
                         if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
                         {
-                            ConsoleMessage("No need to update!!!!");
+                            SWGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
                             return false;
                         }
                         return true;
@@ -314,11 +314,6 @@ namespace SwGoh
                 }
             }
             return true;
-        }
-
-        private void ConsoleMessage(string message)
-        {
-            Console.WriteLine(message + "  Time:" + DateTime.Now.TimeOfDay.ToString("h':'m':'s''"));
         }
     }
 }
