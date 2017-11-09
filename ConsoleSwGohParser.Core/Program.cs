@@ -29,8 +29,6 @@ namespace SwGoh
 
         static void Main(string[] args)
         {
-            //QueueMethods.AddLastUpdatedPlayerToQueu();
-
             Timer t = new Timer(new TimerCallback(TimerProc));
             t.Change(0, mTimerdelay);
             
