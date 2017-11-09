@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using TripleZero.Configuration;
@@ -20,6 +21,24 @@ namespace TripleZero.Modules
             _service = service;
             //_AppSettings = applicationSettings.Get();
         }
+
+        [Command("info")]
+        [Summary("Gets general info")]
+        public async Task InfoAsync()
+        {
+            var applicationSettings = IResolver.Current.ApplicationSettings.Get();
+
+            string prefix = applicationSettings.DiscordSettings.Prefix;
+            Version version = Assembly.GetEntryAssembly().GetName().Version;
+
+            string retStr = "";
+            retStr += string.Format("\n{0} - {1}", applicationSettings.GeneralSettings.ApplicationName, applicationSettings.GeneralSettings.Environment);
+            retStr += string.Format("\nApplication Version : {0}", version);
+            retStr += string.Format("\nPrefix : {0}", prefix);
+
+             await ReplyAsync($"{retStr}");
+        }
+
 
         [Command("help")]
         [Summary("Gets general help")]            

@@ -23,6 +23,9 @@ namespace TripleZero.Modules
         [Summary("Get character stats for specific player.\nUsage : ***$characterstats {playerUserName} {characterAlias}***")]
         public async Task GetCharacterStats(string playerUserName, string characterAlias)
         {
+            playerUserName = playerUserName.Trim();
+            characterAlias = characterAlias.Trim();
+
             string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
 
             await ReplyAsync($"{loadingStr}");
@@ -35,7 +38,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfig(characterAlias).Result;
+            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
 
             var character = playerData.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
 
@@ -88,6 +91,10 @@ namespace TripleZero.Modules
         [Summary("Compares character stats for 2 specific players.\nUsage : ***$characterstats -c {player1UserName} {player2UserName} {characterAlias}***")]
         public async Task GetCharacterStatsCompare(string player1UserName, string player2UserName, string characterAlias)
         {
+            player1UserName = player1UserName.Trim();
+            player2UserName = player2UserName.Trim();
+            characterAlias = characterAlias.Trim();
+
             string loadingStr = string.Format("\n**{0} and {1}** are loading...\n\n", player1UserName, player2UserName);
 
             await ReplyAsync($"{loadingStr}");
@@ -106,7 +113,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfig(characterAlias).Result;
+            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
 
             var character1 = player1Data.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
             if (character1 == null)
