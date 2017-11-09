@@ -53,29 +53,33 @@ namespace SwGoh
         }
         private void DeletePlayerFromDBAsync()
         {
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
-                var orderby = "s={\"LastClassUpdated\":1}";
-                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
-                var response = client.GetStringAsync(url).Result;
-
-                List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                if (document.Count == 1) return;
-                PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
-
-                if (result1 != null)
+                using (HttpClient client = new HttpClient())
                 {
-                    var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", result1.Id, apikey);
-                    WebRequest request = WebRequest.Create(deleteurl);
-                    request.Method = "DELETE";
-                    try
+                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
+                    var orderby = "s={\"LastClassUpdated\":1}";
+                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
+                    var response = client.GetStringAsync(url).Result;
+
+                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    if (document.Count == 1) return;
+                    PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
+
+                    if (result1 != null)
                     {
-                        HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                        var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", result1.Id, apikey);
+                        WebRequest request = WebRequest.Create(deleteurl);
+                        request.Method = "DELETE";
+                    
+                            HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
                     }
-                    catch(Exception e) { }
                 }
+            }
+            catch (Exception e)
+            {
+                SWGoH.Core.Net.Log.ConsoleMessage("Error deleting player " + PlayerName + " : " + e.Message);
             }
         }
         public void Export(ExportMethodEnum ExportMethod)
@@ -133,15 +137,15 @@ namespace SwGoh
         public int ParseSwGoh(ExportMethodEnum ExportMethod, bool AddCharacters)
         {
             if (PlayerName == null || PlayerName == "") return 0;
+
+            string pname = TryGetRealURLFromAlliasPlayerName(PlayerName);
+
+            PlayerName = pname.Replace("%20", " ");
+
             int retbool = -1;
 
             web = new System.Net.WebClient();
-            Uri uri = new Uri("https://swgoh.gg/u/" + PlayerName + "/collection/");
-
-            string value = PlayerName;
-            value = value.Replace(" ", "");
-            value = value.Replace("%20", "");
-            PlayerName = value;
+            Uri uri = new Uri("https://swgoh.gg/u/" + pname + "/collection/");
 
             string html = "";
             try
@@ -178,6 +182,40 @@ namespace SwGoh
             web = null;
             return retbool;
         }
+
+        private string TryGetRealURLFromAlliasPlayerName(string pname)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var queryData = string.Concat("q={\"Aliases\":\"", pname, "\"}");
+                    var limit = "l=1";
+                    var field = "f={\"PlayerName\": 1}";
+                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Players/?{0}&{1}&{2}&apiKey={3}", queryData, field, limit, apikey);
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "" && response != "[  ]")
+                    {
+                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                        if (result.Count == 1)
+                        {
+                            PlayerDto Found = result[0];
+                            return Found.PlayerName;
+                        }
+                        else return pname;
+                    }
+                }
+                return pname;
+            }
+            catch (Exception e)
+            {
+                SWGoH.Core.Net.Log.ConsoleMessage("Error Retrieving Real Player Name From Allias : " + e.Message);
+                return pname;
+            }
+        }
+
         /// <summary>
         /// Returns true if the file should be updated , false not to update
         /// </summary>
@@ -220,34 +258,42 @@ namespace SwGoh
             }
             else
             {
-                using (HttpClient client = new HttpClient())
+                try
                 {
-                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
-                    var orderby = "s={\"LastSwGohUpdated\":1}";
-                    var limit = "l=1";
-                    var field = "f={\"LastSwGohUpdated\": 1}";
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData,field , orderby, limit, apikey);
-                    string response = client.GetStringAsync(url).Result;
-                    if (response != "" && response != "[  ]")
+                    using (HttpClient client = new HttpClient())
                     {
-                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
-                        if (result.Count == 1)
+                        var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
+                        var orderby = "s={\"LastSwGohUpdated\":1}";
+                        var limit = "l=1";
+                        var field = "f={\"LastSwGohUpdated\": 1}";
+                        string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+
+                        string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, orderby, limit, apikey);
+                        string response = client.GetStringAsync(url).Result;
+                        if (response != "" && response != "[  ]")
                         {
-                            PlayerDto Found = result[0];
-                            if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
+                            List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                            if (result.Count == 1)
                             {
-                                SWGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
-                                return false;
+                                PlayerDto Found = result[0];
+                                if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
+                                {
+                                    SWGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
+                                    return false;
+                                }
+                                else
+                                    return true;
                             }
-                            else
-                                return true;
+                            else return true;
                         }
-                        else return true;
                     }
+                    return true;
                 }
-                return true;
+                catch(Exception e)
+                {
+                    SWGoH.Core.Net.Log.ConsoleMessage("Error in CkeckLastUpdated :" + e.Message);
+                    return true;
+                }
             }
         }
 

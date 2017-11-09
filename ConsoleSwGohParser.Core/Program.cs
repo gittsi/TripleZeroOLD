@@ -26,7 +26,7 @@ namespace SwGoh
         private static int mPrintedNothingToProcessdots = 0;
         private static int mPrintedNothingToProcessdotsTotal = 4;
         private static int mTimerdelay = 5000;
-
+        
         static void Main(string[] args)
         {
             Timer t = new Timer(new TimerCallback(TimerProc));
@@ -40,8 +40,10 @@ namespace SwGoh
             isWorking = true;
             Timer t = o as Timer;
             t.Change(Timeout.Infinite, Timeout.Infinite);
-            
+
+            //CharactersConfig.ExportCharacterFilesToDB();
             //ExecuteCommand("test", ""); return;
+
             QueuePlayer q = QueueMethods.GetQueu();
             if (q != null)
             {
@@ -55,7 +57,7 @@ namespace SwGoh
             else
             {
                 int now = DateTime.Now.Minute;
-                if (now%10 == 0)
+                if (now == 0 || now == 15 || now == 30 || now == 45)
                 {
                     PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
                     if (player != null)
@@ -162,14 +164,15 @@ namespace SwGoh
                     {
                         //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 
-                        //SwGoh.GuildDto guild = new GuildDto();
-                        //guild.Name = guild.GetGuildNameFromAlias("41st");
-                        //guild.ParseSwGoh();
-                        //for (int i = 0; i < guild.PlayerNamesForURL.Count; i++)
-                        //{
-                        //    QueueMethods.AddPlayer(guild.PlayerNamesForURL[i], "up", 2);
-                        //}
-                        //QueueMethods.AddPlayer("41st", "ugnochars", 1);
+                        SwGoh.GuildDto guild = new GuildDto();
+                        guild.Name = GuildDto.GetGuildNameFromAlias("41st");
+                        guild.ParseSwGoh();
+                        for (int i = 0; i < guild.PlayerNames.Count; i++)
+                        {
+
+                            QueueMethods.AddPlayer(guild.PlayerNames[i], "up", 2);
+                        }
+                        QueueMethods.AddPlayer("41st", "ugnochars", 1);
 
                         //QueueMethods.AddPlayer("newholborn", "up",3);
                         //QueueMethods.AddPlayer("oaraug", "up", 3);
