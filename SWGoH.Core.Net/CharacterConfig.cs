@@ -26,7 +26,7 @@ namespace SwGoh
 
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apikey);
                 string response = client.GetStringAsync(url).Result;
-                if (response != "")
+                if (response != "" && response != "[  ]")
                 {
                     List<CharactersConfig> result = JsonConvert.DeserializeObject<List<CharactersConfig>>(response);
                     if (result.Count == 1)
@@ -40,11 +40,11 @@ namespace SwGoh
                             HttpResponseMessage response1 = client.PostAsync(uri1, new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                             if (response1.IsSuccessStatusCode)
                             {
-                                Console.WriteLine("Added : " + item.Name);
+                                SWGoH.Core.Net.Log.ConsoleMessage("Added : " + item.Name);
                             }
                             else
                             {
-                                Console.WriteLine("Error : " + item.Name);
+                                SWGoH.Core.Net.Log.ConsoleMessage("Error : " + item.Name);
                             }
                         }
                     }

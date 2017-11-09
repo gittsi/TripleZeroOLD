@@ -40,7 +40,7 @@ namespace SwGoh
 
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
                     string response = client.GetStringAsync(url).Result;
-                    if (response != "")
+                    if (response != "" && response != "[  ]")
                     {
                         List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
                         if (result.Count == 1)
@@ -100,11 +100,11 @@ namespace SwGoh
                     {
                         serializer.Serialize(writer, this);
                     }
-                    ConsoleMessage("Created : " + PlayerName + "'s json File");
+                    SWGoH.Core.Net.Log.ConsoleMessage("Created : " + PlayerName + "'s json File");
                 }
                 catch (Exception e)
                 {
-                    ConsoleMessage("Error : " + e.Message);
+                    SWGoH.Core.Net.Log.ConsoleMessage("Error : " + e.Message);
                     //Error Occured , Contact Developer
                 }
             }
@@ -119,13 +119,13 @@ namespace SwGoh
                     HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        ConsoleMessage("Added To Database : " + PlayerNameInGame);
+                        SWGoH.Core.Net.Log.ConsoleMessage("Added To Database : " + PlayerNameInGame);
 
                         DeletePlayerFromDBAsync();
                     }
                     else
                     {
-                        ConsoleMessage("Error Adding To Database : " + PlayerName);
+                        SWGoH.Core.Net.Log.ConsoleMessage("Error Adding To Database : " + PlayerName);
                     }
                 }
             }
@@ -150,7 +150,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                ConsoleMessage("Exception : " + e.Message);
+                SWGoH.Core.Net.Log.ConsoleMessage("Exception : " + e.Message);
                 web = null;
                 return 0;
             }
@@ -159,10 +159,10 @@ namespace SwGoh
             bool retPlayer = FillPlayerData(html, out Position);
             if (!retPlayer)
             {
-                ConsoleMessage("Player NOT FOUND : " + this.PlayerName + " aka " + PlayerNameInGame);
+                SWGoH.Core.Net.Log.ConsoleMessage("Player NOT FOUND : " + this.PlayerName + " aka " + PlayerNameInGame);
                 return 0;
             }
-            ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
+            SWGoH.Core.Net.Log.ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
             if (!AddCharacters) return 1;
             bool ret = CheckLastUpdateWithCurrent(ExportMethod);
             if (ret)
@@ -210,7 +210,7 @@ namespace SwGoh
                         DateTime filelastupdated = DateTime.ParseExact(ThirdLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                         if (filelastupdated.CompareTo(this.LastSwGohUpdated) == 0)
                         {
-                            ConsoleMessage("No need to update!!!!");
+                            SWGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
                             return false;
                         }
                         else return true;
@@ -230,7 +230,7 @@ namespace SwGoh
 
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData,field , orderby, limit, apikey);
                     string response = client.GetStringAsync(url).Result;
-                    if (response != "")
+                    if (response != "" && response != "[  ]")
                     {
                         List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
                         if (result.Count == 1)
@@ -238,7 +238,7 @@ namespace SwGoh
                             PlayerDto Found = result[0];
                             if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
                             {
-                                ConsoleMessage("No need to update!!!!");
+                                SWGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
                                 return false;
                             }
                             else
@@ -280,7 +280,7 @@ namespace SwGoh
                     {
                         count++;
                         Characters.Add(newchar);
-                        ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
+                        SWGoH.Core.Net.Log.ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
                         Thread.Sleep(mDelayCharacter);
                     }
                 }
@@ -511,7 +511,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                ConsoleMessage("Exception : " + e.Message);
+                SWGoH.Core.Net.Log.ConsoleMessage("Exception : " + e.Message);
                 return false;
             }
 
@@ -1364,10 +1364,5 @@ namespace SwGoh
             return ret;
         }
         #endregion
-
-        private void ConsoleMessage(string message)
-        {
-            Console.WriteLine(message + "  Time:" + DateTime.Now.TimeOfDay.ToString("h':'m':'s''"));
-        }
     }
 }

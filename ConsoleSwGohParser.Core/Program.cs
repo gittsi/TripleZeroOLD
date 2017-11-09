@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SwGoh
 {
@@ -22,34 +21,49 @@ namespace SwGoh
 
     class Program
     {
-        public static bool isWorking = false;
-        public static bool mPrintedNothingToProcess = false;
-        public static int mPrintedNothingToProcessdots = 0;
-        public static int mPrintedNothingToProcessdotsTotal = 4;
+        private static bool isWorking = false;
+        private static bool mPrintedNothingToProcess = false;
+        private static int mPrintedNothingToProcessdots = 0;
+        private static int mPrintedNothingToProcessdotsTotal = 4;
+        private static int mTimerdelay = 5000;
 
         static void Main(string[] args)
         {
             Timer t = new Timer(new TimerCallback(TimerProc));
-            t.Change(0, 3000);
+            t.Change(0, mTimerdelay);
             
             Console.ReadLine();
         }
-
         private static void TimerProc(Object o)
         {
             if (isWorking) return;
             isWorking = true;
+            Timer t = o as Timer;
+            t.Change(Timeout.Infinite, Timeout.Infinite);
+            
             //ExecuteCommand("test", ""); return;
             QueuePlayer q = QueueMethods.GetQueu();
             if (q != null)
             {
+                Console.WriteLine("");
                 ExecuteCommand(q.Command, q.PlayerName);
                 QueueMethods.RemoveFromQueu(q);
+
                 mPrintedNothingToProcess = false;
                 mPrintedNothingToProcessdots = 0;
             }
             else
             {
+                int now = DateTime.Now.Minute;
+                if (now%10 == 0)
+                {
+                    PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
+                    if (player != null)
+                    {
+                        QueueMethods.AddPlayer(player.PlayerName, "up", 1);
+                    }
+                }
+
                 string mMessage = "Nothing to process";
                 if (!mPrintedNothingToProcess) Console.Write(mMessage);
                 Console.Write("."); mPrintedNothingToProcessdots++;
@@ -61,9 +75,9 @@ namespace SwGoh
                 mPrintedNothingToProcess = true;
             }
             isWorking = false;
+            t.Change(mTimerdelay, mTimerdelay);
             GC.Collect();
         }
-
         private static void ExecuteCommand(string commandstr, string pname)
         {
             ExportMethodEnum mExportMethod = ExportMethodEnum.Database;
@@ -93,7 +107,7 @@ namespace SwGoh
                 case Command.UpdateGuild:
                     {
                         SwGoh.GuildDto guild = new GuildDto();
-                        guild.Name = guild.GetGuildNameFromAlias(pname);
+                        guild.Name = GuildDto.GetGuildNameFromAlias(pname);
                         guild.ParseSwGoh();
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0) guild.UpdateAllPlayers(mExportMethod, true);
                         break;
@@ -116,7 +130,7 @@ namespace SwGoh
                 case Command.UpdateGuildWithNoChars:
                     {
                         SwGoh.GuildDto guild = new GuildDto();
-                        guild.Name = guild.GetGuildNameFromAlias(pname);
+                        guild.Name = GuildDto.GetGuildNameFromAlias(pname);
                         guild.ParseSwGoh();
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0) guild.UpdateOnlyGuildWithNoChars(mExportMethod);
                         break;
@@ -170,7 +184,7 @@ namespace SwGoh
                     }
                 default:
                     {
-                        Console.WriteLine("Unknown command , please try again.!!!!");
+                        SWGoH.Core.Net.Log.ConsoleMessage("Unknown command , please try again.!!!!");
                         break;
                     }
             }
