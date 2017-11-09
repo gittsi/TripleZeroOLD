@@ -99,7 +99,7 @@ namespace TripleZero.Repository
                 new JProperty("PlayerName", playerName),
                 new JProperty("Date", DateTime.UtcNow),
                 new JProperty("Status", 0),
-                new JProperty("Priority", 1),
+                new JProperty("Priority", 3),
                 new JProperty("Command", "up")
            );
 
@@ -120,15 +120,55 @@ namespace TripleZero.Repository
                         BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
                         var queuePlayer = BsonSerializer.Deserialize<QueuePlayer>(document);
 
-                        return queuePlayer==null ? null : queuePlayer.Id.ToString();
+                        return queuePlayer?.Id.ToString();
                     }
                 }
                 catch(Exception ex)
                 {
                     return null;
+                    //throw new ApplicationException(ex.Message);                    
                 }
                 
             }
         }
+
+        public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+
+            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+
+            if (characterConfig == null) return null;
+
+            characterConfig.Aliases.Add(alias);
+            JObject data = null;
+            try
+            {
+                 data = new JObject(                                      
+                                        new JProperty("Name", characterConfig.Name),
+                                        new JProperty("Command", characterConfig.Command),
+                                        new JProperty("SWGoHUrl", characterConfig.SWGoHUrl),
+                                        new JProperty("Aliases", characterConfig.Aliases)
+                                        );
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+            
+
+            var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
+            using (HttpClient client1 = new HttpClient())
+            {
+                HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+            }
+
+            characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
+
+            return characterConfig;
+
+        }
+
     }
 }
