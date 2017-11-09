@@ -26,7 +26,7 @@ namespace SwGoh
         private static int mPrintedNothingToProcessdots = 0;
         private static int mPrintedNothingToProcessdotsTotal = 4;
         private static int mTimerdelay = 5000;
-
+        
         static void Main(string[] args)
         {
             Timer t = new Timer(new TimerCallback(TimerProc));
