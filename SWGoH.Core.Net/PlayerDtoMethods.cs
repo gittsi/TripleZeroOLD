@@ -139,6 +139,8 @@ namespace SwGoh
 
             string pname = TryGetRealURLFromAlliasPlayerName(PlayerName);
 
+            PlayerName = pname.Replace("%20", " ");
+
             int retbool = -1;
 
             web = new System.Net.WebClient();

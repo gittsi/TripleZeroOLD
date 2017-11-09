@@ -34,6 +34,7 @@ namespace SwGoh
                         CharactersConfig config = result[0];
                         foreach (CharacterConfig item in config.Characters)
                         {
+                            if (item.Aliases.Count == 1 && item.Aliases[0] == "Empty") item.Aliases.RemoveAt (0);
                             string json = JsonConvert.SerializeObject(item, Converter.Settings);
                             
                             string uri1 = "https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";

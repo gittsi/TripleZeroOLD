@@ -40,8 +40,10 @@ namespace SwGoh
             isWorking = true;
             Timer t = o as Timer;
             t.Change(Timeout.Infinite, Timeout.Infinite);
-            
+
+            //CharactersConfig.ExportCharacterFilesToDB();
             //ExecuteCommand("test", ""); return;
+
             QueuePlayer q = QueueMethods.GetQueu();
             if (q != null)
             {
@@ -55,7 +57,7 @@ namespace SwGoh
             else
             {
                 int now = DateTime.Now.Minute;
-                if (now%10 == 0)
+                if (now == 0 || now == 15 || now == 30 || now == 45)
                 {
                     PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
                     if (player != null)

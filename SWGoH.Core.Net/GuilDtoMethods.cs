@@ -213,6 +213,9 @@ namespace SwGoh
                         int length = restindexEnd - start;
                         value = WebUtility.HtmlDecode(rest.Substring(start, length));
                         restposition = restindexEnd;
+
+                        value = value.Replace("%20", " ");
+
                         PlayerNames.Add(value);
                     }
                     else exit = true;
