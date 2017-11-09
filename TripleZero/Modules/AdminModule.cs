@@ -23,9 +23,48 @@ namespace TripleZero.Modules
         [Summary("Get alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         public async Task SetAlias(string characterFullName,string alias)
         {
-            var result = IResolver.Current.MongoDBRepository.SetCharacterAlias(characterFullName, alias.ToLower());
+            characterFullName = characterFullName.Trim();
+            alias = alias.Trim();
 
-            int i = 1;
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var userAllowed = Roles.UserInRole(Context, "botadmin");
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            var result = IResolver.Current.MongoDBRepository.SetCharacterAlias(characterFullName, alias.ToLower()).Result;
+
+            if(result!=null)
+            {
+                retStr +=$"\nNew alias '**{alias}**' for '**{characterFullName}**' was added!\n";
+                retStr += string.Format("\nName:**{0}**", result.Name);
+                retStr += string.Format("\nCommand:**{0}**", result.Command);
+                retStr += string.Format("\nSWGoH url:**{0}**", result.SWGoHUrl);
+
+                string aliases = "";
+                int countAliases = 0;
+                foreach (var _alias in result.Aliases)
+                {
+                    countAliases += 1;
+                    aliases += _alias;
+                    if (countAliases != result.Aliases.Count()) aliases += ", ";
+                }
+                    
+                retStr += string.Format("\nAliases: [**{0}**]", aliases);
+            }
+            else
+            {
+                retStr = "Not updated. Probably something is wrong with your command!";
+            }
+
+            await ReplyAsync($"{retStr}");
+
+       
         }
 
         [Command("characters -config")]
@@ -34,6 +73,7 @@ namespace TripleZero.Modules
         {
             string retStr = "";
             string chStr = "";
+
             var charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
             int debugcount = 0;
             foreach(var characterConfig in charactersConfig)

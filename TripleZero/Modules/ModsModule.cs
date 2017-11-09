@@ -32,10 +32,16 @@ namespace TripleZero.Modules
                     var modStats = row.Item2.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType==secondaryStatValueType ).FirstOrDefault();
                     var newString = string.Format("{3}: **{2}{4}** {1} {0}", row.Item1.PadRight(25), row.Item2.Type.ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), secondaryStatValueType== ModValueType.Percentage ? "%" : "");
 
-                    if (retStr.Length + newString.Length > 2000)
-                        break;
+                    //if (retStr.Length + newString.Length > 2000)
+                    //    break;
                     retStr += "\n";
                     retStr += newString;
+
+                    if (retStr.Length > 1800)
+                    {
+                        await ReplyAsync($"{retStr}");
+                        retStr = "";
+                    }
 
                 }
 
@@ -81,6 +87,9 @@ namespace TripleZero.Modules
         [Summary("Get mods sorted by a secondary stat of a given player.\nUsage : ***mods -s {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n examples \n1) $mods -s playerName defense \n2) $mods -s playerName defense% 5)")]
         public async Task GetSecondaryStatMods(string playerUserName, string modType, int rows = 20)
         {
+            playerUserName = playerUserName.Trim();
+            modType = modType.Trim();
+
             ModStatType secondaryStatType=ModStatType.None;
             ModValueType secondaryStatValueType = ModValueType.None;
 
@@ -129,12 +138,16 @@ namespace TripleZero.Modules
                 {
                     var modStats = row.Item2.PrimaryStat;//.Where(p => p.StatType == modStatType && p.ValueType == secondaryStatValueType).FirstOrDefault();
                     var newString = string.Format("{3}: **{2}{4}** {1} {0}", row.Item1.PadRight(25), row.Item2.Type.ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), modStats.ValueType == ModValueType.Percentage ? "%" : "");
-
-                    if (retStr.Length + newString.Length > 2000)
-                        break;
                     retStr += "\n";
                     retStr += newString;
+                    //if (retStr.Length + newString.Length > 2000)
+                    //    break;
 
+                    if (retStr.Length > 1800)
+                    {
+                        await ReplyAsync($"{retStr}");
+                        retStr = "";
+                    }
                 }
 
                 if (retStr.Length > 0)
@@ -179,6 +192,9 @@ namespace TripleZero.Modules
         [Summary("Get mods sorted by a primary stat of a given player.\nUsage : ***mods -p {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n examples \n1) $mods -p playerName speed 5)")]
         public async Task GetPrimaryStatMods(string playerUserName, string modType, int rows = 20)
         {
+            playerUserName = playerUserName.Trim();
+            modType = modType.Trim();
+
             ModStatType primaryStatType = ModStatType.None;
             
             if (modType.ToLower() == "speed") primaryStatType = ModStatType.Speed;

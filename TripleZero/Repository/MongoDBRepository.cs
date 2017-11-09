@@ -137,6 +137,8 @@ namespace TripleZero.Repository
 
             CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
 
+            if (characterConfig == null) return null;
+
             characterConfig.Aliases.Add(alias);
             JObject data = null;
             try

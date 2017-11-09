@@ -74,7 +74,7 @@ namespace TripleZero
 
             //client.MessageReceived += MessageReceived;
 
-            //await Task.Delay(3000);
+            await Task.Delay(3000);
             //await TestCharAliasesDelete();
             //await TestDelete();
             //await TestGuildPlayers("41st");
