@@ -169,5 +169,30 @@ namespace TripleZero.Repository
 
         }
 
+        public async Task<List<PlayerDto>> GetAllPlayersWithoutCharacters()
+        {
+            await Task.FromResult(1);
+                       
+            var orderby = "s={\"LastSwGohUpdated\":-1}";
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+            var fields = "f={\"Characters\": 0}";
+
+            string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", fields, orderby, apiKey);
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+                    List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
+
+                    return ret;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
     }
 }

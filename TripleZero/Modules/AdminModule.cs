@@ -16,12 +16,14 @@ using TripleZero.Helper;
 namespace TripleZero.Modules
 {
     [Name("Admin")]
-    [Summary("Do some admin work")]
+    [Summary("Admin Commands")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {        
 
         [Command("alias -set")]
-        [Summary("Get alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
+        //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
+        [Summary("Set alias for specific character(Admin Command)")]
+        [Remarks("*alias -set {characterFullName}*")]
         public async Task SetAlias(string characterFullName,string alias)
         {
             characterFullName = characterFullName.Trim();
@@ -69,7 +71,9 @@ namespace TripleZero.Modules
         }
 
         [Command("characters -config")]
-        [Summary("Get config for specific character(Admin Command).\nUsage : ***$characters -config***")]
+        //[Summary("Get config for specific character(Admin Command).\nUsage : ***$characters -config***")]
+        [Summary("Get config for specific character(Admin Command)")]
+        [Remarks("*characters -config*")]
         public async Task GetCharacterConfig()
         {
             string retStr = "";

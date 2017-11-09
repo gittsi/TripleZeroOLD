@@ -15,12 +15,13 @@ using SwGoh;
 namespace TripleZero.Modules
 {
     [Name("Guild")]
-    [Summary("Get some useful guild data")]
+    [Summary("Guild Commands")]
     public class GuildModule : ModuleBase<SocketCommandContext>
     {        
 
         [Command("guildCharacter")]
-        [Summary("Get report for specific character in the given guild.\nUsage : ***$guildCharacter {guildAlias or guildId} {characterAlias}***")]
+        [Summary("Get report for specific character in the given guild")]
+        [Remarks("*$guildCharacter {guildAlias or guildId} {characterAlias}*")]
         public async Task GetGuildCharacter(string guildAlias , string characterAlias)
         {
             guildAlias = guildAlias.Trim();
@@ -66,7 +67,8 @@ namespace TripleZero.Modules
 
 
         [Command("slackers")]
-        [Summary("Get all players of guild with low level characters.\nUsage : ***$slackers {guildAlias or guildId}***")]
+        [Summary("Get all players of guild with low level characters")]
+        [Remarks("*slackers {guildAlias or guildId}*")]
         public async Task GetSlackers(string guildAlias)
         {
             guildAlias = guildAlias.Trim();
@@ -112,7 +114,8 @@ namespace TripleZero.Modules
         }
 
         [Command("tb")]
-        [Summary("Get details about Galactic Power for the specified guild.\nUsage : ***$tb  {guildAlias or guildId}***")]
+        [Summary("Get details about Galactic Power for the specified guild")]
+        [Remarks("*tb {guildAlias or guildId}*")]
         public async Task GetCharacterGP(string guildAlias)
         {
             guildAlias = guildAlias.Trim();
@@ -133,7 +136,8 @@ namespace TripleZero.Modules
 
 
         [Command("guildPlayers")]
-        [Summary("Get available players in specified guild.\nUsage : ***$guildPlayers {guildAlias or guildId} {searchString(optional)}***")]
+        [Summary("Get available players in specified guild")]
+        [Remarks("*guildPlayers {guildAlias or guildId} {searchString(optional)}*")]
         public async Task GetGuildPlayers(string guildAlias,string searchStr ="")
         {
             guildAlias = guildAlias.Trim();

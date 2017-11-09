@@ -14,8 +14,8 @@ using SwGoh;
 
 namespace TripleZero.Modules
 {
-    [Name("Player")]
-    [Summary("Do some player test I guess")]
+    [Name("Mods")]
+    [Summary("Mods Commands")]
     public class ModsModule : ModuleBase<SocketCommandContext>
     {
 
@@ -84,7 +84,8 @@ namespace TripleZero.Modules
         }
 
         [Command("mods -s")]
-        [Summary("Get mods sorted by a secondary stat of a given player.\nUsage : ***mods -s {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n examples \n1) $mods -s playerName defense \n2) $mods -s playerName defense% 5)")]
+        [Summary("Get mods sorted by a secondary stat of a given player")]
+        [Remarks("mods -s {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n examples \n1) $mods -s playerName defense \n2) $mods -s playerName defense% 5)")]
         public async Task GetSecondaryStatMods(string playerUserName, string modType, int rows = 20)
         {
             playerUserName = playerUserName.Trim();
@@ -189,7 +190,8 @@ namespace TripleZero.Modules
 
 
         [Command("mods -p")]
-        [Summary("Get mods sorted by a primary stat of a given player.\nUsage : ***mods -p {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n examples \n1) $mods -p playerName speed 5)")]
+        [Summary("Get mods sorted by a primary stat of a given player")]
+        [Remarks("mods -p {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n example \n$mods -p playerName speed 5)")]
         public async Task GetPrimaryStatMods(string playerUserName, string modType, int rows = 20)
         {
             playerUserName = playerUserName.Trim();

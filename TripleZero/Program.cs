@@ -54,7 +54,7 @@ namespace TripleZero
                 scope.Resolve<IMappingConfiguration>();
 
 
-                Logo(); //prints application name,version etc 
+                
 
                 var appSettings = applicationSettings.Get();                
 
@@ -75,6 +75,8 @@ namespace TripleZero
             //client.MessageReceived += MessageReceived;
 
             await Task.Delay(3000);
+
+            Logo(); //prints application name,version etc 
             //await TestCharAliasesDelete();
             //await TestDelete();
             //await TestGuildPlayers("41st");
@@ -219,7 +221,9 @@ namespace TripleZero
             await commands.AddModuleAsync<AdminModule>();
             await commands.AddModuleAsync<HelpModule>();
             await commands.AddModuleAsync<FunModule>();
-            
+            await commands.AddModuleAsync<DBStatsModule>();
+
+
         }
 
         public async Task MessageReceived(SocketGuildUser user)

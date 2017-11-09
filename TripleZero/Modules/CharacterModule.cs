@@ -15,12 +15,12 @@ using SwGoh;
 namespace TripleZero.Modules
 {
     [Name("Character")]
-    [Summary("Do some character test I guess")]
+    [Summary("Character Commands")]
     public class CharacterModule : ModuleBase<SocketCommandContext>
     {        
-
         [Command("characterstats")]
-        [Summary("Get character stats for specific player.\nUsage : ***$characterstats {playerUserName} {characterAlias}***")]
+        [Summary("Get character stats for specific player")]
+        [Remarks("*characterstats {playerUserName} {characterAlias}*")]
         public async Task GetCharacterStats(string playerUserName, string characterAlias)
         {
             playerUserName = playerUserName.Trim();
@@ -88,7 +88,8 @@ namespace TripleZero.Modules
         }
 
         [Command("characterstats -c")]
-        [Summary("Compares character stats for 2 specific players.\nUsage : ***$characterstats -c {player1UserName} {player2UserName} {characterAlias}***")]
+        [Summary("Compares character stats for 2 specific players")]
+        [Remarks("*characterstats -c {player1UserName} {player2UserName} {characterAlias}*")]
         public async Task GetCharacterStatsCompare(string player1UserName, string player2UserName, string characterAlias)
         {
             player1UserName = player1UserName.Trim();
@@ -138,21 +139,7 @@ namespace TripleZero.Modules
             {
                 strAbilities += string.Format("\n{0} {1}/{2} vs {3}/{4}", character1.Abilities[i].Name, character1.Abilities[i].Level, character1.Abilities[i].MaxLevel, character2.Abilities[i].Level, character2.Abilities[i].MaxLevel);
             }
-            retStr += strAbilities;
-
-            //string strAbilities1 = "";
-            //foreach (var ability1 in character1.Abilities)
-            //{
-            //    strAbilities1 += string.Format("{0}/{1} ", ability1.Level.ToString(), ability1.MaxLevel.ToString());
-            //}
-            //string strAbilities2 = "";
-            //foreach (var ability2 in character2.Abilities)
-            //{
-            //    strAbilities2 += string.Format("{0}/{1} ", ability2.Level.ToString(), ability2.MaxLevel.ToString());
-            //}
-            //retStr += string.Format("\n{0} vs {1}", strAbilities1, strAbilities2);
-
-            
+            retStr += strAbilities;            
 
             retStr += "\n\n**General**";
             retStr += $"\nProtection: {character1.Protection} - {character2.Protection}";
@@ -184,46 +171,7 @@ namespace TripleZero.Modules
             retStr += $"\nDeflection Chance: {character1.DeflectionChance} % - {character2.DeflectionChance} %";
             retStr += $"\nSpecial Critical Avoidance: {character1.SpecialCriticalAvoidance} % - {character2.SpecialCriticalAvoidance} %";
 
-
-
             await ReplyAsync($"{retStr}");
-        }
-
-        //public async Task GetCharacterStats(string playerUserName, string characterAlias)
-        //{
-        //    //characters
-        //    var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterAlias);
-        //    string commandCharacter = characterAlias;
-        //    if (matchedCharacter != null)
-        //    {
-        //        commandCharacter = matchedCharacter.SWGoHUrl;
-        //    }
-        //    var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterAlias : characterAlias;
-
-
-        //    CharacterDto character = new CharacterDto
-        //    {
-        //        Name = fullCharacterName
-        //    };
-        //    character = IResolver.Current.SWGoHRepository.GetCharacter(playerUserName, commandCharacter).Result;
-
-
-        //    string retStr = "";
-        //    if (character!=null)
-        //    {
-        //        await ReplyAsync($"***User : {playerUserName} - Character : {fullCharacterName}***");
-
-        //        retStr += string.Format("\nProtection : {0}", character.Protection);
-        //        retStr += string.Format("\nHealth : {0}", character.Health);
-
-        //        await ReplyAsync($"{retStr}");
-        //    }
-        //    else
-        //    {
-
-        //        retStr = $"I didn't find `{playerUserName} having {fullCharacterName}`";
-        //        await ReplyAsync($"{retStr}");
-        //    }            
-        //}
+        }        
     }
 }
