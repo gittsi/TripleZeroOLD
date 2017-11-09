@@ -11,6 +11,7 @@ using TripleZero.Infrastructure.DI;
 using TripleZero.Configuration;
 using TripleZero.Repository.Dto;
 using SwGoh;
+using TripleZero.Helper;
 
 namespace TripleZero.Modules
 {

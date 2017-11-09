@@ -90,6 +90,8 @@ namespace TripleZero
 
         private async Task TestCharAliasesDelete()
         {
+            await Task.FromResult(1);
+
             var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
             List<CharacterConfig> charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;

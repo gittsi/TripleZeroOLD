@@ -99,7 +99,7 @@ namespace TripleZero.Repository
                 new JProperty("PlayerName", playerName),
                 new JProperty("Date", DateTime.UtcNow),
                 new JProperty("Status", 0),
-                new JProperty("Priority", 1),
+                new JProperty("Priority", 3),
                 new JProperty("Command", "up")
            );
 
@@ -120,12 +120,13 @@ namespace TripleZero.Repository
                         BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
                         var queuePlayer = BsonSerializer.Deserialize<QueuePlayer>(document);
 
-                        return queuePlayer==null ? null : queuePlayer.Id.ToString();
+                        return queuePlayer?.Id.ToString();
                     }
                 }
                 catch(Exception ex)
                 {
                     return null;
+                    //throw new ApplicationException(ex.Message);                    
                 }
                 
             }
