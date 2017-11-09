@@ -101,7 +101,6 @@ namespace SwGoh
 
                     if (!FullUpdateClass)
                     {
-                        this.PlayerNames = null;
                         foreach (PlayerDto item in Players)
                         {
                             item.Characters = null;
@@ -196,7 +195,6 @@ namespace SwGoh
             if (index != -1)
             {
                 PlayerNames = new List<string>();
-                PlayerNamesForURL = new List<string>();
 
                 string value;
                 int restposition = 0;
@@ -215,9 +213,6 @@ namespace SwGoh
                         int length = restindexEnd - start;
                         value = WebUtility.HtmlDecode(rest.Substring(start, length));
                         restposition = restindexEnd;
-                        PlayerNamesForURL.Add(value);
-                        value = value.Replace(" ", "");
-                        value = value.Replace("%20", "");
                         PlayerNames.Add(value);
                     }
                     else exit = true;
@@ -229,10 +224,10 @@ namespace SwGoh
             int count = 0;
             if (CheckLastUpdateWithCurrent(ExportMethodEnum.Database))
             {
-                for (int i = 0; i < PlayerNamesForURL.Count; i++)
+                for (int i = 0; i < PlayerNames.Count; i++)
                 {
                     count++;
-                    SwGoh.PlayerDto player = new PlayerDto(PlayerNamesForURL[i]);
+                    SwGoh.PlayerDto player = new PlayerDto(PlayerNames[i]);
                     int ret = player.ParseSwGoh(ExportMethod, false);
                     if (ret == 1)
                     {
@@ -258,10 +253,10 @@ namespace SwGoh
         public void UpdateAllPlayers(ExportMethodEnum ExportMethod, bool AddCharacters)
         {
             int count = 0;
-            for (int i = 0; i < PlayerNamesForURL.Count; i++)
+            for (int i = 0; i < PlayerNames.Count; i++)
             {
                 count++;
-                SwGoh.PlayerDto player = new PlayerDto(PlayerNamesForURL[i]);
+                SwGoh.PlayerDto player = new PlayerDto(PlayerNames[i]);
                 int ret = player.ParseSwGoh(ExportMethod, AddCharacters);
                 if (ret == 1)
                 {

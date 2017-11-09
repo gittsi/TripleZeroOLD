@@ -112,7 +112,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error getting from Queu!!");
+                SWGoH.Core.Net.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
                 return null;
             }
             return null;
@@ -143,7 +143,7 @@ namespace SwGoh
             }
             catch(Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!!");
+                SWGoH.Core.Net.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!! : " + e.Message);
                 return null;
             }
             return null;

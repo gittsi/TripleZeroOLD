@@ -19,8 +19,6 @@ namespace SwGoh
         public int GP { get; set; }
         public int GPaverage { get; set; }
         public List<string> PlayerNames { get; set; }
-        [JsonIgnore]
-        public List<string> PlayerNamesForURL { get; set; }
         public List<PlayerDto> Players { get; set; }
     }
 }
