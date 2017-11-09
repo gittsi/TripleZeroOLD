@@ -19,6 +19,7 @@
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
     <Compile Remove="Model\Character.cs" />
     <Compile Remove="Model\CharacterStats.cs" />
+    <Compile Remove="Model\Guild.cs" />
     <Compile Remove="Model\GuildCharacter.cs" />
     <Compile Remove="Model\Player.cs" />
     <Compile Remove="Model\PlayerCharacter.cs" />
@@ -47,6 +48,7 @@
 
   <ItemGroup>
     <Folder Include="Client\" />
+    <Folder Include="Model\" />
   </ItemGroup>
 
   <ItemGroup>

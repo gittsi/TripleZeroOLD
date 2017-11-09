@@ -28,7 +28,14 @@ namespace TripleZero.Modules
         {
             string retStr = "";
 
-            
+            //check if user is in role in order to proceed with the action
+            var userAllowed = Roles.UserInRole(Context, "botadmin");
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
 
             playerUserName = playerUserName.Trim();
 

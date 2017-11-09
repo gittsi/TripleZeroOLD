@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using TripleZero._Mapping;
 using TripleZero.Helper;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Model;
 using TripleZero.Repository.Dto;
 using TripleZero.Repository;
 using MongoDB.Bson;
