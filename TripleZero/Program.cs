@@ -65,16 +65,17 @@ namespace TripleZero
 
                 
 
-                Consoler.WriteLineInColor(client.LoginState.ToString(), ConsoleColor.DarkMagenta);
+                //Consoler.WriteLineInColor(client.LoginState.ToString(), ConsoleColor.DarkMagenta);
 
                 //client.UserJoined += UserJoined;
-                Consoler.WriteLineInColor(client.ConnectionState.ToString(), ConsoleColor.DarkMagenta);
+                //Consoler.WriteLineInColor(client.ConnectionState.ToString(), ConsoleColor.DarkMagenta);
             }
 
 
             //client.MessageReceived += MessageReceived;
 
-            await Task.Delay(3000);
+            //await Task.Delay(3000);
+            //await TestCharAliasesDelete();
             //await TestDelete();
             //await TestGuildPlayers("41st");
             //await TestPlayerReport("tsitas_66");
@@ -87,7 +88,50 @@ namespace TripleZero
 
         #region "tests"
 
-        private async Task TestDelete()
+        private async Task TestCharAliasesDelete()
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+
+            List<CharacterConfig> charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
+            
+            foreach(var characterConfig in charactersConfig)
+            {
+                if(characterConfig.Aliases.Where(p=> p =="Empty" || p.ToLower()=="true" ).Any())
+                {
+                    characterConfig.Aliases.Remove("Empty");
+
+                    JObject data = null;
+                    try
+                    {
+                        data = new JObject(
+                                               new JProperty("Name", characterConfig.Name),
+                                               new JProperty("Command", characterConfig.Command),
+                                               new JProperty("SWGoHUrl", characterConfig.SWGoHUrl),
+                                               new JProperty("Aliases", characterConfig.Aliases)
+                                               );
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ApplicationException(ex.Message);
+                    }
+
+                    var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
+                    using (HttpClient client1 = new HttpClient())
+                    {
+                        HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                    }
+                }
+               
+                
+            }
+            
+
+
+           
+        }
+
+        private async Task TestPlayerDelete()
         {
             using (HttpClient client = new HttpClient())
             {
@@ -158,7 +202,7 @@ namespace TripleZero
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             Consoler.WriteLineInColor(string.Format("{0} - {1}", appSettings.GeneralSettings.ApplicationName, appSettings.GeneralSettings.Environment), ConsoleColor.DarkYellow);
             Consoler.WriteLineInColor(string.Format("Application Version : {0}", version), ConsoleColor.DarkYellow);
-            Consoler.WriteLineInColor(string.Format("Json Version : {0}", appSettings.GeneralSettings.JsonSettingsVersion), ConsoleColor.DarkYellow);
+            //Consoler.WriteLineInColor(string.Format("Json Version : {0}", appSettings.GeneralSettings.JsonSettingsVersion), ConsoleColor.DarkYellow);
             Console.Title = string.Format("{0} - version {1}", appSettings.GeneralSettings.ApplicationName, version);
             Console.WriteLine(); Console.WriteLine();
         }
@@ -170,6 +214,7 @@ namespace TripleZero
             await commands.AddModuleAsync<CharacterModule>();
             await commands.AddModuleAsync<ModsModule>();
             await commands.AddModuleAsync<PlayerModule>();
+            await commands.AddModuleAsync<AdminModule>();
             await commands.AddModuleAsync<HelpModule>();
             await commands.AddModuleAsync<FunModule>();
             
@@ -207,7 +252,7 @@ namespace TripleZero
 
 
             /////////////////////////////Don't forget to exclude bots///////////////////////
-            //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+            if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
 
 
 

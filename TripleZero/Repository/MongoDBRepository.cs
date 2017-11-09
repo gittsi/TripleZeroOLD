@@ -130,5 +130,42 @@ namespace TripleZero.Repository
                 
             }
         }
+
+        public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+
+            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+
+            characterConfig.Aliases.Add(alias);
+            JObject data = null;
+            try
+            {
+                 data = new JObject(                                      
+                                        new JProperty("Name", characterConfig.Name),
+                                        new JProperty("Command", characterConfig.Command),
+                                        new JProperty("SWGoHUrl", characterConfig.SWGoHUrl),
+                                        new JProperty("Aliases", characterConfig.Aliases)
+                                        );
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+            
+
+            var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
+            using (HttpClient client1 = new HttpClient())
+            {
+                HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+            }
+
+            characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
+
+            return characterConfig;
+
+        }
+
     }
 }

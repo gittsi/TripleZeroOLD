@@ -31,7 +31,7 @@ namespace TripleZero.Modules
                 return;
             }
             
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfig(characterAlias).Result;
+            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
             if (characterConfig == null)
             {
                 await ReplyAsync($"I couldn't find any character with alias ***{characterAlias}***");

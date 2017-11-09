@@ -27,9 +27,9 @@ namespace TripleZero.Modules
 
             string retStr = "";
             if (result != null)
-                retStr = string.Format("Player {0} added to queue. Please be patient, I need some time to retrieve data!!!",playerUserName);
+                retStr = string.Format("\nPlayer {0} added to queue. Please be patient, I need some time to retrieve data!!!",playerUserName);
             else
-                retStr = string.Format("Player {0} not added to queue!!!!!");
+                retStr = string.Format("\nPlayer {0} not added to queue!!!!!");
 
             await ReplyAsync($"{retStr}");
         }
@@ -56,7 +56,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfig(characterAlias).Result;
+            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
 
             var character1 = player1Data.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
             if (character1 == null)

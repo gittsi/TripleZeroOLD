@@ -35,7 +35,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfig(characterAlias).Result;
+            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
 
             var character = playerData.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
 
@@ -106,7 +106,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfig(characterAlias).Result;
+            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
 
             var character1 = player1Data.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
             if (character1 == null)

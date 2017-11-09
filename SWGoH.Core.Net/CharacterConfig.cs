@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,6 +56,7 @@ namespace SwGoh
 
     public class CharacterConfig
     {
+        public Nullable<ObjectId> Id { get; set; }
         public string Name { get; set; }
         public string Command { get; set; }
         public List<string> Aliases { get; set; }
