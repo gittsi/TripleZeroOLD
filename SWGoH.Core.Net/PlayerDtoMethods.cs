@@ -53,32 +53,33 @@ namespace SwGoh
         }
         private void DeletePlayerFromDBAsync()
         {
-            using (HttpClient client = new HttpClient())
+            try
             {
-                var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
-                var orderby = "s={\"LastClassUpdated\":1}";
-                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
-                var response = client.GetStringAsync(url).Result;
-
-                List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                if (document.Count == 1) return;
-                PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
-
-                if (result1 != null)
+                using (HttpClient client = new HttpClient())
                 {
-                    var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", result1.Id, apikey);
-                    WebRequest request = WebRequest.Create(deleteurl);
-                    request.Method = "DELETE";
-                    try
+                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
+                    var orderby = "s={\"LastClassUpdated\":1}";
+                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
+                    var response = client.GetStringAsync(url).Result;
+
+                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    if (document.Count == 1) return;
+                    PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
+
+                    if (result1 != null)
                     {
-                        HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
-                    }
-                    catch(Exception e)
-                    {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Error deleting player " + PlayerName + " : " + e.Message);
+                        var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", result1.Id, apikey);
+                        WebRequest request = WebRequest.Create(deleteurl);
+                        request.Method = "DELETE";
+                    
+                            HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                SWGoH.Core.Net.Log.ConsoleMessage("Error deleting player " + PlayerName + " : " + e.Message);
             }
         }
         public void Export(ExportMethodEnum ExportMethod)
