@@ -352,8 +352,8 @@ namespace SwGoh
 
         private void AddCharacterToAlliasConfig(CharacterDto newchar)
         {
-            try
-            {
+            //try
+            //{
                 using (HttpClient client = new HttpClient())
                 {
                     var queryData = string.Concat("q={\"Name\" : \"" + newchar.Name + "\" }");
@@ -405,8 +405,8 @@ namespace SwGoh
                         //}
                     }
                 }
-            }
-            catch (Exception e) { SWGoH.Core.Net.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + ":" + e.Message); }
+            //}
+            //catch (Exception e) { SWGoH.Core.Net.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + ":" + e.Message); }
         }
         /// <summary>
         /// Fills player properties like LastUpdated
