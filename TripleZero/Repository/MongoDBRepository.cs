@@ -95,12 +95,13 @@ namespace TripleZero.Repository
 
         public async Task<string> SendPlayerToQueue(string playerName)
         {
-            SendToQueue
+            //SendToQueue
+            return null;
         }
 
         public async Task<string> SendGuildToQueue(string guildName)
         {
-
+            return null;
         }
 
         private async Task<string> SendToQueue(string name, QueueType queueType )

@@ -171,6 +171,9 @@ namespace TripleZero.Modules
         //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         [Summary("Get current for specific character(Admin Command)")]
         [Remarks("*alias-remove {characterFullName}*")]
-        public async Task RemoveAlias(string characterFullName, string alias)
+        public async Task GetQueue(string characterFullName, string alias)
+        {
+
+        }
     }
 }
