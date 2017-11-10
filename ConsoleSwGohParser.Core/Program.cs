@@ -3,9 +3,6 @@ using System.Threading;
 
 namespace SwGoh
 {
-    
-
-
     class Program
     {
         private static bool isWorking = false;

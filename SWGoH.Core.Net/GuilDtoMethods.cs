@@ -110,23 +110,25 @@ namespace SwGoh
 
                     if (!FullUpdateClass)
                     {
-                        client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Guild?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                        string apikey = SwGoh.Settings.MongoApiKey;
+
+                        client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Guild?apiKey="+ apikey);
+                        HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            SwGoh.Log.ConsoleMessage("Exported To Database guild : " + this.Name);
+                        }
+                        else
+                        {
+                            SwGoh.Log.ConsoleMessage("Error Exporting to Database guild : " + this.Name);
+                        }
                     }
                     else
                     {
                         // NOT IMPLMEMENTED
-                        client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/GuildWithCharacters?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
                     }
 
-                    HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        SwGoh.Log.ConsoleMessage("Exported To Database guild : " + this.Name);
-                    }
-                    else
-                    {
-                        SwGoh.Log.ConsoleMessage("Error Exporting to Database guild : " + this.Name);
-                    }
+                    
                 }
             }
         }
@@ -291,7 +293,7 @@ namespace SwGoh
                 var orderby = "s={\"LastSwGohUpdated\":-1}";
                 var limit = "l=1";
                 var field = "f={\"LastSwGohUpdated\": 1}";
-                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                string apikey = SwGoh.Settings.MongoApiKey;
 
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&{3}&apiKey={4}", queryData,field ,orderby, limit, apikey);
                 string response = client.GetStringAsync(url).Result;
