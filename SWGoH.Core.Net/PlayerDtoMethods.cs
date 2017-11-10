@@ -267,20 +267,35 @@ namespace SwGoh
                         var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
                         var orderby = "s={\"LastSwGohUpdated\":1}";
                         var limit = "l=1";
-                        var field = "f={\"LastSwGohUpdated\": 1}";
+                        var field = "f={\"LastSwGohUpdated\": 1 , \"id\" : 1}";
                         string apikey = SwGoh.Settings.MongoApiKey;
 
                         string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, orderby, limit, apikey);
                         string response = client.GetStringAsync(url).Result;
                         if (response != "" && response != "[  ]")
                         {
-                            List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                            //List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+
+                            List<PlayerDto> result = BsonSerializer.Deserialize<List<PlayerDto>>(response);
+                            //List<PlayerDto> result1 = BsonSerializer.Deserialize<List<PlayerDto>>(document);
+
                             if (result.Count == 1)
                             {
                                 PlayerDto Found = result[0];
                                 if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
                                 {
                                     SwGoh.Log.ConsoleMessage("No need to update!!!!");
+
+                                    string date = JsonConvert.SerializeObject(DateTime.UtcNow, Converter.Settings).ToString();
+
+                                    var httpContent = new StringContent("{\"$set\" : { \"LastClassUpdated\" :" + date + "}}", Encoding.UTF8, "application/json");
+                                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", Found.Id , apikey);
+                                    using (HttpClient client1 = new HttpClient())
+                                    {
+                                        HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                                    }
+
+
                                     return false;
                                 }
                                 else
