@@ -13,9 +13,10 @@ namespace SwGoh
         UpdateGuild = 2,
         UpdateGuildWithNoChars = 3,
         UpdatePlayers = 4,
-        Help = 5,
-        UnKnown = 6,
-        Test = 7,
+        GetNewCharacters = 5,
+        Help = 6,
+        UnKnown = 7,
+        Test = 8,
     }
 
 
@@ -43,6 +44,7 @@ namespace SwGoh
 
             //CharactersConfig.ExportCharacterFilesToDB();
             //ExecuteCommand("test", ""); return;
+            //ExecuteCommand("getnewchars", "newholborn"); return; 
 
             QueuePlayer q = QueueMethods.GetQueu();
             if (q != null)
@@ -89,6 +91,7 @@ namespace SwGoh
             else if (commandstr == "up") command = Command.UpdatePlayer;
             else if (commandstr == "ug") command = Command.UpdateGuild;
             else if (commandstr == "ugnochars") command = Command.UpdateGuildWithNoChars;
+            else if (commandstr == "getnewchars") command = Command.GetNewCharacters;
             else if (commandstr == "help") command = Command.Help;
             else if (commandstr == "test") command = Command.Test;
             else command = Command.UnKnown;
@@ -98,7 +101,7 @@ namespace SwGoh
                 case Command.UpdatePlayer:
                     {
                         SwGoh.PlayerDto player = new PlayerDto(pname);
-                        int ret = player.ParseSwGoh(mExportMethod, true);
+                        int ret = player.ParseSwGoh(mExportMethod, true,false);
                         if (ret == 1)
                         {
                             player.LastClassUpdated = DateTime.UtcNow;
@@ -120,7 +123,7 @@ namespace SwGoh
                         for (int i = 0; i < arg.Length; i++)
                         {
                             SwGoh.PlayerDto player = new PlayerDto(arg[i]);
-                            int ret = player.ParseSwGoh(mExportMethod, true);
+                            int ret = player.ParseSwGoh(mExportMethod, true,false);
                             if (ret == 1)
                             {
                                 player.LastClassUpdated = DateTime.UtcNow;
@@ -135,6 +138,12 @@ namespace SwGoh
                         guild.Name = GuildDto.GetGuildNameFromAlias(pname);
                         guild.ParseSwGoh();
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0) guild.UpdateOnlyGuildWithNoChars(mExportMethod);
+                        break;
+                    }
+                case Command.GetNewCharacters:
+                    {
+                        SwGoh.PlayerDto player = new PlayerDto(pname);
+                        int ret = player.ParseSwGoh(mExportMethod, true, true);
                         break;
                     }
                 case Command.Help:
@@ -164,21 +173,21 @@ namespace SwGoh
                     {
                         //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 
-                        SwGoh.GuildDto guild = new GuildDto();
-                        guild.Name = GuildDto.GetGuildNameFromAlias("41st");
-                        guild.ParseSwGoh();
-                        for (int i = 0; i < guild.PlayerNames.Count; i++)
-                        {
+                        //SwGoh.GuildDto guild = new GuildDto();
+                        //guild.Name = GuildDto.GetGuildNameFromAlias("41st");
+                        //guild.ParseSwGoh();
+                        //for (int i = 0; i < guild.PlayerNames.Count; i++)
+                        //{
 
-                            QueueMethods.AddPlayer(guild.PlayerNames[i], "up", 2);
-                        }
-                        QueueMethods.AddPlayer("41st", "ugnochars", 1);
+                        //    QueueMethods.AddPlayer(guild.PlayerNames[i], "up", 2);
+                        //}
+                        //QueueMethods.AddPlayer("41st", "ugnochars", 1);
 
                         //QueueMethods.AddPlayer("newholborn", "up",3);
                         //QueueMethods.AddPlayer("oaraug", "up", 3);
                         //QueueMethods.AddPlayer("tsitas_66", "up",1);
                         //QueueMethods.AddPlayer("tsitas_66", "up", 3);
-                        QueueMethods.AddPlayer("41st", "ugnochars", 3);
+                        //QueueMethods.AddPlayer("41st", "ugnochars", 3);
                         //for (int i = 0; i < 10; i++)
                         //{
                         //    QueueMethods.AddPlayer("tsitas_66", "up");

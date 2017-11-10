@@ -231,7 +231,7 @@ namespace SwGoh
                 {
                     count++;
                     SwGoh.PlayerDto player = new PlayerDto(PlayerNames[i]);
-                    int ret = player.ParseSwGoh(ExportMethod, false);
+                    int ret = player.ParseSwGoh(ExportMethod, false , false);
                     if (ret == 1)
                     {
                         if (Players == null) Players = new List<PlayerDto>();
@@ -260,7 +260,7 @@ namespace SwGoh
             {
                 count++;
                 SwGoh.PlayerDto player = new PlayerDto(PlayerNames[i]);
-                int ret = player.ParseSwGoh(ExportMethod, AddCharacters);
+                int ret = player.ParseSwGoh(ExportMethod, AddCharacters, false);
                 if (ret == 1)
                 {
                     player.LastClassUpdated = DateTime.UtcNow;
