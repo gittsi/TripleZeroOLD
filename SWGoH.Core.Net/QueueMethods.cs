@@ -36,13 +36,13 @@ namespace SwGoh
                     HttpResponseMessage response = client.PostAsync(requestUri, httpContent).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        SwGoH.Core.Net.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
+                        SwGoH.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
                     }
                 }
             }
             catch(Exception e)
             {
-                SwGoH.Core.Net.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
+                SwGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
         }
         public static void RemoveFromQueu(QueuePlayer q)
@@ -59,22 +59,22 @@ namespace SwGoh
                     HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
                     if (response1.StatusCode == HttpStatusCode.OK)
                     {
-                        SwGoH.Core.Net.Log.ConsoleMessage("Removed From Queu!");
+                        SwGoH.Log.ConsoleMessage("Removed From Queu!");
                     }
                     else
                     {
-                        SwGoH.Core.Net.Log.ConsoleMessage("Could not remove from Queu!");
+                        SwGoH.Log.ConsoleMessage("Could not remove from Queu!");
                     }
                 }
             }
             catch (Exception e)
             {
-                SwGoH.Core.Net.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
+                SwGoH.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
             }
         }
         public static QueuePlayer GetQueu()
         {
-            SwGoH.Core.Net.Log.ConsoleMessage("Getting from Queu!!");
+            SwGoH.Log.ConsoleMessage("Getting from Queu!!");
             try
             {
                 using (HttpClient client = new HttpClient())
@@ -106,7 +106,7 @@ namespace SwGoh
                             {
                                 HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
                             }
-                            SwGoH.Core.Net.Log.ConsoleMessage("Got from Queu Player " + result1.PlayerName);
+                            SwGoH.Log.ConsoleMessage("Got from Queu Player " + result1.PlayerName);
                         }
                         return result1;
                     }
@@ -114,14 +114,14 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SwGoH.Core.Net.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                SwGoH.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
                 return null;
             }
             return null;
         }
         public static PlayerDto GetLastUpdatedPlayer(string guildname)
         {
-            SwGoH.Core.Net.Log.ConsoleMessage("Getting LastUpdated From Queu!!");
+            SwGoH.Log.ConsoleMessage("Getting LastUpdated From Queu!!");
             try
             {
                 using (HttpClient client = new HttpClient())
@@ -152,7 +152,7 @@ namespace SwGoh
             }
             catch(Exception e)
             {
-                SwGoH.Core.Net.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!! : " + e.Message);
+                SwGoH.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!! : " + e.Message);
                 return null;
             }
             return null;
@@ -183,7 +183,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SwGoH.Core.Net.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                SwGoH.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
                 return false;
             }
             return false;

@@ -31,14 +31,14 @@ namespace SwGoh
         
         static void Main(string[] args)
         {
-            if (mExportLog) SwGoH.Core.Net.Log.Initialize("log.txt" , mExportLog );
+            if (mExportLog) SwGoH.Log.Initialize("log.txt" , mExportLog );
 
             Timer t = new Timer(new TimerCallback(TimerProc));
             t.Change(0, mTimerdelay);
 
             Console.ReadLine();
 
-            if (mExportLog) SwGoH.Core.Net.Log.FileFinalize();
+            if (mExportLog) SwGoH.Log.FileFinalize();
         }
         private static void TimerProc(Object o)
         {
@@ -199,7 +199,7 @@ namespace SwGoh
                     }
                 default:
                     {
-                        SwGoH.Core.Net.Log.ConsoleMessage("Unknown command , please try again.!!!!");
+                        SwGoH.Log.ConsoleMessage("Unknown command , please try again.!!!!");
                         break;
                     }
             }

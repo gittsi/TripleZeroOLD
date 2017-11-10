@@ -45,7 +45,7 @@ namespace SwGoh
         }
         public void ParseSwGoh()
         {
-            SwGoH.Core.Net.Log.ConsoleMessage("Reading info for guild : " + this.Name);
+            SwGoH.Log.ConsoleMessage("Reading info for guild : " + this.Name);
             web = new System.Net.WebClient();
             string htm = GetGuildURLFromName(this.Name);
             if (htm == "") return;
@@ -93,7 +93,7 @@ namespace SwGoh
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    SwGoH.Core.Net.Log.ConsoleMessage("Exporting To Database guild : " + this.Name);
+                    SwGoH.Log.ConsoleMessage("Exporting To Database guild : " + this.Name);
                     LastClassUpdated = DateTime.UtcNow;
 
                     JsonSerializerSettings settings = new JsonSerializerSettings();
@@ -121,11 +121,11 @@ namespace SwGoh
                     HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        SwGoH.Core.Net.Log.ConsoleMessage("Exported To Database guild : " + this.Name);
+                        SwGoH.Log.ConsoleMessage("Exported To Database guild : " + this.Name);
                     }
                     else
                     {
-                        SwGoH.Core.Net.Log.ConsoleMessage("Error Exporting to Database guild : " + this.Name);
+                        SwGoH.Log.ConsoleMessage("Error Exporting to Database guild : " + this.Name);
                     }
                 }
             }
@@ -237,7 +237,7 @@ namespace SwGoh
                         if (Players == null) Players = new List<PlayerDto>();
                         player.LastClassUpdated = null;
                         Players.Add(player);
-                        SwGoH.Core.Net.Log.ConsoleMessage("Added Player : " + player.PlayerName + " aka " + player.PlayerNameInGame);
+                        SwGoH.Log.ConsoleMessage("Added Player : " + player.PlayerName + " aka " + player.PlayerNameInGame);
                     }
                     else if (ret == 0)
                     {
@@ -303,7 +303,7 @@ namespace SwGoh
                         GuildDto Found = result[0];
                         if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
                         {
-                            SwGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
+                            SwGoH.Log.ConsoleMessage("No need to update!!!!");
                             return false;
                         }
                         return true;
