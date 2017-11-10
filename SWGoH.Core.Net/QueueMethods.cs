@@ -28,7 +28,7 @@ namespace SwGoh
                     new JProperty("Status", SwGoh.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
                     new JProperty("Type", type),
-                    new JProperty("Command", command));
+                    new JProperty("Command", SwGoh.Enums.Command.UpdatePlayer));
 
                     var apiKey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
