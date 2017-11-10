@@ -39,6 +39,11 @@ namespace TripleZero.Modules
             }
 
             var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
+            if(characterConfig==null)
+            {
+                await ReplyAsync($"I couldn't find any character with alias : ***{characterAlias}***");
+                return;
+            }
 
             var character = playerData.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
 
@@ -115,6 +120,11 @@ namespace TripleZero.Modules
             }
 
             var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
+            if (characterConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any character with alias : ***{characterAlias}***");
+                return;
+            }
 
             var character1 = player1Data.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
             if (character1 == null)
