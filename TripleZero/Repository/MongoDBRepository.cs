@@ -17,7 +17,7 @@ using TripleZero.Model;
 using TripleZero.Repository.Dto;
 using TripleZero.Repository;
 using MongoDB.Bson;
-using SWGoH;
+using SwGoH;
 using MongoDB.Bson.Serialization;
 
 namespace TripleZero.Repository

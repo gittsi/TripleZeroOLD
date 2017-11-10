@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SWGoH
+namespace SwGoH
 {
     public class QueuePlayer
     {

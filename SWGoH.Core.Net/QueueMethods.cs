@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
-using SWGoH;
+using SwGoH;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,13 +36,13 @@ namespace SwGoh
                     HttpResponseMessage response = client.PostAsync(requestUri, httpContent).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
+                        SwGoH.Core.Net.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
                     }
                 }
             }
             catch(Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
+                SwGoH.Core.Net.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
         }
         public static void RemoveFromQueu(QueuePlayer q)
@@ -59,21 +59,22 @@ namespace SwGoh
                     HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
                     if (response1.StatusCode == HttpStatusCode.OK)
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Removed From Queu!");
+                        SwGoH.Core.Net.Log.ConsoleMessage("Removed From Queu!");
                     }
                     else
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Could not remove from Queu!");
+                        SwGoH.Core.Net.Log.ConsoleMessage("Could not remove from Queu!");
                     }
                 }
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
+                SwGoH.Core.Net.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
             }
         }
         public static QueuePlayer GetQueu()
         {
+            SwGoH.Core.Net.Log.ConsoleMessage("Getting from Queu!!");
             try
             {
                 using (HttpClient client = new HttpClient())
@@ -105,6 +106,7 @@ namespace SwGoh
                             {
                                 HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
                             }
+                            SwGoH.Core.Net.Log.ConsoleMessage("Got from Queu Player " + result1.PlayerName);
                         }
                         return result1;
                     }
@@ -112,20 +114,21 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                SwGoH.Core.Net.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
                 return null;
             }
             return null;
         }
         public static PlayerDto GetLastUpdatedPlayer(string guildname)
         {
+            SwGoH.Core.Net.Log.ConsoleMessage("Getting LastUpdated From Queu!!");
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
                     var queryData = string.Concat("q={\"GuildName\" : \"" + GuildDto.GetGuildNameFromAlias(guildname) + "\" }");
                     var orderby = "s={\"LastSwGohUpdated\":1}";
-                    var limit = "l=1";
+                    var limit = "l=5";
                     var field = "f={\"PlayerName\": 1,\"LastSwGohUpdated\": 1}";
                     string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
@@ -134,19 +137,56 @@ namespace SwGoh
                     if (response != "" && response != "[  ]")
                     {
                         List<PlayerDto> result = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PlayerDto>>(response);
-                        if (result.Count == 1)
+                        if (result.Count > 0 )
                         {
-                            return result[0];
+                            foreach (PlayerDto item in result)
+                            {
+                                bool check = CheckStatusForPlayer(item.PlayerName);
+                                if (check) continue;
+                                return item;
+                            }
+                            
                         }
                     }
                 }
             }
             catch(Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!! : " + e.Message);
+                SwGoH.Core.Net.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!! : " + e.Message);
                 return null;
             }
             return null;
+        }
+
+        private static bool CheckStatusForPlayer(string playerName)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var queryData = string.Concat("q={\"PlayerName\":\"", playerName, "\",  \"Status\" : 1 }");
+                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/?{0}&apiKey={1}", queryData, apikey);
+
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "" && response != "[  ]")
+                    {
+                        List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                        QueuePlayer result1 = BsonSerializer.Deserialize<QueuePlayer>(document.FirstOrDefault());
+                        if (result1 != null)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                SwGoH.Core.Net.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                return false;
+            }
+            return false;
         }
     }
 }

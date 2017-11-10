@@ -1,4 +1,4 @@
-﻿using SWGoH;
+﻿using SwGoH;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,13 +27,18 @@ namespace SwGoh
         private static int mPrintedNothingToProcessdots = 0;
         private static int mPrintedNothingToProcessdotsTotal = 4;
         private static int mTimerdelay = 5000;
+        private static bool mExportLog = false;
         
         static void Main(string[] args)
         {
+            if (mExportLog) SwGoH.Core.Net.Log.Initialize("log.txt" , mExportLog );
+
             Timer t = new Timer(new TimerCallback(TimerProc));
             t.Change(0, mTimerdelay);
-            
+
             Console.ReadLine();
+
+            if (mExportLog) SwGoH.Core.Net.Log.FileFinalize();
         }
         private static void TimerProc(Object o)
         {
@@ -42,9 +47,7 @@ namespace SwGoh
             Timer t = o as Timer;
             t.Change(Timeout.Infinite, Timeout.Infinite);
 
-            //CharactersConfig.ExportCharacterFilesToDB();
-            //ExecuteCommand("test", ""); return;
-            //ExecuteCommand("getnewchars", "newholborn"); return; 
+            //ExecuteCommand("getnewchars", "aramil"); return; 
 
             QueuePlayer q = QueueMethods.GetQueu();
             if (q != null)
@@ -196,7 +199,7 @@ namespace SwGoh
                     }
                 default:
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Unknown command , please try again.!!!!");
+                        SwGoH.Core.Net.Log.ConsoleMessage("Unknown command , please try again.!!!!");
                         break;
                     }
             }
