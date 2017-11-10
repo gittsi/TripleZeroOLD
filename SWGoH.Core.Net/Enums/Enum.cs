@@ -6,7 +6,7 @@ namespace SWGoH.Enums
 {
     public class QueueEnum
     {
-        public enum QueueStats
+        public enum QueueStatus
         {
             PendingProcess = 0,
             Processing = 1,
