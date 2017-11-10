@@ -1,10 +1,8 @@
 ﻿using MongoDB.Bson;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using static SWGoH.Enums.QueueEnum;
+using static SwGoh.Enums.QueueEnum;
 
-namespace SwGoH
+namespace SwGoh
 {
     public class Queue
     {
@@ -12,7 +10,7 @@ namespace SwGoH
         public string Name { get; set; }
         public DateTime Date { get; set; }
         public DateTime DateForProcess { get; set; }
-        public string Command { get; set; }
+        public SwGoh.Enums.Command Command { get; set; }
         public int Priority { get; set; }
         public QueueStatus Status { get; set; }
         public QueueType Type { get; set; }
