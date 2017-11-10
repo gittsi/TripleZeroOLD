@@ -173,7 +173,7 @@ namespace TripleZero.Modules
         [Remarks("*alias-remove {characterFullName}*")]
         public async Task GetQueue(string characterFullName, string alias)
         {
-
+            
         }
     }
 }

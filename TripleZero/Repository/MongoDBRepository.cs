@@ -95,13 +95,12 @@ namespace TripleZero.Repository
 
         public async Task<string> SendPlayerToQueue(string playerName)
         {
-            //SendToQueue
-            return null;
+            return await SendToQueue(playerName, QueueType.Player);
         }
 
         public async Task<string> SendGuildToQueue(string guildName)
         {
-            return null;
+            return await SendToQueue(guildName, QueueType.Guild);
         }
 
         private async Task<string> SendToQueue(string name, QueueType queueType )
@@ -130,16 +129,15 @@ namespace TripleZero.Repository
                         string responseBody = await response.Content.ReadAsStringAsync();
 
                         BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
-                        var queuePlayer = BsonSerializer.Deserialize<Queue>(document);
+                        var queue = BsonSerializer.Deserialize<Queue>(document);
 
-                        return queuePlayer?.Id.ToString();
+                        return queue?.Id.ToString();
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    return null;
-                    //throw new ApplicationException(ex.Message);                    
+                    return null;                                  
                 }
 
             }
@@ -227,6 +225,22 @@ namespace TripleZero.Repository
             {
                 throw new ApplicationException(ex.Message);
             }
+        }
+
+        public async Task<Queue> GetQueue()
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?apiKey={0}", apiKey);
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(requestUri);
+                string responseBody = await response.Content.ReadAsStringAsync();
+                BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
+                var queue = BsonSerializer.Deserialize<Queue>(document);                
+            }
+
+            return null;
         }
     }
 }

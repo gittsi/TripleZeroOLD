@@ -51,6 +51,35 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
+        [Command("guildreload")]
+        [Summary("Set a guild for reload")]
+        [Remarks("*guildreload {guildName}*")]
+        public async Task SetGuildReload(string guildName)
+        {
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var userAllowed = Roles.UserInRole(Context, "botadmin");
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            guildName = guildName.Trim();
+
+            var result = IResolver.Current.MongoDBRepository.SendGuildToQueue(guildName).Result;
+
+
+            if (result != null)
+                retStr = string.Format("\nGuild {0} added to queue. Please be patient, I need tons of time to retrieve data!!!", guildName);
+            else
+                retStr = string.Format("\nGuild {0} not added to queue!!!!!");
+
+            await ReplyAsync($"{retStr}");
+        }
+
         [Command("playerreport")]
         [Summary("Get full report for a player")]
         [Remarks("*playerreport {playerUserName}*")]
