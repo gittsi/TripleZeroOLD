@@ -24,6 +24,7 @@ namespace TripleZero.Modules
 
         [Command("info")]
         [Summary("Get general info")]
+        [Remarks("*info*")]
         public async Task InfoAsync()
         {
             var applicationSettings = IResolver.Current.ApplicationSettings.Get();
@@ -143,6 +144,7 @@ namespace TripleZero.Modules
 
         [Command("help")]
         [Summary("Gets general help")]
+        [Remarks("*help*")]
         public async Task Help3Async()
         {
 
@@ -202,7 +204,8 @@ namespace TripleZero.Modules
         //}
 
         [Command("help")]
-        [Summary("Gets helps for specific command")]
+        [Summary("*Gets helps for specific command*")]
+        [Remarks("*help <command>*")]
         public async Task HelpAsync(string command)
         {
             var result = _service.Search(Context, command);

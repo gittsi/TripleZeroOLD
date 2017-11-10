@@ -53,9 +53,9 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("stats -p")]
+        [Command("getallplayers")]
         [Summary("Get all players in collection")]
-        [Remarks("*$stats -p*")]
+        [Remarks("*getallplayers*")]
         public async Task GetAllPlayers()
         {
             string retStr = "";

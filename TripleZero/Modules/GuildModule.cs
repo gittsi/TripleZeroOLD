@@ -21,7 +21,7 @@ namespace TripleZero.Modules
 
         [Command("guildCharacter")]
         [Summary("Get report for specific character in the given guild")]
-        [Remarks("*$guildCharacter {guildAlias or guildId} {characterAlias}*")]
+        [Remarks("*guildCharacter {guildAlias or guildId} {characterAlias}*")]
         public async Task GetGuildCharacter(string guildAlias , string characterAlias)
         {
             guildAlias = guildAlias.Trim();
@@ -79,11 +79,11 @@ namespace TripleZero.Modules
             var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
 
             int counter = 1;
-            int totalRows = 25;
+            int totalRows = 300;
 
             try
             {
-                for (int level = 1; level < 100; level++)
+                for (int level = 1; level < 50; level++)
                 {
                     foreach (var guildCharacter in res)
                     {
@@ -93,6 +93,13 @@ namespace TripleZero.Modules
                             {
                                 retStr += "\n";
                                 retStr += string.Format("{0} - {1} - level:{2}", player.Name, guildCharacter.Name, player.Level);
+
+                                if (retStr.Length > 1800)
+                                {
+                                    await ReplyAsync($"{retStr}");
+                                    retStr = "";
+                                }
+
                                 counter += 1;
                                 if (counter > totalRows) break;
                                 //Console.WriteLine(maxCounter1.ToString());
@@ -100,7 +107,7 @@ namespace TripleZero.Modules
                         }
                     }
                     if (counter > totalRows) break;
-                    //Console.WriteLine("level" + level);
+                    //Console.WriteLine("level" + level);                    
                 }
             }
             catch (Exception ex)
@@ -108,8 +115,8 @@ namespace TripleZero.Modules
                 Consoler.WriteLineInColor(string.Format("Slackers say : {0}", ex.Message), ConsoleColor.Red);
             }
 
-
-            await ReplyAsync($"{retStr}");           
+            if(retStr.Length>0)
+                await ReplyAsync($"{retStr}");           
 
         }
 

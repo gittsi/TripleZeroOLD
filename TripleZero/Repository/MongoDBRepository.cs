@@ -124,6 +124,7 @@ namespace TripleZero.Repository
                 }
                 catch(Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
                     return null;
                     //throw new ApplicationException(ex.Message);                    
                 }
@@ -134,39 +135,59 @@ namespace TripleZero.Repository
         public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
         {
             var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
-
             CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
-
             if (characterConfig == null) return null;
 
-            characterConfig.Aliases.Add(alias);
+            characterConfig.Aliases.Add(alias);            
+            var result = PutCharacterConfig(characterConfig).Result;
+            if (!result) return null;
+
+            characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
+            return characterConfig;
+        }
+
+        public async Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias)
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+            if (characterConfig == null) return null;
+
+            bool isRemoved = characterConfig.Aliases.Remove(alias);
+            if (!isRemoved) return null;
+            var result = PutCharacterConfig(characterConfig).Result;
+            if (!result) return null;
+
+            characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
+            return characterConfig;
+        }        
+
+        private async Task<bool> PutCharacterConfig(CharacterConfig characterConfig)
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+
             JObject data = null;
             try
             {
-                 data = new JObject(                                      
-                                        new JProperty("Name", characterConfig.Name),
-                                        new JProperty("Command", characterConfig.Command),
-                                        new JProperty("SWGoHUrl", characterConfig.SWGoHUrl),
-                                        new JProperty("Aliases", characterConfig.Aliases)
-                                        );
+                data = new JObject(
+                                       new JProperty("Name", characterConfig.Name),
+                                       new JProperty("Command", characterConfig.Command),
+                                       new JProperty("SWGoHUrl", characterConfig.SWGoHUrl),
+                                       new JProperty("Aliases", characterConfig.Aliases)
+                                       );
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new ApplicationException(ex.Message);
             }
-            
 
             var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
             var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
-            using (HttpClient client1 = new HttpClient())
+            using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                HttpResponseMessage updateresult = await client.PutAsync(requestUri, httpContent);
+
+                if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
-
-            characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
-
-            return characterConfig;
-
         }
 
         public async Task<List<PlayerDto>> GetAllPlayersWithoutCharacters()

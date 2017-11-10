@@ -83,9 +83,9 @@ namespace TripleZero.Modules
             return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
         }
 
-        [Command("mods -s")]
-        [Summary("Get mods sorted by a secondary stat of a given player")]
-        [Remarks("mods -s {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n examples \n1) $mods -s playerName defense \n2) $mods -s playerName defense% 5)")]
+        [Command("mods-s")]
+        [Summary("Get mods sorted by a **secondary** stat of a given player")]
+        [Remarks("*mods-s {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n examples \n1) $mods -s playerName defense \n2) $mods -s playerName defense% 5)*")]
         public async Task GetSecondaryStatMods(string playerUserName, string modType, int rows = 20)
         {
             playerUserName = playerUserName.Trim();
@@ -189,9 +189,9 @@ namespace TripleZero.Modules
         }
 
 
-        [Command("mods -p")]
-        [Summary("Get mods sorted by a primary stat of a given player")]
-        [Remarks("mods -p {playerUserName} {modType(add *%* if you want percentage)} { {rows(optional)}***\n example \n$mods -p playerName speed 5)")]
+        [Command("mods-p")]
+        [Summary("Get mods sorted by a **primary** stat of a given player")]
+        [Remarks("*mods-p {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n example \n$mods -p playerName speed 5)*")]
         public async Task GetPrimaryStatMods(string playerUserName, string modType, int rows = 20)
         {
             playerUserName = playerUserName.Trim();

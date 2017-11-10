@@ -18,7 +18,8 @@ namespace TripleZero.Repository
         Task<string> SendPlayerToQueue(string playerName);
 
         Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias);
+        Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias);
 
-     //   Task<GuildConfig> GetConfigGuild(string guildAlias);
+        //   Task<GuildConfig> GetConfigGuild(string guildAlias);
     }
 }

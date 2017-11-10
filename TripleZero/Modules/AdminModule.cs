@@ -18,12 +18,60 @@ namespace TripleZero.Modules
     [Name("Admin")]
     [Summary("Admin Commands")]
     public class AdminModule : ModuleBase<SocketCommandContext>
-    {        
+    {
+        [Command("alias-remove")]
+        //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
+        [Summary("Remove alias for specific character(Admin Command)")]
+        [Remarks("*alias-remove {characterFullName}*")]
+        public async Task RemoveAlias(string characterFullName, string alias)
+        {
+            characterFullName = characterFullName.Trim();
+            alias = alias.Trim();
 
-        [Command("alias -set")]
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var userAllowed = Roles.UserInRole(Context, "botadmin");
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            var result = IResolver.Current.MongoDBRepository.RemoveCharacterAlias(characterFullName, alias.ToLower()).Result;
+
+            if (result != null)
+            {
+                retStr += $"\nNew alias '**{alias}**' for '**{characterFullName}**' was added!\n";
+                retStr += string.Format("\nName:**{0}**", result.Name);
+                retStr += string.Format("\nCommand:**{0}**", result.Command.Length==0 ? "empty!!!": result.Command);
+                retStr += string.Format("\nSWGoH url:**{0}**", result.SWGoHUrl);
+
+                string aliases = "";
+                int countAliases = 0;
+                foreach (var _alias in result.Aliases)
+                {
+                    countAliases += 1;
+                    aliases += _alias;
+                    if (countAliases != result.Aliases.Count()) aliases += ", ";
+                }
+
+                retStr += string.Format("\nAliases: [**{0}**]", aliases.Count()>0 ? aliases : "empty!!!");
+            }
+            else
+            {
+                retStr = "Not updated. Probably something is wrong with your command!";
+            }
+
+            await ReplyAsync($"{retStr}");
+        }
+
+
+        [Command("alias-set")]
         //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         [Summary("Set alias for specific character(Admin Command)")]
-        [Remarks("*alias -set {characterFullName}*")]
+        [Remarks("*alias-set {characterFullName}*")]
         public async Task SetAlias(string characterFullName,string alias)
         {
             characterFullName = characterFullName.Trim();
@@ -46,7 +94,7 @@ namespace TripleZero.Modules
             {
                 retStr +=$"\nNew alias '**{alias}**' for '**{characterFullName}**' was added!\n";
                 retStr += string.Format("\nName:**{0}**", result.Name);
-                retStr += string.Format("\nCommand:**{0}**", result.Command);
+                retStr += string.Format("\nCommand:**{0}**", result.Command.Length == 0 ? "empty!!!" : result.Command);
                 retStr += string.Format("\nSWGoH url:**{0}**", result.SWGoHUrl);
 
                 string aliases = "";
@@ -57,8 +105,8 @@ namespace TripleZero.Modules
                     aliases += _alias;
                     if (countAliases != result.Aliases.Count()) aliases += ", ";
                 }
-                    
-                retStr += string.Format("\nAliases: [**{0}**]", aliases);
+
+                retStr += string.Format("\nAliases: [**{0}**]", aliases.Count() > 0 ? aliases : "empty!!!");
             }
             else
             {
@@ -70,10 +118,10 @@ namespace TripleZero.Modules
        
         }
 
-        [Command("characters -config")]
+        [Command("characters-config")]
         //[Summary("Get config for specific character(Admin Command).\nUsage : ***$characters -config***")]
         [Summary("Get config for specific character(Admin Command)")]
-        [Remarks("*characters -config*")]
+        [Remarks("*characters-config*")]
         public async Task GetCharacterConfig()
         {
             string retStr = "";
@@ -118,5 +166,11 @@ namespace TripleZero.Modules
 
             await ReplyAsync($"{retStr}");
         }
+
+        [Command("queue-get")]
+        //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
+        [Summary("Get current for specific character(Admin Command)")]
+        [Remarks("*alias-remove {characterFullName}*")]
+        public async Task RemoveAlias(string characterFullName, string alias)
     }
 }

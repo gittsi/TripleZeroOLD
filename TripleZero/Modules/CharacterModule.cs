@@ -18,9 +18,9 @@ namespace TripleZero.Modules
     [Summary("Character Commands")]
     public class CharacterModule : ModuleBase<SocketCommandContext>
     {        
-        [Command("characterstats")]
+        [Command("character")]
         [Summary("Get character stats for specific player")]
-        [Remarks("*characterstats {playerUserName} {characterAlias}*")]
+        [Remarks("*character {playerUserName} {characterAlias}*")]
         public async Task GetCharacterStats(string playerUserName, string characterAlias)
         {
             playerUserName = playerUserName.Trim();
@@ -92,9 +92,9 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("characterstats -c")]
+        [Command("character-compare")]
         [Summary("Compares character stats for 2 specific players")]
-        [Remarks("*characterstats -c {player1UserName} {player2UserName} {characterAlias}*")]
+        [Remarks("*character-compare {player1UserName} {player2UserName} {characterAlias}*")]
         public async Task GetCharacterStatsCompare(string player1UserName, string player2UserName, string characterAlias)
         {
             player1UserName = player1UserName.Trim();

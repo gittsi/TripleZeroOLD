@@ -51,9 +51,9 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("playerReport")]
+        [Command("playerreport")]
         [Summary("Get full report for a player")]
-        [Remarks("*guildPlayers*** command.\nUsage : ***$playerReport {playerUserName}*")]
+        [Remarks("*playerreport {playerUserName}*")]
         public async Task CheckPlayer(string playerUserName)
         {
             playerUserName = playerUserName.Trim();
