@@ -361,12 +361,12 @@ namespace SwGoh
 
                         if (CheckForAllias){AddCharacterToAlliasConfig(newchar, Base_ID_Document);}
 
-                        Thread.Sleep(mDelayCharacter);
+                        Thread.Sleep(SwGoh.Settings.DelayPerCharacter);
                     }
                 }
                 else
                 {
-                    Thread.Sleep(mDelayError);
+                    Thread.Sleep(SwGoh.Settings.DelayErrorAtCharacter);
                     Position = previousPosition;
                 }
             }

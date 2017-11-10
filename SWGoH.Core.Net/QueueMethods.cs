@@ -146,7 +146,7 @@ namespace SwGoh
                             foreach (PlayerDto item in result)
                             {
                                 DateTime lastc = item.LastClassUpdated.Value;
-                                if (DateTime.UtcNow.Subtract (lastc).TotalHours < 5 ) continue;
+                                if (DateTime.UtcNow.Subtract (lastc).TotalHours < SwGoh.Settings.HoursForNextCheckLastswGohUpdate) continue;
                                 bool check = CheckStatusForPlayer(item.PlayerName);
                                 if (check) continue;
                                 return item;

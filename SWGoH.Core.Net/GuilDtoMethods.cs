@@ -12,8 +12,6 @@ namespace SwGoh
     public partial class GuildDto
     {
         private System.Net.WebClient web = null;
-        private int mDelayPlayer = 10000;
-        private int mDelayError = 600000;
 
         public GuildDto()
         {
@@ -243,7 +241,7 @@ namespace SwGoh
                     }
                     else if (ret == 0)
                     {
-                        Thread.Sleep(mDelayError);
+                        Thread.Sleep(SwGoh.Settings.DelayErrorPerPlayerAtGuildSearch);
                         i--;
                     }
                     else
@@ -269,11 +267,11 @@ namespace SwGoh
                     player.Export(ExportMethod);
                     if (Players == null) Players = new List<PlayerDto>();
                     Players.Add(player);
-                    Thread.Sleep(mDelayPlayer);
+                    Thread.Sleep(SwGoh.Settings.DelayPerPlayerAtGuildSearch);
                 }
                 else if (ret == 0)
                 {
-                    Thread.Sleep(mDelayError);
+                    Thread.Sleep(SwGoh.Settings.DelayErrorPerPlayerAtGuildSearch);
                     i--;
                 }
                 else
