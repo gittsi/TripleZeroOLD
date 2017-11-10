@@ -346,7 +346,8 @@ namespace SwGoh
         private void FixCharacterName(CharacterDto newchar)
         {
             newchar.Name = newchar.Name.Replace("\"", "");
-
+            newchar.Name = newchar.Name.Replace("'", "");
+            newchar.Name = newchar.Name.Replace("?mwe", "");
         }
 
         private void AddCharacterToAlliasConfig(CharacterDto newchar)
