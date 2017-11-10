@@ -3,15 +3,12 @@ using System.Threading;
 
 namespace SwGoh
 {
-    
-
-
     class Program
     {
         private static bool isWorking = false;
-        private static bool mPrintedNothingToProcess = false;
-        private static int mPrintedNothingToProcessdots = 0;
-        private static int mPrintedNothingToProcessdotsTotal = 4;
+        //private static bool mPrintedNothingToProcess = false;
+        //private static int mPrintedNothingToProcessdots = 0;
+        //private static int mPrintedNothingToProcessdotsTotal = 4;
         private static int mTimerdelay = 5000;
         private static bool mExportLog = false;
         
@@ -45,8 +42,8 @@ namespace SwGoh
                 ExecuteCommand(q.Command, q.Name);
                 QueueMethods.RemoveFromQueu(q);
                 
-                mPrintedNothingToProcess = false;
-                mPrintedNothingToProcessdots = 0;
+                //mPrintedNothingToProcess = false;
+                //mPrintedNothingToProcessdots = 0;
             }
             else
             {
@@ -61,14 +58,15 @@ namespace SwGoh
                 }
 
                 string mMessage = "Nothing to process";
-                if (!mPrintedNothingToProcess) Console.Write(mMessage);
-                Console.Write("."); mPrintedNothingToProcessdots++;
-                if (mPrintedNothingToProcessdots == mPrintedNothingToProcessdotsTotal)
-                {
-                    mPrintedNothingToProcessdots = 0;
-                    for (int i=0;i< mPrintedNothingToProcessdotsTotal;i++)  Console.Write("\b \b");
-                }
-                mPrintedNothingToProcess = true;
+                //if (!mPrintedNothingToProcess) 
+                Console.WriteLine(mMessage);
+                //Console.Write("."); mPrintedNothingToProcessdots++;
+                //if (mPrintedNothingToProcessdots == mPrintedNothingToProcessdotsTotal)
+                //{
+                //    mPrintedNothingToProcessdots = 0;
+                //    for (int i=0;i< mPrintedNothingToProcessdotsTotal;i++)  Console.Write("\b \b");
+                //}
+                //mPrintedNothingToProcess = true;
             }
             isWorking = false;
             t.Change(mTimerdelay, mTimerdelay);

@@ -37,7 +37,7 @@ namespace SwGoh
                     var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
                     var orderby = "s={\"LastSwGohUpdated\":-1}";
                     var limit = "l=1";
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                    string apikey = SwGoh.Settings.MongoApiKey;
 
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
                     string response = client.GetStringAsync(url).Result;
@@ -60,7 +60,7 @@ namespace SwGoh
                 {
                     var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
                     var orderby = "s={\"LastClassUpdated\":1}";
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                    string apikey = SwGoh.Settings.MongoApiKey;
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
                     var response = client.GetStringAsync(url).Result;
 
@@ -119,8 +119,9 @@ namespace SwGoh
                 {
                     
                     string json = JsonConvert.SerializeObject(this, Converter.Settings);
+                    string apikey = SwGoh.Settings.MongoApiKey;
 
-                    client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                    client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=" + apikey);
                     HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                     if (response.IsSuccessStatusCode)
                     {
@@ -193,7 +194,7 @@ namespace SwGoh
                     var queryData = string.Concat("q={\"Aliases\":\"", pname, "\"}");
                     var limit = "l=1";
                     var field = "f={\"PlayerName\": 1}";
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                    string apikey = SwGoh.Settings.MongoApiKey;
 
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Players/?{0}&{1}&{2}&apiKey={3}", queryData, field, limit, apikey);
                     string response = client.GetStringAsync(url).Result;
@@ -267,7 +268,7 @@ namespace SwGoh
                         var orderby = "s={\"LastSwGohUpdated\":1}";
                         var limit = "l=1";
                         var field = "f={\"LastSwGohUpdated\": 1}";
-                        string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                        string apikey = SwGoh.Settings.MongoApiKey;
 
                         string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, orderby, limit, apikey);
                         string response = client.GetStringAsync(url).Result;
@@ -370,7 +371,7 @@ namespace SwGoh
             using (HttpClient client = new HttpClient())
             {
                 var queryData = string.Concat("q={\"Name\" : \"" + newchar.Name + "\" }");
-                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                string apikey = SwGoh.Settings.MongoApiKey;
 
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apikey);
                 string response = client.GetStringAsync(url).Result;
@@ -424,7 +425,7 @@ namespace SwGoh
                     string json = JsonConvert.SerializeObject(data, Converter.Settings);
                     using (HttpClient client1 = new HttpClient())
                     {
-                        client1.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                        client1.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character?apiKey=" + apikey);
                         HttpResponseMessage response1 = client1.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                         SwGoh.Log.ConsoleMessage("Added new Allias Char " + newchar.Name + "!!!!!!!");
                     }
