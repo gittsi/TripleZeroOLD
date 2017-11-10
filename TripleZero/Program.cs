@@ -145,7 +145,7 @@ namespace TripleZero
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
                 var response = await client.GetStringAsync(url);
                 List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                var result1 = BsonSerializer.Deserialize<QueuePlayer>(document.FirstOrDefault());
+                var result1 = BsonSerializer.Deserialize<Queue>(document.FirstOrDefault());
 
              
                 if (result1 != null)

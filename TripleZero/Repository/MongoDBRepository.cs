@@ -18,6 +18,7 @@ using TripleZero.Repository;
 using MongoDB.Bson;
 using SwGoH;
 using MongoDB.Bson.Serialization;
+using static SWGoH.Enums.QueueEnum;
 
 namespace TripleZero.Repository
 {
@@ -94,12 +95,24 @@ namespace TripleZero.Repository
 
         public async Task<string> SendPlayerToQueue(string playerName)
         {
+            //SendToQueue
+            return null;
+        }
+
+        public async Task<string> SendGuildToQueue(string guildName)
+        {
+            return null;
+        }
+
+        private async Task<string> SendToQueue(string name, QueueType queueType )
+        {
             JObject data = new JObject(
-                new JProperty("PlayerName", playerName),
+                new JProperty("Name", name),
                 new JProperty("Date", DateTime.UtcNow),
-                new JProperty("Status", 0),
+                new JProperty("Status", QueueStatus.PendingProcess),
                 new JProperty("Priority", 3),
-                new JProperty("Command", "up")
+                new JProperty("Command", queueType== QueueType.Player ? "up" : "ugnochars"),
+                new JProperty("Type", queueType)
            );
 
             using (HttpClient client = new HttpClient())
@@ -107,7 +120,7 @@ namespace TripleZero.Repository
                 var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
                 var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player?apiKey={0}", apiKey);
+                var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue?apiKey={0}", apiKey);
 
                 try
                 {
@@ -117,18 +130,18 @@ namespace TripleZero.Repository
                         string responseBody = await response.Content.ReadAsStringAsync();
 
                         BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
-                        var queuePlayer = BsonSerializer.Deserialize<QueuePlayer>(document);
+                        var queuePlayer = BsonSerializer.Deserialize<Queue>(document);
 
                         return queuePlayer?.Id.ToString();
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                     return null;
                     //throw new ApplicationException(ex.Message);                    
                 }
-                
+
             }
         }
 
