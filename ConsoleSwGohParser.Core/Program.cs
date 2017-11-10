@@ -58,14 +58,15 @@ namespace SwGoh
                 }
 
                 string mMessage = "Nothing to process";
-                if (!mPrintedNothingToProcess) Console.Write(mMessage);
-                Console.Write("."); mPrintedNothingToProcessdots++;
-                if (mPrintedNothingToProcessdots == mPrintedNothingToProcessdotsTotal)
-                {
-                    mPrintedNothingToProcessdots = 0;
-                    for (int i=0;i< mPrintedNothingToProcessdotsTotal;i++)  Console.Write("\b \b");
-                }
-                mPrintedNothingToProcess = true;
+                //if (!mPrintedNothingToProcess) 
+                Console.WriteLine(mMessage);
+                //Console.Write("."); mPrintedNothingToProcessdots++;
+                //if (mPrintedNothingToProcessdots == mPrintedNothingToProcessdotsTotal)
+                //{
+                //    mPrintedNothingToProcessdots = 0;
+                //    for (int i=0;i< mPrintedNothingToProcessdotsTotal;i++)  Console.Write("\b \b");
+                //}
+                //mPrintedNothingToProcess = true;
             }
             isWorking = false;
             t.Change(mTimerdelay, mTimerdelay);
