@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SWGoH.Core.Net.Enums
+namespace SWGoH.Enums
 {
     public class Enum
     {
