@@ -24,7 +24,6 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using SwGoh;
 using MongoDB.Bson.Serialization;
-using SwGoH;
 
 namespace TripleZero
 {
@@ -142,7 +141,7 @@ namespace TripleZero
                 var queryData = string.Concat("q={\"PlayerName\":\"", "jonni", "\"}");
                 var orderby = "s={\"Date\":1}";
                 string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
+                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
                 var response = await client.GetStringAsync(url);
                 List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
                 var result1 = BsonSerializer.Deserialize<Queue>(document.FirstOrDefault());
@@ -150,7 +149,7 @@ namespace TripleZero
              
                 if (result1 != null)
                 {
-                    var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/{0}?apiKey={1}", result1.Id, apikey);
+                    var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/{0}?apiKey={1}", result1.Id, apikey);
                     WebRequest request = WebRequest.Create(deleteurl);
                     request.Method = "DELETE";
                     HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
