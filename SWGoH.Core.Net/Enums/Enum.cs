@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SWGoH.Enums
 {
-    public class Enum
+    public class QueueEnum
     {
         public enum QueueStats
         {
