@@ -16,7 +16,7 @@ using TripleZero.Infrastructure.DI;
 using TripleZero.Repository.Dto;
 using TripleZero.Repository;
 using MongoDB.Bson;
-using SWGoH;
+using SwGoH;
 using MongoDB.Bson.Serialization;
 using static SWGoH.Enums.QueueEnum;
 

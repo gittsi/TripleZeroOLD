@@ -1,7 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
-using SWGoH;
+using Newtonsoft.Json.Linq;
+using SwGoH;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -79,7 +80,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error deleting player " + PlayerName + " : " + e.Message);
+                SwGoH.Log.ConsoleMessage("Error deleting player " + PlayerName + " : " + e.Message);
             }
         }
         public void Export(ExportMethodEnum ExportMethod)
@@ -104,11 +105,11 @@ namespace SwGoh
                     {
                         serializer.Serialize(writer, this);
                     }
-                    SWGoH.Core.Net.Log.ConsoleMessage("Created : " + PlayerName + "'s json File");
+                    SwGoH.Log.ConsoleMessage("Created : " + PlayerName + "'s json File");
                 }
                 catch (Exception e)
                 {
-                    SWGoH.Core.Net.Log.ConsoleMessage("Error : " + e.Message);
+                    SwGoH.Log.ConsoleMessage("Error : " + e.Message);
                     //Error Occured , Contact Developer
                 }
             }
@@ -123,18 +124,18 @@ namespace SwGoh
                     HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Added To Database : " + PlayerNameInGame);
+                        SwGoH.Log.ConsoleMessage("Added To Database : " + PlayerNameInGame);
 
                         DeletePlayerFromDBAsync();
                     }
                     else
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Error Adding To Database : " + PlayerName);
+                        SwGoH.Log.ConsoleMessage("Error Adding To Database : " + PlayerName);
                     }
                 }
             }
         }
-        public int ParseSwGoh(ExportMethodEnum ExportMethod, bool AddCharacters)
+        public int ParseSwGoh(ExportMethodEnum ExportMethod, bool AddCharacters ,bool checkForCharAllias)
         {
             if (PlayerName == null || PlayerName == "") return 0;
 
@@ -154,7 +155,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Exception : " + e.Message);
+                SwGoH.Log.ConsoleMessage("Exception : " + e.Message);
                 web = null;
                 return 0;
             }
@@ -163,15 +164,15 @@ namespace SwGoh
             bool retPlayer = FillPlayerData(html, out Position);
             if (!retPlayer)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Player NOT FOUND : " + this.PlayerName + " aka " + PlayerNameInGame);
+                SwGoH.Log.ConsoleMessage("Player NOT FOUND : " + this.PlayerName + " aka " + PlayerNameInGame);
                 return 0;
             }
-            SWGoH.Core.Net.Log.ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
+            SwGoH.Log.ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
             if (!AddCharacters) return 1;
             bool ret = CheckLastUpdateWithCurrent(ExportMethod);
-            if (ret)
+            if (ret || checkForCharAllias)
             {
-                FillPlayerCharacters(html, Position);
+                FillPlayerCharacters(html, Position, checkForCharAllias);
                 retbool = 1;
             }
             else
@@ -211,7 +212,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error Retrieving Real Player Name From Allias : " + e.Message);
+                SwGoH.Log.ConsoleMessage("Error Retrieving Real Player Name From Allias : " + e.Message);
                 return pname;
             }
         }
@@ -248,7 +249,7 @@ namespace SwGoh
                         DateTime filelastupdated = DateTime.ParseExact(ThirdLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                         if (filelastupdated.CompareTo(this.LastSwGohUpdated) == 0)
                         {
-                            SWGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
+                            SwGoH.Log.ConsoleMessage("No need to update!!!!");
                             return false;
                         }
                         else return true;
@@ -278,7 +279,7 @@ namespace SwGoh
                                 PlayerDto Found = result[0];
                                 if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
                                 {
-                                    SWGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
+                                    SwGoH.Log.ConsoleMessage("No need to update!!!!");
                                     return false;
                                 }
                                 else
@@ -291,7 +292,7 @@ namespace SwGoh
                 }
                 catch(Exception e)
                 {
-                    SWGoH.Core.Net.Log.ConsoleMessage("Error in CkeckLastUpdated :" + e.Message);
+                    SwGoH.Log.ConsoleMessage("Error in CkeckLastUpdated :" + e.Message);
                     return true;
                 }
             }
@@ -302,7 +303,7 @@ namespace SwGoh
         /// </summary>
         /// <param name="html"></param>
         /// <param name="Position"></param>
-        private void FillPlayerCharacters(string html, int Position)
+        private void FillPlayerCharacters(string html, int Position, bool CheckForAllias)
         {
             if (Position == -1) return;
 
@@ -313,6 +314,19 @@ namespace SwGoh
             bool exit = false;
             int count = 0;
             int previousPosition = 0;
+            List<BsonDocument> Base_ID_Document = null;
+            if (CheckForAllias)
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = string.Format("https://swgoh.gg/api/characters/?format=json");
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "" && response != "[  ]")
+                    {
+                        Base_ID_Document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    }
+                }
+            }
             while (!exit)
             {
                 previousPosition = Position;
@@ -325,8 +339,12 @@ namespace SwGoh
                     if (newchar.Name != null)
                     {
                         count++;
+                        FixCharacterName(newchar);
                         Characters.Add(newchar);
-                        SWGoH.Core.Net.Log.ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
+                        SwGoH.Log.ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
+
+                        if (CheckForAllias){AddCharacterToAlliasConfig(newchar, Base_ID_Document);}
+
                         Thread.Sleep(mDelayCharacter);
                     }
                 }
@@ -338,6 +356,91 @@ namespace SwGoh
             }
         }
 
+        private void FixCharacterName(CharacterDto newchar)
+        {
+            newchar.Name = newchar.Name.Replace("\"", "");
+            newchar.Name = newchar.Name.Replace("'", "");
+            newchar.Name = newchar.Name.Replace("Î", "");
+        }
+
+        private void AddCharacterToAlliasConfig(CharacterDto newchar, List<BsonDocument> Base_ID_Document)
+        {
+            //try
+            //{
+            using (HttpClient client = new HttpClient())
+            {
+                var queryData = string.Concat("q={\"Name\" : \"" + newchar.Name + "\" }");
+                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+
+                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apikey);
+                string response = client.GetStringAsync(url).Result;
+
+                string replace = "/u/"+PlayerName+ "/collection/";
+
+                string Base_ID = "";
+                string lowername = newchar.Name.ToLower();
+                foreach (BsonDocument item in Base_ID_Document)
+                {
+                    string name = (string)item[0];
+                    name = name.ToLower();
+                    if (name.Equals(lowername))
+                    {
+                        Base_ID = ((string)item[1]).ToLower (); break;
+                    }
+                }
+
+                if (Base_ID == "") SwGoH.Log.ConsoleMessage("Did not find BaseID for character : " + newchar.Name + "!!!!!!!");
+
+                if (response != "" && response != "[  ]")
+                {
+                    SwGoH.Log.ConsoleMessage("Found Allias Char " + newchar.Name);
+                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    CharacterConfig result1 = BsonSerializer.Deserialize<CharacterConfig>(document.FirstOrDefault());
+
+                    if (newchar.SWGoHUrl != null)
+                    {
+                        if (result1.Command != "") Base_ID = result1.Command;
+                        JObject data = new JObject(
+                            new JProperty("Name", result1.Name),
+                            new JProperty("Command", Base_ID),
+                            new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
+                            new JProperty("Aliases", result1.Aliases));
+
+                        var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                        var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", result1.Id, apikey);
+                        using (HttpClient client1 = new HttpClient())
+                        {
+                            HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                        }
+                    }
+                }
+                else
+                {
+                    JObject data = new JObject(
+                        new JProperty("Name", newchar.Name),
+                        new JProperty("Command", Base_ID),
+                        new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
+                        new JProperty("Aliases", new List<string> { }));
+                    string json = JsonConvert.SerializeObject(data, Converter.Settings);
+                    using (HttpClient client1 = new HttpClient())
+                    {
+                        client1.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
+                        HttpResponseMessage response1 = client1.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
+                        SwGoH.Log.ConsoleMessage("Added new Allias Char " + newchar.Name + "!!!!!!!");
+                    }
+
+                    //var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                    //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", apikey);
+                    //using (HttpClient client1 = new HttpClient())
+                    //{
+                    //    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                    //    SWGoH.Core.Net.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + "!!!!!!!");
+                    //}
+                }
+            }
+            //}
+            //catch (Exception e) { SWGoH.Core.Net.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + ":" + e.Message); }
+        }
         /// <summary>
         /// Fills player properties like LastUpdated
         /// </summary>
@@ -557,7 +660,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Exception : " + e.Message);
+                SwGoH.Log.ConsoleMessage("Exception : " + e.Message);
                 return false;
             }
 

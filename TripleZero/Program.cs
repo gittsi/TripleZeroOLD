@@ -24,7 +24,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using SwGoh;
 using MongoDB.Bson.Serialization;
-using SWGoH;
+using SwGoH;
 
 namespace TripleZero
 {

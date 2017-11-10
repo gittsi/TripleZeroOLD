@@ -20,38 +20,36 @@ namespace SwGoh
 
         public static void ExportCharacterFilesToDB()
         {
-            using (HttpClient client = new HttpClient())
-            {
-                var queryData = string.Concat("q={}");
-                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
 
-                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apikey);
-                string response = client.GetStringAsync(url).Result;
-                if (response != "" && response != "[  ]")
-                {
-                    List<CharactersConfig> result = JsonConvert.DeserializeObject<List<CharactersConfig>>(response);
-                    if (result.Count == 1)
-                    {
-                        CharactersConfig config = result[0];
-                        foreach (CharacterConfig item in config.Characters)
-                        {
-                            if (item.Aliases.Count == 1 && item.Aliases[0] == "Empty") item.Aliases.RemoveAt (0);
-                            string json = JsonConvert.SerializeObject(item, Converter.Settings);
-                            
-                            string uri1 = "https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-                            HttpResponseMessage response1 = client.PostAsync(uri1, new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
-                            if (response1.IsSuccessStatusCode)
-                            {
-                                SWGoH.Core.Net.Log.ConsoleMessage("Added : " + item.Name);
-                            }
-                            else
-                            {
-                                SWGoH.Core.Net.Log.ConsoleMessage("Error : " + item.Name);
-                            }
-                        }
-                    }
-                }
-            }
+            //var queryData = string.Concat("q={}");
+            //string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+
+            //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apikey);
+            //string response = client.GetStringAsync(url).Result;
+            //if (response != "" && response != "[  ]")
+            //{
+            //    List<CharactersConfig> result = JsonConvert.DeserializeObject<List<CharactersConfig>>(response);
+            //    if (result.Count == 1)
+            //    {
+            //        CharactersConfig config = result[0];
+            //        foreach (CharacterConfig item in config.Characters)
+            //        {
+            //            if (item.Aliases.Count == 1 && item.Aliases[0] == "Empty") item.Aliases.RemoveAt(0);
+            //            string json = JsonConvert.SerializeObject(item, Converter.Settings);
+
+            //            string uri1 = "https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+            //            HttpResponseMessage response1 = client.PostAsync(uri1, new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
+            //            if (response1.IsSuccessStatusCode)
+            //            {
+            //                SWGoH.Core.Net.Log.ConsoleMessage("Added : " + item.Name);
+            //            }
+            //            else
+            //            {
+            //                SWGoH.Core.Net.Log.ConsoleMessage("Error : " + item.Name);
+            //            }
+            //        }
+            //    }
+            //}
         }
     }
 
