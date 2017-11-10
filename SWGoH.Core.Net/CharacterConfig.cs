@@ -41,11 +41,11 @@ namespace SwGoh
             //            HttpResponseMessage response1 = client.PostAsync(uri1, new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
             //            if (response1.IsSuccessStatusCode)
             //            {
-            //                SWGoH.Core.Net.Log.ConsoleMessage("Added : " + item.Name);
+            //                SWGoH.Log.ConsoleMessage("Added : " + item.Name);
             //            }
             //            else
             //            {
-            //                SWGoH.Core.Net.Log.ConsoleMessage("Error : " + item.Name);
+            //                SWGoH.Log.ConsoleMessage("Error : " + item.Name);
             //            }
             //        }
             //    }

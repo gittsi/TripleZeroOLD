@@ -434,12 +434,12 @@ namespace SwGoh
                     //using (HttpClient client1 = new HttpClient())
                     //{
                     //    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
-                    //    SWGoH.Core.Net.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + "!!!!!!!");
+                    //    SWGoH.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + "!!!!!!!");
                     //}
                 }
             }
             //}
-            //catch (Exception e) { SWGoH.Core.Net.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + ":" + e.Message); }
+            //catch (Exception e) { SWGoH.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + ":" + e.Message); }
         }
         /// <summary>
         /// Fills player properties like LastUpdated

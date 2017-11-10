@@ -199,6 +199,7 @@ namespace SwGoh
                     }
                 default:
                     {
+                        SwGoh
                         SwGoH.Log.ConsoleMessage("Unknown command , please try again.!!!!");
                         break;
                     }
