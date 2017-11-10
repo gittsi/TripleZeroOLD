@@ -23,6 +23,7 @@ namespace TripleZero.Configuration
     {
         public string Token { get; set; }
         public string Prefix { get; set; }
+        public string BotAdminRole { get; set; }
     }
 
     public class MongoDBSettings

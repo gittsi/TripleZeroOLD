@@ -7,7 +7,8 @@
 
   "Discord_Settings": {
     "Token": "Mzc4MDg1OTIwNzM1MzYzMDcz.DOWXlw.UL-EctlIXnBYJux1hijB406_tag",
-    "Prefix": "."
+    "Prefix": ".",
+    "BotAdminRole": "botadmin"
   },
   "MongoDB_Settings": {
     "ApiKey": "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O"

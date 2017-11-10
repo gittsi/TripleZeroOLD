@@ -30,7 +30,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var userAllowed = Roles.UserInRole(Context, "botadmin");
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -61,7 +62,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var userAllowed = Roles.UserInRole(Context, "botadmin");
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -74,9 +76,12 @@ namespace TripleZero.Modules
 
             if (result != null)
             {
-                foreach(var player in result)
+                retStr += string.Format("\nTotal players loaded to DB : **{0}**\n", result.Count());
+                result = result.OrderBy(p => p.GuildName).ThenBy(p => p.LastSwGohUpdated).ToList();
+                foreach (var player in result)
                 {
-                    retStr += string.Format("\nPlayerName : **{0}**({1}) - SWGoHUpdate: **{2}** - DBUpdate: **{3}**  ", player.PlayerName,player.PlayerNameInGame,player.LastSwGohUpdated,player.LastClassUpdated);
+                    //retStr += string.Format("\nGuild : ***{4}*** - PlayerName : ***{0}***({1}) - SWGoHUpdate: ***{2}*** - DBUpdate: ***{3}***  ", player.PlayerName,player.PlayerNameInGame,player.LastSwGohUpdated,player.LastClassUpdated,player.GuildName);
+                    retStr += string.Format("\nGuild : ***{3}*** - PlayerName : ***{0}***({1}) - SWGoHUpdate: ***{2}***", player.PlayerName, player.PlayerNameInGame, player.LastSwGohUpdated, player.GuildName);
 
                     if (retStr.Length > 1800)
                     {

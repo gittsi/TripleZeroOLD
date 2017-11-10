@@ -35,6 +35,8 @@ namespace TripleZero.Configuration
                      Token= _SettingsConfigurationRoot.GetSection("Discord_Settings")["Token"]
                      ,
                      Prefix = _SettingsConfigurationRoot.GetSection("Discord_Settings")["Prefix"]
+                     ,
+                    BotAdminRole = _SettingsConfigurationRoot.GetSection("Discord_Settings")["BotAdminRole"]
 
                 },
                 MongoDBSettings = new MongoDBSettings()
