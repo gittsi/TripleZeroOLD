@@ -13,8 +13,13 @@ namespace TripleZero.Repository
 
         Task<GuildDto> GetGuildPlayers(string guildName);
 
+        Task<List<PlayerDto>> GetAllPlayersWithoutCharacters();
+
         Task<string> SendPlayerToQueue(string playerName);
 
-     //   Task<GuildConfig> GetConfigGuild(string guildAlias);
+        Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias);
+        Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias);
+
+        //   Task<GuildConfig> GetConfigGuild(string guildAlias);
     }
 }

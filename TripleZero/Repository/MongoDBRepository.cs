@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using TripleZero._Mapping;
 using TripleZero.Helper;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Model;
 using TripleZero.Repository.Dto;
 using TripleZero.Repository;
 using MongoDB.Bson;
@@ -96,8 +95,11 @@ namespace TripleZero.Repository
         public async Task<string> SendPlayerToQueue(string playerName)
         {
             JObject data = new JObject(
-               new JProperty("PlayerName", playerName)
-               , new JProperty("Date", DateTime.Now)
+                new JProperty("PlayerName", playerName),
+                new JProperty("Date", DateTime.UtcNow),
+                new JProperty("Status", 0),
+                new JProperty("Priority", 3),
+                new JProperty("Command", "up")
            );
 
             using (HttpClient client = new HttpClient())
@@ -117,14 +119,100 @@ namespace TripleZero.Repository
                         BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
                         var queuePlayer = BsonSerializer.Deserialize<QueuePlayer>(document);
 
-                        return queuePlayer==null ? null : queuePlayer.Id.ToString();
+                        return queuePlayer?.Id.ToString();
                     }
                 }
                 catch(Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
                     return null;
+                    //throw new ApplicationException(ex.Message);                    
                 }
                 
+            }
+        }
+
+        public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+            if (characterConfig == null) return null;
+
+            characterConfig.Aliases.Add(alias);            
+            var result = PutCharacterConfig(characterConfig).Result;
+            if (!result) return null;
+
+            characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
+            return characterConfig;
+        }
+
+        public async Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias)
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+            if (characterConfig == null) return null;
+
+            bool isRemoved = characterConfig.Aliases.Remove(alias);
+            if (!isRemoved) return null;
+            var result = PutCharacterConfig(characterConfig).Result;
+            if (!result) return null;
+
+            characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
+            return characterConfig;
+        }        
+
+        private async Task<bool> PutCharacterConfig(CharacterConfig characterConfig)
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+
+            JObject data = null;
+            try
+            {
+                data = new JObject(
+                                       new JProperty("Name", characterConfig.Name),
+                                       new JProperty("Command", characterConfig.Command),
+                                       new JProperty("SWGoHUrl", characterConfig.SWGoHUrl),
+                                       new JProperty("Aliases", characterConfig.Aliases)
+                                       );
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+
+            var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage updateresult = await client.PutAsync(requestUri, httpContent);
+
+                if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
+            }
+        }
+
+        public async Task<List<PlayerDto>> GetAllPlayersWithoutCharacters()
+        {
+            await Task.FromResult(1);
+                       
+            var orderby = "s={\"LastSwGohUpdated\":-1}";
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+            var fields = "f={\"Characters\": 0}";
+
+            string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", fields, orderby, apiKey);
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+                    List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
+
+                    return ret;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
             }
         }
     }

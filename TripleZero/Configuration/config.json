@@ -1,13 +1,13 @@
 ﻿{
   "General_Settings": {
-    "ApplicationName": "TripleZero Bot",
-    "Environment": "Production",
+    "ApplicationName": "TripleZero Dev Bot",
+    "Environment": "Development",
     "JsonSettingsVersion": "1.0.0"
   },
 
   "Discord_Settings": {
-    "Token": "MzcxNzU5MjkyNzQ4OTIyODgy.DM6T_g.1CD5jJyn5k8tx4as4NwmDfRK-kQ",
-    "Prefix": "$"
+    "Token": "Mzc4MDg1OTIwNzM1MzYzMDcz.DOWXlw.UL-EctlIXnBYJux1hijB406_tag",
+    "Prefix": "."
   },
   "MongoDB_Settings": {
     "ApiKey": "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O"

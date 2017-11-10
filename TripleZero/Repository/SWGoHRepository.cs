@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using TripleZero._Mapping;
 using TripleZero.Helper;
-using TripleZero.Model;
 using TripleZero.Repository.Dto;
 
 namespace TripleZero.Repository

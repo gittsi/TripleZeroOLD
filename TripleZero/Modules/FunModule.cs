@@ -11,7 +11,8 @@ namespace TripleZero.Modules
     public class FunModule : ModuleBase<SocketCommandContext>
     {
         [Command("roll")]
-        [Summary("Rolls a dice")]
+        [Summary("Roll a dice")]
+        [Remarks("*I am sure you can guess it!!!*")]
         public async Task Say()
         {
             Random rand1 = new Random();
@@ -23,6 +24,8 @@ namespace TripleZero.Modules
 
         [Command("imba")]
         [Summary("Shows who is imba currently by analyzing all data")]
+        [Remarks("*imba*")]
+        [Alias("*tsitas*")]
         public async Task SayImba()
         { 
             await ReplyAsync("TSiTaS is imba!\nNo need to retrieve any data!\nFor now and till the end of time!!!");
