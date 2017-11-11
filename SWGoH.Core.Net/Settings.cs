@@ -14,5 +14,9 @@ namespace SwGoh
 
         public static int DelayPerPlayerAtGuildSearch = 10000;
         public static int DelayErrorPerPlayerAtGuildSearch = 600000;
+
+        public static int GlobalConsoleTimerInterval = 30000;
+
+        public static double MinutesUntilNextProcess = 10.0;
     }
 }

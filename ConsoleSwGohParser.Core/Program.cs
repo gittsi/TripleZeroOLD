@@ -6,19 +6,15 @@ namespace SwGoh
     class Program
     {
         private static bool isWorking = false;
-        //private static bool mPrintedNothingToProcess = false;
-        //private static int mPrintedNothingToProcessdots = 0;
-        //private static int mPrintedNothingToProcessdotsTotal = 4;
-        private static int mTimerdelay = 5000;
         private static bool mExportLog = false;
-        
+        private static DateTime mLastProcess = DateTime.Now;
         
         static void Main(string[] args)
         {
             if (mExportLog) SwGoh.Log.Initialize("log.txt" , mExportLog );
 
             Timer t = new Timer(new TimerCallback(TimerProc));
-            t.Change(0, mTimerdelay);
+            t.Change(0, SwGoh.Settings.GlobalConsoleTimerInterval);
 
             Console.ReadLine();
 
@@ -41,13 +37,17 @@ namespace SwGoh
                 //Console.WriteLine("");
                 ExecuteCommand(q.Command, q.Name);
                 QueueMethods.RemoveFromQueu(q);
-                
+                mLastProcess = DateTime.Now;
+
                 //mPrintedNothingToProcess = false;
                 //mPrintedNothingToProcessdots = 0;
             }
             else
             {
                 int now = DateTime.Now.Minute;
+                double minutes = DateTime.Now.Subtract(mLastProcess).TotalMinutes;
+                bool check = false;
+                check = minutes > SwGoh.Settings.MinutesUntilNextProcess;
                 //if (now == 0 || now == 15 || now == 30 || now == 45)
                 if (now == 0 || now == 15 || now == 30 || now == 45)
                 {
@@ -70,7 +70,7 @@ namespace SwGoh
                 //mPrintedNothingToProcess = true;
             }
             isWorking = false;
-            t.Change(mTimerdelay, mTimerdelay);
+            t.Change(SwGoh.Settings.GlobalConsoleTimerInterval, SwGoh.Settings.GlobalConsoleTimerInterval);
             GC.Collect();
         }
         private static void ExecuteCommand(SwGoh.Enums.Command commandstr, string pname)
