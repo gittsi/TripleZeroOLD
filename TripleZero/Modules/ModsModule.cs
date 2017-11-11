@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
 using SwGoh;
+using SwGoH;
 
 namespace TripleZero.Modules
 {
@@ -22,7 +23,7 @@ namespace TripleZero.Modules
                 foreach (var row in result)
                 {
                     var modStats = row.Item2.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == secondaryStatValueType).FirstOrDefault();
-                    var newString = string.Format("{3}: **{2}{4}** {1} {0}", row.Item1.PadRight(25), row.Item2.Type.ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), secondaryStatValueType == ModValueType.Percentage ? "%" : "");
+                    var newString = string.Format("{3}: **{2}{4}** {1} {0}", row.Item1.PadRight(25), EnumExtensions.GetDescription(row.Item2.Type).ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), secondaryStatValueType == ModValueType.Percentage ? "%" : "");
 
                     retStr += "\n";
                     retStr += newString;
