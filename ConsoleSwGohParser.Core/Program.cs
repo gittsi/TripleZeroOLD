@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using static SwGoh.Enums.QueueEnum;
 
 namespace SwGoh
 {
@@ -72,13 +73,13 @@ namespace SwGoh
             t.Change(mTimerdelay, mTimerdelay);
             GC.Collect();
         }
-        private static void ExecuteCommand(SwGoh.Enums.Command commandstr, string pname)
+        private static void ExecuteCommand(Command commandstr, string pname)
         {
             ExportMethodEnum mExportMethod = ExportMethodEnum.Database;
 
             switch (commandstr)
             {
-                case SwGoh.Enums.Command.UpdatePlayer:
+                case Command.UpdatePlayer:
                     {
                         SwGoh.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true,false);
@@ -89,7 +90,7 @@ namespace SwGoh
                         }
                         break;
                     }
-                case SwGoh.Enums.Command.UpdateGuild:
+                case Command.UpdateGuild:
                     {
                         SwGoh.GuildDto guild = new GuildDto();
                         guild.Name = GuildDto.GetGuildNameFromAlias(pname);
@@ -97,7 +98,7 @@ namespace SwGoh
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0) guild.UpdateAllPlayers(mExportMethod, true);
                         break;
                     }
-                case SwGoh.Enums.Command.UpdatePlayers:
+                case Command.UpdatePlayers:
                     {
                         string[] arg = pname.Split(',');
                         for (int i = 0; i < arg.Length; i++)
@@ -112,7 +113,7 @@ namespace SwGoh
                         }
                         break;
                     }
-                case SwGoh.Enums.Command.UpdateGuildWithNoChars:
+                case Command.UpdateGuildWithNoChars:
                     {
                         SwGoh.GuildDto guild = new GuildDto();
                         guild.Name = GuildDto.GetGuildNameFromAlias(pname);
@@ -120,13 +121,13 @@ namespace SwGoh
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0) guild.UpdateOnlyGuildWithNoChars(mExportMethod);
                         break;
                     }
-                case SwGoh.Enums.Command.GetNewCharacters:
+                case Command.GetNewCharacters:
                     {
                         SwGoh.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true, true);
                         break;
                     }
-                case SwGoh.Enums.Command.Help:
+                case Command.Help:
                     {
                         Console.WriteLine("Command Update Player");
                         Console.WriteLine("Usage : <app> up <playername>");
@@ -149,7 +150,7 @@ namespace SwGoh
                         Console.WriteLine("You already know this command!!!!!");
                         break;
                     }
-                case SwGoh.Enums.Command.Test:
+                case Command.Test:
                     {
                         //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 

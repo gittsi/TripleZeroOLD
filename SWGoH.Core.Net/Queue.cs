@@ -10,7 +10,7 @@ namespace SwGoh
         public string Name { get; set; }
         public DateTime Date { get; set; }
         public DateTime DateForProcess { get; set; }
-        public SwGoh.Enums.Command Command { get; set; }
+        public Command Command { get; set; }
         public int Priority { get; set; }
         public QueueStatus Status { get; set; }
         public QueueType Type { get; set; }

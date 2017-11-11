@@ -4,19 +4,21 @@ using System.Text;
 
 namespace SwGoh.Enums
 {
-    public enum Command
-    {
-        UpdatePlayer = 1,
-        UpdateGuild = 2,
-        UpdateGuildWithNoChars = 3,
-        UpdatePlayers = 4,
-        GetNewCharacters = 5,
-        Help = 6,
-        UnKnown = 7,
-        Test = 8,
-    }
+    
     public class QueueEnum
     {
+        public enum Command
+        {
+            UpdatePlayer = 1,
+            UpdateGuild = 2,
+            UpdateGuildWithNoChars = 3,
+            UpdatePlayers = 4,
+            GetNewCharacters = 5,
+            Help = 6,
+            UnKnown = 7,
+            Test = 8,
+        }
+
         public enum QueueStatus
         {
             PendingProcess = 0,
