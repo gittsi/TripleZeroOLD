@@ -227,7 +227,7 @@ namespace SwGoh
         /// <returns></returns>
         private bool CheckLastUpdateWithCurrent(ExportMethodEnum ExportMethod)
         {
-            return true;
+            //return true;
             if (ExportMethod == ExportMethodEnum.File)
             {
                 string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
