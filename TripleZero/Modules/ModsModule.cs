@@ -6,6 +6,7 @@ using System.Linq;
 using TripleZero.Infrastructure.DI;
 using SwGoh;
 using SwGoH;
+using static SwGoH.ModEnum;
 
 namespace TripleZero.Modules
 {

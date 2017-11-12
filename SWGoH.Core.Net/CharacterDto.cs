@@ -10,53 +10,54 @@ namespace SwGoh
     using System.Collections.Generic;
     using Newtonsoft.Json;
     using System.ComponentModel;
+    using static SwGoH.ModEnum;
 
     public partial class CharacterDto
     {
-        [JsonProperty("nm")]
+        [JsonProperty("Nm")]
         public string Name { get; set; }
-        [JsonProperty("url")]
+        [JsonProperty("Url")]
         public string SWGoHUrl { get; set; }
-        [JsonProperty("*")]
+        [JsonProperty("S")]
         [DefaultValue (7)]
         public int Stars { get; set; }
-        [JsonProperty("gr")]
+        [JsonProperty("Ge")]
         public int Gear { get; set; }
-        [JsonProperty("lvl")]
+        [JsonProperty("Lvl")]
         [DefaultValue(85)]
         public int Level { get; set; }
-        [JsonProperty("pwr")]
+        [JsonProperty("Pwr")]
         public int Power { get; set; }
-        [JsonProperty("statpwr")]
+        [JsonProperty("SP")]
         public int StatPower { get; set; }
-        [JsonProperty("abil")]
+        [JsonProperty("Ab")]
         public List<Ability> Abilities { get; set; }
 
         #region General
-        [JsonProperty("Hlth")]
+        [JsonProperty("Hl")]
         public int Health { get; set; }
-        [JsonProperty("Prot")]
+        [JsonProperty("Pr")]
         public int Protection { get; set; }
         [JsonProperty("Sp")]
         public int Speed { get; set; }
         [JsonProperty("CD")]
         public int CriticalDamage { get; set; }
-        [JsonProperty("pot")]
+        [JsonProperty("Pot")]
         public decimal Potency { get; set; }
-        [JsonProperty("ten")]
+        [JsonProperty("Ten")]
         public decimal Tenacity { get; set; }
-        [JsonProperty("hlthst")]
+        [JsonProperty("HlS")]
         public int HealthSteal { get; set; }
         #endregion
 
         #region Physical Offense
-        [JsonProperty("Physdmg")]
+        [JsonProperty("PD")]
         public int PhysicalDamage { get; set; }
-        [JsonProperty("physCD")]
+        [JsonProperty("PCC")]
         public decimal PhysicalCriticalChance { get; set; }
-        [JsonProperty("ArmorPen")]
+        [JsonProperty("AP")]
         public int ArmorPenetration { get; set; }
-        [JsonProperty("PhyAccu")]
+        [JsonProperty("PA")]
         [DefaultValue(0)]
         public int PhysicalAccuracy { get; set; }
         #endregion
@@ -65,33 +66,33 @@ namespace SwGoh
         [JsonProperty("Arm")]
         public decimal Armor { get; set; }
         [DefaultValue(2.0)]
-        [JsonProperty("DodgeCh")]
+        [JsonProperty("DC")]
         public decimal DodgeChance { get; set; }
-        [JsonProperty("PhyCritAvoid")]
+        [JsonProperty("PCA")]
         [DefaultValue(0.0)]
         public decimal PhysicalCriticalAvoidance { get; set; }
         #endregion
 
         #region Special Offense
-        [JsonProperty("specdmg")]
+        [JsonProperty("SD")]
         public int SpecialDamage { get; set; }
-        [JsonProperty("specCritChance")]
+        [JsonProperty("SCC")]
         public decimal SpecialCriticalChance { get; set; }
         [DefaultValue(0)]
-        [JsonProperty("ResistPen")]
+        [JsonProperty("RP")]
         public int ResistancePenetration { get; set; }
         [DefaultValue(0.0)]
-        [JsonProperty("specialAccu")]
+        [JsonProperty("SA")]
         public decimal SpecialAccuracy { get; set; }
         #endregion
 
         #region Special Survivability
         [JsonProperty("Res")]
         public decimal Resistance { get; set; }
-        [JsonProperty("DefleChance")]
+        [JsonProperty("DS")]
         [DefaultValue(2.0)]
         public decimal DeflectionChance { get; set; }
-        [JsonProperty("SpecialcritAvoid")]
+        [JsonProperty("SCA")]
         [DefaultValue(0.0)]
         public decimal SpecialCriticalAvoidance { get; set; }
         #endregion
@@ -103,16 +104,16 @@ namespace SwGoh
     {
         public string Name { get; set; }
         [DefaultValue(15)]
-        [JsonProperty("lvl")]
+        [JsonProperty("Lvl")]
         public long Level { get; set; }
-        [JsonProperty("*")]
+        [JsonProperty("S")]
         [DefaultValue(5)]
         public long Star { get; set; }
         public ModSlot Type { get; set; }
         public string Rarity { get; set; }
-        [JsonProperty("PrimStat")]
+        [JsonProperty("PStat")]
         public ModStat PrimaryStat { get; set; }
-        [JsonProperty("SecStat")]
+        [JsonProperty("SStat")]
         public List<ModStat> SecondaryStat { get; set; }
     }
 
@@ -126,69 +127,16 @@ namespace SwGoh
     public partial class Ability
     {
         public string Name { get; set; }
-        [JsonProperty("lvl")]
+        [JsonProperty("Lvl")]
         [DefaultValue(8)]
         public int Level { get; set; }
-        [JsonProperty("Maxlvl")]
+        [JsonProperty("MLvl")]
         [DefaultValue(8)]
         public int MaxLevel { get; set; }
     }
 
 
-    public enum ModValueType
-    {
-        None=-1,
-        Flat = 0,
-        Percentage = 1
-    }
-
-    public enum ModStatType
-    {
-        None = 0,
-        Speed = 1,
-        CriticalChance = 2,
-        CriticalDamage = 3,
-        Potency = 4,
-        Tenacity = 5,
-        Accuracy = 6,
-        CriticalAvoidance = 7,
-        Offense = 8,
-        Defense = 9,
-        Health = 10,
-        Protection = 11
-    }
-
-    public enum ModSlot
-    {        
-        [Description("none")]
-        None=0,
-        [Description("rectangle")]
-        Transmitter = 1,
-        [Description("arrow")]
-        Receiver = 2,
-        [Description("diamond")]
-        Processor = 3,
-        [Description("triangle")]
-        HoloArray = 4,
-        [Description("circle")]
-        DataBus = 5,
-        [Description("cross")]
-        Multiplexer = 6
-
-    }
-
-    public enum ModSet
-    {
-        None=0,
-        Health = 1,
-        Defense = 2,
-        CriticalDamage = 3,
-        CriticalChance = 4,
-        Tenacity = 5,
-        Offense = 6,
-        Potency = 7,
-        Speed = 8
-    }
+    
 
 
     public partial class CharacterDto
