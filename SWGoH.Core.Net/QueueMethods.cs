@@ -131,11 +131,13 @@ namespace SwGoh
                 {
                     var queryData = string.Concat("q={\"GuildName\" : \"" + GuildDto.GetGuildNameFromAlias(guildname) + "\" }");
                     var orderby = "s={\"LastSwGohUpdated\":1}";
-                    var limit = "l=5";
-                    var field = "f={\"PlayerName\": 1,\"LastSwGohUpdated\": 1}";
+                    //var limit = "l=5";
+
+                    var field = "f={\"PlayerName\": 1,\"LastSwGohUpdated\": 1, \"LastClassUpdated\" : 1 }";
                     string apikey = SwGoh.Settings.MongoApiKey;
 
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, limit, orderby, apikey);
+                    //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, limit, orderby, apikey);
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, field, orderby, apikey);
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
@@ -144,6 +146,8 @@ namespace SwGoh
                         {
                             foreach (PlayerDto item in result)
                             {
+                                DateTime lastc = item.LastClassUpdated.Value;
+                                if (DateTime.UtcNow.Subtract (lastc).TotalHours < SwGoh.Settings.HoursForNextCheckLastswGohUpdate) continue;
                                 bool check = CheckStatusForPlayer(item.PlayerName);
                                 if (check) continue;
                                 return item;

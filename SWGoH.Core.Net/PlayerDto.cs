@@ -9,8 +9,7 @@ namespace SwGoh
     public partial class PlayerDto
     {
         private System.Net.WebClient web = null;
-        private int mDelayCharacter = 2000;
-        private int mDelayError = 300000;
+        
         public PlayerDto(string name)
         {
             PlayerName = name;
