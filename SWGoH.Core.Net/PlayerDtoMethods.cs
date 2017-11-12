@@ -227,6 +227,7 @@ namespace SwGoh
         /// <returns></returns>
         private bool CheckLastUpdateWithCurrent(ExportMethodEnum ExportMethod)
         {
+            return true;
             if (ExportMethod == ExportMethodEnum.File)
             {
                 string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
@@ -1420,12 +1421,14 @@ namespace SwGoh
         {
             ModStat ret = new ModStat();
 
+            value1 = value1.Replace(" ", "");
+
             if (value.Contains("%")) ret.ValueType = ModValueType.Percentage;
             else ret.ValueType = ModValueType.Flat;
 
             if (value1.ToLower().Contains("speed")) ret.StatType = ModStatType.Speed;
             else if (value1.ToLower().Contains("criticalchance")) ret.StatType = ModStatType.CriticalChance;
-            else if (value1.ToLower().Contains("sriticaldamage")) ret.StatType = ModStatType.CriticalDamage;
+            else if (value1.ToLower().Contains("criticaldamage")) ret.StatType = ModStatType.CriticalDamage;
             else if (value1.ToLower().Contains("potency")) ret.StatType = ModStatType.Potency;
             else if (value1.ToLower().Contains("tenacity")) ret.StatType = ModStatType.Tenacity;
             else if (value1.ToLower().Contains("accuracy")) ret.StatType = ModStatType.Accuracy;
