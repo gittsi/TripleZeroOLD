@@ -31,6 +31,8 @@ namespace SwGoh
             //SwGoh.QueueMethods.AddPlayer("newholborn", "up", 4, Enums.QueueEnum.QueueType.Player);
             //SwGoh.QueueMethods.AddPlayer("41st", "ug", 4, Enums.QueueEnum.QueueType.Guild);
             //ExecuteCommand("getnewchars", "aramil"); return; 
+            //ExecuteCommand(Command.UpdatePlayer, "newholborn");
+            //ExecuteCommand(Command.Test, "newholborn");
 
             Queue q = QueueMethods.GetQueu();
             if (q != null)
@@ -55,7 +57,7 @@ namespace SwGoh
                     PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
                     if (player != null)
                     {
-                        QueueMethods.AddPlayer(player.PlayerName , Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player);
+                        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player);
                     }
                 }
 
