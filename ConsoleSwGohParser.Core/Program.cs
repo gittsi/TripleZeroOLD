@@ -155,15 +155,15 @@ namespace SwGoh
                     {
                         //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 
-                        //SwGoh.GuildDto guild = new GuildDto();
-                        //guild.Name = GuildDto.GetGuildNameFromAlias("41st");
-                        //guild.ParseSwGoh();
-                        //for (int i = 0; i < guild.PlayerNames.Count; i++)
-                        //{
+                        SwGoh.GuildDto guild = new GuildDto();
+                        guild.Name = GuildDto.GetGuildNameFromAlias("41st");
+                        guild.ParseSwGoh();
+                        for (int i = 0; i < guild.PlayerNames.Count; i++)
+                        {
 
-                        //    QueueMethods.AddPlayer(guild.PlayerNames[i], "up", 2);
-                        //}
-                        //QueueMethods.AddPlayer("41st", "ugnochars", 1);
+                            QueueMethods.AddPlayer(guild.PlayerNames[i],Command.UpdatePlayer , 2 , QueueType.Player);
+                        }
+                        QueueMethods.AddPlayer("41st",Command.UpdateGuildWithNoChars , 1 , QueueType.Guild);
 
                         //QueueMethods.AddPlayer("newholborn", "up",3);
                         //QueueMethods.AddPlayer("oaraug", "up", 3);

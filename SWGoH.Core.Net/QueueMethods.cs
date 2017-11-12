@@ -17,7 +17,7 @@ namespace SwGoh
 {
     public class QueueMethods
     {
-        public static void AddPlayer(string PlayerName, string command, int priority , SwGoh.Enums.QueueEnum.QueueType type)
+        public static void AddPlayer(string PlayerName,Command cmd ,int priority , SwGoh.Enums.QueueEnum.QueueType type)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace SwGoh
                     new JProperty("Status", SwGoh.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
                     new JProperty("Type", type),
-                    new JProperty("Command", Command.UpdatePlayer));
+                    new JProperty("Command", cmd));
 
                     var apiKey = SwGoh.Settings.MongoApiKey;
 
