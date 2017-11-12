@@ -8,7 +8,7 @@ namespace SwGoh
     {
         private static bool isWorking = false;
         private static bool mExportLog = false;
-        private static DateTime mLastProcess = DateTime.Now;
+        private static DateTime mLastProcess = DateTime.MinValue;
         
         static void Main(string[] args)
         {
@@ -46,11 +46,11 @@ namespace SwGoh
             else
             {
                 int now = DateTime.Now.Minute;
-                double minutes = DateTime.Now.Subtract(mLastProcess).TotalMinutes;
-                bool check = false;
-                check = minutes > SwGoh.Settings.MinutesUntilNextProcess;
+                double minutes = 0.0;
+                minutes = DateTime.Now.Subtract(mLastProcess).TotalMinutes;
+                bool check = minutes > SwGoh.Settings.MinutesUntilNextProcess;
                 //if (now == 0 || now == 15 || now == 30 || now == 45)
-                if (now == 0 || now == 15 || now == 30 || now == 45)
+                if (check)
                 {
                     PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
                     if (player != null)

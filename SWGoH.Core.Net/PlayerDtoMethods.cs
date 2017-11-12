@@ -121,6 +121,7 @@ namespace SwGoh
                     string json = JsonConvert.SerializeObject(this, Converter.Settings);
                     string apikey = SwGoh.Settings.MongoApiKey;
 
+                    //client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/TestDataSize?apiKey=" + apikey);
                     client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=" + apikey);
                     HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                     if (response.IsSuccessStatusCode)
