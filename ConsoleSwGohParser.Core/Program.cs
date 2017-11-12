@@ -36,9 +36,9 @@ namespace SwGoh
             if (q != null)
             {
                 //Console.WriteLine("");
-                ExecuteCommand(q.Command, q.Name);
+                int ret = ExecuteCommand(q.Command, q.Name);
                 QueueMethods.RemoveFromQueu(q);
-                mLastProcess = DateTime.Now;
+                if (ret != 2) mLastProcess = DateTime.Now;
 
                 //mPrintedNothingToProcess = false;
                 //mPrintedNothingToProcessdots = 0;
@@ -74,7 +74,7 @@ namespace SwGoh
             t.Change(SwGoh.Settings.GlobalConsoleTimerInterval, SwGoh.Settings.GlobalConsoleTimerInterval);
             GC.Collect();
         }
-        private static void ExecuteCommand(Command commandstr, string pname)
+        private static int ExecuteCommand(Command commandstr, string pname)
         {
             ExportMethodEnum mExportMethod = ExportMethodEnum.Database;
 
@@ -89,7 +89,7 @@ namespace SwGoh
                             player.LastClassUpdated = DateTime.UtcNow;
                             player.Export(mExportMethod);
                         }
-                        break;
+                        return ret;
                     }
                 case Command.UpdateGuild:
                     {
@@ -183,6 +183,7 @@ namespace SwGoh
                         break;
                     }
             }
+            return commandstr.GetHashCode();
         }
     }
 }
