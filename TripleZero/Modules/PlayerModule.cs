@@ -1,56 +1,14 @@
 ﻿using Discord.Commands;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Configuration;
-using TripleZero.Repository.Dto;
-using SwGoh;
-using Discord.WebSocket;
-using Discord;
-using TripleZero.Helper;
 
 namespace TripleZero.Modules
 {
     [Name("Player")]
     [Summary("Player Commands")]
     public class PlayerModule : ModuleBase<SocketCommandContext>
-    {        
-
-        [Command("playerreload")]
-        [Summary("Set a player for reload")]
-        [Remarks("*playerreload {playerUserName}*")]
-        public async Task SetPlayerReload(string playerUserName)
-        {
-            string retStr = "";
-
-            //check if user is in role in order to proceed with the action
-            var userAllowed = Roles.UserInRole(Context, "botadmin");
-            if (!userAllowed)
-            {
-                retStr = "\nNot authorized!!!";
-                await ReplyAsync($"{retStr}");
-                return;
-            }
-
-            playerUserName = playerUserName.Trim();
-
-            var result = IResolver.Current.MongoDBRepository.SendPlayerToQueue(playerUserName).Result;
-
-            
-            if (result != null)
-                retStr = string.Format("\nPlayer {0} added to queue. Please be patient, I need some time to retrieve data!!!",playerUserName);
-            else
-                retStr = string.Format("\nPlayer {0} not added to queue!!!!!");
-
-            await ReplyAsync($"{retStr}");
-        }
-
+    {
         [Command("playerreport")]
         [Summary("Get full report for a player")]
         [Remarks("*playerreport {playerUserName}*")]
@@ -61,7 +19,7 @@ namespace TripleZero.Modules
             string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
 
             await ReplyAsync($"{loadingStr}");
-            //fil data
+            
             var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
 
             if (playerData == null)
@@ -195,7 +153,5 @@ namespace TripleZero.Modules
 
             await ReplyAsync($"{retStr}");
         }
-
-        
     }
 }

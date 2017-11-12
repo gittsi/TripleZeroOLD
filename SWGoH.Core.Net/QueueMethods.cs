@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static SwGoh.Enums.QueueEnum;
 
 namespace SwGoh
 {
@@ -28,7 +29,7 @@ namespace SwGoh
                     new JProperty("Status", SwGoh.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
                     new JProperty("Type", type),
-                    new JProperty("Command", SwGoh.Enums.Command.UpdatePlayer));
+                    new JProperty("Command", Command.UpdatePlayer));
 
                     var apiKey = SwGoh.Settings.MongoApiKey;
 

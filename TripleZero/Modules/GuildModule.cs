@@ -1,14 +1,9 @@
 ﻿using Discord.Commands;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Configuration;
 using TripleZero.Helper;
 using SwGoh;
 
@@ -17,8 +12,7 @@ namespace TripleZero.Modules
     [Name("Guild")]
     [Summary("Guild Commands")]
     public class GuildModule : ModuleBase<SocketCommandContext>
-    {        
-
+    {
         [Command("guildCharacter")]
         [Summary("Get report for specific character in the given guild")]
         [Remarks("*guildCharacter {guildAlias or guildId} {characterAlias}*")]
@@ -53,18 +47,14 @@ namespace TripleZero.Modules
                     retStr += "\n";
                     retStr += string.Format("{3}* - {2} - {1} : {0}", player.Name, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity);
                 }
-
                 await ReplyAsync($"{retStr}");
             }
             else
             {
-
                 retStr = $"I didn't find any players having `{guildConfig.Name} for guild {characterConfig.Name}`";
                 await ReplyAsync($"{retStr}");
             }
-
         }
-
 
         [Command("slackers")]
         [Summary("Get all players of guild with low level characters")]
@@ -102,12 +92,10 @@ namespace TripleZero.Modules
 
                                 counter += 1;
                                 if (counter > totalRows) break;
-                                //Console.WriteLine(maxCounter1.ToString());
                             }
                         }
                     }
-                    if (counter > totalRows) break;
-                    //Console.WriteLine("level" + level);                    
+                    if (counter > totalRows) break;                    
                 }
             }
             catch (Exception ex)
@@ -116,8 +104,7 @@ namespace TripleZero.Modules
             }
 
             if(retStr.Length>0)
-                await ReplyAsync($"{retStr}");           
-
+                await ReplyAsync($"{retStr}");  
         }
 
         [Command("tb")]

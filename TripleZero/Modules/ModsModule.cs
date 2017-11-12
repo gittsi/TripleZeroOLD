@@ -1,16 +1,11 @@
 ﻿using Discord.Commands;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Configuration;
-using TripleZero.Repository.Dto;
 using SwGoh;
+using SwGoH;
 
 namespace TripleZero.Modules
 {
@@ -20,20 +15,16 @@ namespace TripleZero.Modules
     {
 
         #region "Secondary stats"
-        private async void SendSecondaryModReply(string playerUserName, ModStatType modStatType, ModValueType secondaryStatValueType ,List<Tuple<string, Mod>> result)
+        private async void SendSecondaryModReply(string playerUserName, ModStatType modStatType, ModValueType secondaryStatValueType, List<Tuple<string, Mod>> result)
         {
             string retStr = "";
             if (result != null)
             {
-                //await ReplyAsync($"***Guild : {fullGuildName} - Character : {fullCharacterName}***");
-
                 foreach (var row in result)
                 {
-                    var modStats = row.Item2.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType==secondaryStatValueType ).FirstOrDefault();
-                    var newString = string.Format("{3}: **{2}{4}** {1} {0}", row.Item1.PadRight(25), row.Item2.Type.ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), secondaryStatValueType== ModValueType.Percentage ? "%" : "");
+                    var modStats = row.Item2.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == secondaryStatValueType).FirstOrDefault();
+                    var newString = string.Format("{3}: **{2}{4}** {1} {0}", row.Item1.PadRight(25), EnumExtensions.GetDescription(row.Item2.Type).ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), secondaryStatValueType == ModValueType.Percentage ? "%" : "");
 
-                    //if (retStr.Length + newString.Length > 2000)
-                    //    break;
                     retStr += "\n";
                     retStr += newString;
 
@@ -42,27 +33,22 @@ namespace TripleZero.Modules
                         await ReplyAsync($"{retStr}");
                         retStr = "";
                     }
-
                 }
-
-                if(retStr.Length>0)                
+                if (retStr.Length > 0)
                     await ReplyAsync($"{retStr}");
                 else
                     await ReplyAsync($"No mods found!");
-
             }
             else
             {
-
                 retStr = $"I didn't find any mods for username {playerUserName}`";
-                    await ReplyAsync($"{retStr}");
+                await ReplyAsync($"{retStr}");
             }
         }
 
-        private async Task<List<Tuple<string, Mod>>> GetSpecificSecondaryMods(string playerUserName,ModStatType modStatType, ModValueType modValueType, int rows =20)
+        private async Task<List<Tuple<string, Mod>>> GetSpecificSecondaryMods(string playerUserName, ModStatType modStatType, ModValueType modValueType, int rows = 20)
         {
             var res = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
-
 
             if (res == null)
             {
@@ -78,7 +64,7 @@ namespace TripleZero.Modules
                                   Character.Name,
                                   Mod
                               }
-                        ).OrderByDescending(t => t.Mod.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType== modValueType).FirstOrDefault().Value).Take(rows).ToList();
+                        ).OrderByDescending(t => t.Mod.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == modValueType).FirstOrDefault().Value).Take(rows).ToList();
 
             return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
         }
@@ -91,29 +77,30 @@ namespace TripleZero.Modules
             playerUserName = playerUserName.Trim();
             modType = modType.Trim();
 
-            ModStatType secondaryStatType=ModStatType.None;
+            ModStatType secondaryStatType = ModStatType.None;
             ModValueType secondaryStatValueType = ModValueType.None;
 
             if (modType.Substring(modType.Length - 1, 1) == "%")
             {
                 secondaryStatValueType = ModValueType.Percentage;
-                modType=modType.Replace("%", "");
-            }else
+                modType = modType.Replace("%", "");
+            }
+            else
             {
                 secondaryStatValueType = ModValueType.Flat;
             }
 
-            if(modType.ToLower() == "speed") secondaryStatType = ModStatType.Speed;
-            if(modType.ToLower() == "potency") secondaryStatType = ModStatType.Potency;
-            if(modType.ToLower() == "accuracy") secondaryStatType = ModStatType.Accuracy;
-            if(modType.ToLower() == "criticalavoidance") secondaryStatType = ModStatType.CriticalAvoidance;
-            if(modType.ToLower() == "criticalchance") secondaryStatType = ModStatType.CriticalChance;
-            if(modType.ToLower() == "criticaldamage") secondaryStatType = ModStatType.CriticalDamage;
-            if(modType.ToLower() == "defense") secondaryStatType = ModStatType.Defense;
-            if(modType.ToLower() == "health") secondaryStatType = ModStatType.Health;
-            if(modType.ToLower() == "offense") secondaryStatType = ModStatType.Offense;
-            if(modType.ToLower() == "protection") secondaryStatType = ModStatType.Protection;
-            if(modType.ToLower() == "tenacity") secondaryStatType = ModStatType.Tenacity;
+            if (modType.ToLower() == "speed") secondaryStatType = ModStatType.Speed;
+            if (modType.ToLower() == "potency") secondaryStatType = ModStatType.Potency;
+            if (modType.ToLower() == "accuracy") secondaryStatType = ModStatType.Accuracy;
+            if (modType.ToLower() == "criticalavoidance") secondaryStatType = ModStatType.CriticalAvoidance;
+            if (modType.ToLower() == "criticalchance") secondaryStatType = ModStatType.CriticalChance;
+            if (modType.ToLower() == "criticaldamage") secondaryStatType = ModStatType.CriticalDamage;
+            if (modType.ToLower() == "defense") secondaryStatType = ModStatType.Defense;
+            if (modType.ToLower() == "health") secondaryStatType = ModStatType.Health;
+            if (modType.ToLower() == "offense") secondaryStatType = ModStatType.Offense;
+            if (modType.ToLower() == "protection") secondaryStatType = ModStatType.Protection;
+            if (modType.ToLower() == "tenacity") secondaryStatType = ModStatType.Tenacity;
 
             if (secondaryStatType == ModStatType.None)
             {
@@ -121,28 +108,24 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var result =await GetSpecificSecondaryMods(playerUserName, secondaryStatType, secondaryStatValueType, rows);
+            var result = await GetSpecificSecondaryMods(playerUserName, secondaryStatType, secondaryStatValueType, rows);
             SendSecondaryModReply(playerUserName, secondaryStatType, secondaryStatValueType, result);
         }
         #endregion
 
         #region "Primary stats"
 
-        private async void SendPrimaryModReply(string playerUserName, ModStatType modStatType,List<Tuple<string, Mod>> result)
+        private async void SendPrimaryModReply(string playerUserName, ModStatType modStatType, List<Tuple<string, Mod>> result)
         {
             string retStr = "";
             if (result != null)
             {
-                //await ReplyAsync($"***Guild : {fullGuildName} - Character : {fullCharacterName}***");
-
                 foreach (var row in result)
                 {
-                    var modStats = row.Item2.PrimaryStat;//.Where(p => p.StatType == modStatType && p.ValueType == secondaryStatValueType).FirstOrDefault();
+                    var modStats = row.Item2.PrimaryStat;
                     var newString = string.Format("{3}: **{2}{4}** {1} {0}", row.Item1.PadRight(25), row.Item2.Type.ToString().PadRight(10), modStats.Value.ToString().PadRight(2), modStatType.ToString(), modStats.ValueType == ModValueType.Percentage ? "%" : "");
                     retStr += "\n";
                     retStr += newString;
-                    //if (retStr.Length + newString.Length > 2000)
-                    //    break;
 
                     if (retStr.Length > 1800)
                     {
@@ -155,11 +138,9 @@ namespace TripleZero.Modules
                     await ReplyAsync($"{retStr}");
                 else
                     await ReplyAsync($"No mods found!");
-
             }
             else
             {
-
                 retStr = $"I didn't find any mods for username {playerUserName}`";
                 await ReplyAsync($"{retStr}");
             }
@@ -169,7 +150,6 @@ namespace TripleZero.Modules
         {
             var res = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
 
-
             if (res == null)
             {
                 await ReplyAsync($"I couldn't find player : {playerUserName}...");
@@ -177,7 +157,7 @@ namespace TripleZero.Modules
             }
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
-                              from Mod in Character.Mods.Where(p => p.PrimaryStat != null && p.PrimaryStat.StatType== modStatType)
+                              from Mod in Character.Mods.Where(p => p.PrimaryStat != null && p.PrimaryStat.StatType == modStatType)
                               select new
                               {
                                   Character.Name,
@@ -188,7 +168,6 @@ namespace TripleZero.Modules
             return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
         }
 
-
         [Command("mods-p")]
         [Summary("Get mods sorted by a **primary** stat of a given player")]
         [Remarks("*mods-p {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n example \n$mods -p playerName speed 5)*")]
@@ -198,7 +177,7 @@ namespace TripleZero.Modules
             modType = modType.Trim();
 
             ModStatType primaryStatType = ModStatType.None;
-            
+
             if (modType.ToLower() == "speed") primaryStatType = ModStatType.Speed;
             if (modType.ToLower() == "potency") primaryStatType = ModStatType.Potency;
             if (modType.ToLower() == "accuracy") primaryStatType = ModStatType.Accuracy;

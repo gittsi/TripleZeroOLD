@@ -9,6 +9,7 @@ namespace SwGoh
     using System.Net;
     using System.Collections.Generic;
     using Newtonsoft.Json;
+    using System.ComponentModel;
 
     public partial class CharacterDto
     {
@@ -111,12 +112,19 @@ namespace SwGoh
 
     public enum ModSlot
     {
+        [Description("None")]
         None=0,
+        [Description("Rectangle")]
         Transmitter = 1,
+        [Description("Arrow")]
         Receiver = 2,
+        [Description("Diamond")]
         Processor = 3,
+        [Description("Triangle")]
         HoloArray = 4,
+        [Description("Circle")]
         DataBus = 5,
+        [Description("Cross")]
         Multiplexer = 6
 
     }

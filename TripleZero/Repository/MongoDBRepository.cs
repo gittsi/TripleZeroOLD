@@ -4,20 +4,17 @@ using Newtonsoft.Json.Linq;
 using SwGoh;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TripleZero._Mapping;
-using TripleZero.Helper;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Repository.Dto;
-using TripleZero.Repository;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using static SwGoh.Enums.QueueEnum;
+using SwGoh.Enums;
 
 namespace TripleZero.Repository
 {
@@ -29,25 +26,17 @@ namespace TripleZero.Repository
         {
             _Mapper = mappingConfiguration.GetConfigureMapper();
         }
-
-        //public Task<GuildConfig> GetConfigGuild(string guildAlias)
-        //{
-        //    await Task.FromResult(1);
-
-            
-        //}
-
         public async Task<PlayerDto> GetPlayer(string userName)
         {
             await Task.FromResult(1);
-  
-            var queryData = string.Concat("q={\"PlayerName\":\"", userName,"\"}");
-            var orderby= "s={\"LastSwGohUpdated\":-1}";
-            var limit = "l=1";   
-            var apiKey= IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
-            string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby,limit, apiKey);
-         
+            var queryData = string.Concat("q={\"PlayerName\":\"", userName, "\"}");
+            var orderby = "s={\"LastSwGohUpdated\":-1}";
+            var limit = "l=1";
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+
+            string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apiKey);
+
             try
             {
                 using (var client = new HttpClient())
@@ -57,11 +46,11 @@ namespace TripleZero.Repository
 
                     return ret.FirstOrDefault();
                 }
-            }catch(Exception ex)
-            {
-                throw new ApplicationException(ex.Message);                
             }
-            
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
         }
 
         public async Task<GuildDto> GetGuildPlayers(string guildName)
@@ -89,28 +78,26 @@ namespace TripleZero.Repository
             {
                 throw new ApplicationException(ex.Message);
             }
-            
         }
 
         public async Task<string> SendPlayerToQueue(string playerName)
         {
-            //SendToQueue
-            return null;
+            return await SendToQueue(playerName, QueueType.Player);
         }
 
         public async Task<string> SendGuildToQueue(string guildName)
         {
-            return null;
+            return await SendToQueue(guildName, QueueType.Guild);
         }
 
-        private async Task<string> SendToQueue(string name, QueueType queueType )
+        private async Task<string> SendToQueue(string name, QueueType queueType)
         {
             JObject data = new JObject(
                 new JProperty("Name", name),
                 new JProperty("Date", DateTime.UtcNow),
                 new JProperty("Status", QueueStatus.PendingProcess),
                 new JProperty("Priority", 3),
-                new JProperty("Command", queueType== QueueType.Player ? "up" : "ugnochars"),
+                new JProperty("Command", queueType == QueueType.Player ? Command.UpdatePlayer : Command.UpdateGuildWithNoChars),
                 new JProperty("Type", queueType)
            );
 
@@ -129,18 +116,16 @@ namespace TripleZero.Repository
                         string responseBody = await response.Content.ReadAsStringAsync();
 
                         BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
-                        var queuePlayer = BsonSerializer.Deserialize<Queue>(document);
+                        var queue = BsonSerializer.Deserialize<Queue>(document);
 
-                        return queuePlayer?.Id.ToString();
+                        return queue?.Id.ToString();
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                     return null;
-                    //throw new ApplicationException(ex.Message);                    
                 }
-
             }
         }
 
@@ -150,7 +135,7 @@ namespace TripleZero.Repository
             CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
             if (characterConfig == null) return null;
 
-            characterConfig.Aliases.Add(alias);            
+            characterConfig.Aliases.Add(alias);
             var result = PutCharacterConfig(characterConfig).Result;
             if (!result) return null;
 
@@ -171,7 +156,7 @@ namespace TripleZero.Repository
 
             characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
             return characterConfig;
-        }        
+        }
 
         private async Task<bool> PutCharacterConfig(CharacterConfig characterConfig)
         {
@@ -205,7 +190,7 @@ namespace TripleZero.Repository
         public async Task<List<PlayerDto>> GetAllPlayersWithoutCharacters()
         {
             await Task.FromResult(1);
-                       
+
             var orderby = "s={\"LastSwGohUpdated\":-1}";
             var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
             var fields = "f={\"Characters\": 0}";
@@ -225,6 +210,22 @@ namespace TripleZero.Repository
             catch (Exception ex)
             {
                 throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public async Task<List<Queue>> GetQueue()
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?apiKey={0}", apiKey);
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(requestUri);
+                string responseBody = await response.Content.ReadAsStringAsync();
+                List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(responseBody);
+                List<Queue> queue = document.Select(b => BsonSerializer.Deserialize<Queue>(b)).ToList();
+
+                return queue;
             }
         }
     }

@@ -12,6 +12,7 @@ using TripleZero.Configuration;
 using TripleZero.Repository.Dto;
 using SwGoh;
 using TripleZero.Helper;
+using static SwGoh.Enums.QueueEnum;
 
 namespace TripleZero.Modules
 {
@@ -31,7 +32,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var userAllowed = Roles.UserInRole(Context, "botadmin");
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -67,7 +69,6 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-
         [Command("alias-set")]
         //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         [Summary("Set alias for specific character(Admin Command)")]
@@ -80,7 +81,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var userAllowed = Roles.UserInRole(Context, "botadmin");
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -127,6 +129,16 @@ namespace TripleZero.Modules
             string retStr = "";
             string chStr = "";
 
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
             var charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
             int debugcount = 0;
             foreach(var characterConfig in charactersConfig)
@@ -171,9 +183,98 @@ namespace TripleZero.Modules
         //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         [Summary("Get current for specific character(Admin Command)")]
         [Remarks("*alias-remove {characterFullName}*")]
-        public async Task GetQueue(string characterFullName, string alias)
+        public async Task GetQueue()
         {
+            string retStr = "";
 
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            var result = IResolver.Current.MongoDBRepository.GetQueue().Result;
+
+            var guildQueues = result.Where(p => p.Type == QueueType.Guild);
+            var playerQueues = result.Where(p => p.Type == QueueType.Player);
+
+            if (result==null)
+            {
+                await ReplyAsync($"Problem!! Cannot get queue!!!");
+                return;
+            }
+            
+            retStr = "\n**Players**";
+            foreach (var queuePlayer in playerQueues)
+            {                
+                retStr += string.Format("\nPlayer : **{0}** - Status : **{1}**", queuePlayer.Name, queuePlayer.Status);
+            }
+
+            await ReplyAsync($"{retStr}");
+        }
+
+        [Command("playerreload")]
+        [Summary("Set a player for reload(Admin Command)")]
+        [Remarks("*playerreload {playerUserName}*")]
+        public async Task SetPlayerReload(string playerUserName)
+        {
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            playerUserName = playerUserName.Trim();
+
+            var result = IResolver.Current.MongoDBRepository.SendPlayerToQueue(playerUserName).Result;
+
+
+            if (result != null)
+                retStr = string.Format("\nPlayer {0} added to queue. Please be patient, I need some time to retrieve data!!!", playerUserName);
+            else
+                retStr = string.Format("\nPlayer {0} not added to queue!!!!!");
+
+            await ReplyAsync($"{retStr}");
+        }
+
+        [Command("guildreload")]
+        [Summary("Set a guild for reload")]
+        [Remarks("*guildreload {guildName}*")]
+        public async Task SetGuildReload(string guildName)
+        {
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            guildName = guildName.Trim();
+
+            var result = IResolver.Current.MongoDBRepository.SendGuildToQueue(guildName).Result;
+
+
+            if (result != null)
+                retStr = string.Format("\nGuild {0} added to queue. Please be patient, I need tons of time to retrieve data!!!", guildName);
+            else
+                retStr = string.Format("\nGuild {0} not added to queue!!!!!");
+
+            await ReplyAsync($"{retStr}");
         }
     }
 }
