@@ -111,20 +111,20 @@ namespace SwGoh
     }
 
     public enum ModSlot
-    {
-        [Description("None")]
+    {        
+        [Description("none")]
         None=0,
-        [Description("Rectangle")]
+        [Description("rectangle")]
         Transmitter = 1,
-        [Description("Arrow")]
+        [Description("arrow")]
         Receiver = 2,
-        [Description("Diamond")]
+        [Description("diamond")]
         Processor = 3,
-        [Description("Triangle")]
+        [Description("triangle")]
         HoloArray = 4,
-        [Description("Circle")]
+        [Description("circle")]
         DataBus = 5,
-        [Description("Cross")]
+        [Description("cross")]
         Multiplexer = 6
 
     }
