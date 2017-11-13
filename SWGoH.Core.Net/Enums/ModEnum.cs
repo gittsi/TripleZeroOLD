@@ -5,28 +5,54 @@ using System.Text;
 
 namespace SwGoH
 {
+
+    public class FriendlyNameAttribute : Attribute
+    {
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+    }
+
     public class ModEnum
     {
         public enum ModValueType
         {
+            [Description("none")]
             None = -1,
+            [Description("flat")]
             Flat = 0,
+            [Description("percentage")]
             Percentage = 1
         }
 
         public enum ModStatType
         {
+            [Description("none")]
             None = 0,
+            [Description("speed")]
             Speed = 1,
+            [Description("criticalchance")]
             CriticalChance = 2,
+            [Description("criticaldamage")]
             CriticalDamage = 3,
+            [Description("potency")]
             Potency = 4,
+            [Description("tenacity")]
             Tenacity = 5,
+            [Description("accuracy")]
             Accuracy = 6,
+            [Description("criticalavoidance")]
             CriticalAvoidance = 7,
+            [Description("offense")]
             Offense = 8,
+            [Description("defense")]
             Defense = 9,
+            [Description("health")]
             Health = 10,
+            [Description("rotection")]
             Protection = 11
         }
 
@@ -51,14 +77,23 @@ namespace SwGoH
 
         public enum ModSet
         {
+            [Description("none")]
             None = 0,
+            [Description("health")]
             Health = 1,
+            [Description("defense")]
             Defense = 2,
+            [Description("criticaldamage")]
             CriticalDamage = 3,
+            [Description("criticalchange")]
             CriticalChance = 4,
+            [Description("tenacity")]
             Tenacity = 5,
+            [Description("offense")]
             Offense = 6,
+            [Description("potency")]
             Potency = 7,
+            [Description("speed")]
             Speed = 8
         }
     }

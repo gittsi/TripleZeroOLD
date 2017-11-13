@@ -77,10 +77,8 @@ namespace TripleZero.Modules
         {
             playerUserName = playerUserName.Trim();
             modType = modType.Trim();
-
-            ModStatType secondaryStatType = ModStatType.None;
+            
             ModValueType secondaryStatValueType = ModValueType.None;
-
             if (modType.Substring(modType.Length - 1, 1) == "%")
             {
                 secondaryStatValueType = ModValueType.Percentage;
@@ -91,17 +89,7 @@ namespace TripleZero.Modules
                 secondaryStatValueType = ModValueType.Flat;
             }
 
-            if (modType.ToLower() == "speed") secondaryStatType = ModStatType.Speed;
-            if (modType.ToLower() == "potency") secondaryStatType = ModStatType.Potency;
-            if (modType.ToLower() == "accuracy") secondaryStatType = ModStatType.Accuracy;
-            if (modType.ToLower() == "criticalavoidance") secondaryStatType = ModStatType.CriticalAvoidance;
-            if (modType.ToLower() == "criticalchance") secondaryStatType = ModStatType.CriticalChance;
-            if (modType.ToLower() == "criticaldamage") secondaryStatType = ModStatType.CriticalDamage;
-            if (modType.ToLower() == "defense") secondaryStatType = ModStatType.Defense;
-            if (modType.ToLower() == "health") secondaryStatType = ModStatType.Health;
-            if (modType.ToLower() == "offense") secondaryStatType = ModStatType.Offense;
-            if (modType.ToLower() == "protection") secondaryStatType = ModStatType.Protection;
-            if (modType.ToLower() == "tenacity") secondaryStatType = ModStatType.Tenacity;
+            ModStatType secondaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(),typeof(ModStatType));         
 
             if (secondaryStatType == ModStatType.None)
             {
@@ -177,19 +165,7 @@ namespace TripleZero.Modules
             playerUserName = playerUserName.Trim();
             modType = modType.Trim();
 
-            ModStatType primaryStatType = ModStatType.None;
-
-            if (modType.ToLower() == "speed") primaryStatType = ModStatType.Speed;
-            if (modType.ToLower() == "potency") primaryStatType = ModStatType.Potency;
-            if (modType.ToLower() == "accuracy") primaryStatType = ModStatType.Accuracy;
-            if (modType.ToLower() == "criticalavoidance") primaryStatType = ModStatType.CriticalAvoidance;
-            if (modType.ToLower() == "criticalchance") primaryStatType = ModStatType.CriticalChance;
-            if (modType.ToLower() == "criticaldamage") primaryStatType = ModStatType.CriticalDamage;
-            if (modType.ToLower() == "defense") primaryStatType = ModStatType.Defense;
-            if (modType.ToLower() == "health") primaryStatType = ModStatType.Health;
-            if (modType.ToLower() == "offense") primaryStatType = ModStatType.Offense;
-            if (modType.ToLower() == "protection") primaryStatType = ModStatType.Protection;
-            if (modType.ToLower() == "tenacity") primaryStatType = ModStatType.Tenacity;
+            ModStatType primaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(), typeof(ModStatType));
 
             if (primaryStatType == ModStatType.None)
             {
