@@ -9,10 +9,10 @@ namespace TripleZero.Modules
     [Summary("Player Commands")]
     public class PlayerModule : ModuleBase<SocketCommandContext>
     {
-        [Command("playerreport")]
+        [Command("player-report")]
         [Summary("Get full report for a player")]
-        [Remarks("*playerreport {playerUserName}*")]
-        public async Task CheckPlayer(string playerUserName)
+        [Remarks("*player-report {playerUserName}*")]
+        public async Task GetPlayerReport(string playerUserName)
         {
             playerUserName = playerUserName.Trim();
 

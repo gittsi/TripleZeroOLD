@@ -42,6 +42,8 @@ namespace TripleZero.Configuration
                 MongoDBSettings = new MongoDBSettings()
                 {
                     ApiKey=_SettingsConfigurationRoot.GetSection("MongoDB_Settings")["ApiKey"]
+                    ,
+                    DB = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["DB"]
                 }
             };
 

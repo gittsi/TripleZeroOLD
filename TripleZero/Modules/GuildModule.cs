@@ -128,7 +128,6 @@ namespace TripleZero.Modules
 
         }
 
-
         [Command("guildPlayers")]
         [Summary("Get available players in specified guild")]
         [Remarks("*guildPlayers {guildAlias or guildId} {searchString(optional)}*")]
@@ -174,8 +173,6 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
            
         }
-
-
         
     }
 }

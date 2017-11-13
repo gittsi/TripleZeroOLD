@@ -20,11 +20,10 @@ namespace TripleZero.Modules
     [Name("DBStats")]
     [Summary("Stats Commands")]
     public class DBStatsModule : ModuleBase<SocketCommandContext>
-    {        
-
-        [Command("stats")]
+    {      
+        [Command("stats-players")]
         [Summary("Get stats about player collection")]
-        [Remarks("*stats*")]
+        [Remarks("*stats-players*")]
         public async Task GetStats()
         {
             string retStr = "";
@@ -54,9 +53,9 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("getallplayers")]
+        [Command("player-getall")]
         [Summary("Get all players in collection")]
-        [Remarks("*getallplayers*")]
+        [Remarks("*player-getall*")]
         public async Task GetAllPlayers()
         {
             string retStr = "";
@@ -95,7 +94,5 @@ namespace TripleZero.Modules
 
             await ReplyAsync($"{retStr}");
         }
-
-
     }
 }
