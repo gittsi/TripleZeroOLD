@@ -14,6 +14,13 @@ namespace TripleZero.Modules
     [Summary("Mods Commands")]
     public class ModsModule : ModuleBase<SocketCommandContext>
     {
+        #region "Filter Mods"
+        [Command("mods")]
+        public async Task GetMods()
+        {
+
+        }
+        #endregion
 
         #region "Secondary stats"
         private async void SendSecondaryModReply(string playerUserName, ModStatType modStatType, ModValueType secondaryStatValueType, List<Tuple<string, Mod>> result)
