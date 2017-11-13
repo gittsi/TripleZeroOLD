@@ -38,7 +38,7 @@ namespace SwGoh
                     var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
                     var orderby = "s={\"LastSwGohUpdated\":-1}";
                     var limit = "l=1";
-                    string apikey = SwGoh.Settings.MongoApiKey;
+                    string apikey = Settings.appSettings.MongoApiKey;
 
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
                     string response = client.GetStringAsync(url).Result;
@@ -61,14 +61,9 @@ namespace SwGoh
                 {
                     var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
                     var orderby = "s={\"LastClassUpdated\":1}";
-                    string apikey = SwGoh.Settings.MongoApiKey;
+                    string apikey = Settings.appSettings.MongoApiKey;
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
                     var response = client.GetStringAsync(url).Result;
-
-                    
-                    //List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
-                    //PlayerDto result1 = null;
-                    //if (ret!= null && ret.Count> 0) result1 = ret[0];
 
                     List <BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
                     if (document.Count == 1) return;
@@ -80,7 +75,15 @@ namespace SwGoh
                         WebRequest request = WebRequest.Create(deleteurl);
                         request.Method = "DELETE";
                     
-                            HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                        HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                        if (response1.StatusCode == HttpStatusCode.OK)
+                        {
+                            SwGoh.Log.ConsoleMessage("Removed Previous from Players!");
+                        }
+                        else
+                        {
+                            SwGoh.Log.ConsoleMessage("Error : Could not remove previous from Pleayers!");
+                        }
                     }
                 }
             }
@@ -125,7 +128,7 @@ namespace SwGoh
                 {
                     
                     string json = JsonConvert.SerializeObject(this, Converter.Settings);
-                    string apikey = SwGoh.Settings.MongoApiKey;
+                    string apikey = Settings.appSettings.MongoApiKey;
 
                     //client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/TestDataSize?apiKey=" + apikey);
                     client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=" + apikey);
@@ -201,7 +204,7 @@ namespace SwGoh
                     var queryData = string.Concat("q={\"Aliases\":\"", pname, "\"}");
                     var limit = "l=1";
                     var field = "f={\"PlayerName\": 1}";
-                    string apikey = SwGoh.Settings.MongoApiKey;
+                    string apikey = Settings.appSettings.MongoApiKey;
 
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Players/?{0}&{1}&{2}&apiKey={3}", queryData, field, limit, apikey);
                     string response = client.GetStringAsync(url).Result;
@@ -276,7 +279,7 @@ namespace SwGoh
                         var orderby = "s={\"LastSwGohUpdated\":1}";
                         var limit = "l=1";
                         var field = "f={\"LastSwGohUpdated\": 1 , \"id\" : 1}";
-                        string apikey = SwGoh.Settings.MongoApiKey;
+                        string apikey = Settings.appSettings.MongoApiKey;
 
                         string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, orderby, limit, apikey);
                         string response = client.GetStringAsync(url).Result;
@@ -369,12 +372,12 @@ namespace SwGoh
 
                         if (CheckForAllias){AddCharacterToAlliasConfig(newchar, Base_ID_Document);}
 
-                        Thread.Sleep(SwGoh.Settings.DelayPerCharacter);
+                        Thread.Sleep(Settings.appSettings.DelayPerCharacter);
                     }
                 }
                 else
                 {
-                    Thread.Sleep(SwGoh.Settings.DelayErrorAtCharacter);
+                    Thread.Sleep(Settings.appSettings.DelayErrorAtCharacter);
                     Position = previousPosition;
                 }
             }
@@ -394,7 +397,7 @@ namespace SwGoh
             using (HttpClient client = new HttpClient())
             {
                 var queryData = string.Concat("q={\"Name\" : \"" + newchar.Name + "\" }");
-                string apikey = SwGoh.Settings.MongoApiKey;
+                string apikey = Settings.appSettings.MongoApiKey;
 
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apikey);
                 string response = client.GetStringAsync(url).Result;

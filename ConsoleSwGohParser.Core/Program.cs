@@ -1,7 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -17,10 +19,13 @@ namespace SwGoh
         
         static void Main(string[] args)
         {
+
+            if (!Settings.Get()) return;
+
             if (mExportLog) SwGoh.Log.Initialize("log.txt" , mExportLog );
 
             Timer t = new Timer(new TimerCallback(TimerProc));
-            t.Change(0, SwGoh.Settings.GlobalConsoleTimerInterval);
+            t.Change(0, Settings.appSettings.GlobalConsoleTimerInterval);
 
             Console.ReadLine();
 
@@ -51,8 +56,7 @@ namespace SwGoh
                 int now = DateTime.Now.Minute;
                 double minutes = 0.0;
                 minutes = DateTime.Now.Subtract(mLastProcess).TotalMinutes;
-                bool check = minutes > SwGoh.Settings.MinutesUntilNextProcess;
-                //if (now == 0 || now == 15 || now == 30 || now == 45)
+                bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
                 if (check)
                 {
                     PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
@@ -64,7 +68,7 @@ namespace SwGoh
                 Console.WriteLine("Nothing to process");
             }
             isWorking = false;
-            t.Change(SwGoh.Settings.GlobalConsoleTimerInterval, SwGoh.Settings.GlobalConsoleTimerInterval);
+            t.Change(Settings.appSettings.GlobalConsoleTimerInterval, Settings.appSettings.GlobalConsoleTimerInterval);
             GC.Collect();
         }
         private static int ExecuteCommand(Command commandstr, string pname)

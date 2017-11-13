@@ -108,7 +108,7 @@ namespace SwGoh
 
                     if (!FullUpdateClass)
                     {
-                        string apikey = SwGoh.Settings.MongoApiKey;
+                        string apikey = Settings.appSettings.MongoApiKey;
 
                         client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Guild?apiKey="+ apikey);
                         HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
@@ -241,7 +241,7 @@ namespace SwGoh
                     }
                     else if (ret == 0)
                     {
-                        Thread.Sleep(SwGoh.Settings.DelayErrorPerPlayerAtGuildSearch);
+                        Thread.Sleep(Settings.appSettings.DelayErrorPerPlayerAtGuildSearch);
                         i--;
                     }
                     else
@@ -267,11 +267,11 @@ namespace SwGoh
                     player.Export(ExportMethod);
                     if (Players == null) Players = new List<PlayerDto>();
                     Players.Add(player);
-                    Thread.Sleep(SwGoh.Settings.DelayPerPlayerAtGuildSearch);
+                    Thread.Sleep(Settings.appSettings.DelayPerPlayerAtGuildSearch);
                 }
                 else if (ret == 0)
                 {
-                    Thread.Sleep(SwGoh.Settings.DelayErrorPerPlayerAtGuildSearch);
+                    Thread.Sleep(Settings.appSettings.DelayErrorPerPlayerAtGuildSearch);
                     i--;
                 }
                 else
@@ -291,7 +291,7 @@ namespace SwGoh
                 var orderby = "s={\"LastSwGohUpdated\":-1}";
                 var limit = "l=1";
                 var field = "f={\"LastSwGohUpdated\": 1}";
-                string apikey = SwGoh.Settings.MongoApiKey;
+                string apikey = Settings.appSettings.MongoApiKey;
 
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&{3}&apiKey={4}", queryData,field ,orderby, limit, apikey);
                 string response = client.GetStringAsync(url).Result;
