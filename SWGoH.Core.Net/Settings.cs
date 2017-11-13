@@ -26,6 +26,7 @@ namespace SwGoh
             }
             return true;
         }
+        
         public string MongoApiKey { get; set; }
         public double HoursForNextCheckLastswGohUpdate { get; set; }
 

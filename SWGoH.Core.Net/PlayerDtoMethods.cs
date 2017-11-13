@@ -12,7 +12,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
-using static SwGoH.ModEnum;
+using static SwGoh.ModEnum;
 
 namespace SwGoh
 {
@@ -61,8 +61,9 @@ namespace SwGoh
                 {
                     var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
                     var orderby = "s={\"LastClassUpdated\":1}";
+                    var field = "f={\"PlayerName\": 1}";
                     string apikey = Settings.appSettings.MongoApiKey;
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
+                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, field ,orderby, apikey);
                     var response = client.GetStringAsync(url).Result;
 
                     List <BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
@@ -138,6 +139,9 @@ namespace SwGoh
                         SwGoh.Log.ConsoleMessage("Added To Database : " + PlayerNameInGame);
 
                         DeletePlayerFromDBAsync();
+
+                        //DateTime nextrundate = DateTime.Now.AddDays(1.0);
+                        //SwGoh.QueueMethods.AddPlayer(PlayerName, Enums.QueueEnum.Command.UpdatePlayer, 2, Enums.QueueEnum.QueueType.Player, nextrundate);
                     }
                     else
                     {

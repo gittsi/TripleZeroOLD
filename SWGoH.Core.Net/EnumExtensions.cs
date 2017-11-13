@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 
-namespace SwGoH
+namespace SwGoh
 {
     public static class EnumExtensions
     {

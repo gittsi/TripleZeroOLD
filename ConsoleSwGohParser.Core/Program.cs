@@ -19,7 +19,6 @@ namespace SwGoh
         
         static void Main(string[] args)
         {
-
             if (!Settings.Get()) return;
 
             if (mExportLog) SwGoh.Log.Initialize("log.txt" , mExportLog );
@@ -62,7 +61,7 @@ namespace SwGoh
                     PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
                     if (player != null)
                     {
-                        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player);
+                        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.Now);
                     }
                 }
                 Console.WriteLine("Nothing to process");

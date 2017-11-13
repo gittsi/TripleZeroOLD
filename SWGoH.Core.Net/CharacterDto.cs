@@ -10,7 +10,7 @@ namespace SwGoh
     using System.Collections.Generic;
     using Newtonsoft.Json;
     using System.ComponentModel;
-    using static SwGoH.ModEnum;
+    using static SwGoh.ModEnum;
     using MongoDB.Bson.Serialization.Attributes;
 
     public partial class CharacterDto
