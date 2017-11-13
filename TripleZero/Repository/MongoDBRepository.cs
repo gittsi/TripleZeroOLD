@@ -128,6 +128,37 @@ namespace TripleZero.Repository
                 }
             }
         }
+        public async Task<List<Queue>> GetQueue()
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?apiKey={0}", apiKey);
+
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(requestUri);
+                string responseBody = await response.Content.ReadAsStringAsync();
+                List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(responseBody);
+                List<Queue> queue = document.Select(b => BsonSerializer.Deserialize<Queue>(b)).ToList();
+
+                return queue;
+            }
+        }
+
+        public async Task<Queue> RemoveFromQueue(string name)
+        {
+            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
+
+            var queue = GetQueue().Result.Where(p=>p.Name==name).FirstOrDefault();
+            if (queue == null || queue.Id == null) return null;
+            
+            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/{0}?apiKey={1}", queue.Id, apiKey);
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage updateresult = await client.DeleteAsync(requestUri);
+
+                if (updateresult.StatusCode == HttpStatusCode.OK) return queue; else return null;
+            }
+        }
 
         public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
         {
@@ -213,20 +244,8 @@ namespace TripleZero.Repository
             }
         }
 
-        public async Task<List<Queue>> GetQueue()
-        {
-            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
-            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?apiKey={0}", apiKey);
+        
 
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync(requestUri);
-                string responseBody = await response.Content.ReadAsStringAsync();
-                List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(responseBody);
-                List<Queue> queue = document.Select(b => BsonSerializer.Deserialize<Queue>(b)).ToList();
-
-                return queue;
-            }
-        }
+        
     }
 }

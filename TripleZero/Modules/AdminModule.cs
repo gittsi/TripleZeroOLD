@@ -23,7 +23,7 @@ namespace TripleZero.Modules
         [Command("alias-remove")]
         //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         [Summary("Remove alias for specific character(Admin Command)")]
-        [Remarks("*alias-remove {characterFullName}*")]
+        [Remarks("*alias-remove {characterFullName} {alias}*")]
         public async Task RemoveAlias(string characterFullName, string alias)
         {
             characterFullName = characterFullName.Trim();
@@ -69,11 +69,11 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("alias-set")]
-        //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
-        [Summary("Set alias for specific character(Admin Command)")]
-        [Remarks("*alias-set {characterFullName}*")]
-        public async Task SetAlias(string characterFullName,string alias)
+        [Command("alias-add")]
+        //[Summary("Add alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
+        [Summary("Add alias for specific character(Admin Command)")]
+        [Remarks("*alias-add {characterFullName} {alias}*")]
+        public async Task AddAlias(string characterFullName,string alias)
         {
             characterFullName = characterFullName.Trim();
             alias = alias.Trim();
@@ -179,10 +179,10 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("queue-get")]
+        [Command("queue")]
         //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         [Summary("Get current for specific character(Admin Command)")]
-        [Remarks("*alias-remove {characterFullName}*")]
+        [Remarks("*queue*")]
         public async Task GetQueue()
         {
             string retStr = "";
@@ -217,10 +217,48 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("playerreload")]
-        [Summary("Set a player for reload(Admin Command)")]
-        [Remarks("*playerreload {playerUserName}*")]
-        public async Task SetPlayerReload(string playerUserName)
+        [Command("queue-remove")]
+        //[Summary("Remove row from queue(Admin Command).\nUsage : ***$queue-remove {characterFullName}***")]
+        [Summary("Remove row from queue(Admin Command)")]
+        [Remarks("*queue-remove {name}*")]
+        public async Task RemoveQueue(string name)
+        {
+            name = name.Trim().ToLower();            
+
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            var result = IResolver.Current.MongoDBRepository.RemoveFromQueue(name).Result;
+
+            if (result != null)
+            {
+                retStr += $"\nQueue row for '**{name}**' was removed!\n";
+                retStr += string.Format("\nId:**{0}**", result.Id.ToString());
+                retStr += string.Format("\nName:**{0}**", result.Name);
+                retStr += string.Format("\nStatus:**{0}**", result.Status.ToString());
+                retStr += string.Format("\nType:**{0}**", result.Type);
+            }
+            else
+            {
+                retStr = "Not updated. Probably something is wrong with your command!";
+            }
+
+            await ReplyAsync($"{retStr}");
+        }
+
+        [Command("player-update")]
+        [Summary("Add a player for reload(Admin Command)")]
+        [Remarks("*player-update {playerUserName}*")]
+        public async Task SetPlayerUpdate(string playerUserName)
         {
             string retStr = "";
 
@@ -247,10 +285,10 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("guildreload")]
+        [Command("guild-update")]
         [Summary("Set a guild for reload")]
-        [Remarks("*guildreload {guildName}*")]
-        public async Task SetGuildReload(string guildName)
+        [Remarks("*guild-update {guildName}*")]
+        public async Task SetGuildUpdate(string guildName)
         {
             string retStr = "";
 

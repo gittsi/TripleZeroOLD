@@ -112,7 +112,7 @@ namespace TripleZero.Modules
 
         [Command("help")]
         [Summary("*Gets helps for specific command*")]
-        [Remarks("*help <command>*")]
+        [Remarks("*help {command}*")]
         public async Task HelpAsync(string command)
         {
             var result = _service.Search(Context, command);
