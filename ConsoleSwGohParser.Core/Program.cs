@@ -1,4 +1,9 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using static SwGoh.Enums.QueueEnum;
 
@@ -28,7 +33,7 @@ namespace SwGoh
             Timer t = o as Timer;
             t.Change(Timeout.Infinite, Timeout.Infinite);
 
-            //SwGoh.QueueMethods.AddPlayer("newholborn", "up", 4, Enums.QueueEnum.QueueType.Player);
+            //SwGoh.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player);
             //SwGoh.QueueMethods.AddPlayer("41st", "ug", 4, Enums.QueueEnum.QueueType.Guild);
             //ExecuteCommand("getnewchars", "aramil"); return; 
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
@@ -37,13 +42,9 @@ namespace SwGoh
             Queue q = QueueMethods.GetQueu();
             if (q != null)
             {
-                //Console.WriteLine("");
                 int ret = ExecuteCommand(q.Command, q.Name);
                 QueueMethods.RemoveFromQueu(q);
                 if (ret != 2) mLastProcess = DateTime.Now;
-
-                //mPrintedNothingToProcess = false;
-                //mPrintedNothingToProcessdots = 0;
             }
             else
             {
@@ -60,17 +61,7 @@ namespace SwGoh
                         QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player);
                     }
                 }
-
-                string mMessage = "Nothing to process";
-                //if (!mPrintedNothingToProcess) 
-                Console.WriteLine(mMessage);
-                //Console.Write("."); mPrintedNothingToProcessdots++;
-                //if (mPrintedNothingToProcessdots == mPrintedNothingToProcessdotsTotal)
-                //{
-                //    mPrintedNothingToProcessdots = 0;
-                //    for (int i=0;i< mPrintedNothingToProcessdotsTotal;i++)  Console.Write("\b \b");
-                //}
-                //mPrintedNothingToProcess = true;
+                Console.WriteLine("Nothing to process");
             }
             isWorking = false;
             t.Change(SwGoh.Settings.GlobalConsoleTimerInterval, SwGoh.Settings.GlobalConsoleTimerInterval);
@@ -157,15 +148,15 @@ namespace SwGoh
                     {
                         //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 
-                        SwGoh.GuildDto guild = new GuildDto();
-                        guild.Name = GuildDto.GetGuildNameFromAlias("41st");
-                        guild.ParseSwGoh();
-                        for (int i = 0; i < guild.PlayerNames.Count; i++)
-                        {
+                        //SwGoh.GuildDto guild = new GuildDto();
+                        //guild.Name = GuildDto.GetGuildNameFromAlias("41st");
+                        //guild.ParseSwGoh();
+                        //for (int i = 0; i < guild.PlayerNames.Count; i++)
+                        //{
 
-                            QueueMethods.AddPlayer(guild.PlayerNames[i],Command.UpdatePlayer , 2 , QueueType.Player);
-                        }
-                        QueueMethods.AddPlayer("41st",Command.UpdateGuildWithNoChars , 1 , QueueType.Guild);
+                        //    QueueMethods.AddPlayer(guild.PlayerNames[i],Command.UpdatePlayer , 2 , QueueType.Player);
+                        //}
+                        //QueueMethods.AddPlayer("41st",Command.UpdateGuildWithNoChars , 1 , QueueType.Guild);
 
                         //QueueMethods.AddPlayer("newholborn", "up",3);
                         //QueueMethods.AddPlayer("oaraug", "up", 3);
