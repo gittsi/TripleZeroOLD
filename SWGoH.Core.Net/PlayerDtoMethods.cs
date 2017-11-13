@@ -65,11 +65,6 @@ namespace SwGoh
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
                     var response = client.GetStringAsync(url).Result;
 
-                    
-                    //List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
-                    //PlayerDto result1 = null;
-                    //if (ret!= null && ret.Count> 0) result1 = ret[0];
-
                     List <BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
                     if (document.Count == 1) return;
                     PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
@@ -80,7 +75,15 @@ namespace SwGoh
                         WebRequest request = WebRequest.Create(deleteurl);
                         request.Method = "DELETE";
                     
-                            HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                        HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                        if (response1.StatusCode == HttpStatusCode.OK)
+                        {
+                            SwGoh.Log.ConsoleMessage("Removed Previous from Players!");
+                        }
+                        else
+                        {
+                            SwGoh.Log.ConsoleMessage("Error : Could not remove previous from Pleayers!");
+                        }
                     }
                 }
             }
