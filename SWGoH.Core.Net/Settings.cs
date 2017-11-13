@@ -1,22 +1,42 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace SwGoh
 {
     public class Settings
     {
-        public static string MongoApiKey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-        public static double HoursForNextCheckLastswGohUpdate = 6.0;
+        public static Settings appSettings = new Settings();
+        public static bool Get()
+        {
+            string directory = AppDomain.CurrentDomain.BaseDirectory + "Settings";
+            string fname = directory + "\\" + "Settings" + @".json";
 
-        public static int DelayPerCharacter = 1500;
-        public static int DelayErrorAtCharacter = 600000;
+            if (File.Exists(fname))
+            {
+                var lines = File.ReadAllText(fname);
+                JsonConvert.PopulateObject(lines, appSettings);
+            }
+            else
+            {
+                SwGoh.Log.ConsoleMessage("Unable To Load Settings");
+                return false;
+            }
+            return true;
+        }
+        public string MongoApiKey { get; set; }
+        public double HoursForNextCheckLastswGohUpdate { get; set; }
 
-        public static int DelayPerPlayerAtGuildSearch = 10000;
-        public static int DelayErrorPerPlayerAtGuildSearch = 600000;
+        public int DelayPerCharacter { get; set; }
+        public int DelayErrorAtCharacter { get; set; }
 
-        public static int GlobalConsoleTimerInterval = 30000;
+        public int DelayPerPlayerAtGuildSearch { get; set; }
+        public int DelayErrorPerPlayerAtGuildSearch { get; set; }
 
-        public static double MinutesUntilNextProcess = 10.0;
+        public int GlobalConsoleTimerInterval { get; set; }
+
+        public  double MinutesUntilNextProcess { get; set; }
     }
 }

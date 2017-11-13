@@ -9,4 +9,10 @@
     <ProjectReference Include="..\SWGoH.Core.Net\SWGoH.Core.Net.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Settings\Settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
