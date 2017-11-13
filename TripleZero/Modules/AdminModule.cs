@@ -47,7 +47,7 @@ namespace TripleZero.Modules
             {
                 retStr += $"\nNew alias '**{alias}**' for '**{characterFullName}**' was added!\n";
                 retStr += string.Format("\nName:**{0}**", result.Name);
-                retStr += string.Format("\nCommand:**{0}**", result.Command.Length==0 ? "empty!!!": result.Command);
+                retStr += string.Format("\nCommand:**{0}**", result.Command != null ? result.Command.Length == 0 ? "empty!!!" : result.Command : "empty!!!");
                 retStr += string.Format("\nSWGoH url:**{0}**", result.SWGoHUrl);
 
                 string aliases = "";
@@ -96,7 +96,7 @@ namespace TripleZero.Modules
             {
                 retStr +=$"\nNew alias '**{alias}**' for '**{characterFullName}**' was added!\n";
                 retStr += string.Format("\nName:**{0}**", result.Name);
-                retStr += string.Format("\nCommand:**{0}**", result.Command.Length == 0 ? "empty!!!" : result.Command);
+                retStr += string.Format("\nCommand:**{0}**", result.Command!=null ? result.Command.Length == 0 ? "empty!!!" : result.Command : "empty!!!");
                 retStr += string.Format("\nSWGoH url:**{0}**", result.SWGoHUrl);
 
                 string aliases = "";
