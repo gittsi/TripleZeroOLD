@@ -8,6 +8,7 @@ namespace TripleZero.Repository
 {
     public interface IMongoDBRepository
     {
+        Task<List<CharacterConfig>> GetCharactersConfig();
         Task<PlayerDto> GetPlayer(string userName);
         Task<GuildDto> GetGuildPlayers(string guildName);
         Task<List<PlayerDto>> GetAllPlayersWithoutCharacters();

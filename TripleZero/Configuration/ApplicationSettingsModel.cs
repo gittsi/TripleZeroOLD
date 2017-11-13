@@ -29,5 +29,6 @@ namespace TripleZero.Configuration
     public class MongoDBSettings
     {
         public string ApiKey { get; set; }
+        public string DB { get; set; }
     }
 }
