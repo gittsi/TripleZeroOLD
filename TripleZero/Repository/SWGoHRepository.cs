@@ -28,7 +28,6 @@ namespace TripleZero.Repository
 
             return res;
         }
-
         public async Task<List<GuildCharacterDto>> GetGuildCharacters(int guildId)
         {
             var url = string.Format("https://swgoh.gg/api/guilds/{0}/units/", guildId.ToString());

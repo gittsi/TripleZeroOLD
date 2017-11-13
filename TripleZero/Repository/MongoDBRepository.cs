@@ -22,13 +22,12 @@ namespace TripleZero.Repository
     public class MongoDBRepository : IMongoDBRepository
     {
         private IMapper _Mapper;
+        public ApplicationSettingsModel appSettings = IResolver.Current.ApplicationSettings.Get();
 
         public MongoDBRepository(IMappingConfiguration mappingConfiguration)
         {
             _Mapper = mappingConfiguration.GetConfigureMapper();
-        }
-
-        public ApplicationSettingsModel appSettings = IResolver.Current.ApplicationSettings.Get();
+        }        
 
         private string BuildApiUrl(string collection, string query="",string orderBy="",string limit="", string fields="")
         {
@@ -42,7 +41,6 @@ namespace TripleZero.Repository
                 ,fields);
             return url;
         }
-
         private string BuildApiUrlFromId(string collection,string id)
         {
             //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
@@ -54,8 +52,6 @@ namespace TripleZero.Repository
                 );
             return url;
         }
-
-
         public async Task<PlayerDto> GetPlayer(string userName)
         {
             await Task.FromResult(1);
@@ -81,7 +77,6 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-
         public async Task<GuildDto> GetGuildPlayers(string guildName)
         {
             await Task.FromResult(1);
@@ -108,17 +103,14 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-
         public async Task<string> SendPlayerToQueue(string playerName)
         {
             return await SendToQueue(playerName, QueueType.Player);
         }
-
         public async Task<string> SendGuildToQueue(string guildName)
         {
             return await SendToQueue(guildName, QueueType.Guild);
         }
-
         private async Task<string> SendToQueue(string name, QueueType queueType)
         {
 
@@ -174,7 +166,6 @@ namespace TripleZero.Repository
                 return queue;
             }
         }
-
         public async Task<Queue> RemoveFromQueue(string name)
         {
             var queue = GetQueue().Result.Where(p=>p.Name==name && p.Status== QueueStatus.PendingProcess).FirstOrDefault();
@@ -189,7 +180,6 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return queue; else return null;
             }
         }
-
         public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
         {            
             CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
@@ -202,7 +192,6 @@ namespace TripleZero.Repository
             characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
             return characterConfig;
         }
-
         public async Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias)
         {
             CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
@@ -216,7 +205,6 @@ namespace TripleZero.Repository
             characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
             return characterConfig;
         }
-
         private async Task<bool> PutCharacterConfig(CharacterConfig characterConfig)
         {
             JObject data = null;
@@ -245,7 +233,6 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
-
         public async Task<List<PlayerDto>> GetAllPlayersWithoutCharacters()
         {
             await Task.FromResult(1);
@@ -271,7 +258,6 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-
         public async Task<List<CharacterConfig>> GetCharactersConfig()
         {
 

@@ -16,9 +16,11 @@ namespace TripleZero.Modules
     {
         #region "Filter Mods"
         [Command("mods")]
+        [Summary("test")]
+        [Remarks("*test")]
         public async Task GetMods()
         {
-
+            await ReplyAsync($"test");
         }
         #endregion
 
@@ -53,7 +55,6 @@ namespace TripleZero.Modules
                 await ReplyAsync($"{retStr}");
             }
         }
-
         private async Task<List<Tuple<string, Mod>>> GetSpecificSecondaryMods(string playerUserName, ModStatType modStatType, ModValueType modValueType, int rows = 20)
         {
             var res = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
@@ -76,10 +77,9 @@ namespace TripleZero.Modules
 
             return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
         }
-
         [Command("mods-s")]
         [Summary("Get mods sorted by a **secondary** stat of a given player")]
-        [Remarks("*mods-s {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n examples \n1) $mods -s playerName defense \n2) $mods -s playerName defense% 5)*")]
+        [Remarks("*mods-s {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n examples \n1) $mods-s playerName defense \n2) $mods-s playerName defense% 5)*")]
         public async Task GetSecondaryStatMods(string playerUserName, string modType, int rows = 20)
         {
             playerUserName = playerUserName.Trim();
@@ -110,7 +110,6 @@ namespace TripleZero.Modules
         #endregion
 
         #region "Primary stats"
-
         private async void SendPrimaryModReply(string playerUserName, ModStatType modStatType, List<Tuple<string, Mod>> result)
         {
             string retStr = "";
@@ -141,7 +140,6 @@ namespace TripleZero.Modules
                 await ReplyAsync($"{retStr}");
             }
         }
-
         private async Task<List<Tuple<string, Mod>>> GetSpecificPrimaryMods(string playerUserName, ModStatType modStatType, int rows = 20)
         {
             var res = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
@@ -163,10 +161,9 @@ namespace TripleZero.Modules
 
             return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
         }
-
         [Command("mods-p")]
         [Summary("Get mods sorted by a **primary** stat of a given player")]
-        [Remarks("*mods-p {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n example \n$mods -p playerName speed 5)*")]
+        [Remarks("*mods-p {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n example \n$mods-p playerName speed 5)*")]
         public async Task GetPrimaryStatMods(string playerUserName, string modType, int rows = 20)
         {
             playerUserName = playerUserName.Trim();

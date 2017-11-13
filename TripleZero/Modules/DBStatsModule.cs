@@ -72,11 +72,10 @@ namespace TripleZero.Modules
 
             var result = IResolver.Current.MongoDBRepository.GetAllPlayersWithoutCharacters().Result;
 
-
             if (result != null)
             {
                 retStr += string.Format("\nTotal players loaded to DB : **{0}**\n", result.Count());
-                result = result.OrderBy(p => p.GuildName).ThenBy(p => p.LastSwGohUpdated).ToList();
+                result = result.OrderBy(p => p.GuildName).ThenByDescending(p => p.LastSwGohUpdated).ToList();
                 foreach (var player in result)
                 {
                     //retStr += string.Format("\nGuild : ***{4}*** - PlayerName : ***{0}***({1}) - SWGoHUpdate: ***{2}*** - DBUpdate: ***{3}***  ", player.PlayerName,player.PlayerNameInGame,player.LastSwGohUpdated,player.LastClassUpdated,player.GuildName);
