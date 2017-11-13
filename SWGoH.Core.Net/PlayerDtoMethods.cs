@@ -65,7 +65,12 @@ namespace SwGoh
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
                     var response = client.GetStringAsync(url).Result;
 
-                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    
+                    //List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
+                    //PlayerDto result1 = null;
+                    //if (ret!= null && ret.Count> 0) result1 = ret[0];
+
+                    List <BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
                     if (document.Count == 1) return;
                     PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
 
@@ -670,7 +675,7 @@ namespace SwGoh
             string html = "";
             bool ret1 = false;
             int valueint = 0;
-            decimal valuedecimal = 0;
+            double valuedecimal = 0;
 
             Uri uri = new Uri("https://swgoh.gg" + newchar.SWGoHUrl);
             try
@@ -877,7 +882,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Potency = valuedecimal;
                 }
 
@@ -892,7 +897,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Tenacity = valuedecimal;
                 }
 
@@ -946,7 +951,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.PhysicalCriticalChance = valuedecimal;
                 }
 
@@ -999,7 +1004,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Armor = valuedecimal;
                 }
 
@@ -1014,7 +1019,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.DodgeChance = valuedecimal;
                 }
 
@@ -1029,7 +1034,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.PhysicalCriticalAvoidance = valuedecimal;
                 }
             }
@@ -1067,7 +1072,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.SpecialCriticalChance = valuedecimal;
                 }
 
@@ -1097,7 +1102,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.SpecialAccuracy = valuedecimal;
                 }
             }
@@ -1120,7 +1125,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Resistance = valuedecimal;
                 }
 
@@ -1135,7 +1140,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.DeflectionChance = valuedecimal;
                 }
 
@@ -1150,7 +1155,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.SpecialCriticalAvoidance = valuedecimal;
                 }
             }
@@ -1441,8 +1446,8 @@ namespace SwGoh
             string val = value.Replace('%', ' ');
             val = val.Replace('+', ' ');
             val = val.Trim();
-            decimal dec = 0;
-            bool boolret = decimal.TryParse(val, NumberStyles.Any, new CultureInfo("en-US"), out dec);
+            double dec = 0;
+            bool boolret = double.TryParse(val, NumberStyles.Any, new CultureInfo("en-US"), out dec);
             if (boolret) ret.Value = dec;
 
             return ret;
@@ -1458,7 +1463,7 @@ namespace SwGoh
             return rarity;
         }
 
-        private long GetModStar(string value)
+        private int GetModStar(string value)
         {
             if (value.ToLower().StartsWith("mk v")) return 5;
             else if (value.ToLower().StartsWith("mk iv")) return 4;

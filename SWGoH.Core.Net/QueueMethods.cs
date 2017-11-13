@@ -25,7 +25,7 @@ namespace SwGoh
                 {
                     JObject data = new JObject(
                     new JProperty("Name", PlayerName),
-                    new JProperty("Date", DateTime.UtcNow),
+                    new JProperty("InsertedDate", DateTime.UtcNow),
                     new JProperty("Status", SwGoh.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
                     new JProperty("Type", type),
@@ -79,12 +79,13 @@ namespace SwGoh
             SwGoh.Log.ConsoleMessage("Getting from Queu!!");
             try
             {
+
                 using (HttpClient client = new HttpClient())
                 {
                     var queryData = string.Concat("q={\"Status\":0}");
-                    var orderby = "s={\"Priority\":-1,\"Date\":1}";
+                    var orderby = "s={\"Priority\":-1,\"InsertedDate\":1}";
                     var limit = "l=1";
-                    string apikey = SwGoh.Settings.MongoApiKey; 
+                    string apikey = SwGoh.Settings.MongoApiKey;
                     string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
 
                     string response = client.GetStringAsync(url).Result;
@@ -97,7 +98,8 @@ namespace SwGoh
                             //UPDATE with Status = 1
                             JObject data = new JObject(
                             new JProperty("Name", result1.Name),
-                            new JProperty("Date", result1.Date),
+                            new JProperty("InsertedDate", result1.InsertedDate),
+                            new JProperty("ProcessingStartDate", DateTime.Now),
                             new JProperty("Status", SwGoh.Enums.QueueEnum.QueueStatus.Processing),
                             new JProperty("Priority", result1.Priority),
                             new JProperty("Type", result1.Type),
