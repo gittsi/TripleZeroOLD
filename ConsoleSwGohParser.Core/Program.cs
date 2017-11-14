@@ -38,8 +38,8 @@ namespace SWGoH
             t.Change(Timeout.Infinite, Timeout.Infinite);
 
             //SwGoh.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player);
-            //SwGoh.QueueMethods.AddPlayer("41st", "ug", 4, Enums.QueueEnum.QueueType.Guild);
-            //ExecuteCommand("getnewchars", "aramil"); return; 
+            SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , 4, Enums.QueueEnum.QueueType.Guild, DateTime.Now);
+            //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
             //ExecuteCommand(Command.Test, "newholborn");
 
@@ -48,7 +48,7 @@ namespace SWGoH
             {
                 int ret = ExecuteCommand(q.Command, q.Name);
                 QueueMethods.RemoveFromQueu(q);
-                if (ret != 2) mLastProcess = DateTime.Now;
+                if (ret != 3) mLastProcess = DateTime.Now;
             }
             else
             {

@@ -39,5 +39,7 @@ namespace SWGoH
         public int GlobalConsoleTimerInterval { get; set; }
 
         public  double MinutesUntilNextProcess { get; set; }
+        public int LogToFile { get; set; }
+        public string Database { get; set; }
     }
 }

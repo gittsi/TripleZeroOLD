@@ -107,10 +107,8 @@ namespace SWGoH
                     string json = JsonConvert.SerializeObject(this, settings);
 
                     if (!FullUpdateClass)
-                    {
-                        string apikey = Settings.appSettings.MongoApiKey;
-
-                        client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Guild?apiKey="+ apikey);
+                    {   
+                        client.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Guild", "", "", "", ""));
                         HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                         if (response.IsSuccessStatusCode)
                         {
@@ -287,13 +285,7 @@ namespace SWGoH
         {
             using (HttpClient client = new HttpClient())
             {
-                var queryData = string.Concat("q={\"Name\":\"", Name, "\"}");
-                var orderby = "s={\"LastSwGohUpdated\":-1}";
-                var limit = "l=1";
-                var field = "f={\"LastSwGohUpdated\": 1}";
-                string apikey = Settings.appSettings.MongoApiKey;
-
-                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&{3}&apiKey={4}", queryData,field ,orderby, limit, apikey);
+                string url = SWGoH.MongoDBRepo.BuildApiUrl("Guild", "&q={\"Name\":\"" + Name + "\"}", "&s={\"LastSwGohUpdated\":-1}", "&l=1", "&f={\"LastSwGohUpdated\": 1}");
                 string response = client.GetStringAsync(url).Result;
                 if (response != "" && response != "[  ]")
                 {
