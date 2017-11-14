@@ -17,7 +17,7 @@ namespace SwGoh
 {
     public class QueueMethods
     {
-        public static void AddPlayer(string PlayerName,Command cmd ,int priority , SwGoh.Enums.QueueEnum.QueueType type)
+        public static void AddPlayer(string PlayerName,Command cmd ,int priority , SwGoh.Enums.QueueEnum.QueueType type, DateTime nextrundate)
         {
             try
             {
@@ -26,6 +26,7 @@ namespace SwGoh
                     JObject data = new JObject(
                     new JProperty("Name", PlayerName),
                     new JProperty("InsertedDate", DateTime.UtcNow),
+                    new JProperty("NextRunDate", nextrundate),
                     new JProperty("Status", SwGoh.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
                     new JProperty("Type", type),
@@ -95,6 +96,9 @@ namespace SwGoh
                         Queue result1 = BsonSerializer.Deserialize<Queue>(document.FirstOrDefault());
                         if (result1 != null)
                         {
+                            //check nextrundate
+
+
                             //UPDATE with Status = 1
                             JObject data = new JObject(
                             new JProperty("Name", result1.Name),

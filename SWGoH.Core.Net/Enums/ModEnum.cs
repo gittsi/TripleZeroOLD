@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace SwGoH
+namespace SwGoh
 {
     public class ModEnum
     {
