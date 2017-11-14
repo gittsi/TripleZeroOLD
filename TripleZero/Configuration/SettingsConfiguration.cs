@@ -21,7 +21,6 @@ namespace TripleZero.Configuration
             .AddJsonFile("config.json", optional: false, reloadOnChange: true);
             //.AddJsonFile("characters.json", optional: false, reloadOnChange: true)
             //.AddJsonFile("guilds.json", optional: false, reloadOnChange: true);
-
             Configuration = builder.Build();
 
             return Configuration;
