@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace SwGoh
+namespace SWGoH
 {
     public partial class PlayerDto
     {

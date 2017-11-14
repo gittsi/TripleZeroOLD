@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using SwGoh;
-using SwGoh;
-using static SwGoh.ModEnum;
+using SWGoH;
+using SWGoH.Enums.ModEnum;
 
 namespace TripleZero.Modules
 {

@@ -7,9 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
-using static SwGoh.Enums.QueueEnum;
+using SWGoH.Enums.QueueEnum;
 
-namespace SwGoh
+namespace SWGoH
 {
     class Program
     {
@@ -21,14 +21,14 @@ namespace SwGoh
         {
             if (!Settings.Get()) return;
 
-            if (mExportLog) SwGoh.Log.Initialize("log.txt" , mExportLog );
+            if (mExportLog) SWGoH.Log.Initialize("log.txt" , mExportLog );
 
             Timer t = new Timer(new TimerCallback(TimerProc));
             t.Change(0, Settings.appSettings.GlobalConsoleTimerInterval);
 
             Console.ReadLine();
 
-            if (mExportLog) SwGoh.Log.FileFinalize();
+            if (mExportLog) SWGoH.Log.FileFinalize();
         }
         private static void TimerProc(Object o)
         {
@@ -78,7 +78,7 @@ namespace SwGoh
             {
                 case Command.UpdatePlayer:
                     {
-                        SwGoh.PlayerDto player = new PlayerDto(pname);
+                        SWGoH.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true,false);
                         if (ret == 1)
                         {
@@ -89,8 +89,10 @@ namespace SwGoh
                     }
                 case Command.UpdateGuild:
                     {
-                        SwGoh.GuildDto guild = new GuildDto();
-                        guild.Name = GuildDto.GetGuildNameFromAlias(pname);
+                        SWGoH.GuildDto guild = new GuildDto
+                        {
+                            Name = GuildDto.GetGuildNameFromAlias(pname)
+                        };
                         guild.ParseSwGoh();
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0) guild.UpdateAllPlayers(mExportMethod, true);
                         break;
@@ -100,7 +102,7 @@ namespace SwGoh
                         string[] arg = pname.Split(',');
                         for (int i = 0; i < arg.Length; i++)
                         {
-                            SwGoh.PlayerDto player = new PlayerDto(arg[i]);
+                            SWGoH.PlayerDto player = new PlayerDto(arg[i]);
                             int ret = player.ParseSwGoh(mExportMethod, true,false);
                             if (ret == 1)
                             {
@@ -112,15 +114,17 @@ namespace SwGoh
                     }
                 case Command.UpdateGuildWithNoChars:
                     {
-                        SwGoh.GuildDto guild = new GuildDto();
-                        guild.Name = GuildDto.GetGuildNameFromAlias(pname);
+                        SWGoH.GuildDto guild = new GuildDto
+                        {
+                            Name = GuildDto.GetGuildNameFromAlias(pname)
+                        };
                         guild.ParseSwGoh();
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0) guild.UpdateOnlyGuildWithNoChars(mExportMethod);
                         break;
                     }
                 case Command.GetNewCharacters:
                     {
-                        SwGoh.PlayerDto player = new PlayerDto(pname);
+                        SWGoH.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true, true);
                         break;
                     }
@@ -175,7 +179,7 @@ namespace SwGoh
                 default:
                     {
                         
-                        SwGoh.Log.ConsoleMessage("Unknown command , please try again.!!!!");
+                        SWGoH.Log.ConsoleMessage("Unknown command , please try again.!!!!");
                         break;
                     }
             }

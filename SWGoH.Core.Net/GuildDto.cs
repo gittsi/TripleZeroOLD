@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SwGoh
+namespace SWGoH
 {
     public partial class GuildDto
     {

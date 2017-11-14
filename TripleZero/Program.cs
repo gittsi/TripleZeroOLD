@@ -22,7 +22,7 @@ using System.Linq;
 using TripleZero._Mapping;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using SwGoh;
+using SWGoH;
 using MongoDB.Bson.Serialization;
 
 namespace TripleZero

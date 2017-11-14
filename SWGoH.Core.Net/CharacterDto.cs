@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SwGoh
+namespace SWGoH
 {
 
-    using System;
-    using System.Net;
     using System.Collections.Generic;
     using Newtonsoft.Json;
-    using System.ComponentModel;
-    using static SwGoh.ModEnum;
+    using System.ComponentModel;    
     using MongoDB.Bson.Serialization.Attributes;
+    using SWGoH.Enums.ModEnum;
 
     public partial class CharacterDto
     {

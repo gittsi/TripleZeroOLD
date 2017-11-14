@@ -10,9 +10,9 @@ using System.Linq;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Configuration;
 using TripleZero.Repository.Dto;
-using SwGoh;
+using SWGoH;
 using TripleZero.Helper;
-using static SwGoh.Enums.QueueEnum;
+using SWGoH.Enums.QueueEnum;
 
 namespace TripleZero.Modules
 {

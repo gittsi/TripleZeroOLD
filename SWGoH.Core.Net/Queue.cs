@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
 using System;
-using static SwGoh.Enums.QueueEnum;
+using SWGoH.Enums.QueueEnum;
 
-namespace SwGoh
+namespace SWGoH
 {
     public class Queue
     {

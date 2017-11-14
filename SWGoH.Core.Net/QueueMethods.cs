@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
-using SwGoh;
+using SWGoH;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using static SwGoh.Enums.QueueEnum;
+using SWGoH.Enums.QueueEnum;
 
-namespace SwGoh
+namespace SWGoH
 {
     public class QueueMethods
     {
-        public static void AddPlayer(string PlayerName,Command cmd ,int priority , SwGoh.Enums.QueueEnum.QueueType type, DateTime nextrundate)
+        public static void AddPlayer(string PlayerName,Command cmd ,int priority , SWGoH.Enums.QueueEnum.QueueType type, DateTime nextrundate)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace SwGoh
                     new JProperty("Name", PlayerName),
                     new JProperty("InsertedDate", DateTime.UtcNow),
                     new JProperty("NextRunDate", nextrundate),
-                    new JProperty("Status", SwGoh.Enums.QueueEnum.QueueStatus.PendingProcess),
+                    new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
                     new JProperty("Type", type),
                     new JProperty("Command", cmd));
@@ -39,13 +39,13 @@ namespace SwGoh
                     HttpResponseMessage response = client.PostAsync(requestUri, httpContent).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        SwGoh.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
+                        SWGoH.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
                     }
                 }
             }
             catch(Exception e)
             {
-                SwGoh.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
+                SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
         }
         public static void RemoveFromQueu(Queue q)
@@ -62,22 +62,22 @@ namespace SwGoh
                     HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
                     if (response1.StatusCode == HttpStatusCode.OK)
                     {
-                        SwGoh.Log.ConsoleMessage("Removed From Queu!");
+                        SWGoH.Log.ConsoleMessage("Removed From Queu!");
                     }
                     else
                     {
-                        SwGoh.Log.ConsoleMessage("Could not remove from Queu!");
+                        SWGoH.Log.ConsoleMessage("Could not remove from Queu!");
                     }
                 }
             }
             catch (Exception e)
             {
-                SwGoh.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
+                SWGoH.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
             }
         }
         public static Queue GetQueu()
         {
-            SwGoh.Log.ConsoleMessage("Getting from Queu!!");
+            SWGoH.Log.ConsoleMessage("Getting from Queu!!");
             try
             {
 
@@ -104,7 +104,7 @@ namespace SwGoh
                             new JProperty("Name", result1.Name),
                             new JProperty("InsertedDate", result1.InsertedDate),
                             new JProperty("ProcessingStartDate", DateTime.Now),
-                            new JProperty("Status", SwGoh.Enums.QueueEnum.QueueStatus.Processing),
+                            new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.Processing),
                             new JProperty("Priority", result1.Priority),
                             new JProperty("Type", result1.Type),
                             new JProperty("Command", result1.Command));
@@ -115,7 +115,7 @@ namespace SwGoh
                             {
                                 HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
                             }
-                            SwGoh.Log.ConsoleMessage("Got from Queu Player " + result1.Name);
+                            SWGoH.Log.ConsoleMessage("Got from Queu Player " + result1.Name);
                         }
                         return result1;
                     }
@@ -123,14 +123,14 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SwGoh.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                SWGoH.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
                 return null;
             }
             return null;
         }
         public static PlayerDto GetLastUpdatedPlayer(string guildname)
         {
-            SwGoh.Log.ConsoleMessage("Getting LastUpdated From Queu!!");
+            SWGoH.Log.ConsoleMessage("Getting LastUpdated From Queu!!");
             try
             {
                 using (HttpClient client = new HttpClient())
@@ -165,7 +165,7 @@ namespace SwGoh
             }
             catch(Exception e)
             {
-                SwGoh.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!! : " + e.Message);
+                SWGoH.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!! : " + e.Message);
                 return null;
             }
             return null;
@@ -196,7 +196,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SwGoh.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                SWGoH.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
                 return false;
             }
             return false;

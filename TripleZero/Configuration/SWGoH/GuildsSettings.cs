@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using SwGoh;
+using SWGoH;
 using System;
 using System.Collections.Generic;
 using System.IO;

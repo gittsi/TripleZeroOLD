@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace SwGoh
+namespace SWGoH
 {
     public class Log
     {

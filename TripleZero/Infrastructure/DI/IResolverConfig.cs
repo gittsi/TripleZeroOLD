@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Discord.WebSocket;
-using SwGoh;
+using SWGoH;
 using System;
 using System.Collections.Generic;
 using System.Text;

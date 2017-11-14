@@ -10,7 +10,7 @@ using System.Linq;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Configuration;
 using TripleZero.Repository.Dto;
-using SwGoh;
+using SWGoH;
 
 namespace TripleZero.Modules
 {

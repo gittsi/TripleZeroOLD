@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SwGoh
+namespace SWGoH
 {
     public class Settings
     {
@@ -21,7 +21,7 @@ namespace SwGoh
             }
             else
             {
-                SwGoh.Log.ConsoleMessage("Unable To Load Settings");
+                SWGoH.Log.ConsoleMessage("Unable To Load Settings");
                 return false;
             }
             return true;

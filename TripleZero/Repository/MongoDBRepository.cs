@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SwGoh;
+using SWGoH;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +13,7 @@ using TripleZero._Mapping;
 using TripleZero.Infrastructure.DI;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using static SwGoh.Enums.QueueEnum;
-using SwGoh.Enums;
+using SWGoH.Enums.QueueEnum;
 using TripleZero.Configuration;
 
 namespace TripleZero.Repository

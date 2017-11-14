@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static SwGoH.ModEnum;
+using SWGoH.Enums.ModEnum;
 
 namespace SwGoH.Model
 {
@@ -13,7 +13,7 @@ namespace SwGoH.Model
 
     public class ModFilter
     {   
-        public bool isPrimary { get; set; }
+        public bool IsPrimary { get; set; }
         public ModSet ModSet { get; set; }
         public ModSlot ModSlot { get; set; }
         public ModStatType ModStatType { get; set; }

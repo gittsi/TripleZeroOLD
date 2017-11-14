@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Helper;
-using SwGoh;
+using SWGoH;
 
 namespace TripleZero.Modules
 {

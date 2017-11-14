@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 
-namespace SwGoh
+namespace SWGoH
 {
     public partial class GuildDto
     {
@@ -43,7 +43,7 @@ namespace SwGoh
         }
         public void ParseSwGoh()
         {
-            SwGoh.Log.ConsoleMessage("Reading info for guild : " + this.Name);
+            SWGoH.Log.ConsoleMessage("Reading info for guild : " + this.Name);
             web = new System.Net.WebClient();
             string htm = GetGuildURLFromName(this.Name);
             if (htm == "") return;
@@ -91,7 +91,7 @@ namespace SwGoh
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    SwGoh.Log.ConsoleMessage("Exporting To Database guild : " + this.Name);
+                    SWGoH.Log.ConsoleMessage("Exporting To Database guild : " + this.Name);
                     LastClassUpdated = DateTime.UtcNow;
 
                     JsonSerializerSettings settings = new JsonSerializerSettings();
@@ -114,11 +114,11 @@ namespace SwGoh
                         HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                         if (response.IsSuccessStatusCode)
                         {
-                            SwGoh.Log.ConsoleMessage("Exported To Database guild : " + this.Name);
+                            SWGoH.Log.ConsoleMessage("Exported To Database guild : " + this.Name);
                         }
                         else
                         {
-                            SwGoh.Log.ConsoleMessage("Error Exporting to Database guild : " + this.Name);
+                            SWGoH.Log.ConsoleMessage("Error Exporting to Database guild : " + this.Name);
                         }
                     }
                     else
@@ -230,14 +230,14 @@ namespace SwGoh
                 for (int i = 0; i < PlayerNames.Count; i++)
                 {
                     count++;
-                    SwGoh.PlayerDto player = new PlayerDto(PlayerNames[i]);
+                    SWGoH.PlayerDto player = new PlayerDto(PlayerNames[i]);
                     int ret = player.ParseSwGoh(ExportMethod, false , false);
                     if (ret == 1)
                     {
                         if (Players == null) Players = new List<PlayerDto>();
                         player.LastClassUpdated = null;
                         Players.Add(player);
-                        SwGoh.Log.ConsoleMessage("Added Player : " + player.PlayerName + " aka " + player.PlayerNameInGame);
+                        SWGoH.Log.ConsoleMessage("Added Player : " + player.PlayerName + " aka " + player.PlayerNameInGame);
                     }
                     else if (ret == 0)
                     {
@@ -259,7 +259,7 @@ namespace SwGoh
             for (int i = 0; i < PlayerNames.Count; i++)
             {
                 count++;
-                SwGoh.PlayerDto player = new PlayerDto(PlayerNames[i]);
+                SWGoH.PlayerDto player = new PlayerDto(PlayerNames[i]);
                 int ret = player.ParseSwGoh(ExportMethod, AddCharacters, false);
                 if (ret == 1)
                 {
@@ -303,7 +303,7 @@ namespace SwGoh
                         GuildDto Found = result[0];
                         if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
                         {
-                            SwGoh.Log.ConsoleMessage("No need to update!!!!");
+                            SWGoH.Log.ConsoleMessage("No need to update!!!!");
                             return false;
                         }
                         return true;

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 
-namespace SwGoh
+namespace SWGoH
 {
     public static class EnumExtensions
     {
@@ -17,10 +17,8 @@ namespace SwGoh
                 System.Reflection.FieldInfo field = type.GetField(name);
                 if (field != null)
                 {
-                    DescriptionAttribute attr =
-                           Attribute.GetCustomAttribute(field,
-                             typeof(DescriptionAttribute)) as DescriptionAttribute;
-                    if (attr != null)
+                    if (Attribute.GetCustomAttribute(field,
+                             typeof(DescriptionAttribute)) is DescriptionAttribute attr)
                     {
                         return attr.Description;
                     }
