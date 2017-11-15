@@ -17,7 +17,6 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using TripleZero._Mapping;
 using MongoDB.Bson;
-using SWGoH;
 using MongoDB.Bson.Serialization;
 using SWGoH.Model;
 
@@ -46,24 +45,14 @@ namespace TripleZero
                 mongoDBSettings = scope.Resolve<MongoDBSettings>();
                 commands = scope.Resolve<CommandService>();                
                 client = scope.Resolve<DiscordSocketClient>();                
-                scope.Resolve<IMappingConfiguration>();
-
-
-                
+                scope.Resolve<IMappingConfiguration>();                
 
                 var appSettings = applicationSettings.Get();                
 
                 await InstallCommands();
 
                 await client.LoginAsync(TokenType.Bot, appSettings.DiscordSettings.Token);
-                await client.StartAsync();
-
-                
-
-                //Consoler.WriteLineInColor(client.LoginState.ToString(), ConsoleColor.DarkMagenta);
-
-                //client.UserJoined += UserJoined;
-                //Consoler.WriteLineInColor(client.ConnectionState.ToString(), ConsoleColor.DarkMagenta);
+                await client.StartAsync();                
             }
 
 
@@ -71,7 +60,7 @@ namespace TripleZero
 
             await Task.Delay(3000);
 
-            Logo(); //prints application name,version etc 
+            Logo.ConsolePrintLogo(); //prints application name,version etc 
             //await TestCharAliasesDelete();
             //await TestDelete();
             //await TestGuildPlayers("41st");
@@ -83,76 +72,7 @@ namespace TripleZero
 
         }
 
-        #region "tests"
-
-        private async Task TestCharAliasesDelete()
-        {
-            await Task.FromResult(1);
-
-            var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
-
-            List<CharacterConfig> charactersConfig = IResolver.Current.CharacterSettings.GetCharactersConfig().Result;
-            
-            foreach(var characterConfig in charactersConfig)
-            {
-                if(characterConfig.Aliases.Where(p=> p =="Empty" || p.ToLower()=="true" ).Any())
-                {
-                    characterConfig.Aliases.Remove("Empty");
-
-                    JObject data = null;
-                    try
-                    {
-                        data = new JObject(
-                                               new JProperty("Name", characterConfig.Name),
-                                               new JProperty("Command", characterConfig.Command),
-                                               new JProperty("SWGoHUrl", characterConfig.SWGoHUrl),
-                                               new JProperty("Aliases", characterConfig.Aliases)
-                                               );
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new ApplicationException(ex.Message);
-                    }
-
-                    var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
-                    using (HttpClient client1 = new HttpClient())
-                    {
-                        HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
-                    }
-                }
-               
-                
-            }
-            
-
-
-           
-        }
-
-        private async Task TestPlayerDelete()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                var queryData = string.Concat("q={\"PlayerName\":\"", "jonni", "\"}");
-                var orderby = "s={\"Date\":1}";
-                string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
-                var response = await client.GetStringAsync(url);
-                List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                var result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
-
-             
-                if (result1 != null)
-                {
-                    var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/{0}?apiKey={1}", result1.Id, apikey);
-                    WebRequest request = WebRequest.Create(deleteurl);
-                    request.Method = "DELETE";
-                    HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
-                }
-            }
-        }
-
+        #region "tests"  
 
         private async Task TestGuildPlayers(string guildAlias)
         {
@@ -190,21 +110,7 @@ namespace TripleZero
         #endregion
 
 
-
-
-
-        private static void Logo() //prints application name,version etc
-        {
-            //get application Settings
-            var appSettings = applicationSettings.Get();
-
-            Version version = Assembly.GetEntryAssembly().GetName().Version;
-            Consoler.WriteLineInColor(string.Format("{0} - {1}", appSettings.GeneralSettings.ApplicationName, appSettings.GeneralSettings.Environment), ConsoleColor.DarkYellow);
-            Consoler.WriteLineInColor(string.Format("Application Version : {0}", version), ConsoleColor.DarkYellow);
-            //Consoler.WriteLineInColor(string.Format("Json Version : {0}", appSettings.GeneralSettings.JsonSettingsVersion), ConsoleColor.DarkYellow);
-            Console.Title = string.Format("{0} - version {1}", appSettings.GeneralSettings.ApplicationName, version);
-            Console.WriteLine(); Console.WriteLine();
-        }
+       
 
         public async Task InstallCommands()
         {
@@ -217,8 +123,6 @@ namespace TripleZero
             await commands.AddModuleAsync<HelpModule>();
             await commands.AddModuleAsync<FunModule>();
             await commands.AddModuleAsync<DBStatsModule>();
-
-
         }
 
         public async Task MessageReceived(SocketGuildUser user)

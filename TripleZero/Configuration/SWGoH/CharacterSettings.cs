@@ -1,17 +1,10 @@
 ﻿
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using Newtonsoft.Json;
-using SWGoH;
 using SWGoH.Model;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using TripleZero.Helper;
 using TripleZero.Infrastructure.DI;
 
 namespace TripleZero.Configuration
