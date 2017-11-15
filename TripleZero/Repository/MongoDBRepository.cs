@@ -30,7 +30,7 @@ namespace TripleZero.Repository
         }
         private string BuildApiUrl(string collection, string query = "", string orderBy = "", string limit = "", string fields = "")
         {
-            string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/?apiKey={2}{3}{4}{5}{6}"
+            string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/?apiKey={2}&q={3}&s={4}&l={5}&f={6}"
                 , appSettings.MongoDBSettings.DB
                 , collection
                 , appSettings.MongoDBSettings.ApiKey
@@ -55,9 +55,9 @@ namespace TripleZero.Repository
         {
             await Task.FromResult(1);
 
-            var queryData = string.Concat("&q={\"PlayerName\":\"", userName, "\"}");
-            var orderby = "&s={\"LastSwGohUpdated\":-1}";
-            var limit = "&l=1";
+            var queryData = string.Concat("{\"PlayerName\":\"", userName, "\"}");
+            var orderby = "{\"LastSwGohUpdated\":-1}";
+            var limit = "1";
 
             string url = BuildApiUrl("Player", queryData, orderby, limit, null);
 
@@ -81,9 +81,9 @@ namespace TripleZero.Repository
         {
             await Task.FromResult(1);
 
-            var queryData = string.Concat("&q={\"Name\":\"", guildName, "\"}");
-            var orderby = "&s={\"LastSwGohUpdated\":-1}";
-            var limit = "&l=1";
+            var queryData = string.Concat("{\"Name\":\"", guildName, "\"}");
+            var orderby = "{\"LastSwGohUpdated\":-1}";
+            var limit = "1";
 
             string url = BuildApiUrl("Guild", queryData, orderby, limit, null);
             //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apiKey);
@@ -248,8 +248,8 @@ namespace TripleZero.Repository
         {
             await Task.FromResult(1);
 
-            var orderby = "&s={\"LastSwGohUpdated\":-1}";
-            var fields = "&f={\"Characters\": 0}";
+            var orderby = "{\"LastSwGohUpdated\":-1}";
+            var fields = "{\"Characters\": 0}";
 
             string url = BuildApiUrl("Player", null, orderby, null, fields);
             //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", fields, orderby, apiKey);
