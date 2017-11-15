@@ -9,15 +9,15 @@ namespace TripleZero.Repository
 {
     public interface IMongoDBRepository
     {
-        Task<List<CharacterConfigDto>> GetCharactersConfig();
+        Task<List<CharacterConfig>> GetCharactersConfig();
         Task<Player> GetPlayer(string userName);
-        Task<GuildDto> GetGuildPlayers(string guildName);
+        Task<Guild> GetGuildPlayers(string guildName);
         Task<List<Player>> GetAllPlayersWithoutCharacters();
         Task<string> SendPlayerToQueue(string playerName);
         Task<string> SendGuildToQueue(string guildName);
-        Task<List<QueueDto>> GetQueue();
-        Task<QueueDto> RemoveFromQueue(string name);
-        Task<CharacterConfigDto> SetCharacterAlias(string characterFullName, string alias);
-        Task<CharacterConfigDto> RemoveCharacterAlias(string characterFullName, string alias);
+        Task<List<Queue>> GetQueue();
+        Task<Queue> RemoveFromQueue(string name);
+        Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias);
+        Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias);
     }
 }

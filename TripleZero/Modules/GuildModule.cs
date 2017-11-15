@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Helper;
-using SWGoH;
+using SWGoH.Model;
+using SWGoH.Model.Enums;
 
 namespace TripleZero.Modules
 {
@@ -45,7 +46,7 @@ namespace TripleZero.Modules
                 foreach (var player in res.Players.OrderByDescending(p => p.Rarity).ThenByDescending(t => t.Power))
                 {
                     retStr += "\n";
-                    retStr += string.Format("{3}* - {2} - {1} : {0}", player.Name, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity);
+                    retStr += string.Format("{3}* - {2} - {1} : {0}", player.PlayerName, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity);
                 }
                 await ReplyAsync($"{retStr}");
             }
@@ -77,12 +78,12 @@ namespace TripleZero.Modules
                 {
                     foreach (var guildCharacter in res)
                     {
-                        foreach (var player in guildCharacter.Players.Where(p=>p.Combat_Type==1))
+                        foreach (var player in guildCharacter.Players.Where(p=>p.CombatType== UnitCombatType.Character ))
                         {
                             if (player.Level == level)
                             {
                                 retStr += "\n";
-                                retStr += string.Format("{0} - {1} - level:{2}", player.Name, guildCharacter.Name, player.Level);
+                                retStr += string.Format("{0} - {1} - level:{2}", player.PlayerName, guildCharacter.CharacterName, player.Level);
 
                                 if (retStr.Length > 1800)
                                 {
@@ -117,12 +118,12 @@ namespace TripleZero.Modules
             string retStr = "";
             var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
-            List<PlayerDto> guildPlayers = new List<PlayerDto>();
+            List<Player> guildPlayers = new List<Player>();
 
             retStr += string.Format("\nFound **{0}** players for guild **{1}**\n", result.Players.Count(), guildConfig.Name);
-            retStr += string.Format("\nTotal GP **{0:n0}**", result.GP);
-            retStr += string.Format("\nCharacter GP **{0:n0}**", result.Players.Sum(p=>p.GPcharacters));
-            retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GPships));           
+            retStr += string.Format("\nTotal GP **{0:n0}**", result.GalacticPower);
+            retStr += string.Format("\nCharacter GP **{0:n0}**", result.Players.Sum(p=>p.GalacticPowerCharacters));
+            retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerShips));           
 
             await ReplyAsync($"{retStr}");
 
@@ -139,7 +140,7 @@ namespace TripleZero.Modules
             string retStr = "";
             var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
-            List<PlayerDto> guildPlayers=new List<PlayerDto>();
+            List<Player> guildPlayers=new List<Player>();
 
             retStr = string.Format("\n These are the players of guild **{0}**", guildConfig.Name);
 

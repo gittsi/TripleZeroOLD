@@ -13,9 +13,9 @@ using TripleZero._Mapping;
 using TripleZero.Infrastructure.DI;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using SWGoH.Enums.QueueEnum;
 using TripleZero.Configuration;
 using SWGoH.Model;
+using SWGoH.Model.Enums;
 
 namespace TripleZero.Repository
 {
@@ -78,7 +78,7 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-        public async Task<GuildDto> GetGuildPlayers(string guildName)
+        public async Task<Guild> GetGuildPlayers(string guildName)
         {
             await Task.FromResult(1);
 
@@ -96,7 +96,9 @@ namespace TripleZero.Repository
                     var response = await client.GetStringAsync(url);
                     GuildDto ret = JsonConvert.DeserializeObject<List<GuildDto>>(response, Converter.Settings).FirstOrDefault();
 
-                    return ret;
+                    Guild guild = _Mapper.Map<Guild>(ret);
+
+                    return guild;
                 }
             }
             catch (Exception ex)
@@ -152,7 +154,7 @@ namespace TripleZero.Repository
                 }
             }
         }
-        public async Task<List<QueueDto>> GetQueue()
+        public async Task<List<Queue>> GetQueue()
         {            
             string requestUri = BuildApiUrl("Queue", null, null, null, null);
             //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?apiKey={0}", apiKey);
@@ -162,14 +164,16 @@ namespace TripleZero.Repository
                 HttpResponseMessage response = await client.GetAsync(requestUri);
                 string responseBody = await response.Content.ReadAsStringAsync();
                 List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(responseBody);
-                List<QueueDto> queue = document.Select(b => BsonSerializer.Deserialize<QueueDto>(b)).ToList();
+                List<QueueDto> queueDto = document.Select(b => BsonSerializer.Deserialize<QueueDto>(b)).ToList();
+
+                List<Queue> queue = _Mapper.Map<List<Queue>>(queueDto);
 
                 return queue;
             }
         }
-        public async Task<QueueDto> RemoveFromQueue(string name)
+        public async Task<Queue> RemoveFromQueue(string name)
         {
-            var queue = GetQueue().Result.Where(p=>p.Name==name && p.Status== QueueStatus.PendingProcess).FirstOrDefault();
+            var queue = GetQueue().Result.Where(p=>p.Name==name && p.Status == QueueStatus.PendingProcess).FirstOrDefault();
             if (queue == null || queue.Id == null) return null;
 
             string requestUri = BuildApiUrlFromId("Queue", queue.Id.ToString());
@@ -181,9 +185,9 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return queue; else return null;
             }
         }
-        public async Task<CharacterConfigDto> SetCharacterAlias(string characterFullName, string alias)
+        public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
         {            
-            CharacterConfigDto characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
             if (characterConfig == null) return null;
 
             characterConfig.Aliases.Add(alias);
@@ -193,9 +197,9 @@ namespace TripleZero.Repository
             characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
             return characterConfig;
         }
-        public async Task<CharacterConfigDto> RemoveCharacterAlias(string characterFullName, string alias)
+        public async Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias)
         {
-            CharacterConfigDto characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
             if (characterConfig == null) return null;
 
             bool isRemoved = characterConfig.Aliases.Remove(alias);
@@ -206,7 +210,7 @@ namespace TripleZero.Repository
             characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
             return characterConfig;
         }
-        private async Task<bool> PutCharacterConfig(CharacterConfigDto characterConfig)
+        private async Task<bool> PutCharacterConfig(CharacterConfig characterConfig)
         {
             JObject data = null;
             try
@@ -260,7 +264,7 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-        public async Task<List<CharacterConfigDto>> GetCharactersConfig()
+        public async Task<List<CharacterConfig>> GetCharactersConfig()
         {
 
             string url = BuildApiUrl("Config.Character", null, null, null, null);
@@ -275,7 +279,10 @@ namespace TripleZero.Repository
                     List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
                     List<CharacterConfigDto> ret = document.Select(b => BsonSerializer.Deserialize<CharacterConfigDto>(b)).ToList();
 
-                    return ret.OrderBy(p => p.Name).ToList();
+                    var charactersConfigDto = ret.OrderBy(p => p.Name).ToList();
+
+                    List<CharacterConfig> charactersConfig = _Mapper.Map<List<CharacterConfig>>(charactersConfigDto);
+                    return charactersConfig;
                 }
             }
             catch (Exception ex)

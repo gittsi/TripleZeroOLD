@@ -12,7 +12,7 @@ using TripleZero.Configuration;
 using TripleZero.Repository.Dto;
 using SWGoH;
 using TripleZero.Helper;
-using SWGoH.Enums.QueueEnum;
+using SWGoH.Model.Enums;
 
 namespace TripleZero.Modules
 {

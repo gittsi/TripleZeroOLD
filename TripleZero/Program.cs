@@ -24,6 +24,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using SWGoH;
 using MongoDB.Bson.Serialization;
+using SWGoH.Model;
 
 namespace TripleZero
 {
@@ -95,7 +96,7 @@ namespace TripleZero
 
             var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
-            List<CharacterConfigDto> charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
+            List<CharacterConfig> charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
             
             foreach(var characterConfig in charactersConfig)
             {
@@ -162,7 +163,7 @@ namespace TripleZero
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("$guildPlayers {0}", guildAlias));
+            await channel.SendMessageAsync(string.Format(".guildPlayers {0}", guildAlias));
         }
         private async Task TestPlayerReport(string username)
         {
@@ -175,21 +176,21 @@ namespace TripleZero
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("^mods -speed {0} 10", username));
+            await channel.SendMessageAsync(string.Format(".mods -speed {0} 10", username));
         }
 
         private async Task TestGuildModule(string guild, string characterName)
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("^guild {0} {1}", guild, characterName));
+            await channel.SendMessageAsync(string.Format(".guild {0} {1}", guild, characterName));
         }
 
         private async Task TestCharacterModule(string userName, string characterName)
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("^ch {0} {1}", userName, characterName));
+            await channel.SendMessageAsync(string.Format(".ch {0} {1}", userName, characterName));
         }
         #endregion
 

@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
 using SWGoH;
+using SWGoH.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +18,7 @@ namespace TripleZero.Configuration
 {
     public class CharactersConfig
     {
-        public async Task<CharacterConfigDto> GetCharacterConfigByAlias(string alias)
+        public async Task<CharacterConfig> GetCharacterConfigByAlias(string alias)
         {
             await Task.FromResult(1);
 
@@ -25,7 +26,7 @@ namespace TripleZero.Configuration
             return result.Where(p => p.Aliases.Contains(alias.ToLower())).FirstOrDefault();            
         }
 
-        public async Task<CharacterConfigDto> GetCharacterConfigByName(string name)
+        public async Task<CharacterConfig> GetCharacterConfigByName(string name)
         {
             await Task.FromResult(1);
 
@@ -33,7 +34,7 @@ namespace TripleZero.Configuration
             return result.Where(p => p.Name ==name).FirstOrDefault();
         }
 
-        public async Task<List<CharacterConfigDto>> GetCharactersConfig()
+        public async Task<List<CharacterConfig>> GetCharactersConfig()
         {
             await Task.FromResult(1);
 
