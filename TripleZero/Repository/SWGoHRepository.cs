@@ -20,12 +20,11 @@ namespace TripleZero.Repository
         {
             _Mapper = mappingConfiguration.GetConfigureMapper();
         }
-
         public async Task<GuildCharacter> GetGuildCharacter(int guildId, string characterName)
         {
             List<GuildCharacter> chars = null;
             chars = await GetGuildCharacters(guildId);
-            var res = chars.Where(p => p.CharacterName.ToLower() == characterName.ToLower()).FirstOrDefault();            
+            var res = chars.Where(p => p.CharacterName.ToLower() == characterName.ToLower()).FirstOrDefault();
 
             return res;
         }

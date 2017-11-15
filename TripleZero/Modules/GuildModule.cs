@@ -17,19 +17,19 @@ namespace TripleZero.Modules
         [Command("guildCharacter")]
         [Summary("Get report for specific character in the given guild")]
         [Remarks("*guildCharacter {guildAlias or guildId} {characterAlias}*")]
-        public async Task GetGuildCharacter(string guildAlias , string characterAlias)
+        public async Task GetGuildCharacter(string guildAlias, string characterAlias)
         {
             guildAlias = guildAlias.Trim();
             characterAlias = characterAlias.Trim();
 
             string retStr = "";
             var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
-            if(guildConfig==null)
+            if (guildConfig == null)
             {
                 await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
                 return;
             }
-            
+
             var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
             if (characterConfig == null)
             {
@@ -37,7 +37,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId,characterConfig.Command);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId, characterConfig.Command);
 
             if (res != null)
             {
@@ -78,7 +78,7 @@ namespace TripleZero.Modules
                 {
                     foreach (var guildCharacter in res)
                     {
-                        foreach (var player in guildCharacter.Players.Where(p=>p.CombatType== UnitCombatType.Character ))
+                        foreach (var player in guildCharacter.Players.Where(p => p.CombatType == UnitCombatType.Character))
                         {
                             if (player.Level == level)
                             {
@@ -96,7 +96,7 @@ namespace TripleZero.Modules
                             }
                         }
                     }
-                    if (counter > totalRows) break;                    
+                    if (counter > totalRows) break;
                 }
             }
             catch (Exception ex)
@@ -104,8 +104,8 @@ namespace TripleZero.Modules
                 Consoler.WriteLineInColor(string.Format("Slackers say : {0}", ex.Message), ConsoleColor.Red);
             }
 
-            if(retStr.Length>0)
-                await ReplyAsync($"{retStr}");  
+            if (retStr.Length > 0)
+                await ReplyAsync($"{retStr}");
         }
 
         [Command("tb")]
@@ -122,8 +122,8 @@ namespace TripleZero.Modules
 
             retStr += string.Format("\nFound **{0}** players for guild **{1}**\n", result.Players.Count(), guildConfig.Name);
             retStr += string.Format("\nTotal GP **{0:n0}**", result.GalacticPower);
-            retStr += string.Format("\nCharacter GP **{0:n0}**", result.Players.Sum(p=>p.GalacticPowerCharacters));
-            retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerShips));           
+            retStr += string.Format("\nCharacter GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerCharacters));
+            retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerShips));
 
             await ReplyAsync($"{retStr}");
 
@@ -132,7 +132,7 @@ namespace TripleZero.Modules
         [Command("guildPlayers")]
         [Summary("Get available players in specified guild")]
         [Remarks("*guildPlayers {guildAlias or guildId} {searchString(optional)}*")]
-        public async Task GetGuildPlayers(string guildAlias,string searchStr ="")
+        public async Task GetGuildPlayers(string guildAlias, string searchStr = "")
         {
             guildAlias = guildAlias.Trim();
             searchStr = searchStr.Trim();
@@ -140,15 +140,16 @@ namespace TripleZero.Modules
             string retStr = "";
             var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
-            List<Player> guildPlayers=new List<Player>();
+            List<Player> guildPlayers = new List<Player>();
 
             retStr = string.Format("\n These are the players of guild **{0}**", guildConfig.Name);
 
-            if (searchStr.Length==0)
+            if (searchStr.Length == 0)
             {
-                guildPlayers = result.Players;    
-                
-            }else
+                guildPlayers = result.Players;
+
+            }
+            else
             {
                 if (searchStr.Length >= 2)
                 {
@@ -165,15 +166,15 @@ namespace TripleZero.Modules
             int counter = 1;
             foreach (var player in guildPlayers)
             {
-                
+
                 retStr += $"\n{counter}) {player.PlayerName} ({player.PlayerNameInGame})";
                 counter += 1;
                 //retStr += string.Format("\n{0} {1} {2} {3}", player.GPcharacters.ToString().PadRight(7, ' '), player.GPships.ToString().PadRight(7,' '),player.PlayerNameInGame,player.PlayerName);
             }
 
             await ReplyAsync($"{retStr}");
-           
+
         }
-        
+
     }
 }

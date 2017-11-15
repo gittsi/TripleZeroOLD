@@ -27,27 +27,26 @@ namespace TripleZero.Repository
         public MongoDBRepository(IMappingConfiguration mappingConfiguration)
         {
             _Mapper = mappingConfiguration.GetConfigureMapper();
-        }        
-
-        private string BuildApiUrl(string collection, string query="",string orderBy="",string limit="", string fields="")
+        }
+        private string BuildApiUrl(string collection, string query = "", string orderBy = "", string limit = "", string fields = "")
         {
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/?apiKey={2}{3}{4}{5}{6}"
-                , appSettings.MongoDBSettings.DB                
+                , appSettings.MongoDBSettings.DB
                 , collection
                 , appSettings.MongoDBSettings.ApiKey
                 , query
                 , orderBy
                 , limit
-                ,fields);
+                , fields);
             return url;
         }
-        private string BuildApiUrlFromId(string collection,string id)
+        private string BuildApiUrlFromId(string collection, string id)
         {
             //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/{2}?apiKey={3}"
                 , appSettings.MongoDBSettings.DB
                 , collection
-                ,id
+                , id
                 , appSettings.MongoDBSettings.ApiKey
                 );
             return url;
@@ -58,9 +57,9 @@ namespace TripleZero.Repository
 
             var queryData = string.Concat("&q={\"PlayerName\":\"", userName, "\"}");
             var orderby = "&s={\"LastSwGohUpdated\":-1}";
-            var limit = "&l=1";            
+            var limit = "&l=1";
 
-            string url = BuildApiUrl("Player",queryData,orderby,limit,null);
+            string url = BuildApiUrl("Player", queryData, orderby, limit, null);
 
             try
             {
@@ -84,7 +83,7 @@ namespace TripleZero.Repository
 
             var queryData = string.Concat("&q={\"Name\":\"", guildName, "\"}");
             var orderby = "&s={\"LastSwGohUpdated\":-1}";
-            var limit = "&l=1";            
+            var limit = "&l=1";
 
             string url = BuildApiUrl("Guild", queryData, orderby, limit, null);
             //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apiKey);
@@ -117,16 +116,16 @@ namespace TripleZero.Repository
         private async Task<string> SendToQueue(string name, QueueType queueType)
         {
 
-        JObject data = new JObject(
-                new JProperty("Name", name),
-                new JProperty("InsertedDate", DateTime.UtcNow),
-                new JProperty("ProcessingStartDate", null),
-                new JProperty("NextRunDate", DateTime.UtcNow),
-                new JProperty("Status", QueueStatus.PendingProcess),
-                new JProperty("Priority", 3),
-                new JProperty("Command", queueType == QueueType.Player ? Command.UpdatePlayer : Command.UpdateGuildWithNoChars),
-                new JProperty("Type", queueType)
-           );
+            JObject data = new JObject(
+                    new JProperty("Name", name),
+                    new JProperty("InsertedDate", DateTime.UtcNow),
+                    new JProperty("ProcessingStartDate", null),
+                    new JProperty("NextRunDate", DateTime.UtcNow),
+                    new JProperty("Status", QueueStatus.PendingProcess),
+                    new JProperty("Priority", 3),
+                    new JProperty("Command", queueType == QueueType.Player ? Command.UpdatePlayer : Command.UpdateGuildWithNoChars),
+                    new JProperty("Type", queueType)
+               );
 
             using (HttpClient client = new HttpClient())
             {
@@ -155,7 +154,7 @@ namespace TripleZero.Repository
             }
         }
         public async Task<List<Queue>> GetQueue()
-        {            
+        {
             string requestUri = BuildApiUrl("Queue", null, null, null, null);
             //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?apiKey={0}", apiKey);
 
@@ -173,7 +172,7 @@ namespace TripleZero.Repository
         }
         public async Task<Queue> RemoveFromQueue(string name)
         {
-            var queue = GetQueue().Result.Where(p=>p.Name==name && p.Status == QueueStatus.PendingProcess).FirstOrDefault();
+            var queue = GetQueue().Result.Where(p => p.Name == name && p.Status == QueueStatus.PendingProcess).FirstOrDefault();
             if (queue == null || queue.Id == null) return null;
 
             string requestUri = BuildApiUrlFromId("Queue", queue.Id.ToString());
@@ -186,7 +185,7 @@ namespace TripleZero.Repository
             }
         }
         public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
-        {            
+        {
             CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
             if (characterConfig == null) return null;
 
@@ -242,10 +241,10 @@ namespace TripleZero.Repository
         {
             await Task.FromResult(1);
 
-            var orderby = "&s={\"LastSwGohUpdated\":-1}";            
+            var orderby = "&s={\"LastSwGohUpdated\":-1}";
             var fields = "&f={\"Characters\": 0}";
 
-            string url = BuildApiUrl("Player",null, orderby, null, fields);
+            string url = BuildApiUrl("Player", null, orderby, null, fields);
             //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", fields, orderby, apiKey);
 
             try

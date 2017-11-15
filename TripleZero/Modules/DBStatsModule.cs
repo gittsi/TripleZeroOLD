@@ -1,18 +1,10 @@
 ﻿using Discord.Commands;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Configuration;
-using TripleZero.Repository.Dto;
-using SWGoH;
-using Discord.WebSocket;
-using Discord;
 using TripleZero.Helper;
 
 namespace TripleZero.Modules
@@ -20,7 +12,7 @@ namespace TripleZero.Modules
     [Name("DBStats")]
     [Summary("Stats Commands")]
     public class DBStatsModule : ModuleBase<SocketCommandContext>
-    {      
+    {
         [Command("stats-players")]
         [Summary("Get stats about player collection")]
         [Remarks("*stats-players*")]
@@ -44,7 +36,7 @@ namespace TripleZero.Modules
             if (result != null)
             {
                 retStr += string.Format("\nTotal players loaded to DB : **{0}** ", result.Count());
-                retStr += string.Format("\nSWGoH date - Latest: **{0}** - Oldest: **{1}** ", result.OrderByDescending(p=>p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate, result.OrderBy(p => p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate);
+                retStr += string.Format("\nSWGoH date - Latest: **{0}** - Oldest: **{1}** ", result.OrderByDescending(p => p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate, result.OrderBy(p => p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate);
                 retStr += string.Format("\nDB date - Latest: **{0}** - Oldest: **{1}** ", result.OrderByDescending(p => p.EntryUpdateDate).Take(1).FirstOrDefault().EntryUpdateDate, result.OrderBy(p => p.EntryUpdateDate).Take(1).FirstOrDefault().EntryUpdateDate);
             }
             else

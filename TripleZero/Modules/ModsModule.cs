@@ -84,7 +84,7 @@ namespace TripleZero.Modules
         {
             playerUserName = playerUserName.Trim();
             modType = modType.Trim();
-            
+
             ModValueType secondaryStatValueType = ModValueType.None;
             if (modType.Substring(modType.Length - 1, 1) == "%")
             {
@@ -96,7 +96,7 @@ namespace TripleZero.Modules
                 secondaryStatValueType = ModValueType.Flat;
             }
 
-            ModStatType secondaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(),typeof(ModStatType));         
+            ModStatType secondaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(), typeof(ModStatType));
 
             if (secondaryStatType == ModStatType.None)
             {

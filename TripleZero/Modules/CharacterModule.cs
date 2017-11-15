@@ -1,23 +1,17 @@
 ﻿using Discord.Commands;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Configuration;
-using TripleZero.Repository.Dto;
-using SWGoH;
 
 namespace TripleZero.Modules
 {
     [Name("Character")]
     [Summary("Character Commands")]
     public class CharacterModule : ModuleBase<SocketCommandContext>
-    {        
+    {
         [Command("character")]
         [Summary("Get character stats for specific player")]
         [Remarks("*character {playerUserName} {characterAlias}*")]
@@ -39,7 +33,7 @@ namespace TripleZero.Modules
             }
 
             var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
-            if(characterConfig==null)
+            if (characterConfig == null)
             {
                 await ReplyAsync($"I couldn't find any character with alias : ***{characterAlias}***");
                 return;
@@ -146,11 +140,11 @@ namespace TripleZero.Modules
             retStr += string.Format("\nPower {0} vs {2} - StatPower {1} vs {3}", character1.Power, character1.StatPower, character2.Power, character2.StatPower);
 
             var strAbilities = "\n\n**Abilities**";
-            for(int i=0;i<character1.Abilities.Count();i++)
+            for (int i = 0; i < character1.Abilities.Count(); i++)
             {
                 strAbilities += string.Format("\n{0} {1}/{2} vs {3}/{4}", character1.Abilities[i].Name, character1.Abilities[i].Level, character1.Abilities[i].MaxLevel, character2.Abilities[i].Level, character2.Abilities[i].MaxLevel);
             }
-            retStr += strAbilities;            
+            retStr += strAbilities;
 
             retStr += "\n\n**General**";
             retStr += $"\nProtection: {character1.GeneralStats.Protection} - {character2.GeneralStats.Protection}";
@@ -184,6 +178,6 @@ namespace TripleZero.Modules
             retStr += $"\nSpecial Critical Avoidance: {character1.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} % - {character2.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} %";
 
             await ReplyAsync($"{retStr}");
-        }        
+        }
     }
 }

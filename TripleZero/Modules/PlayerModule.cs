@@ -19,7 +19,7 @@ namespace TripleZero.Modules
             string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
 
             await ReplyAsync($"{loadingStr}");
-            
+
             var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
 
             if (playerData == null)
