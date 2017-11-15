@@ -1,12 +1,10 @@
 ﻿using Autofac;
 using Discord.WebSocket;
-using SWGoH;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using TripleZero._Mapping;
 using TripleZero.Configuration;
-using TripleZero.Modules;
 using TripleZero.Repository;
 
 namespace TripleZero.Infrastructure.DI

@@ -42,7 +42,7 @@ namespace SWGoH
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
             //ExecuteCommand(Command.Test, "newholborn");
 
-            Queue q = QueueMethods.GetQueu();
+            QueueDto q = QueueMethods.GetQueu();
             if (q != null)
             {
                 int ret = ExecuteCommand(q.Command, q.Name);

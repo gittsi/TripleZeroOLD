@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -12,18 +11,15 @@ using TripleZero.Configuration;
 using TripleZero.Helper;
 using System.Net;
 using System.Text;
-using System.Web;
-using Newtonsoft.Json;
-using System.IO;
 using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using TripleZero._Mapping;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using SWGoH;
 using MongoDB.Bson.Serialization;
+using SWGoH.Model;
 
 namespace TripleZero
 {
@@ -144,7 +140,7 @@ namespace TripleZero
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
                 var response = await client.GetStringAsync(url);
                 List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                var result1 = BsonSerializer.Deserialize<Queue>(document.FirstOrDefault());
+                var result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
 
              
                 if (result1 != null)
@@ -162,34 +158,34 @@ namespace TripleZero
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("$guildPlayers {0}", guildAlias));
+            await channel.SendMessageAsync(string.Format(".guildPlayers {0}", guildAlias));
         }
         private async Task TestPlayerReport(string username)
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("$playerreport {0}", username));
+            await channel.SendMessageAsync(string.Format(".player-report {0}", username));
         }
 
         private async Task TestPlayerMods(string username)
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("^mods -speed {0} 10", username));
+            await channel.SendMessageAsync(string.Format(".mods -speed {0} 10", username));
         }
 
         private async Task TestGuildModule(string guild, string characterName)
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("^guild {0} {1}", guild, characterName));
+            await channel.SendMessageAsync(string.Format(".guild {0} {1}", guild, characterName));
         }
 
         private async Task TestCharacterModule(string userName, string characterName)
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("^ch {0} {1}", userName, characterName));
+            await channel.SendMessageAsync(string.Format(".ch {0} {1}", userName, characterName));
         }
         #endregion
 

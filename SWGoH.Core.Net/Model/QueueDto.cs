@@ -4,7 +4,7 @@ using SWGoH.Enums.QueueEnum;
 
 namespace SWGoH
 {
-    public class Queue
+    public class QueueDto
     {
         public Nullable<ObjectId> Id { get; set; }
         public string Name { get; set; }

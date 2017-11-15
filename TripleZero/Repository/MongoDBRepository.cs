@@ -13,8 +13,9 @@ using TripleZero._Mapping;
 using TripleZero.Infrastructure.DI;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using SWGoH.Enums.QueueEnum;
 using TripleZero.Configuration;
+using SWGoH.Model;
+using SWGoH.Model.Enums;
 
 namespace TripleZero.Repository
 {
@@ -26,40 +27,39 @@ namespace TripleZero.Repository
         public MongoDBRepository(IMappingConfiguration mappingConfiguration)
         {
             _Mapper = mappingConfiguration.GetConfigureMapper();
-        }        
-
-        private string BuildApiUrl(string collection, string query="",string orderBy="",string limit="", string fields="")
+        }
+        private string BuildApiUrl(string collection, string query = "", string orderBy = "", string limit = "", string fields = "")
         {
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/?apiKey={2}{3}{4}{5}{6}"
-                , appSettings.MongoDBSettings.DB                
+                , appSettings.MongoDBSettings.DB
                 , collection
                 , appSettings.MongoDBSettings.ApiKey
                 , query
                 , orderBy
                 , limit
-                ,fields);
+                , fields);
             return url;
         }
-        private string BuildApiUrlFromId(string collection,string id)
+        private string BuildApiUrlFromId(string collection, string id)
         {
             //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/{2}?apiKey={3}"
                 , appSettings.MongoDBSettings.DB
                 , collection
-                ,id
+                , id
                 , appSettings.MongoDBSettings.ApiKey
                 );
             return url;
         }
-        public async Task<PlayerDto> GetPlayer(string userName)
+        public async Task<Player> GetPlayer(string userName)
         {
             await Task.FromResult(1);
 
             var queryData = string.Concat("&q={\"PlayerName\":\"", userName, "\"}");
             var orderby = "&s={\"LastSwGohUpdated\":-1}";
-            var limit = "&l=1";            
+            var limit = "&l=1";
 
-            string url = BuildApiUrl("Player",queryData,orderby,limit,null);
+            string url = BuildApiUrl("Player", queryData, orderby, limit, null);
 
             try
             {
@@ -68,7 +68,8 @@ namespace TripleZero.Repository
                     var response = await client.GetStringAsync(url);
                     List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
 
-                    return ret.FirstOrDefault();
+                    var players = _Mapper.Map<List<Player>>(ret);
+                    return players.FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -76,13 +77,13 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-        public async Task<GuildDto> GetGuildPlayers(string guildName)
+        public async Task<Guild> GetGuildPlayers(string guildName)
         {
             await Task.FromResult(1);
 
             var queryData = string.Concat("&q={\"Name\":\"", guildName, "\"}");
             var orderby = "&s={\"LastSwGohUpdated\":-1}";
-            var limit = "&l=1";            
+            var limit = "&l=1";
 
             string url = BuildApiUrl("Guild", queryData, orderby, limit, null);
             //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Guild/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apiKey);
@@ -94,7 +95,9 @@ namespace TripleZero.Repository
                     var response = await client.GetStringAsync(url);
                     GuildDto ret = JsonConvert.DeserializeObject<List<GuildDto>>(response, Converter.Settings).FirstOrDefault();
 
-                    return ret;
+                    Guild guild = _Mapper.Map<Guild>(ret);
+
+                    return guild;
                 }
             }
             catch (Exception ex)
@@ -113,16 +116,16 @@ namespace TripleZero.Repository
         private async Task<string> SendToQueue(string name, QueueType queueType)
         {
 
-        JObject data = new JObject(
-                new JProperty("Name", name),
-                new JProperty("InsertedDate", DateTime.UtcNow),
-                new JProperty("ProcessingStartDate", null),
-                new JProperty("NextRunDate", DateTime.UtcNow),
-                new JProperty("Status", QueueStatus.PendingProcess),
-                new JProperty("Priority", 3),
-                new JProperty("Command", queueType == QueueType.Player ? Command.UpdatePlayer : Command.UpdateGuildWithNoChars),
-                new JProperty("Type", queueType)
-           );
+            JObject data = new JObject(
+                    new JProperty("Name", name),
+                    new JProperty("InsertedDate", DateTime.UtcNow),
+                    new JProperty("ProcessingStartDate", null),
+                    new JProperty("NextRunDate", DateTime.UtcNow),
+                    new JProperty("Status", QueueStatus.PendingProcess),
+                    new JProperty("Priority", 3),
+                    new JProperty("Command", queueType == QueueType.Player ? Command.UpdatePlayer : Command.UpdateGuildWithNoChars),
+                    new JProperty("Type", queueType)
+               );
 
             using (HttpClient client = new HttpClient())
             {
@@ -138,7 +141,7 @@ namespace TripleZero.Repository
                         string responseBody = await response.Content.ReadAsStringAsync();
 
                         BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
-                        var queue = BsonSerializer.Deserialize<Queue>(document);
+                        var queue = BsonSerializer.Deserialize<QueueDto>(document);
 
                         return queue?.Id.ToString();
                     }
@@ -151,7 +154,7 @@ namespace TripleZero.Repository
             }
         }
         public async Task<List<Queue>> GetQueue()
-        {            
+        {
             string requestUri = BuildApiUrl("Queue", null, null, null, null);
             //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?apiKey={0}", apiKey);
 
@@ -160,14 +163,25 @@ namespace TripleZero.Repository
                 HttpResponseMessage response = await client.GetAsync(requestUri);
                 string responseBody = await response.Content.ReadAsStringAsync();
                 List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(responseBody);
-                List<Queue> queue = document.Select(b => BsonSerializer.Deserialize<Queue>(b)).ToList();
+                List<QueueDto> queueDto = document.Select(b => BsonSerializer.Deserialize<QueueDto>(b)).ToList();
+
+                List<Queue> queue = null;
+                try
+                {
+                    queue = _Mapper.Map<List<Queue>>(queueDto);
+                }
+                catch(Exception ex)
+                {
+                    var a = 1;
+                }
+                
 
                 return queue;
             }
         }
         public async Task<Queue> RemoveFromQueue(string name)
         {
-            var queue = GetQueue().Result.Where(p=>p.Name==name && p.Status== QueueStatus.PendingProcess).FirstOrDefault();
+            var queue = GetQueue().Result.Where(p => p.Name == name && p.Status == QueueStatus.PendingProcess).FirstOrDefault();
             if (queue == null || queue.Id == null) return null;
 
             string requestUri = BuildApiUrlFromId("Queue", queue.Id.ToString());
@@ -180,7 +194,7 @@ namespace TripleZero.Repository
             }
         }
         public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
-        {            
+        {
             CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
             if (characterConfig == null) return null;
 
@@ -232,14 +246,14 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
-        public async Task<List<PlayerDto>> GetAllPlayersWithoutCharacters()
+        public async Task<List<Player>> GetAllPlayersWithoutCharacters()
         {
             await Task.FromResult(1);
 
-            var orderby = "&s={\"LastSwGohUpdated\":-1}";            
+            var orderby = "&s={\"LastSwGohUpdated\":-1}";
             var fields = "&f={\"Characters\": 0}";
 
-            string url = BuildApiUrl("Player",null, orderby, null, fields);
+            string url = BuildApiUrl("Player", null, orderby, null, fields);
             //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", fields, orderby, apiKey);
 
             try
@@ -249,7 +263,8 @@ namespace TripleZero.Repository
                     var response = await client.GetStringAsync(url);
                     List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
 
-                    return ret;
+                    var players = _Mapper.Map<List<Player>>(ret);
+                    return players;
                 }
             }
             catch (Exception ex)
@@ -270,9 +285,12 @@ namespace TripleZero.Repository
                     var response = await client.GetStringAsync(url);
 
                     List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                    List<CharacterConfig> ret = document.Select(b => BsonSerializer.Deserialize<CharacterConfig>(b)).ToList();
+                    List<CharacterConfigDto> ret = document.Select(b => BsonSerializer.Deserialize<CharacterConfigDto>(b)).ToList();
 
-                    return ret.OrderBy(p => p.Name).ToList();
+                    var charactersConfigDto = ret.OrderBy(p => p.Name).ToList();
+
+                    List<CharacterConfig> charactersConfig = _Mapper.Map<List<CharacterConfig>>(charactersConfigDto);
+                    return charactersConfig;
                 }
             }
             catch (Exception ex)

@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
 using SWGoH;
+using SWGoH.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
