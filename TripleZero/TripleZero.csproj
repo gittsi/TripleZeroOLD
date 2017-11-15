@@ -10,19 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Client\Bot.cs" />
     <Compile Remove="Configuration\CharacterSettingsModel.cs" />
     <Compile Remove="Configuration\GuildSettingsModel.cs" />
     <Compile Remove="Configuration\GuildsSettings.cs" />
     <Compile Remove="Configuration\SWGoH\CharacterSettingsModel.cs" />
     <Compile Remove="Configuration\SWGoH\GuildSettingsModel.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
-    <Compile Remove="Model\Character.cs" />
-    <Compile Remove="Model\CharacterStats.cs" />
-    <Compile Remove="Model\GuildCharacter.cs" />
-    <Compile Remove="Model\Player.cs" />
-    <Compile Remove="Model\PlayerCharacter.cs" />
-    <Compile Remove="Model\SwGohPlayer.cs" />
     <Compile Remove="Repository\Dto\CharacterDto.cs" />
     <Compile Remove="Repository\Dto\PlayerDto.cs" />
   </ItemGroup>
@@ -41,12 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Client\" />
-    <Folder Include="Model\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SWGoH.Core.Net\SWGoH.Core.Net.csproj" />
+    <ProjectReference Include="..\SWGoH.Model\SWGoH.Model.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties Configuration_4config_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>

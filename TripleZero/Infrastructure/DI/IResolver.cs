@@ -15,17 +15,14 @@ namespace TripleZero.Infrastructure.DI
                 return _Current;
             }
         }
-
         public IResolver()
         {
 
         }
-
         public void Start()
         {
             Container = ConfigureContainer();
             _Current = this;
         }
-
     }
 }

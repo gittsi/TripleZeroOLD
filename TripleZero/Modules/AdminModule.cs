@@ -1,18 +1,12 @@
 ﻿using Discord.Commands;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Configuration;
-using TripleZero.Repository.Dto;
-using SWGoH;
 using TripleZero.Helper;
-using SWGoH.Enums.QueueEnum;
+using SWGoH.Model.Enums;
 
 namespace TripleZero.Modules
 {
@@ -59,7 +53,7 @@ namespace TripleZero.Modules
                     if (countAliases != result.Aliases.Count()) aliases += ", ";
                 }
 
-                retStr += string.Format("\nAliases: [**{0}**]", aliases.Count()>0 ? aliases : "empty!!!");
+                retStr += string.Format("\nAliases: [**{0}**]", aliases.Count() > 0 ? aliases : "empty!!!");
             }
             else
             {
@@ -73,7 +67,7 @@ namespace TripleZero.Modules
         //[Summary("Add alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         [Summary("Add alias for specific character(Admin Command)")]
         [Remarks("*alias-add {characterFullName} {alias}*")]
-        public async Task AddAlias(string characterFullName,string alias)
+        public async Task AddAlias(string characterFullName, string alias)
         {
             characterFullName = characterFullName.Trim();
             alias = alias.Trim();
@@ -92,11 +86,11 @@ namespace TripleZero.Modules
 
             var result = IResolver.Current.MongoDBRepository.SetCharacterAlias(characterFullName, alias.ToLower()).Result;
 
-            if(result!=null)
+            if (result != null)
             {
-                retStr +=$"\nNew alias '**{alias}**' for '**{characterFullName}**' was added!\n";
+                retStr += $"\nNew alias '**{alias}**' for '**{characterFullName}**' was added!\n";
                 retStr += string.Format("\nName:**{0}**", result.Name);
-                retStr += string.Format("\nCommand:**{0}**", result.Command!=null ? result.Command.Length == 0 ? "empty!!!" : result.Command : "empty!!!");
+                retStr += string.Format("\nCommand:**{0}**", result.Command != null ? result.Command.Length == 0 ? "empty!!!" : result.Command : "empty!!!");
                 retStr += string.Format("\nSWGoH url:**{0}**", result.SWGoHUrl);
 
                 string aliases = "";
@@ -117,7 +111,7 @@ namespace TripleZero.Modules
 
             await ReplyAsync($"{retStr}");
 
-       
+
         }
 
         [Command("characters-config")]
@@ -139,14 +133,14 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
+            var charactersConfig = IResolver.Current.CharacterSettings.GetCharactersConfig().Result;
             int debugcount = 0;
-            foreach(var characterConfig in charactersConfig)
+            foreach (var characterConfig in charactersConfig)
             {
                 chStr = string.Format("\n{0}", characterConfig.Name);
                 string aliases = "";
                 int countAliases = 0;
-                foreach(var alias in characterConfig.Aliases)
+                foreach (var alias in characterConfig.Aliases)
                 {
                     if (alias.ToString().ToLower() == "empty") break;
 
@@ -169,7 +163,7 @@ namespace TripleZero.Modules
                     retStr += string.Format("{0} - **No aliases**", chStr);
                 }
 
-                if(retStr.Length>1800)
+                if (retStr.Length > 1800)
                 {
                     await ReplyAsync($"{retStr}");
                     retStr = "";
@@ -202,15 +196,15 @@ namespace TripleZero.Modules
             var guildQueues = result.Where(p => p.Type == QueueType.Guild);
             var playerQueues = result.Where(p => p.Type == QueueType.Player);
 
-            if (result==null)
+            if (result == null)
             {
                 await ReplyAsync($"Problem!! Cannot get queue!!!");
                 return;
             }
-            
+
             retStr = "\n**Players**";
             foreach (var queuePlayer in playerQueues)
-            {                
+            {
                 retStr += string.Format("\nPlayer : **{0}** - Status : **{1}**", queuePlayer.Name, queuePlayer.Status);
             }
 
@@ -223,7 +217,7 @@ namespace TripleZero.Modules
         [Remarks("*queue-remove {name}*")]
         public async Task RemoveQueue(string name)
         {
-            name = name.Trim().ToLower();            
+            name = name.Trim().ToLower();
 
             string retStr = "";
 

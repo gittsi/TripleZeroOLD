@@ -12,9 +12,8 @@ namespace TripleZero.Configuration
         {
             _SettingsConfigurationRoot = settingsConfiguration.GetConfiguration();
         }
-
         public ApplicationSettingsModel Get()
-        {           
+        {
 
             ApplicationSettingsModel appSettings = new ApplicationSettingsModel
             {
@@ -32,16 +31,16 @@ namespace TripleZero.Configuration
                 //discord settings
                 DiscordSettings = new DiscordSettings()
                 {
-                     Token= _SettingsConfigurationRoot.GetSection("Discord_Settings")["Token"]
+                    Token = _SettingsConfigurationRoot.GetSection("Discord_Settings")["Token"]
                      ,
-                     Prefix = _SettingsConfigurationRoot.GetSection("Discord_Settings")["Prefix"]
+                    Prefix = _SettingsConfigurationRoot.GetSection("Discord_Settings")["Prefix"]
                      ,
                     BotAdminRole = _SettingsConfigurationRoot.GetSection("Discord_Settings")["BotAdminRole"]
 
                 },
                 MongoDBSettings = new MongoDBSettings()
                 {
-                    ApiKey=_SettingsConfigurationRoot.GetSection("MongoDB_Settings")["ApiKey"]
+                    ApiKey = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["ApiKey"]
                     ,
                     DB = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["DB"]
                 }

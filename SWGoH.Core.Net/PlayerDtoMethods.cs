@@ -405,7 +405,7 @@ namespace SWGoH
                 {
                     SWGoH.Log.ConsoleMessage("Found Allias Char " + newchar.Name);
                     List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                    CharacterConfig result1 = BsonSerializer.Deserialize<CharacterConfig>(document.FirstOrDefault());
+                    CharacterConfigDto result1 = BsonSerializer.Deserialize<CharacterConfigDto>(document.FirstOrDefault());
 
                     if (newchar.SWGoHUrl != null)
                     {

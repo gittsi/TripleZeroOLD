@@ -22,13 +22,13 @@ namespace TripleZero.Infrastructure.DI
             builder.RegisterType<MappingConfiguration>().As<IMappingConfiguration>().SingleInstance();
             builder.RegisterType<ApplicationSettings>().SingleInstance();
             builder.RegisterType<MongoDBSettings>().SingleInstance();
-            builder.RegisterType<GuildsConfig>().SingleInstance();
-            builder.RegisterType<CharactersConfig>().SingleInstance();
+            builder.RegisterType<GuildSettings>().SingleInstance();
+            builder.RegisterType<CharacterSettings>().SingleInstance();
             //builder.RegisterType<CharacterSettings>().SingleInstance();
             builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();
 
             //modules
-            builder.RegisterType<HelpModule>().InstancePerDependency();            
+            builder.RegisterType<HelpModule>().InstancePerDependency();
             builder.RegisterType<FunModule>().InstancePerDependency();
             builder.RegisterType<GuildModule>().InstancePerDependency();
             builder.RegisterType<CharacterModule>().InstancePerDependency();
@@ -47,7 +47,6 @@ namespace TripleZero.Infrastructure.DI
 
             return builder.Build();
         }
-
     }
 
 }

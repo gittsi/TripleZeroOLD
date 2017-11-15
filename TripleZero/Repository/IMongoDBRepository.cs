@@ -1,4 +1,5 @@
 ﻿using SWGoH;
+using SWGoH.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,9 +10,10 @@ namespace TripleZero.Repository
     public interface IMongoDBRepository
     {
         Task<List<CharacterConfig>> GetCharactersConfig();
-        Task<PlayerDto> GetPlayer(string userName);
-        Task<GuildDto> GetGuildPlayers(string guildName);
-        Task<List<PlayerDto>> GetAllPlayersWithoutCharacters();
+        Task<List<GuildConfig>> GetGuildsConfig();
+        Task<Player> GetPlayer(string userName);
+        Task<Guild> GetGuildPlayers(string guildName);
+        Task<List<Player>> GetAllPlayersWithoutCharacters();
         Task<string> SendPlayerToQueue(string playerName);
         Task<string> SendGuildToQueue(string guildName);
         Task<List<Queue>> GetQueue();

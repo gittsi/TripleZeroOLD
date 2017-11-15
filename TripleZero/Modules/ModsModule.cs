@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using SWGoH;
-using SWGoH.Enums.ModEnum;
+using SWGoH.Model.Extensions;
+using SWGoH.Model.Enums;
+using SWGoH.Model;
 
 namespace TripleZero.Modules
 {
@@ -83,7 +84,7 @@ namespace TripleZero.Modules
         {
             playerUserName = playerUserName.Trim();
             modType = modType.Trim();
-            
+
             ModValueType secondaryStatValueType = ModValueType.None;
             if (modType.Substring(modType.Length - 1, 1) == "%")
             {
@@ -95,7 +96,7 @@ namespace TripleZero.Modules
                 secondaryStatValueType = ModValueType.Flat;
             }
 
-            ModStatType secondaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(),typeof(ModStatType));         
+            ModStatType secondaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(), typeof(ModStatType));
 
             if (secondaryStatType == ModStatType.None)
             {

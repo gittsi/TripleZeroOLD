@@ -1,32 +1,19 @@
-﻿using MongoDB.Bson;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SWGoH
+namespace SWGoH.Model
 {
     public class CharactersConfig
     {
         public List<CharacterConfig> Characters { get; set; }
     }
-
     public class CharacterConfig
     {
-        public Nullable<ObjectId> Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Command { get; set; }
         public List<string> Aliases { get; set; }
         public string SWGoHUrl { get; set; }
     }
-
-    
 }

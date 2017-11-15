@@ -23,21 +23,21 @@ namespace SWGoH
 
         public string GetGuildURLFromName(string name)
         {
-            GuildConfig guild = GuildConfig.GetGuildFromName(name);
+            GuildConfigDto guild = GuildConfigDto.GetGuildFromName(name);
             if (guild == null) return "";
             string URL = "https://swgoh.gg/g" + guild.SWGoHUrl;
             return URL;
         }
         public string GetGuildURLFromAlias(string Alias)
         {
-            GuildConfig guild = GuildConfig.GetGuildFromAllias(Alias);
+            GuildConfigDto guild = GuildConfigDto.GetGuildFromAllias(Alias);
             if (guild == null) return "";
             string URL = "https://swgoh.gg/g" + guild.SWGoHUrl;
             return URL;
         }
         public static string GetGuildNameFromAlias(string Alias)
         {
-            GuildConfig guild = GuildConfig.GetGuildFromAllias(Alias);
+            GuildConfigDto guild = GuildConfigDto.GetGuildFromAllias(Alias);
             if (guild == null) return "";
             return guild.Name;
         }

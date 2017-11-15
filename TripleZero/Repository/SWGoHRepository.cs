@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json.Linq;
+using SWGoH.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,16 +20,15 @@ namespace TripleZero.Repository
         {
             _Mapper = mappingConfiguration.GetConfigureMapper();
         }
-
-        public async Task<GuildCharacterDto> GetGuildCharacter(int guildId, string characterName)
+        public async Task<GuildCharacter> GetGuildCharacter(int guildId, string characterName)
         {
-            List<GuildCharacterDto> chars = null;
+            List<GuildCharacter> chars = null;
             chars = await GetGuildCharacters(guildId);
-            var res = chars.Where(p => p.Name.ToLower() == characterName.ToLower()).FirstOrDefault();
+            var res = chars.Where(p => p.CharacterName.ToLower() == characterName.ToLower()).FirstOrDefault();
 
             return res;
         }
-        public async Task<List<GuildCharacterDto>> GetGuildCharacters(int guildId)
+        public async Task<List<GuildCharacter>> GetGuildCharacters(int guildId)
         {
             var url = string.Format("https://swgoh.gg/api/guilds/{0}/units/", guildId.ToString());
             List<GuildCharacterDto> chars = new List<GuildCharacterDto>();
@@ -47,7 +47,7 @@ namespace TripleZero.Repository
                 {
                     //swallow the error
                     Consoler.WriteLineInColor(ex.Message, ConsoleColor.Red);
-                    return chars;
+                    return null;
                 }
 
                 foreach (var row in json)
@@ -66,7 +66,9 @@ namespace TripleZero.Repository
                     chars.Add(gc);
                 }
             }
-            return chars;
+            List<GuildCharacter> guildCharacters = _Mapper.Map<List<GuildCharacter>>(chars);
+
+            return guildCharacters;
         }
     }
 }
