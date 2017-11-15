@@ -32,10 +32,8 @@ namespace SWGoH
                     new JProperty("Type", type),
                     new JProperty("Command", cmd));
 
-                    var apiKey = Settings.appSettings.MongoApiKey;
-
                     var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue?apiKey={0}", apiKey);
+                    var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Queue", "", "", "", ""));
                     HttpResponseMessage response = client.PostAsync(requestUri, httpContent).Result;
                     if (response.IsSuccessStatusCode)
                     {
@@ -54,8 +52,7 @@ namespace SWGoH
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string apikey = Settings.appSettings.MongoApiKey;
-                    var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/{0}?apiKey={1}", q.Id, apikey);
+                    var deleteurl = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", q.Id.ToString());
                     WebRequest request = WebRequest.Create(deleteurl);
                     request.Method = "DELETE";
 
@@ -77,17 +74,13 @@ namespace SWGoH
         }
         public static Queue GetQueu()
         {
-            SWGoH.Log.ConsoleMessage("Getting from Queu!!");
+            SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!!");
             try
             {
 
                 using (HttpClient client = new HttpClient())
-                {
-                    var queryData = string.Concat("q={\"Status\":0}");
-                    var orderby = "s={\"Priority\":-1,\"InsertedDate\":1}";
-                    var limit = "l=1";
-                    string apikey = Settings.appSettings.MongoApiKey;
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
+                { 
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", "&q={\"Status\":0}", "&s={\"Priority\":-1,\"InsertedDate\":1}", "&l=1", "");
 
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
@@ -110,7 +103,7 @@ namespace SWGoH
                             new JProperty("Command", result1.Command));
 
                             var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/{0}?apiKey={1}", result1.Id, apikey);
+                            var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", result1.Id.ToString());
                             using (HttpClient client1 = new HttpClient())
                             {
                                 HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
@@ -130,20 +123,15 @@ namespace SWGoH
         }
         public static PlayerDto GetLastUpdatedPlayer(string guildname)
         {
-            SWGoH.Log.ConsoleMessage("Getting LastUpdated From Queu!!");
+            SWGoH.Log.ConsoleMessageNotInFile("Getting LastUpdated From Queu!!");
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var queryData = string.Concat("q={\"GuildName\" : \"" + GuildDto.GetGuildNameFromAlias(guildname) + "\" }");
-                    var orderby = "s={\"LastSwGohUpdated\":1}";
-                    //var limit = "l=5";
-
+                    var queryData = string.Concat("&q={\"GuildName\" : \"" + GuildDto.GetGuildNameFromAlias(guildname) + "\" }");
                     var field = "f={\"PlayerName\": 1,\"LastSwGohUpdated\": 1, \"LastClassUpdated\" : 1 }";
-                    string apikey = Settings.appSettings.MongoApiKey;
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", queryData, "&s={\"LastSwGohUpdated\":1}", "", field);
 
-                    //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, limit, orderby, apikey);
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, field, orderby, apikey);
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
@@ -178,8 +166,7 @@ namespace SWGoH
                 using (HttpClient client = new HttpClient())
                 {
                     var queryData = string.Concat("q={\"Name\":\"", playerName, "\",  \"Status\" : 1 }");
-                    string apikey = Settings.appSettings.MongoApiKey;
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?{0}&apiKey={1}", queryData, apikey);
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", queryData, "", "", "");
 
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SWGoH.Enums.ModEnum;
 
-namespace SwGoH.Model
+namespace SWGoH.Model
 {
     public class ModFilters
     {
