@@ -28,7 +28,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            string retStr = string.Format("Last update : {0}(UTC)\n\n", playerData.LastSwGohUpdated.ToString("yyyy-MM-dd HH:mm:ss"));
+            string retStr = string.Format("Last update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
 
             var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();
 
@@ -103,9 +103,9 @@ namespace TripleZero.Modules
             retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
 
 
-            retStr += string.Format("Total GP: **{0}**\n", playerData.GPcharacters + playerData.GPships);
-            retStr += string.Format("Toons GP: **{0}**\n", playerData.GPcharacters);
-            retStr += string.Format("Ships GP: **{0}**\n", playerData.GPships);
+            retStr += string.Format("Total GP: **{0}**\n", playerData.GalacticPowerShips + playerData.GalacticPowerCharacters);
+            retStr += string.Format("Toons GP: **{0}**\n", playerData.GalacticPowerCharacters);
+            retStr += string.Format("Ships GP: **{0}**\n", playerData.GalacticPowerShips);
 
             retStr += "\n**Stars**\n";
             retStr += string.Format("{0} characters at **1***\n", chars1star.Count());

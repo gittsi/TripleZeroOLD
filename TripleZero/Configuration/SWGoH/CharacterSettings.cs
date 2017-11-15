@@ -17,7 +17,7 @@ namespace TripleZero.Configuration
 {
     public class CharactersConfig
     {
-        public async Task<CharacterConfig> GetCharacterConfigByAlias(string alias)
+        public async Task<CharacterConfigDto> GetCharacterConfigByAlias(string alias)
         {
             await Task.FromResult(1);
 
@@ -25,7 +25,7 @@ namespace TripleZero.Configuration
             return result.Where(p => p.Aliases.Contains(alias.ToLower())).FirstOrDefault();            
         }
 
-        public async Task<CharacterConfig> GetCharacterConfigByName(string name)
+        public async Task<CharacterConfigDto> GetCharacterConfigByName(string name)
         {
             await Task.FromResult(1);
 
@@ -33,7 +33,7 @@ namespace TripleZero.Configuration
             return result.Where(p => p.Name ==name).FirstOrDefault();
         }
 
-        public async Task<List<CharacterConfig>> GetCharactersConfig()
+        public async Task<List<CharacterConfigDto>> GetCharactersConfig()
         {
             await Task.FromResult(1);
 

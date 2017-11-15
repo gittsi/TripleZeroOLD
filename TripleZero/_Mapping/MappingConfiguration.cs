@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using SWGoH;
+using SWGoH.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,22 +24,57 @@ namespace TripleZero._Mapping
             {
                 var config = new MapperConfiguration(cfg =>
                 {
-                    //cfg.CreateMap<GuildPlayerCharacterDto, Model.CharacterStats>()
-                    //.ForMember(dest => dest.Level, src => src.MapFrom(source => source.Level))
-                    //.ForMember(dest => dest.Power, src => src.MapFrom(source => source.Power))
-                    //.ForMember(dest => dest.Rarity, src => src.MapFrom(source => source.Rarity))
-                    //;
+                    //playerDto to player
+                    cfg.CreateMap<PlayerDto, Player>()
+                    .ForMember(dest => dest.EntryUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))
+                    .ForMember(dest => dest.SWGoHUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))
+                    .ForMember(dest => dest.GalacticPowerCharacters, src => src.MapFrom(source => source.GPcharacters))
+                    .ForMember(dest => dest.GalacticPowerShips, src => src.MapFrom(source => source.GPships))
+                    ;
 
-                    //cfg.CreateMap<GuildCharacterDto, Model.Character>()
-                    //.ForMember(dest => dest.Name, src => src.MapFrom(source => source.Name))
-                    //.ForMember(dest => dest.Stats, src => src.Ignore())
-                    //;
+                    //guildDto to guild
+                    cfg.CreateMap<GuildDto, Guild>()
+                    .ForMember(dest => dest.GalacticPower, src => src.MapFrom(source => source.GP))
+                    .ForMember(dest => dest.GalacticPowerAverage, src => src.MapFrom(source => source.GPaverage))
+                    .ForMember(dest => dest.EntryUpdateDate, src => src.MapFrom(source => source.LastClassUpdated))
+                    .ForMember(dest => dest.SWGoHUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))
+                    .ForMember(dest => dest.Players, src => src.MapFrom(source => source.Players))
+                    ;
 
-                    ////.ForMember(dest => dest.Tax, c => c.MapFrom(src => !string.IsNullOrWhiteSpace(src.TaxCode) ? new TaxInfo() { TaxCode = src.TaxCode, TaxOffice = src.TaxOffice } : null))
+                    //characterDto to Character
+                    cfg.CreateMap<SWGoH.Ability, SWGoH.Model.Ability>();
 
-                    //cfg.CreateMap<GuildCharacterDto, Model.GuildCharacter>()
-                    //.ForMember(dest => dest.Character, src => src.MapFrom(source => new Model.Character() { Name = source.Name })
-                    //);
+                    cfg.CreateMap<CharacterDto, GeneralStats>();
+
+                    cfg.CreateMap<CharacterDto, OffenseStats>()
+                    .ForMember(dest => dest.PhysicalOffense, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.SpecialOffense, src => src.MapFrom(s => s))
+                    ;
+
+                    cfg.CreateMap<CharacterDto, PhysicalOffense>();
+                    cfg.CreateMap<CharacterDto, SpecialOffense>();                    
+
+                    cfg.CreateMap<CharacterDto, Survivability>()
+                    .ForMember(dest => dest.PhysicalSurvivability, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.SpecialSurvivability, src => src.MapFrom(s => s))
+                    ;
+
+                    cfg.CreateMap<CharacterDto, PhysicalSurvivability>();
+                    cfg.CreateMap<CharacterDto, SpecialSurvivability>();
+
+                    cfg.CreateMap<SWGoH.ModStat, SWGoH.Model.ModStat>();
+
+                    cfg.CreateMap<SWGoH.Mod, SWGoH.Model.Mod>()
+                    .ForMember(dest => dest.PrimaryStat, src => src.MapFrom(source => source.PrimaryStat))
+                    .ForMember(dest => dest.SecondaryStat, src => src.MapFrom(source => source.SecondaryStat))
+                    ;
+
+                    cfg.CreateMap<CharacterDto, Character>()
+                    .ForMember(dest=> dest.Abilities , src => src.MapFrom(s=>s.Abilities))                    
+                    .ForMember(dest => dest.GeneralStats, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.OffenseStats, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))                    
+                    ;                   
 
                     cfg.AllowNullDestinationValues = true;
                     cfg.AllowNullCollections = true;

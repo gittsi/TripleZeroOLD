@@ -78,7 +78,7 @@ namespace TripleZero
             Logo(); //prints application name,version etc 
             //await TestCharAliasesDelete();
             //await TestDelete();
-            //await TestGuildPlayers("41st");
+            await TestGuildPlayers("41st");
             //await TestPlayerReport("tsitas_66");
             //await TestGuildModule("41s", "gk");
             //await TestCharacterModule("tsitas_66", "cls");
@@ -95,7 +95,7 @@ namespace TripleZero
 
             var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
-            List<CharacterConfig> charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
+            List<CharacterConfigDto> charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
             
             foreach(var characterConfig in charactersConfig)
             {
@@ -144,7 +144,7 @@ namespace TripleZero
                 string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
                 var response = await client.GetStringAsync(url);
                 List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                var result1 = BsonSerializer.Deserialize<Queue>(document.FirstOrDefault());
+                var result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
 
              
                 if (result1 != null)
@@ -168,7 +168,7 @@ namespace TripleZero
         {
             var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
 
-            await channel.SendMessageAsync(string.Format("$playerreport {0}", username));
+            await channel.SendMessageAsync(string.Format(".player-report {0}", username));
         }
 
         private async Task TestPlayerMods(string username)
@@ -257,7 +257,7 @@ namespace TripleZero
 
 
             /////////////////////////////Don't forget to exclude bots///////////////////////
-            if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+            //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
 
 
 

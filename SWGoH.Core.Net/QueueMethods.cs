@@ -46,7 +46,7 @@ namespace SWGoH
                 SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
         }
-        public static void RemoveFromQueu(Queue q)
+        public static void RemoveFromQueu(QueueDto q)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace SWGoH
                 SWGoH.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
             }
         }
-        public static Queue GetQueu()
+        public static QueueDto GetQueu()
         {
             SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!!");
             try
@@ -86,7 +86,7 @@ namespace SWGoH
                     if (response != "" && response != "[  ]")
                     {
                         List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                        Queue result1 = BsonSerializer.Deserialize<Queue>(document.FirstOrDefault());
+                        QueueDto result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
                         if (result1 != null)
                         {
                             //check nextrundate
@@ -172,7 +172,7 @@ namespace SWGoH
                     if (response != "" && response != "[  ]")
                     {
                         List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                        Queue result1 = BsonSerializer.Deserialize<Queue>(document.FirstOrDefault());
+                        QueueDto result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
                         if (result1 != null)
                         {
                             return true;

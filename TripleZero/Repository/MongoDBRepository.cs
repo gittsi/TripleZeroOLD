@@ -15,6 +15,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using SWGoH.Enums.QueueEnum;
 using TripleZero.Configuration;
+using SWGoH.Model;
 
 namespace TripleZero.Repository
 {
@@ -51,7 +52,7 @@ namespace TripleZero.Repository
                 );
             return url;
         }
-        public async Task<PlayerDto> GetPlayer(string userName)
+        public async Task<Player> GetPlayer(string userName)
         {
             await Task.FromResult(1);
 
@@ -68,7 +69,8 @@ namespace TripleZero.Repository
                     var response = await client.GetStringAsync(url);
                     List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
 
-                    return ret.FirstOrDefault();
+                    var players = _Mapper.Map<List<Player>>(ret);
+                    return players.FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -138,7 +140,7 @@ namespace TripleZero.Repository
                         string responseBody = await response.Content.ReadAsStringAsync();
 
                         BsonDocument document = BsonSerializer.Deserialize<BsonDocument>(responseBody);
-                        var queue = BsonSerializer.Deserialize<Queue>(document);
+                        var queue = BsonSerializer.Deserialize<QueueDto>(document);
 
                         return queue?.Id.ToString();
                     }
@@ -150,7 +152,7 @@ namespace TripleZero.Repository
                 }
             }
         }
-        public async Task<List<Queue>> GetQueue()
+        public async Task<List<QueueDto>> GetQueue()
         {            
             string requestUri = BuildApiUrl("Queue", null, null, null, null);
             //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue/?apiKey={0}", apiKey);
@@ -160,12 +162,12 @@ namespace TripleZero.Repository
                 HttpResponseMessage response = await client.GetAsync(requestUri);
                 string responseBody = await response.Content.ReadAsStringAsync();
                 List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(responseBody);
-                List<Queue> queue = document.Select(b => BsonSerializer.Deserialize<Queue>(b)).ToList();
+                List<QueueDto> queue = document.Select(b => BsonSerializer.Deserialize<QueueDto>(b)).ToList();
 
                 return queue;
             }
         }
-        public async Task<Queue> RemoveFromQueue(string name)
+        public async Task<QueueDto> RemoveFromQueue(string name)
         {
             var queue = GetQueue().Result.Where(p=>p.Name==name && p.Status== QueueStatus.PendingProcess).FirstOrDefault();
             if (queue == null || queue.Id == null) return null;
@@ -179,9 +181,9 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return queue; else return null;
             }
         }
-        public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
+        public async Task<CharacterConfigDto> SetCharacterAlias(string characterFullName, string alias)
         {            
-            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+            CharacterConfigDto characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
             if (characterConfig == null) return null;
 
             characterConfig.Aliases.Add(alias);
@@ -191,9 +193,9 @@ namespace TripleZero.Repository
             characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
             return characterConfig;
         }
-        public async Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias)
+        public async Task<CharacterConfigDto> RemoveCharacterAlias(string characterFullName, string alias)
         {
-            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+            CharacterConfigDto characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
             if (characterConfig == null) return null;
 
             bool isRemoved = characterConfig.Aliases.Remove(alias);
@@ -204,7 +206,7 @@ namespace TripleZero.Repository
             characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
             return characterConfig;
         }
-        private async Task<bool> PutCharacterConfig(CharacterConfig characterConfig)
+        private async Task<bool> PutCharacterConfig(CharacterConfigDto characterConfig)
         {
             JObject data = null;
             try
@@ -232,7 +234,7 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
-        public async Task<List<PlayerDto>> GetAllPlayersWithoutCharacters()
+        public async Task<List<Player>> GetAllPlayersWithoutCharacters()
         {
             await Task.FromResult(1);
 
@@ -249,7 +251,8 @@ namespace TripleZero.Repository
                     var response = await client.GetStringAsync(url);
                     List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
 
-                    return ret;
+                    var players = _Mapper.Map<List<Player>>(ret);
+                    return players;
                 }
             }
             catch (Exception ex)
@@ -257,7 +260,7 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-        public async Task<List<CharacterConfig>> GetCharactersConfig()
+        public async Task<List<CharacterConfigDto>> GetCharactersConfig()
         {
 
             string url = BuildApiUrl("Config.Character", null, null, null, null);
@@ -270,7 +273,7 @@ namespace TripleZero.Repository
                     var response = await client.GetStringAsync(url);
 
                     List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                    List<CharacterConfig> ret = document.Select(b => BsonSerializer.Deserialize<CharacterConfig>(b)).ToList();
+                    List<CharacterConfigDto> ret = document.Select(b => BsonSerializer.Deserialize<CharacterConfigDto>(b)).ToList();
 
                     return ret.OrderBy(p => p.Name).ToList();
                 }

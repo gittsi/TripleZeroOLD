@@ -1,4 +1,5 @@
 ﻿using SWGoH;
+using SWGoH.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,15 +9,15 @@ namespace TripleZero.Repository
 {
     public interface IMongoDBRepository
     {
-        Task<List<CharacterConfig>> GetCharactersConfig();
-        Task<PlayerDto> GetPlayer(string userName);
+        Task<List<CharacterConfigDto>> GetCharactersConfig();
+        Task<Player> GetPlayer(string userName);
         Task<GuildDto> GetGuildPlayers(string guildName);
-        Task<List<PlayerDto>> GetAllPlayersWithoutCharacters();
+        Task<List<Player>> GetAllPlayersWithoutCharacters();
         Task<string> SendPlayerToQueue(string playerName);
         Task<string> SendGuildToQueue(string guildName);
-        Task<List<Queue>> GetQueue();
-        Task<Queue> RemoveFromQueue(string name);
-        Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias);
-        Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias);
+        Task<List<QueueDto>> GetQueue();
+        Task<QueueDto> RemoveFromQueue(string name);
+        Task<CharacterConfigDto> SetCharacterAlias(string characterFullName, string alias);
+        Task<CharacterConfigDto> RemoveCharacterAlias(string characterFullName, string alias);
     }
 }
