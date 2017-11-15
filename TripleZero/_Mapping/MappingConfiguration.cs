@@ -74,7 +74,15 @@ namespace TripleZero._Mapping
                     .ForMember(dest => dest.GeneralStats, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.OffenseStats, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))                    
-                    ;                   
+                    ;
+
+                    //queue
+                    cfg.CreateMap<QueueDto, Queue>()
+                    .ForMember(dest => dest.InsertDate, src => src.MapFrom(source => source.InsertedDate))
+                    ;
+
+                    //character config
+                    cfg.CreateMap<CharacterConfigDto, CharacterConfig>();
 
                     cfg.AllowNullDestinationValues = true;
                     cfg.AllowNullCollections = true;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -12,15 +11,11 @@ using TripleZero.Configuration;
 using TripleZero.Helper;
 using System.Net;
 using System.Text;
-using System.Web;
-using Newtonsoft.Json;
-using System.IO;
 using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using TripleZero._Mapping;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using SWGoH;
 using MongoDB.Bson.Serialization;
@@ -79,7 +74,7 @@ namespace TripleZero
             Logo(); //prints application name,version etc 
             //await TestCharAliasesDelete();
             //await TestDelete();
-            await TestGuildPlayers("41st");
+            //await TestGuildPlayers("41st");
             //await TestPlayerReport("tsitas_66");
             //await TestGuildModule("41s", "gk");
             //await TestCharacterModule("tsitas_66", "cls");
@@ -258,7 +253,7 @@ namespace TripleZero
 
 
             /////////////////////////////Don't forget to exclude bots///////////////////////
-            //if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
+            if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
 
 
 

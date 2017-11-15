@@ -165,7 +165,16 @@ namespace TripleZero.Repository
                 List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(responseBody);
                 List<QueueDto> queueDto = document.Select(b => BsonSerializer.Deserialize<QueueDto>(b)).ToList();
 
-                List<Queue> queue = _Mapper.Map<List<Queue>>(queueDto);
+                List<Queue> queue = null;
+                try
+                {
+                    queue = _Mapper.Map<List<Queue>>(queueDto);
+                }
+                catch(Exception ex)
+                {
+                    var a = 1;
+                }
+                
 
                 return queue;
             }

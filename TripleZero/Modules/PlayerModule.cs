@@ -88,20 +88,21 @@ namespace TripleZero.Modules
                             }
                             ).ToList();
             var modsLevelLessThan9 = _allMods.Where(p => p._Mods.Level < 9).ToList();
-            var modsLevel9_12 = _allMods.Where(p => p._Mods.Level >= 9 && p._Mods.Level <= 12).ToList();
-            var modsLevel13_15 = _allMods.Where(p => p._Mods.Level >= 13 && p._Mods.Level <= 15).ToList();
+            var modsLevel9_11 = _allMods.Where(p => p._Mods.Level >= 9 && p._Mods.Level <= 11).ToList();
+            var modsLevel12_14 = _allMods.Where(p => p._Mods.Level >= 12 && p._Mods.Level <= 14).ToList();
+            var modsLevel15 = _allMods.Where(p => p._Mods.Level == 15).ToList();
 
             //gear
-            var gear5orLess = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear <= 5).ToList();
-            var gear6_8 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 6 && p.Gear <= 8).ToList();
-            var gear9_10 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 9 && p.Gear <= 10).ToList();
+            var gearLessThan5 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear < 5).ToList();
+            var gear5_7 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 5 && p.Gear <= 7).ToList();
+            var gear8_9 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 8 && p.Gear <= 9).ToList();
+            var gear10 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 10).ToList();
             var gear11 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 11).ToList();
             var gear12 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 12).ToList();
 
 
             //build post string
             retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
-
 
             retStr += string.Format("Total GP: **{0}**\n", playerData.GalacticPowerShips + playerData.GalacticPowerCharacters);
             retStr += string.Format("Toons GP: **{0}**\n", playerData.GalacticPowerCharacters);
@@ -141,13 +142,15 @@ namespace TripleZero.Modules
 
             retStr += "\n**Mods Level**\n";
             retStr += string.Format("{0} mods at **level <9**\n", modsLevelLessThan9.Count());
-            retStr += string.Format("{0} mods at **level 9-12**\n", modsLevel9_12.Count());
-            retStr += string.Format("{0} mods at **level 13-15**\n", modsLevel13_15.Count());
+            retStr += string.Format("{0} mods at **level 9-11**\n", modsLevel9_11.Count());
+            retStr += string.Format("{0} mods at **level 12-14**\n", modsLevel12_14.Count());
+            retStr += string.Format("{0} mods at **level 15**\n", modsLevel15.Count());
 
             retStr += "\n**Gear**\n";
-            retStr += string.Format("{0} characters with **gear 5 or less**\n", gear5orLess.Count());
-            retStr += string.Format("{0} characters with **gear 6-8**\n", gear6_8.Count());
-            retStr += string.Format("{0} characters with **gear 9-10**\n", gear9_10.Count());
+            retStr += string.Format("{0} characters with **gear 4 or less**\n", gearLessThan5.Count());
+            retStr += string.Format("{0} characters with **gear 5-7**\n", gear5_7.Count());
+            retStr += string.Format("{0} characters with **gear 8-9**\n", gear8_9.Count());
+            retStr += string.Format("{0} characters with **gear 10**\n", gear10.Count());
             retStr += string.Format("{0} characters with **gear 11**\n", gear11.Count());
             retStr += string.Format("{0} characters with **gear 12**\n", gear12.Count());
 
