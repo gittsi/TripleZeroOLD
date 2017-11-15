@@ -34,13 +34,8 @@ namespace SWGoH
             else
             {
                 using (HttpClient client = new HttpClient())
-                {
-                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
-                    var orderby = "s={\"LastSwGohUpdated\":-1}";
-                    var limit = "l=1";
-                    string apikey = Settings.appSettings.MongoApiKey;
-
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
+                {   
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastSwGohUpdated\":-1}", "&l=1", "");
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
@@ -59,11 +54,7 @@ namespace SWGoH
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
-                    var orderby = "s={\"LastClassUpdated\":1}";
-                    var field = "f={\"PlayerName\": 1}";
-                    string apikey = Settings.appSettings.MongoApiKey;
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, field ,orderby, apikey);
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastClassUpdated\":1}", "", "&f={\"PlayerName\": 1}");
                     var response = client.GetStringAsync(url).Result;
 
                     List <BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
@@ -72,7 +63,8 @@ namespace SWGoH
 
                     if (result1 != null)
                     {
-                        var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", result1.Id, apikey);
+                        
+                        var deleteurl = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", result1.Id.ToString() );
                         WebRequest request = WebRequest.Create(deleteurl);
                         request.Method = "DELETE";
                     
@@ -127,28 +119,32 @@ namespace SWGoH
             }
             else if (ExportMethod == ExportMethodEnum.Database)
             {
-                using (HttpClient client = new HttpClient())
+                try
                 {
-                    
-                    string json = JsonConvert.SerializeObject(this, Converter.Settings);
-                    string apikey = Settings.appSettings.MongoApiKey;
-
-                    //client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/TestDataSize?apiKey=" + apikey);
-                    client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=" + apikey);
-                    HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
-                    if (response.IsSuccessStatusCode)
+                    using (HttpClient client = new HttpClient())
                     {
-                        SWGoH.Log.ConsoleMessage("Added To Database : " + PlayerNameInGame);
 
-                        DeletePlayerFromDBAsync();
+                        string json = JsonConvert.SerializeObject(this, Converter.Settings);
+                        client.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Player", "", "", "", ""));
+                        HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            SWGoH.Log.ConsoleMessage("Added To Database : " + PlayerNameInGame);
 
-                        //DateTime nextrundate = DateTime.Now.AddDays(1.0);
-                        //SwGoh.QueueMethods.AddPlayer(PlayerName, Enums.QueueEnum.Command.UpdatePlayer, 2, Enums.QueueEnum.QueueType.Player, nextrundate);
+                            DeletePlayerFromDBAsync();
+
+                            //DateTime nextrundate = DateTime.Now.AddDays(1.0);
+                            //SwGoh.QueueMethods.AddPlayer(PlayerName, Enums.QueueEnum.Command.UpdatePlayer, 2, Enums.QueueEnum.QueueType.Player, nextrundate);
+                        }
+                        else
+                        {
+                            SWGoH.Log.ConsoleMessage("Error Adding To Database : " + PlayerName);
+                        }
                     }
-                    else
-                    {
-                        SWGoH.Log.ConsoleMessage("Error Adding To Database : " + PlayerName);
-                    }
+                }
+                catch (Exception e)
+                {
+                    SWGoH.Log.ConsoleMessage("Exception Adding To Database : " + PlayerName + " : " + e.Message);
                 }
             }
         }
@@ -206,12 +202,7 @@ namespace SWGoH
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var queryData = string.Concat("q={\"Aliases\":\"", pname, "\"}");
-                    var limit = "l=1";
-                    var field = "f={\"PlayerName\": 1}";
-                    string apikey = Settings.appSettings.MongoApiKey;
-
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Players/?{0}&{1}&{2}&apiKey={3}", queryData, field, limit, apikey);
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Players", "&q={\"Aliases\":\"" + pname + "\"}", "", "&l=1", "&f={\"PlayerName\": 1}");
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
@@ -240,7 +231,7 @@ namespace SWGoH
         /// <returns></returns>
         private bool CheckLastUpdateWithCurrent(ExportMethodEnum ExportMethod)
         {
-            return true;
+            //return true;
             if (ExportMethod == ExportMethodEnum.File)
             {
                 string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
@@ -280,21 +271,11 @@ namespace SWGoH
                 {
                     using (HttpClient client = new HttpClient())
                     {
-                        var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
-                        var orderby = "s={\"LastSwGohUpdated\":1}";
-                        var limit = "l=1";
-                        var field = "f={\"LastSwGohUpdated\": 1 , \"id\" : 1}";
-                        string apikey = Settings.appSettings.MongoApiKey;
-
-                        string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, orderby, limit, apikey);
+                        string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastSwGohUpdated\":1}", "&l=1", "&f={\"LastSwGohUpdated\": 1 , \"id\" : 1}");
                         string response = client.GetStringAsync(url).Result;
                         if (response != "" && response != "[  ]")
                         {
-                            //List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
-
                             List<PlayerDto> result = BsonSerializer.Deserialize<List<PlayerDto>>(response);
-                            //List<PlayerDto> result1 = BsonSerializer.Deserialize<List<PlayerDto>>(document);
-
                             if (result.Count == 1)
                             {
                                 PlayerDto Found = result[0];
@@ -305,7 +286,7 @@ namespace SWGoH
                                     string date = JsonConvert.SerializeObject(DateTime.UtcNow, Converter.Settings).ToString();
 
                                     var httpContent = new StringContent("{\"$set\" : { \"LastClassUpdated\" :" + date + "}}", Encoding.UTF8, "application/json");
-                                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", Found.Id , apikey);
+                                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", Found.Id , Settings.appSettings.MongoApiKey);
                                     using (HttpClient client1 = new HttpClient())
                                     {
                                         HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
@@ -401,10 +382,7 @@ namespace SWGoH
             //{
             using (HttpClient client = new HttpClient())
             {
-                var queryData = string.Concat("q={\"Name\" : \"" + newchar.Name + "\" }");
-                string apikey = Settings.appSettings.MongoApiKey;
-
-                string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/?{0}&apiKey={1}", queryData, apikey);
+                string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Character", "&q={\"Name\" : \"" + newchar.Name + "\" }", "", "", "");
                 string response = client.GetStringAsync(url).Result;
 
                 string replace = "/u/"+PlayerName+ "/collection/";
@@ -439,7 +417,7 @@ namespace SWGoH
                             new JProperty("Aliases", result1.Aliases));
 
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                        var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", result1.Id, apikey);
+                        var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", result1.Id.ToString());
                         using (HttpClient client1 = new HttpClient())
                         {
                             HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
@@ -456,7 +434,7 @@ namespace SWGoH
                     string json = JsonConvert.SerializeObject(data, Converter.Settings);
                     using (HttpClient client1 = new HttpClient())
                     {
-                        client1.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character?apiKey=" + apikey);
+                        client1.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Config.Character", "", "", "", ""));
                         HttpResponseMessage response1 = client1.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                         SWGoH.Log.ConsoleMessage("Added new Allias Char " + newchar.Name + "!!!!!!!");
                     }
