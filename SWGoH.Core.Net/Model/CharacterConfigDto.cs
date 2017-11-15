@@ -14,11 +14,6 @@ using System.Threading.Tasks;
 
 namespace SWGoH
 {
-    public class CharactersConfigDto
-    {
-        public List<CharacterConfigDto> Characters { get; set; }
-    }
-
     public class CharacterConfigDto
     {
         public Nullable<ObjectId> Id { get; set; }
