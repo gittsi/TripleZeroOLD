@@ -8,44 +8,44 @@ using System.Threading.Tasks;
 
 namespace SWGoH
 {
-    public class GuildsConfig
+    public class GuildsConfigDto
     {
-        public List<GuildConfig> Guilds { get; set; }
+        public List<GuildConfigDto> Guilds { get; set; }
     }
 
-    public class GuildConfig
+    public class GuildConfigDto
     {
         public string Name { get; set; }
         public List<string> Aliases { get; set; }
         public int SWGoHId { get; set; }
         public string SWGoHUrl { get; set; }
 
-        public static GuildConfig GetGuildFromAllias(string allias)
+        public static GuildConfigDto GetGuildFromAllias(string allias)
         {
-            GuildConfig ret = new GuildConfig();
+            GuildConfigDto ret = new GuildConfigDto();
             using (HttpClient client = new HttpClient())
             {
                 string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Guild", "&q=%7B%22Aliases%22:%22" + allias + "%22%7D", "", "", "");
                 string response = client.GetStringAsync(url).Result;
                 if (response != "" && response != "[  ]")
                 {
-                    List<GuildConfig> result = JsonConvert.DeserializeObject< List<GuildConfig>>(response);
+                    List<GuildConfigDto> result = JsonConvert.DeserializeObject< List<GuildConfigDto>>(response);
                     if (result.Count == 1) return result[0];
                     else return null;
                 }
                 return null;
             }
         }
-        public static GuildConfig GetGuildFromName(string name)
+        public static GuildConfigDto GetGuildFromName(string name)
         {
-            GuildConfig ret = new GuildConfig();
+            GuildConfigDto ret = new GuildConfigDto();
             using (HttpClient client = new HttpClient())
             {
                 string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Guild", "&q=%7B%22Name%22:%22" + name + "%22%7D", "", "", "");
                 string response = client.GetStringAsync(url).Result;
                 if (response != "" && response != "[  ]")
                 {
-                    List<GuildConfig> result = JsonConvert.DeserializeObject<List<GuildConfig>>(response);
+                    List<GuildConfigDto> result = JsonConvert.DeserializeObject<List<GuildConfigDto>>(response);
                     if (result.Count == 1) return result[0];
                     else return null;
                 }

@@ -23,14 +23,14 @@ namespace TripleZero.Modules
             characterAlias = characterAlias.Trim();
 
             string retStr = "";
-            var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
                 await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
                 return;
             }
 
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
+            var characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByAlias(characterAlias).Result;
             if (characterConfig == null)
             {
                 await ReplyAsync($"I couldn't find any character with alias ***{characterAlias}***");
@@ -65,7 +65,12 @@ namespace TripleZero.Modules
             guildAlias = guildAlias.Trim();
 
             string retStr = "";
-            var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
+            if (guildConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                return;
+            }
 
             var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
 
@@ -116,7 +121,12 @@ namespace TripleZero.Modules
             guildAlias = guildAlias.Trim();
 
             string retStr = "";
-            var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
+            if (guildConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                return;
+            }
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
             List<Player> guildPlayers = new List<Player>();
 
@@ -138,7 +148,12 @@ namespace TripleZero.Modules
             searchStr = searchStr.Trim();
 
             string retStr = "";
-            var guildConfig = IResolver.Current.GuildsConfig.GetGuildConfig(guildAlias).Result;
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
+            if (guildConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                return;
+            }
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
             List<Player> guildPlayers = new List<Player>();
 
@@ -147,7 +162,6 @@ namespace TripleZero.Modules
             if (searchStr.Length == 0)
             {
                 guildPlayers = result.Players;
-
             }
             else
             {

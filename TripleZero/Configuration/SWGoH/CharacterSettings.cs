@@ -16,7 +16,7 @@ using TripleZero.Infrastructure.DI;
 
 namespace TripleZero.Configuration
 {
-    public class CharactersConfig
+    public class CharacterSettings
     {
         public async Task<CharacterConfig> GetCharacterConfigByAlias(string alias)
         {

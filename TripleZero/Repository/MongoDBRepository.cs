@@ -193,19 +193,19 @@ namespace TripleZero.Repository
         }
         public async Task<CharacterConfig> SetCharacterAlias(string characterFullName, string alias)
         {
-            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+            CharacterConfig characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByName(characterFullName).Result;
             if (characterConfig == null) return null;
 
             characterConfig.Aliases.Add(alias);
             var result = PutCharacterConfig(characterConfig).Result;
             if (!result) return null;
 
-            characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
+            characterConfig = await IResolver.Current.CharacterSettings.GetCharacterConfigByName(characterFullName);
             return characterConfig;
         }
         public async Task<CharacterConfig> RemoveCharacterAlias(string characterFullName, string alias)
         {
-            CharacterConfig characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName).Result;
+            CharacterConfig characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByName(characterFullName).Result;
             if (characterConfig == null) return null;
 
             bool isRemoved = characterConfig.Aliases.Remove(alias);
@@ -213,7 +213,7 @@ namespace TripleZero.Repository
             var result = PutCharacterConfig(characterConfig).Result;
             if (!result) return null;
 
-            characterConfig = await IResolver.Current.CharacterConfig.GetCharacterConfigByName(characterFullName);
+            characterConfig = await IResolver.Current.CharacterSettings.GetCharacterConfigByName(characterFullName);
             return characterConfig;
         }
         private async Task<bool> PutCharacterConfig(CharacterConfig characterConfig)
@@ -289,6 +289,26 @@ namespace TripleZero.Repository
 
                     List<CharacterConfig> charactersConfig = _Mapper.Map<List<CharacterConfig>>(charactersConfigDto);
                     return charactersConfig;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+        public async Task<List<GuildConfig>> GetGuildsConfig()
+        {
+            string url = BuildApiUrl("Config.Guild", null, null, null, null);          
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+                    List<GuildConfigDto> ret = JsonConvert.DeserializeObject<List<GuildConfigDto>>(response, Converter.Settings);
+
+                    List<GuildConfig> guildsConfig = _Mapper.Map<List<GuildConfig>>(ret);
+                    return guildsConfig;
                 }
             }
             catch (Exception ex)

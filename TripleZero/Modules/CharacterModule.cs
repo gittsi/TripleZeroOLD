@@ -32,7 +32,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
+            var characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByAlias(characterAlias).Result;
             if (characterConfig == null)
             {
                 await ReplyAsync($"I couldn't find any character with alias : ***{characterAlias}***");
@@ -82,8 +82,6 @@ namespace TripleZero.Modules
             retStr += $"\nDeflection Chance: {character.Survivability.SpecialSurvivability.DeflectionChance} %";
             retStr += $"\nSpecial Critical Avoidance: {character.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} %";
 
-
-
             await ReplyAsync($"{retStr}");
         }
 
@@ -114,7 +112,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
+            var characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByAlias(characterAlias).Result;
             if (characterConfig == null)
             {
                 await ReplyAsync($"I couldn't find any character with alias : ***{characterAlias}***");
@@ -151,7 +149,7 @@ namespace TripleZero.Modules
             retStr += $"\nHealth: {character1.GeneralStats.Health} - {character2.GeneralStats.Health}";
             retStr += $"\nSpeed: {character1.GeneralStats.Speed} - {character2.GeneralStats.Speed}";
             retStr += $"\nHealth Steal: {character1.GeneralStats.HealthSteal} % - {character2.GeneralStats.HealthSteal} %";
-            retStr += $"\nCritical Damage: {character1.GeneralStats.CriticalDamage} %";
+            retStr += $"\nCritical Damage: {character1.GeneralStats.CriticalDamage} % - {character2.GeneralStats.CriticalDamage}";
             retStr += $"\nPotency: {character1.GeneralStats.Potency} % - {character2.GeneralStats.Potency} %";
             retStr += $"\nTenacity: {character1.GeneralStats.Tenacity} % - {character2.GeneralStats.Tenacity} %";
 

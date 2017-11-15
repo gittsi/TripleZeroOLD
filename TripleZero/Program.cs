@@ -91,7 +91,7 @@ namespace TripleZero
 
             var apiKey = IResolver.Current.ApplicationSettings.Get().MongoDBSettings.ApiKey;
 
-            List<CharacterConfig> charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
+            List<CharacterConfig> charactersConfig = IResolver.Current.CharacterSettings.GetCharactersConfig().Result;
             
             foreach(var characterConfig in charactersConfig)
             {

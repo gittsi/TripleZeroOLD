@@ -84,6 +84,20 @@ namespace TripleZero._Mapping
                     //character config
                     cfg.CreateMap<CharacterConfigDto, CharacterConfig>();
 
+                    //guild config
+                    cfg.CreateMap<GuildConfigDto, GuildConfig>();
+
+                    //guildCharacter
+                    cfg.CreateMap<GuildCharacterDto, GuildCharacter>()
+                    .ForMember(dest => dest.CharacterName, src => src.MapFrom(source => source.Name))
+                    ;
+
+                    //guildPlayerCharacter
+                    cfg.CreateMap<GuildPlayerCharacterDto, GuildPlayerCharacter>()
+                    .ForMember(dest => dest.PlayerName, src => src.MapFrom(source => source.Name))
+                    .ForMember(dest => dest.CombatType, src => src.MapFrom(source => source.Combat_Type))
+                    ;
+
                     cfg.AllowNullDestinationValues = true;
                     cfg.AllowNullCollections = true;
                 });

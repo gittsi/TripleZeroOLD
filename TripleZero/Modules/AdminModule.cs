@@ -133,7 +133,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var charactersConfig = IResolver.Current.CharacterConfig.GetCharactersConfig().Result;
+            var charactersConfig = IResolver.Current.CharacterSettings.GetCharactersConfig().Result;
             int debugcount = 0;
             foreach (var characterConfig in charactersConfig)
             {
