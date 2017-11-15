@@ -17,7 +17,7 @@ namespace TripleZero.Modules
         {
             Random rand1 = new Random();
 
-            int roll= rand1.Next(0, 100);
+            int roll = rand1.Next(0, 100);
 
             await ReplyAsync($"You rolled {roll}!!!");
         }
@@ -27,7 +27,7 @@ namespace TripleZero.Modules
         [Remarks("*imba*")]
         [Alias("*tsitas*")]
         public async Task SayImba()
-        { 
+        {
             await ReplyAsync("TSiTaS is imba!\nNo need to retrieve any data!\nFor now and till the end of time!!!");
         }
     }

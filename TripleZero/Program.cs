@@ -5,20 +5,10 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Autofac;
 using TripleZero.Infrastructure.DI;
-using System.Reflection;
 using TripleZero.Modules;
 using TripleZero.Configuration;
 using TripleZero.Helper;
-using System.Net;
-using System.Text;
-using System.Collections.Generic;
-using System.Net.Http;
-using Newtonsoft.Json.Linq;
-using System.Linq;
 using TripleZero._Mapping;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using SWGoH.Model;
 
 namespace TripleZero
 {
@@ -27,14 +17,12 @@ namespace TripleZero
         static Autofac.IContainer autoFacContainer = null;
         static ApplicationSettings applicationSettings = null;
         static MongoDBSettings mongoDBSettings = null;
-
-        private DiscordSocketClient client=null;        
-        private IServiceProvider services=null;
-        private CommandService commands=null;
+        private DiscordSocketClient client = null;
+        private IServiceProvider services = null;
+        private CommandService commands = null;
 
         static void Main(string[] args)
-            => new Program().MainAsync().GetAwaiter().GetResult();        
-
+            => new Program().MainAsync().GetAwaiter().GetResult();
         public async Task MainAsync()
         {
             ///////////initialize autofac
@@ -43,16 +31,16 @@ namespace TripleZero
             {
                 applicationSettings = scope.Resolve<ApplicationSettings>();
                 mongoDBSettings = scope.Resolve<MongoDBSettings>();
-                commands = scope.Resolve<CommandService>();                
-                client = scope.Resolve<DiscordSocketClient>();                
-                scope.Resolve<IMappingConfiguration>();                
+                commands = scope.Resolve<CommandService>();
+                client = scope.Resolve<DiscordSocketClient>();
+                scope.Resolve<IMappingConfiguration>();
 
-                var appSettings = applicationSettings.Get();                
+                var appSettings = applicationSettings.Get();
 
                 await InstallCommands();
 
                 await client.LoginAsync(TokenType.Bot, appSettings.DiscordSettings.Token);
-                await client.StartAsync();                
+                await client.StartAsync();
             }
 
 
@@ -70,48 +58,7 @@ namespace TripleZero
 
             await Task.Delay(-1);
 
-        }
-
-        #region "tests"  
-
-        private async Task TestGuildPlayers(string guildAlias)
-        {
-            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
-
-            await channel.SendMessageAsync(string.Format(".guildPlayers {0}", guildAlias));
-        }
-        private async Task TestPlayerReport(string username)
-        {
-            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
-
-            await channel.SendMessageAsync(string.Format(".player-report {0}", username));
-        }
-
-        private async Task TestPlayerMods(string username)
-        {
-            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
-
-            await channel.SendMessageAsync(string.Format(".mods -speed {0} 10", username));
-        }
-
-        private async Task TestGuildModule(string guild, string characterName)
-        {
-            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
-
-            await channel.SendMessageAsync(string.Format(".guild {0} {1}", guild, characterName));
-        }
-
-        private async Task TestCharacterModule(string userName, string characterName)
-        {
-            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
-
-            await channel.SendMessageAsync(string.Format(".ch {0} {1}", userName, characterName));
-        }
-        #endregion
-
-
-       
-
+        }        
         public async Task InstallCommands()
         {
             client.MessageReceived += HandleCommandAsync;
@@ -124,22 +71,18 @@ namespace TripleZero
             await commands.AddModuleAsync<FunModule>();
             await commands.AddModuleAsync<DBStatsModule>();
         }
-
         public async Task MessageReceived(SocketGuildUser user)
         {
             var channel = client.GetChannel(370581837560676354) as SocketTextChannel;
 
             await channel.SendMessageAsync("safsgasgags");
         }
-
         //public async Task UserJoined(SocketGuildUser user)
         //{
         //    var channel = client.GetChannel(370581837560676354) as SocketTextChannel;
 
         //    await channel.SendMessageAsync("safsgasgags");
         //}
-
-
         private async Task HandleCommandAsync(SocketMessage arg)
         {
             // Bail out if it's a System Message.
@@ -164,7 +107,7 @@ namespace TripleZero
 
 
 
-            
+
 
             // Create a number to track where the prefix ends and the command begins
             int pos = 0;
@@ -179,9 +122,9 @@ namespace TripleZero
 
                 // Execute the command. (result does not indicate a return value, 
                 // rather an object stating if the command executed succesfully).
-                var result = await commands.ExecuteAsync(context, pos ,services);
+                var result = await commands.ExecuteAsync(context, pos, services);
 
-                Consoler.WriteLineInColor(string.Format("User : '{0}' sent the following command : '{1}'", context.Message.Author.ToString(), context.Message.ToString()),ConsoleColor.Green);
+                Consoler.WriteLineInColor(string.Format("User : '{0}' sent the following command : '{1}'", context.Message.Author.ToString(), context.Message.ToString()), ConsoleColor.Green);
 
                 // Uncomment the following lines if you want the bot
                 // to send a message if it failed (not advised for most situations).
@@ -189,5 +132,37 @@ namespace TripleZero
                     await msg.Channel.SendMessageAsync(result.ErrorReason);
             }
         }
+        #region "tests"  
+        private async Task TestGuildPlayers(string guildAlias)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format(".guildPlayers {0}", guildAlias));
+        }
+        private async Task TestPlayerReport(string username)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format(".player-report {0}", username));
+        }
+        private async Task TestPlayerMods(string username)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format(".mods -speed {0} 10", username));
+        }
+        private async Task TestGuildModule(string guild, string characterName)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format(".guild {0} {1}", guild, characterName));
+        }
+        private async Task TestCharacterModule(string userName, string characterName)
+        {
+            var channel = client.GetChannel(371410170791854101) as SocketTextChannel;
+
+            await channel.SendMessageAsync(string.Format(".ch {0} {1}", userName, characterName));
+        }
+        #endregion
     }
 }

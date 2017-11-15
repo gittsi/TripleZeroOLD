@@ -28,7 +28,7 @@ namespace TripleZero.Infrastructure.DI
             builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();
 
             //modules
-            builder.RegisterType<HelpModule>().InstancePerDependency();            
+            builder.RegisterType<HelpModule>().InstancePerDependency();
             builder.RegisterType<FunModule>().InstancePerDependency();
             builder.RegisterType<GuildModule>().InstancePerDependency();
             builder.RegisterType<CharacterModule>().InstancePerDependency();
@@ -47,7 +47,6 @@ namespace TripleZero.Infrastructure.DI
 
             return builder.Build();
         }
-
     }
 
 }

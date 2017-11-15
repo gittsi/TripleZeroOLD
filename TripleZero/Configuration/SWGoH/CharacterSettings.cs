@@ -16,17 +16,15 @@ namespace TripleZero.Configuration
             await Task.FromResult(1);
 
             var result = IResolver.Current.MongoDBRepository.GetCharactersConfig().Result;
-            return result.Where(p => p.Aliases.Contains(alias.ToLower())).FirstOrDefault();            
+            return result.Where(p => p.Aliases.Contains(alias.ToLower())).FirstOrDefault();
         }
-
         public async Task<CharacterConfig> GetCharacterConfigByName(string name)
         {
             await Task.FromResult(1);
 
             var result = IResolver.Current.MongoDBRepository.GetCharactersConfig().Result;
-            return result.Where(p => p.Name ==name).FirstOrDefault();
+            return result.Where(p => p.Name == name).FirstOrDefault();
         }
-
         public async Task<List<CharacterConfig>> GetCharactersConfig()
         {
             await Task.FromResult(1);

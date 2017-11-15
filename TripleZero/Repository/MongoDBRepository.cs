@@ -169,10 +169,10 @@ namespace TripleZero.Repository
                 {
                     queue = _Mapper.Map<List<Queue>>(queueDto);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new ApplicationException(ex.Message);
-                }               
+                }
 
                 return queue;
             }
@@ -298,7 +298,7 @@ namespace TripleZero.Repository
         }
         public async Task<List<GuildConfig>> GetGuildsConfig()
         {
-            string url = BuildApiUrl("Config.Guild", null, null, null, null);          
+            string url = BuildApiUrl("Config.Guild", null, null, null, null);
 
             try
             {

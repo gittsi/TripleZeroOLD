@@ -30,6 +30,6 @@ namespace TripleZero.Configuration
 
             var result = IResolver.Current.MongoDBRepository.GetGuildsConfig().Result;
             return result.Where(p => p.Aliases.Contains(alias.ToLower())).FirstOrDefault();
-        }        
+        }
     }
 }

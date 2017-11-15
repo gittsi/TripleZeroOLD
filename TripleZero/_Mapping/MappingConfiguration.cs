@@ -15,7 +15,6 @@ namespace TripleZero._Mapping
         {
             _Mapper = GetConfigureMapper();
         }
-
         public IMapper GetConfigureMapper()
         {
             if (_Mapper != null)
@@ -52,7 +51,7 @@ namespace TripleZero._Mapping
                     ;
 
                     cfg.CreateMap<CharacterDto, PhysicalOffense>();
-                    cfg.CreateMap<CharacterDto, SpecialOffense>();                    
+                    cfg.CreateMap<CharacterDto, SpecialOffense>();
 
                     cfg.CreateMap<CharacterDto, Survivability>()
                     .ForMember(dest => dest.PhysicalSurvivability, src => src.MapFrom(s => s))
@@ -70,10 +69,10 @@ namespace TripleZero._Mapping
                     ;
 
                     cfg.CreateMap<CharacterDto, Character>()
-                    .ForMember(dest=> dest.Abilities , src => src.MapFrom(s=>s.Abilities))                    
+                    .ForMember(dest => dest.Abilities, src => src.MapFrom(s => s.Abilities))
                     .ForMember(dest => dest.GeneralStats, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.OffenseStats, src => src.MapFrom(s => s))
-                    .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))                    
+                    .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))
                     ;
 
                     //queue

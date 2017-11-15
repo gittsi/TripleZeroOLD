@@ -12,16 +12,14 @@ namespace TripleZero.Infrastructure.DI
     public abstract class ResolverConfig
     {
         internal IContainer Container { get; set; }
-
         public ApplicationSettings ApplicationSettings { get { return Container.Resolve<ApplicationSettings>(); } }
         public MongoDBSettings MongoDBSettings { get { return Container.Resolve<MongoDBSettings>(); } }
         public GuildSettings GuildSettings { get { return Container.Resolve<GuildSettings>(); } }
         public CharacterSettings CharacterSettings { get { return Container.Resolve<CharacterSettings>(); } }
         //public CharacterSettings CharacterSettings { get { return Container.Resolve<CharacterSettings>(); } }
-        public ISWGoHRepository SWGoHRepository  { get { return Container.Resolve<ISWGoHRepository>(); } }
+        public ISWGoHRepository SWGoHRepository { get { return Container.Resolve<ISWGoHRepository>(); } }
         public IMongoDBRepository MongoDBRepository { get { return Container.Resolve<IMongoDBRepository>(); } }
         public IMappingConfiguration MappingConfiguration { get { return Container.Resolve<IMappingConfiguration>(); } }
-
         public static IContainer ConfigureContainer()
         {
             var builder = new ContainerBuilder();
