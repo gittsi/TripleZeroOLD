@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SWGoH.Enums.QueueEnum;
+using MongoDB.Driver;
 
 namespace SWGoH
 {
@@ -25,7 +26,7 @@ namespace SWGoH
                 {
                     JObject data = new JObject(
                     new JProperty("Name", PlayerName),
-                    new JProperty("InsertedDate", DateTime.UtcNow),
+                    new JProperty("InsertedDate", DateTime.Now),
                     new JProperty("NextRunDate", nextrundate),
                     new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
@@ -74,43 +75,67 @@ namespace SWGoH
         }
         public static QueueDto GetQueu()
         {
-            SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!!");
             try
             {
-
-                using (HttpClient client = new HttpClient())
-                { 
-                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", "&q={\"Status\":0}", "&s={\"Priority\":-1,\"InsertedDate\":1}", "&l=1", "");
-
-                    string response = client.GetStringAsync(url).Result;
-                    if (response != "" && response != "[  ]")
+                MongoDBRepo mongo = new MongoDBRepo();
+                IMongoDatabase db = mongo.Connect();
+                if (db != null)
+                {
+                    SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!! (mongo)");
+                    IMongoCollection <QueueDto> collection = db.GetCollection<QueueDto>("Queue");
+                    if (collection != null)
                     {
-                        List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                        QueueDto result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
-                        if (result1 != null)
+
+                        FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
+                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1);
+                        var opts = new FindOneAndUpdateOptions<QueueDto>()
                         {
-                            //check nextrundate
+                            IsUpsert = false,
+                            ReturnDocument = ReturnDocument.After,
+                            Sort = Builders<QueueDto>.Sort.Descending(r => r.InsertedDate).Ascending (r => r.InsertedDate)
+                        };
+                        QueueDto found = collection.FindOneAndUpdate<QueueDto>(filter, update, opts);
 
+                        return found;
+                    }
+                }
+                else
+                {
+                    SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!!");
+                    using (HttpClient client = new HttpClient())
+                    {
+                        string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", "&q={\"Status\":0}", "&s={\"Priority\":-1,\"InsertedDate\":1}", "&l=1", "");
 
-                            //UPDATE with Status = 1
-                            JObject data = new JObject(
-                            new JProperty("Name", result1.Name),
-                            new JProperty("InsertedDate", result1.InsertedDate),
-                            new JProperty("ProcessingStartDate", DateTime.Now),
-                            new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.Processing),
-                            new JProperty("Priority", result1.Priority),
-                            new JProperty("Type", result1.Type),
-                            new JProperty("Command", result1.Command));
-
-                            var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                            var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", result1.Id.ToString());
-                            using (HttpClient client1 = new HttpClient())
+                        string response = client.GetStringAsync(url).Result;
+                        if (response != "" && response != "[  ]")
+                        {
+                            List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                            QueueDto result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
+                            if (result1 != null)
                             {
-                                HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                                //check nextrundate
+
+
+                                //UPDATE with Status = 1
+                                JObject data = new JObject(
+                                new JProperty("Name", result1.Name),
+                                new JProperty("InsertedDate", result1.InsertedDate),
+                                new JProperty("ProcessingStartDate", DateTime.Now),
+                                new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.Processing),
+                                new JProperty("Priority", result1.Priority),
+                                new JProperty("Type", result1.Type),
+                                new JProperty("Command", result1.Command));
+
+                                var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                                var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", result1.Id.ToString());
+                                using (HttpClient client1 = new HttpClient())
+                                {
+                                    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                                }
+                                SWGoH.Log.ConsoleMessage("Got from Queu Player " + result1.Name);
                             }
-                            SWGoH.Log.ConsoleMessage("Got from Queu Player " + result1.Name);
+                            return result1;
                         }
-                        return result1;
                     }
                 }
             }
