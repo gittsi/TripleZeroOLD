@@ -148,8 +148,7 @@ namespace TripleZero.Repository
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
-                    return null;
+                    throw new ApplicationException(ex.Message);
                 }
             }
         }
@@ -172,9 +171,8 @@ namespace TripleZero.Repository
                 }
                 catch(Exception ex)
                 {
-                    var a = 1;
-                }
-                
+                    throw new ApplicationException(ex.Message);
+                }               
 
                 return queue;
             }
