@@ -11,6 +11,7 @@ namespace SWGoH
         {
             stream = new StreamWriter(Fname, false);
             mExportToFile = exporttofile;
+            stream.AutoFlush = true;
         }
         public static void FileFinalize()
         {
