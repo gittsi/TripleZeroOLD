@@ -165,7 +165,7 @@ namespace SWGoH
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var queryData = string.Concat("q={\"Name\":\"", playerName, "\",  \"Status\" : 1 }");
+                    var queryData = string.Concat("&q={\"Name\":\"", playerName, "\",  \"Status\" : 1 }");
                     string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", queryData, "", "", "");
 
                     string response = client.GetStringAsync(url).Result;

@@ -1,572 +1,141 @@
-Got from Queu Player briglja  Time:11:8:16
-Reading Player briglja aka Line id Briglja  Time:11:8:45
-Error in CkeckLastUpdated :One or more errors occurred. (Response status code does not indicate success: 400 (Bad Request).)  Time:11:8:46
-          1) Added character : R2-D2  Time:11:8:46
-          2) Added character : Commander Luke Skywalker  Time:11:8:48
-          3) Added character : Han Solo  Time:11:8:51
-          4) Added character : Darth Nihilus  Time:11:8:54
-          5) Added character : Kylo Ren  Time:11:8:56
-          6) Added character : Barriss Offee  Time:11:8:59
-          7) Added character : Darth Vader  Time:11:9:0
-          8) Added character : Boba Fett  Time:11:9:3
-          9) Added character : Grand Admiral Thrawn  Time:11:9:5
-          10) Added character : General Kenobi  Time:11:9:7
-          11) Added character : Grand Moff Tarkin  Time:11:9:9
-          12) Added character : Chirrut mwe  Time:11:9:10
-          13) Added character : CT-7567 Rex  Time:11:9:12
-          14) Added character : Emperor Palpatine  Time:11:9:14
-          15) Added character : Death Trooper  Time:11:9:16
-          16) Added character : Jedi Knight Anakin  Time:11:9:18
-          17) Added character : Wedge Antilles  Time:11:9:20
-          18) Added character : Biggs Darklighter  Time:11:9:22
-          19) Added character : IG-88  Time:11:9:24
-          20) Added character : Stormtrooper Han  Time:11:9:26
-          21) Added character : Ezra Bridger  Time:11:9:28
-          22) Added character : Rey (Scavenger)  Time:11:9:30
-          23) Added character : Qui-Gon Jinn  Time:11:9:32
-          24) Added character : Lando Calrissian  Time:11:9:34
-          25) Added character : IG-86 Sentinel Droid  Time:11:9:36
-          26) Added character : TIE Fighter Pilot  Time:11:9:38
-          27) Added character : Poe Dameron  Time:11:9:40
-          28) Added character : Princess Leia  Time:11:9:42
-          29) Added character : Darth Sidious  Time:11:9:44
-          30) Added character : Chief Nebit  Time:11:9:46
-          31) Added character : Grand Master Yoda  Time:11:9:48
-          32) Added character : Geonosian Soldier  Time:11:9:50
-          33) Added character : Baze Malbus  Time:11:9:52
-          34) Added character : Jawa Engineer  Time:11:9:54
-          35) Added character : First Order TIE Pilot  Time:11:9:56
-          36) Added character : Teebo  Time:11:9:58
-          37) Added character : HK-47  Time:11:10:0
-          38) Added character : Dathcha  Time:11:10:3
-          39) Added character : B2 Super Battle Droid  Time:11:10:5
-          40) Added character : Ewok Elder  Time:11:10:7
-          41) Added character : CT-5555 Fives  Time:11:10:9
-          42) Added character : Admiral Ackbar  Time:11:10:11
-          43) Added character : Mace Windu  Time:11:10:13
-          44) Added character : Ahsoka Tano  Time:11:10:15
-          45) Added character : Obi-Wan Kenobi (Old Ben)  Time:11:10:17
-          46) Added character : Darth Maul  Time:11:10:19
-          47) Added character : Captain Phasma  Time:11:10:21
-          48) Added character : Jawa  Time:11:10:23
-          49) Added character : Jawa Scavenger  Time:11:10:25
-          50) Added character : Royal Guard  Time:11:10:27
-          51) Added character : Jyn Erso  Time:11:10:29
-          52) Added character : Ima-Gun Di  Time:11:10:31
-          53) Added character : Hera Syndulla  Time:11:10:33
-          54) Added character : Jedi Consular  Time:11:10:35
-          55) Added character : Ugnaught  Time:11:10:37
-          56) Added character : K-2SO  Time:11:10:39
-          57) Added character : Ahsoka Tano (Fulcrum)  Time:11:10:41
-          58) Added character : Luminara Unduli  Time:11:10:43
-          59) Added character : Dengar  Time:11:10:45
-          60) Added character : Garazeb Zeb Orrelios  Time:11:10:47
-          61) Added character : Chopper  Time:11:10:49
-          62) Added character : Kanan Jarrus  Time:11:10:51
-          63) Added character : Ewok Scout  Time:11:10:53
-          64) Added character : Resistance Pilot  Time:11:10:55
-          65) Added character : Sabine Wren  Time:11:10:57
-          66) Added character : Shoretrooper  Time:11:10:59
-          67) Added character : Finn  Time:11:11:1
-          68) Added character : Count Dooku  Time:11:11:3
-          69) Added character : Captain Han Solo  Time:11:11:5
-          70) Added character : Sun Fac  Time:11:11:7
-          71) Added character : Scarif Rebel Pathfinder  Time:11:11:9
-          72) Added character : Cassian Andor  Time:11:11:11
-          73) Added character : Poggle the Lesser  Time:11:11:13
-          74) Added character : Stormtrooper  Time:11:11:15
-          75) Added character : Director Krennic  Time:11:11:17
-          76) Added character : Resistance Trooper  Time:11:11:19
-          77) Added character : Luke Skywalker (Farmboy)  Time:11:11:21
-          78) Added character : CC-2224 Cody  Time:11:11:23
-          79) Added character : Clone Sergeant - Phase I  Time:11:11:25
-          80) Added character : Rebel Officer Leia Organa  Time:11:11:27
-          81) Added character : First Order Officer  Time:11:11:29
-          82) Added character : Hoth Rebel Scout  Time:11:11:31
-          83) Added character : Magmatrooper  Time:11:11:33
-          84) Added character : Cad Bane  Time:11:11:35
-          85) Added character : First Order Stormtrooper  Time:11:11:37
-          86) Added character : Eeth Koth  Time:11:11:39
-          87) Added character : Tusken Raider  Time:11:11:41
-          88) Added character : Kylo Ren (Unmasked)  Time:11:11:43
-          89) Added character : Tusken Shaman  Time:11:11:44
-          90) Added character : Savage Opress  Time:11:11:46
-          91) Added character : Hoth Rebel Soldier  Time:11:11:48
-          92) Added character : Bistan  Time:11:11:50
-          93) Added character : Greedo  Time:11:11:52
-          94) Added character : CT-21-0408 Echo  Time:11:11:54
-          95) Added character : Aayla Secura  Time:11:11:56
-          96) Added character : Asajj Ventress  Time:11:11:58
-          97) Added character : Nute Gunray  Time:11:12:0
-          98) Added character : Nightsister Initiate  Time:11:12:2
-          99) Added character : Snowtrooper  Time:11:12:4
-          100) Added character : Bodhi Rook  Time:11:12:6
-          101) Added character : Clone Wars Chewbacca  Time:11:12:8
-          102) Added character : Plo Koon  Time:11:12:10
-          103) Added character : Pao  Time:11:12:12
-          104) Added character : Old Daka  Time:11:12:14
-          105) Added character : Wicket  Time:11:12:16
-          106) Added character : Chief Chirpa  Time:11:12:18
-          107) Added character : Talia  Time:11:12:20
-          108) Added character : IG-100 MagnaGuard  Time:11:12:22
-          109) Added character : Zam Wesell  Time:11:12:24
-          110) Added character : Sith Trooper  Time:11:12:26
-          111) Added character : Logray  Time:11:12:28
-          112) Added character : Coruscant Underworld Police  Time:11:12:30
-          113) Added character : Lobot  Time:11:12:32
-          114) Added character : Jedi Knight Guardian  Time:11:12:34
-          115) Added character : Geonosian Spy  Time:11:12:36
-          116) Added character : Gar Saxon  Time:11:12:38
-          117) Added character : Sith Assassin  Time:11:12:40
-          118) Added character : Imperial Super Commando  Time:11:12:42
-          119) Added character : General Veers  Time:11:12:44
-          120) Added character : Paploo  Time:11:12:46
-          121) Added character : General Grievous  Time:11:12:48
-          122) Added character : Mother Talzin  Time:11:12:50
-          123) Added character : Veteran Smuggler Chewbacca  Time:11:12:52
-          124) Added character : Veteran Smuggler Han Solo  Time:11:12:54
-          125) Added character : Nightsister Zombie  Time:11:12:57
-          126) Added character : Mob Enforcer  Time:11:13:0
-          127) Added character : Nightsister Spirit  Time:11:13:2
-          128) Added character : Kit Fisto  Time:11:13:4
-          129) Added character : Nightsister Acolyte  Time:11:13:6
-          130) Added character : First Order SF TIE Pilot  Time:11:13:8
-          131) Added character : BB-8  Time:11:13:10
-          132) Added character : Gamorrean Guard  Time:11:13:12
-          133) Added character : Hermit Yoda  Time:11:13:14
-          134) Added character : URoRRuRRR  Time:11:13:16
-Added To Database : Line id Briglja  Time:11:13:22
-Removed From Queu!  Time:11:14:4
-Got from Queu Player mrkizeko  Time:11:14:35
-Reading Player mrkizeko aka Line id mrkizeko  Time:11:14:40
-Error in CkeckLastUpdated :One or more errors occurred. (Response status code does not indicate success: 400 (Bad Request).)  Time:11:14:51
-          1) Added character : Grand Moff Tarkin  Time:11:14:51
-          2) Added character : Commander Luke Skywalker  Time:11:14:53
-          3) Added character : Grand Admiral Thrawn  Time:11:14:55
-          4) Added character : R2-D2  Time:11:14:58
-          5) Added character : Han Solo  Time:11:15:0
-          6) Added character : Kylo Ren  Time:11:15:2
-          7) Added character : Darth Maul  Time:11:15:4
-          8) Added character : Darth Vader  Time:11:15:6
-          9) Added character : Ezra Bridger  Time:11:15:8
-          10) Added character : Darth Sidious  Time:11:15:10
-          11) Added character : General Kenobi  Time:11:15:12
-          12) Added character : Boba Fett  Time:11:15:14
-          13) Added character : Darth Nihilus  Time:11:15:16
-          14) Added character : CT-7567 Rex  Time:11:15:18
-          15) Added character : Grand Master Yoda  Time:11:15:20
-          16) Added character : Emperor Palpatine  Time:11:15:22
-          17) Added character : Wedge Antilles  Time:11:15:24
-          18) Added character : CT-5555 Fives  Time:11:15:26
-          19) Added character : Qui-Gon Jinn  Time:11:15:28
-          20) Added character : Jedi Knight Anakin  Time:11:15:30
-          21) Added character : Admiral Ackbar  Time:11:15:32
-          22) Added character : Biggs Darklighter  Time:11:15:33
-          23) Added character : Stormtrooper Han  Time:11:15:35
-          24) Added character : Poe Dameron  Time:11:15:38
-          25) Added character : Captain Phasma  Time:11:15:40
-          26) Added character : Lando Calrissian  Time:11:15:42
-          27) Added character : First Order TIE Pilot  Time:11:15:44
-          28) Added character : Mace Windu  Time:11:15:47
-          29) Added character : Ahsoka Tano  Time:11:15:49
-          30) Added character : IG-88  Time:11:15:52
-          31) Added character : TIE Fighter Pilot  Time:11:15:53
-          32) Added character : IG-86 Sentinel Droid  Time:11:15:55
-          33) Added character : Princess Leia  Time:11:15:57
-          34) Added character : Barriss Offee  Time:11:15:59
-          35) Added character : Rey (Scavenger)  Time:11:16:1
-          36) Added character : Geonosian Soldier  Time:11:16:3
-          37) Added character : Jawa Engineer  Time:11:16:6
-          38) Added character : Teebo  Time:11:16:8
-          39) Added character : HK-47  Time:11:16:10
-          40) Added character : Jedi Consular  Time:11:16:12
-          41) Added character : Obi-Wan Kenobi (Old Ben)  Time:11:16:14
-          42) Added character : Chief Nebit  Time:11:16:16
-          43) Added character : Shoretrooper  Time:11:16:18
-          44) Added character : B2 Super Battle Droid  Time:11:16:20
-          45) Added character : Dathcha  Time:11:16:22
-          46) Added character : Jyn Erso  Time:11:16:24
-          47) Added character : Greedo  Time:11:16:26
-          48) Added character : Ewok Elder  Time:11:16:28
-          49) Added character : Luminara Unduli  Time:11:16:30
-          50) Added character : Jawa  Time:11:16:32
-          51) Added character : Chopper  Time:11:16:34
-          52) Added character : Chirrut mwe  Time:11:16:36
-          53) Added character : Jawa Scavenger  Time:11:16:37
-          54) Added character : Hera Syndulla  Time:11:16:39
-          55) Added character : Baze Malbus  Time:11:16:41
-          56) Added character : Savage Opress  Time:11:16:43
-          57) Added character : Poggle the Lesser  Time:11:16:45
-          58) Added character : Luke Skywalker (Farmboy)  Time:11:16:47
-          59) Added character : Captain Han Solo  Time:11:16:49
-          60) Added character : Death Trooper  Time:11:16:51
-          61) Added character : Ima-Gun Di  Time:11:16:54
-          62) Added character : Asajj Ventress  Time:11:16:56
-          63) Added character : Royal Guard  Time:11:16:58
-          64) Added character : K-2SO  Time:11:17:0
-          65) Added character : Old Daka  Time:11:17:2
-          66) Added character : Pao  Time:11:17:4
-          67) Added character : Garazeb Zeb Orrelios  Time:11:17:6
-          68) Added character : Bodhi Rook  Time:11:17:8
-          69) Added character : Ewok Scout  Time:11:17:10
-          70) Added character : Clone Wars Chewbacca  Time:11:17:12
-          71) Added character : Kanan Jarrus  Time:11:17:14
-          72) Added character : Finn  Time:11:17:16
-          73) Added character : Chief Chirpa  Time:11:17:18
-          74) Added character : Bistan  Time:11:17:20
-          75) Added character : Cassian Andor  Time:11:17:22
-          76) Added character : Resistance Pilot  Time:11:17:24
-          77) Added character : General Veers  Time:11:17:26
-          78) Added character : Nute Gunray  Time:11:17:28
-          79) Added character : Sabine Wren  Time:11:17:30
-          80) Added character : Tusken Raider  Time:11:17:32
-          81) Added character : Scarif Rebel Pathfinder  Time:11:17:34
-          82) Added character : Cad Bane  Time:11:17:36
-          83) Added character : Hoth Rebel Scout  Time:11:17:39
-          84) Added character : Plo Koon  Time:11:17:40
-          85) Added character : Rebel Officer Leia Organa  Time:11:17:42
-          86) Added character : Nightsister Initiate  Time:11:17:44
-          87) Added character : Stormtrooper  Time:11:17:46
-          88) Added character : First Order Officer  Time:11:17:48
-          89) Added character : Talia  Time:11:17:50
-          90) Added character : Clone Sergeant - Phase I  Time:11:17:52
-          91) Added character : Magmatrooper  Time:11:17:54
-          92) Added character : Hoth Rebel Soldier  Time:11:17:56
-          93) Added character : Eeth Koth  Time:11:17:58
-          94) Added character : Sun Fac  Time:11:18:0
-          95) Added character : Snowtrooper  Time:11:18:2
-          96) Added character : Mob Enforcer  Time:11:18:4
-          97) Added character : Director Krennic  Time:11:18:6
-          98) Added character : First Order Stormtrooper  Time:11:18:8
-          99) Added character : IG-100 MagnaGuard  Time:11:18:10
-          100) Added character : Jedi Knight Guardian  Time:11:18:12
-          101) Added character : Ugnaught  Time:11:18:14
-          102) Added character : Wicket  Time:11:18:16
-          103) Added character : Nightsister Acolyte  Time:11:18:18
-          104) Added character : Ahsoka Tano (Fulcrum)  Time:11:18:20
-          105) Added character : CC-2224 Cody  Time:11:18:21
-          106) Added character : Dengar  Time:11:18:24
-          107) Added character : CT-21-0408 Echo  Time:11:18:25
-          108) Added character : Geonosian Spy  Time:11:18:27
-          109) Added character : Resistance Trooper  Time:11:18:30
-          110) Added character : Sith Assassin  Time:11:18:31
-          111) Added character : Coruscant Underworld Police  Time:11:18:33
-          112) Added character : URoRRuRRR  Time:11:18:35
-          113) Added character : Sith Trooper  Time:11:18:37
-          114) Added character : BB-8  Time:11:18:39
-          115) Added character : Mother Talzin  Time:11:18:41
-          116) Added character : Aayla Secura  Time:11:18:43
-          117) Added character : Count Dooku  Time:11:18:45
-          118) Added character : Paploo  Time:11:18:47
-          119) Added character : Logray  Time:11:18:49
-          120) Added character : Veteran Smuggler Chewbacca  Time:11:18:51
-          121) Added character : Zam Wesell  Time:11:18:53
-          122) Added character : Gar Saxon  Time:11:18:55
-          123) Added character : Kit Fisto  Time:11:18:57
-          124) Added character : Veteran Smuggler Han Solo  Time:11:18:59
-          125) Added character : Nightsister Spirit  Time:11:19:1
-          126) Added character : Lobot  Time:11:19:3
-          127) Added character : Nightsister Zombie  Time:11:19:5
-          128) Added character : Imperial Super Commando  Time:11:19:7
-          129) Added character : Kylo Ren (Unmasked)  Time:11:19:9
-          130) Added character : Tusken Shaman  Time:11:19:11
-          131) Added character : First Order SF TIE Pilot  Time:11:19:13
-          132) Added character : Gamorrean Guard  Time:11:19:15
-          133) Added character : General Grievous  Time:11:19:17
-          134) Added character : Hermit Yoda  Time:11:19:19
-Added To Database : Line id mrkizeko  Time:11:19:46
-Removed From Queu!  Time:11:19:57
-Got from Queu Player oaraug  Time:11:20:32
-Reading Player oaraug aka Rack Aurus  Time:11:20:34
-Error in CkeckLastUpdated :One or more errors occurred. (Response status code does not indicate success: 400 (Bad Request).)  Time:11:20:34
-          1) Added character : Commander Luke Skywalker  Time:11:20:35
-          2) Added character : R2-D2  Time:11:20:37
-          3) Added character : Qui-Gon Jinn  Time:11:20:39
-          4) Added character : Jyn Erso  Time:11:20:41
-          5) Added character : Hermit Yoda  Time:11:20:43
-          6) Added character : Barriss Offee  Time:11:20:45
-          7) Added character : Finn  Time:11:20:47
-          8) Added character : General Kenobi  Time:11:20:49
-          9) Added character : Ezra Bridger  Time:11:20:51
-          10) Added character : Chirrut mwe  Time:11:20:53
-          11) Added character : Baze Malbus  Time:11:20:55
-          12) Added character : Han Solo  Time:11:20:57
-          13) Added character : Ahsoka Tano  Time:11:20:59
-          14) Added character : Bistan  Time:11:21:1
-          15) Added character : Mace Windu  Time:11:21:4
-          16) Added character : Jedi Knight Anakin  Time:11:21:6
-          17) Added character : Darth Nihilus  Time:11:21:8
-          18) Added character : Aayla Secura  Time:11:21:10
-          19) Added character : TIE Fighter Pilot  Time:11:21:12
-          20) Added character : CT-5555 Fives  Time:11:21:14
-          21) Added character : Emperor Palpatine  Time:11:21:16
-          22) Added character : Wedge Antilles  Time:11:21:18
-          23) Added character : CT-7567 Rex  Time:11:21:19
-          24) Added character : Grand Master Yoda  Time:11:21:21
-          25) Added character : Rey (Scavenger)  Time:11:21:23
-          26) Added character : Cassian Andor  Time:11:21:25
-          27) Added character : Poe Dameron  Time:11:21:27
-          28) Added character : Princess Leia  Time:11:21:29
-          29) Added character : Lando Calrissian  Time:11:21:31
-          30) Added character : IG-88  Time:11:21:33
-          31) Added character : Resistance Pilot  Time:11:21:35
-          32) Added character : Biggs Darklighter  Time:11:21:37
-          33) Added character : Resistance Trooper  Time:11:21:39
-          34) Added character : First Order TIE Pilot  Time:11:21:41
-          35) Added character : B2 Super Battle Droid  Time:11:21:43
-          36) Added character : Obi-Wan Kenobi (Old Ben)  Time:11:21:45
-          37) Added character : IG-86 Sentinel Droid  Time:11:21:47
-          38) Added character : Jawa Engineer  Time:11:21:49
-          39) Added character : Dathcha  Time:11:21:51
-          40) Added character : Sun Fac  Time:11:21:54
-          41) Added character : Darth Vader  Time:11:21:56
-          42) Added character : Scarif Rebel Pathfinder  Time:11:21:58
-          43) Added character : HK-47  Time:11:22:0
-          44) Added character : Jawa  Time:11:22:2
-          45) Added character : Captain Han Solo  Time:11:22:4
-          46) Added character : Ugnaught  Time:11:22:6
-          47) Added character : Chief Nebit  Time:11:22:8
-          48) Added character : Stormtrooper Han  Time:11:22:10
-          49) Added character : Geonosian Soldier  Time:11:22:12
-          50) Added character : Ewok Elder  Time:11:22:14
-          51) Added character : Clone Sergeant - Phase I  Time:11:22:16
-          52) Added character : Jedi Consular  Time:11:22:18
-          53) Added character : Garazeb Zeb Orrelios  Time:11:22:20
-          54) Added character : Plo Koon  Time:11:22:22
-          55) Added character : Jawa Scavenger  Time:11:22:24
-          56) Added character : Grand Admiral Thrawn  Time:11:22:26
-          57) Added character : Chopper  Time:11:22:28
-          58) Added character : Hera Syndulla  Time:11:22:30
-          59) Added character : Teebo  Time:11:22:32
-          60) Added character : IG-100 MagnaGuard  Time:11:22:34
-          61) Added character : Admiral Ackbar  Time:11:22:36
-          62) Added character : K-2SO  Time:11:22:38
-          63) Added character : Hoth Rebel Scout  Time:11:22:40
-          64) Added character : Chief Chirpa  Time:11:22:42
-          65) Added character : Royal Guard  Time:11:22:44
-          66) Added character : Ima-Gun Di  Time:11:22:46
-          67) Added character : Kanan Jarrus  Time:11:22:48
-          68) Added character : Rebel Officer Leia Organa  Time:11:22:50
-          69) Added character : Poggle the Lesser  Time:11:22:52
-          70) Added character : Hoth Rebel Soldier  Time:11:22:53
-          71) Added character : Geonosian Spy  Time:11:22:55
-          72) Added character : Ahsoka Tano (Fulcrum)  Time:11:22:57
-          73) Added character : Grand Moff Tarkin  Time:11:22:59
-          74) Added character : Sabine Wren  Time:11:23:1
-          75) Added character : Ewok Scout  Time:11:23:3
-          76) Added character : Darth Maul  Time:11:23:5
-          77) Added character : Old Daka  Time:11:23:7
-          78) Added character : Pao  Time:11:23:9
-          79) Added character : Luke Skywalker (Farmboy)  Time:11:23:11
-          80) Added character : Luminara Unduli  Time:11:23:13
-          81) Added character : Magmatrooper  Time:11:23:15
-          82) Added character : CC-2224 Cody  Time:11:23:18
-          83) Added character : First Order Officer  Time:11:23:20
-          84) Added character : Mother Talzin  Time:11:23:22
-          85) Added character : Clone Wars Chewbacca  Time:11:23:25
-          86) Added character : Shoretrooper  Time:11:23:26
-          87) Added character : Savage Opress  Time:11:23:28
-          88) Added character : Gar Saxon  Time:11:23:30
-          89) Added character : CT-21-0408 Echo  Time:11:23:32
-          90) Added character : Talia  Time:11:23:34
-          91) Added character : Death Trooper  Time:11:23:36
-          92) Added character : Count Dooku  Time:11:23:38
-          93) Added character : General Grievous  Time:11:23:40
-          94) Added character : General Veers  Time:11:23:42
-          95) Added character : Darth Sidious  Time:11:23:44
-          96) Added character : Director Krennic  Time:11:23:46
-          97) Added character : Kylo Ren (Unmasked)  Time:11:23:48
-          98) Added character : Asajj Ventress  Time:11:23:50
-          99) Added character : Paploo  Time:11:23:52
-          100) Added character : Captain Phasma  Time:11:23:54
-          101) Added character : Logray  Time:11:23:56
-          102) Added character : Snowtrooper  Time:11:23:58
-          103) Added character : Tusken Raider  Time:11:24:0
-          104) Added character : URoRRuRRR  Time:11:24:2
-          105) Added character : Cad Bane  Time:11:24:4
-          106) Added character : Jedi Knight Guardian  Time:11:24:6
-          107) Added character : Nute Gunray  Time:11:24:7
-          108) Added character : Wicket  Time:11:24:9
-          109) Added character : Dengar  Time:11:24:11
-          110) Added character : Kylo Ren  Time:11:24:13
-          111) Added character : Sith Trooper  Time:11:24:15
-          112) Added character : Boba Fett  Time:11:24:17
-          113) Added character : Nightsister Initiate  Time:11:24:19
-          114) Added character : First Order SF TIE Pilot  Time:11:24:21
-          115) Added character : Stormtrooper  Time:11:24:23
-          116) Added character : Veteran Smuggler Chewbacca  Time:11:24:25
-          117) Added character : Imperial Super Commando  Time:11:24:27
-          118) Added character : Sith Assassin  Time:11:24:29
-          119) Added character : First Order Stormtrooper  Time:11:24:31
-          120) Added character : Lobot  Time:11:24:33
-          121) Added character : Bodhi Rook  Time:11:24:35
-          122) Added character : Coruscant Underworld Police  Time:11:24:37
-          123) Added character : Greedo  Time:11:24:39
-          124) Added character : Veteran Smuggler Han Solo  Time:11:24:41
-          125) Added character : Nightsister Zombie  Time:11:24:43
-          126) Added character : Nightsister Spirit  Time:11:24:45
-          127) Added character : BB-8  Time:11:24:47
-          128) Added character : Eeth Koth  Time:11:24:49
-          129) Added character : Gamorrean Guard  Time:11:24:51
-          130) Added character : Kit Fisto  Time:11:24:53
-          131) Added character : Mob Enforcer  Time:11:24:55
-          132) Added character : Nightsister Acolyte  Time:11:24:57
-          133) Added character : Tusken Shaman  Time:11:24:59
-          134) Added character : Zam Wesell  Time:11:25:1
-Added To Database : Rack Aurus  Time:11:25:22
-Error Deleting From Queu:The remote server returned an error: (404) Not Found.  Time:11:25:43
-Got from Queu Player tsitas_66  Time:11:26:33
-Reading Player tsitas_66 aka TSiTaS 66  Time:11:26:45
-Error in CkeckLastUpdated :One or more errors occurred. (Response status code does not indicate success: 400 (Bad Request).)  Time:11:26:55
-          1) Added character : R2-D2  Time:11:26:56
-          2) Added character : Commander Luke Skywalker  Time:11:26:58
-          3) Added character : Grand Admiral Thrawn  Time:11:27:0
-          4) Added character : Han Solo  Time:11:27:2
-          5) Added character : Darth Vader  Time:11:27:4
-          6) Added character : Ahsoka Tano (Fulcrum)  Time:11:27:6
-          7) Added character : Kylo Ren  Time:11:27:8
-          8) Added character : Darth Nihilus  Time:11:27:10
-          9) Added character : Darth Maul  Time:11:27:12
-          10) Added character : Qui-Gon Jinn  Time:11:27:14
-          11) Added character : Darth Sidious  Time:11:27:16
-          12) Added character : General Kenobi  Time:11:27:18
-          13) Added character : Finn  Time:11:27:20
-          14) Added character : Boba Fett  Time:11:27:22
-          15) Added character : Grand Moff Tarkin  Time:11:27:24
-          16) Added character : CC-2224 Cody  Time:11:27:26
-          17) Added character : Death Trooper  Time:11:27:28
-          18) Added character : Emperor Palpatine  Time:11:27:31
-          19) Added character : Baze Malbus  Time:11:27:33
-          20) Added character : Chirrut mwe  Time:11:27:35
-          21) Added character : TIE Fighter Pilot  Time:11:27:37
-          22) Added character : Princess Leia  Time:11:27:39
-          23) Added character : Resistance Pilot  Time:11:27:40
-          24) Added character : CT-21-0408 Echo  Time:11:27:43
-          25) Added character : Grand Master Yoda  Time:11:27:45
-          26) Added character : Admiral Ackbar  Time:11:27:47
-          27) Added character : Sith Assassin  Time:11:27:50
-          28) Added character : Jedi Knight Anakin  Time:11:27:51
-          29) Added character : Mace Windu  Time:11:27:53
-          30) Added character : Aayla Secura  Time:11:27:55
-          31) Added character : CT-5555 Fives  Time:11:27:57
-          32) Added character : Lando Calrissian  Time:11:27:59
-          33) Added character : Rey (Scavenger)  Time:11:28:1
-          34) Added character : Clone Sergeant - Phase I  Time:11:28:4
-          35) Added character : Wedge Antilles  Time:11:28:6
-          36) Added character : Poe Dameron  Time:11:28:8
-          37) Added character : CT-7567 Rex  Time:11:28:10
-          38) Added character : IG-88  Time:11:28:12
-          39) Added character : Stormtrooper Han  Time:11:28:13
-          40) Added character : Resistance Trooper  Time:11:28:15
-          41) Added character : Captain Phasma  Time:11:28:17
-          42) Added character : First Order TIE Pilot  Time:11:28:20
-          43) Added character : Jyn Erso  Time:11:28:22
-          44) Added character : Biggs Darklighter  Time:11:28:24
-          45) Added character : IG-86 Sentinel Droid  Time:11:28:25
-          46) Added character : Ezra Bridger  Time:11:28:27
-          47) Added character : Tusken Shaman  Time:11:28:29
-          48) Added character : BB-8  Time:11:28:31
-          49) Added character : Ewok Elder  Time:11:28:33
-          50) Added character : B2 Super Battle Droid  Time:11:28:35
-          51) Added character : Ahsoka Tano  Time:11:28:37
-          52) Added character : Chief Nebit  Time:11:28:39
-          53) Added character : Geonosian Soldier  Time:11:28:41
-          54) Added character : Teebo  Time:11:28:43
-          55) Added character : Cassian Andor  Time:11:28:45
-          56) Added character : Ugnaught  Time:11:28:47
-          57) Added character : Royal Guard  Time:11:28:49
-          58) Added character : Jawa Engineer  Time:11:28:51
-          59) Added character : Obi-Wan Kenobi (Old Ben)  Time:11:28:53
-          60) Added character : HK-47  Time:11:28:55
-          61) Added character : Poggle the Lesser  Time:11:28:57
-          62) Added character : Shoretrooper  Time:11:28:59
-          63) Added character : Count Dooku  Time:11:29:1
-          64) Added character : Old Daka  Time:11:29:2
-          65) Added character : Captain Han Solo  Time:11:29:4
-          66) Added character : Dathcha  Time:11:29:6
-          67) Added character : Hoth Rebel Scout  Time:11:29:8
-          68) Added character : Jawa Scavenger  Time:11:29:10
-          69) Added character : Kanan Jarrus  Time:11:29:13
-          70) Added character : Jawa  Time:11:29:15
-          71) Added character : Jedi Consular  Time:11:29:17
-          72) Added character : Hera Syndulla  Time:11:29:19
-          73) Added character : Chopper  Time:11:29:21
-          74) Added character : Garazeb Zeb Orrelios  Time:11:29:23
-          75) Added character : K-2SO  Time:11:29:25
-          76) Added character : Chief Chirpa  Time:11:29:27
-          77) Added character : Sabine Wren  Time:11:29:29
-          78) Added character : Hoth Rebel Soldier  Time:11:29:31
-          79) Added character : Luke Skywalker (Farmboy)  Time:11:29:33
-          80) Added character : Luminara Unduli  Time:11:29:35
-          81) Added character : Rebel Officer Leia Organa  Time:11:29:37
-          82) Added character : Eeth Koth  Time:11:29:39
-          83) Added character : Barriss Offee  Time:11:29:41
-          84) Added character : Ewok Scout  Time:11:29:43
-          85) Added character : Asajj Ventress  Time:11:29:45
-          86) Added character : First Order Officer  Time:11:29:47
-          87) Added character : First Order Stormtrooper  Time:11:29:49
-          88) Added character : Tusken Raider  Time:11:29:51
-          89) Added character : Nightsister Acolyte  Time:11:29:53
-          90) Added character : Talia  Time:11:29:55
-          91) Added character : Mother Talzin  Time:11:29:57
-          92) Added character : Bistan  Time:11:29:59
-          93) Added character : Sun Fac  Time:11:30:1
-          94) Added character : Scarif Rebel Pathfinder  Time:11:30:3
-          95) Added character : Cad Bane  Time:11:30:5
-          96) Added character : Dengar  Time:11:30:7
-          97) Added character : Snowtrooper  Time:11:30:9
-          98) Added character : Magmatrooper  Time:11:30:10
-          99) Added character : Nightsister Initiate  Time:11:30:12
-          100) Added character : Savage Opress  Time:11:30:14
-          101) Added character : Plo Koon  Time:11:30:16
-          102) Added character : Clone Wars Chewbacca  Time:11:30:18
-          103) Added character : Pao  Time:11:30:20
-          104) Added character : Coruscant Underworld Police  Time:11:30:22
-          105) Added character : Zam Wesell  Time:11:30:24
-          106) Added character : Greedo  Time:11:30:26
-          107) Added character : Ima-Gun Di  Time:11:30:28
-          108) Added character : Bodhi Rook  Time:11:30:30
-          109) Added character : Nute Gunray  Time:11:30:32
-          110) Added character : Gamorrean Guard  Time:11:30:34
-          111) Added character : Wicket  Time:11:30:36
-          112) Added character : Paploo  Time:11:30:38
-          113) Added character : Director Krennic  Time:11:30:41
-Exception : The remote server returned an error: (402) Payment Required.  Time:11:30:43
-Exception : The remote server returned an error: (402) Payment Required.  Time:11:40:44
-Exception : The remote server returned an error: (402) Payment Required.  Time:11:50:44
-Exception : The remote server returned an error: (402) Payment Required.  Time:12:0:45
-          114) Added character : General Grievous  Time:12:10:45
-          115) Added character : General Veers  Time:12:10:47
-          116) Added character : Jedi Knight Guardian  Time:12:10:50
-          117) Added character : Stormtrooper  Time:12:10:52
-          118) Added character : URoRRuRRR  Time:12:10:54
-          119) Added character : Mob Enforcer  Time:12:10:56
-          120) Added character : Kylo Ren (Unmasked)  Time:12:10:58
-          121) Added character : Gar Saxon  Time:12:11:0
-          122) Added character : Logray  Time:12:11:2
-          123) Added character : IG-100 MagnaGuard  Time:12:11:4
-          124) Added character : Sith Trooper  Time:12:11:6
-          125) Added character : Lobot  Time:12:11:8
-          126) Added character : Veteran Smuggler Chewbacca  Time:12:11:11
-          127) Added character : First Order SF TIE Pilot  Time:12:11:13
-          128) Added character : Imperial Super Commando  Time:12:11:15
-          129) Added character : Nightsister Spirit  Time:12:11:17
-          130) Added character : Geonosian Spy  Time:12:11:19
-          131) Added character : Kit Fisto  Time:12:11:21
-          132) Added character : Veteran Smuggler Han Solo  Time:12:11:23
-          133) Added character : Nightsister Zombie  Time:12:11:25
-          134) Added character : Hermit Yoda  Time:12:11:27
-Added To Database : TSiTaS 66  Time:12:11:35
-Removed From Queu!  Time:12:11:38
-Got from Queu Player palladas  Time:12:12:10
-Reading Player palladas aka Palladas  Time:12:12:11
-Error in CkeckLastUpdated :One or more errors occurred. (Response status code does not indicate success: 400 (Bad Request).)  Time:12:12:12
-          1) Added character : R2-D2  Time:12:12:12
-          2) Added character : Commander Luke Skywalker  Time:12:12:14
-          3) Added character : Han Solo  Time:12:12:16
-          4) Added character : Grand Admiral Thrawn  Time:12:12:18
-          5) Added character : Darth Nihilus  Time:12:12:20
-          6) Added character : Jyn Erso  Time:12:12:22
-          7) Added character : Qui-Gon Jinn  Time:12:12:24
-          8) Added character : Obi-Wan Kenobi (Old Ben)  Time:12:12:26
-          9) Added character : Darth Vader  Time:12:12:28
+Added Player To Queu:aramil  Time:16:56:37
+Got from Queu Player aramil  Time:16:57:9
+Reading Player aramil aka Aramil 66  Time:16:57:23
+          1) Added character : Commander Luke Skywalker  Time:16:57:25
+          2) Added character : Grand Moff Tarkin  Time:16:57:27
+          3) Added character : R2-D2  Time:16:57:29
+          4) Added character : Grand Admiral Thrawn  Time:16:57:31
+          5) Added character : Jyn Erso  Time:16:57:33
+          6) Added character : Darth Nihilus  Time:16:57:35
+          7) Added character : Han Solo  Time:16:57:37
+          8) Added character : Ahsoka Tano (Fulcrum)  Time:16:57:39
+          9) Added character : Kanan Jarrus  Time:16:57:41
+          10) Added character : Darth Vader  Time:16:57:43
+          11) Added character : Sabine Wren  Time:16:57:45
+          12) Added character : Finn  Time:16:57:47
+          13) Added character : Rey (Scavenger)  Time:16:57:49
+          14) Added character : Darth Maul  Time:16:57:51
+          15) Added character : CC-2224 Cody  Time:16:57:53
+          16) Added character : Darth Sidious  Time:16:57:55
+          17) Added character : Qui-Gon Jinn  Time:16:57:57
+          18) Added character : General Kenobi  Time:16:57:59
+          19) Added character : Boba Fett  Time:16:58:1
+          20) Added character : Obi-Wan Kenobi (Old Ben)  Time:16:58:3
+          21) Added character : Baze Malbus  Time:16:58:5
+          22) Added character : Chirrut mwe  Time:16:58:7
+          23) Added character : Ezra Bridger  Time:16:58:9
+          24) Added character : Cassian Andor  Time:16:58:11
+          25) Added character : Death Trooper  Time:16:58:13
+          26) Added character : Princess Leia  Time:16:58:15
+          27) Added character : Bistan  Time:16:58:17
+          28) Added character : Poe Dameron  Time:16:58:19
+          29) Added character : CT-7567 Rex  Time:16:58:21
+          30) Added character : Admiral Ackbar  Time:16:58:23
+          31) Added character : Ahsoka Tano  Time:16:58:25
+          32) Added character : CT-5555 Fives  Time:16:58:27
+          33) Added character : Hera Syndulla  Time:16:58:29
+          34) Added character : Aayla Secura  Time:16:58:31
+          35) Added character : Teebo  Time:16:58:33
+          36) Added character : Captain Han Solo  Time:16:58:35
+          37) Added character : Biggs Darklighter  Time:16:58:37
+          38) Added character : Shoretrooper  Time:16:58:39
+          39) Added character : TIE Fighter Pilot  Time:16:58:41
+          40) Added character : Scarif Rebel Pathfinder  Time:16:58:44
+          41) Added character : Clone Sergeant - Phase I  Time:16:58:46
+          42) Added character : Captain Phasma  Time:16:58:48
+          43) Added character : Garazeb Zeb Orrelios  Time:16:58:50
+          44) Added character : Jedi Knight Anakin  Time:16:58:52
+          45) Added character : Ima-Gun Di  Time:16:58:54
+          46) Added character : IG-88  Time:16:58:56
+          47) Added character : Barriss Offee  Time:16:58:58
+          48) Added character : CT-21-0408 Echo  Time:16:59:0
+          49) Added character : Kylo Ren  Time:16:59:2
+          50) Added character : BB-8  Time:16:59:3
+          51) Added character : Emperor Palpatine  Time:16:59:5
+          52) Added character : Director Krennic  Time:16:59:7
+          53) Added character : First Order TIE Pilot  Time:16:59:10
+          54) Added character : Resistance Pilot  Time:16:59:12
+          55) Added character : Resistance Trooper  Time:16:59:14
+          56) Added character : Wedge Antilles  Time:16:59:16
+          57) Added character : HK-47  Time:16:59:18
+          58) Added character : Savage Opress  Time:16:59:21
+          59) Added character : Gar Saxon  Time:16:59:23
+          60) Added character : Asajj Ventress  Time:16:59:25
+          61) Added character : Jawa Scavenger  Time:16:59:27
+          62) Added character : Lando Calrissian  Time:16:59:28
+          63) Added character : Luke Skywalker (Farmboy)  Time:16:59:30
+          64) Added character : Mace Windu  Time:16:59:32
+          65) Added character : Count Dooku  Time:16:59:34
+          66) Added character : Grand Master Yoda  Time:16:59:36
+          67) Added character : Chief Nebit  Time:16:59:38
+          68) Added character : Zam Wesell  Time:16:59:40
+          69) Added character : Sun Fac  Time:16:59:42
+          70) Added character : Stormtrooper Han  Time:16:59:44
+          71) Added character : Hoth Rebel Scout  Time:16:59:46
+          72) Added character : Dathcha  Time:16:59:48
+          73) Added character : B2 Super Battle Droid  Time:16:59:50
+          74) Added character : Ewok Elder  Time:16:59:52
+          75) Added character : Chief Chirpa  Time:16:59:54
+          76) Added character : Poggle the Lesser  Time:16:59:56
+          77) Added character : Plo Koon  Time:16:59:58
+          78) Added character : Talia  Time:17:0:0
+          79) Added character : First Order Stormtrooper  Time:17:0:2
+          80) Added character : Hoth Rebel Soldier  Time:17:0:4
+          81) Added character : Imperial Super Commando  Time:17:0:6
+          82) Added character : Luminara Unduli  Time:17:0:8
+          83) Added character : IG-86 Sentinel Droid  Time:17:0:10
+          84) Added character : Ugnaught  Time:17:0:12
+          85) Added character : Jawa Engineer  Time:17:0:14
+          86) Added character : Geonosian Soldier  Time:17:0:16
+          87) Added character : Nute Gunray  Time:17:0:18
+          88) Added character : Old Daka  Time:17:0:20
+          89) Added character : Sith Assassin  Time:17:0:22
+          90) Added character : First Order Officer  Time:17:0:24
+          91) Added character : Sith Trooper  Time:17:0:26
+          92) Added character : Royal Guard  Time:17:0:28
+          93) Added character : Gamorrean Guard  Time:17:0:30
+          94) Added character : Ewok Scout  Time:17:0:32
+          95) Added character : Dengar  Time:17:0:34
+          96) Added character : Paploo  Time:17:0:36
+          97) Added character : Greedo  Time:17:0:38
+          98) Added character : Nightsister Acolyte  Time:17:0:40
+          99) Added character : Jedi Consular  Time:17:0:42
+          100) Added character : Jawa  Time:17:0:44
+          101) Added character : Lobot  Time:17:0:46
+          102) Added character : Cad Bane  Time:17:0:48
+          103) Added character : General Grievous  Time:17:0:50
+          104) Added character : Eeth Koth  Time:17:0:52
+          105) Added character : Rebel Officer Leia Organa  Time:17:0:54
+          106) Added character : Tusken Shaman  Time:17:0:56
+          107) Added character : Chopper  Time:17:0:57
+          108) Added character : K-2SO  Time:17:0:59
+          109) Added character : Mother Talzin  Time:17:1:1
+          110) Added character : Coruscant Underworld Police  Time:17:1:3
+          111) Added character : URoRRuRRR  Time:17:1:5
+          112) Added character : Kit Fisto  Time:17:1:7
+          113) Added character : Nightsister Initiate  Time:17:1:9
+          114) Added character : General Veers  Time:17:1:11
+          115) Added character : Pao  Time:17:1:13
+          116) Added character : Clone Wars Chewbacca  Time:17:1:15
+          117) Added character : Wicket  Time:17:1:17
+          118) Added character : Bodhi Rook  Time:17:1:19
+          119) Added character : Stormtrooper  Time:17:1:21
+          120) Added character : Tusken Raider  Time:17:1:23
+          121) Added character : Mob Enforcer  Time:17:1:25
+          122) Added character : Geonosian Spy  Time:17:1:27
+          123) Added character : Logray  Time:17:1:29
+          124) Added character : IG-100 MagnaGuard  Time:17:1:31
+          125) Added character : Jedi Knight Guardian  Time:17:1:33
+          126) Added character : Magmatrooper  Time:17:1:35
+          127) Added character : Snowtrooper  Time:17:1:37
+          128) Added character : Kylo Ren (Unmasked)  Time:17:1:39
+          129) Added character : Veteran Smuggler Chewbacca  Time:17:1:42
+          130) Added character : Veteran Smuggler Han Solo  Time:17:1:44
+          131) Added character : Nightsister Spirit  Time:17:1:46
+          132) Added character : Nightsister Zombie  Time:17:1:48
+          133) Added character : First Order SF TIE Pilot  Time:17:1:50
+          134) Added character : Hermit Yoda  Time:17:1:52
+Added To Database : Aramil 66  Time:17:1:57
+Removed Previous from Players!  Time:17:1:59
+Removed From Queu!  Time:17:2:0
+Added Player To Queu:palladas  Time:17:12:39
