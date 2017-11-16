@@ -36,7 +36,10 @@ namespace SWGoH
             Timer t = o as Timer;
             t.Change(Timeout.Infinite, Timeout.Infinite);
 
-            //SwGoh.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player);
+            //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player, DateTime.Now);
+            //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 2, Enums.QueueEnum.QueueType.Player, DateTime.Now);
+            //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 3, Enums.QueueEnum.QueueType.Player, DateTime.Now);
+            
             //SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , 4, Enums.QueueEnum.QueueType.Guild, DateTime.Now);
             //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
