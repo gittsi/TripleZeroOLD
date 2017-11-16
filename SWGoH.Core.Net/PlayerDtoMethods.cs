@@ -426,6 +426,7 @@ namespace SWGoH
                 }
                 else
                 {
+                    if (newchar.SWGoHUrl == null) newchar.SWGoHUrl = "";
                     JObject data = new JObject(
                         new JProperty("Name", newchar.Name),
                         new JProperty("Command", Base_ID),
