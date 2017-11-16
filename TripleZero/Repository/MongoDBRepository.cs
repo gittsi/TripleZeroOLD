@@ -16,17 +16,24 @@ using MongoDB.Bson.Serialization;
 using TripleZero.Configuration;
 using SWGoH.Model;
 using SWGoH.Model.Enums;
+using TripleZero.Strategy;
 
 namespace TripleZero.Repository
 {
     public class MongoDBRepository : IMongoDBRepository
     {
         private IMapper _Mapper;
-        public ApplicationSettingsModel appSettings = IResolver.Current.ApplicationSettings.Get();
+        private readonly ApplicationSettingsModel appSettings = IResolver.Current.ApplicationSettings.Get();
+        private readonly CachingStrategyContext _CachingStrategyContext;
+        private readonly CachingRepositoryStrategy _CachingRepositoryStrategy;        
 
-        public MongoDBRepository(IMappingConfiguration mappingConfiguration)
+        public MongoDBRepository(IMappingConfiguration mappingConfiguration, CachingStrategyContext cachingStrategyContext, CachingRepositoryStrategy cachingRepositoryStrategy)
         {
-            _Mapper = mappingConfiguration.GetConfigureMapper();
+            _Mapper = mappingConfiguration.GetConfigureMapper();            
+            _CachingStrategyContext = cachingStrategyContext;
+            _CachingRepositoryStrategy = cachingRepositoryStrategy;
+            //set strategy for caching
+            _CachingStrategyContext.SetStrategy(_CachingRepositoryStrategy);
         }
         private string BuildApiUrl(string collection, string query = "", string orderBy = "", string limit = "", string fields = "")
         {
@@ -41,8 +48,7 @@ namespace TripleZero.Repository
             return url;
         }
         private string BuildApiUrlFromId(string collection, string id)
-        {
-            //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
+        {            
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/{2}?apiKey={3}"
                 , appSettings.MongoDBSettings.DB
                 , collection
@@ -54,6 +60,14 @@ namespace TripleZero.Repository
         public async Task<Player> GetPlayer(string userName)
         {
             await Task.FromResult(1);
+
+            //get from cache if possible
+            string strCacheKey = string.Concat("GetPlayerRepo-", userName);
+            var objCache = _CachingStrategyContext.CacheGetFromKey(strCacheKey);
+            if (objCache != null)
+            {                
+                return (Player)objCache;
+            }
 
             var queryData = string.Concat("{\"PlayerName\":\"", userName, "\"}");
             var orderby = "{\"LastSwGohUpdated\":-1}";
@@ -69,6 +83,8 @@ namespace TripleZero.Repository
                     List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
 
                     var players = _Mapper.Map<List<Player>>(ret);
+                    //load to cache
+                    _CachingStrategyContext.CacheAdd(strCacheKey, players.FirstOrDefault());
                     return players.FirstOrDefault();
                 }
             }

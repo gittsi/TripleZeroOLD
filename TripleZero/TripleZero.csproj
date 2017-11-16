@@ -15,6 +15,8 @@
     <Compile Remove="Configuration\GuildsSettings.cs" />
     <Compile Remove="Configuration\SWGoH\CharacterSettingsModel.cs" />
     <Compile Remove="Configuration\SWGoH\GuildSettingsModel.cs" />
+    <Compile Remove="Helper\Cache\Caching.cs" />
+    <Compile Remove="Helper\Cache\ICaching.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
     <Compile Remove="Repository\Dto\CharacterDto.cs" />
     <Compile Remove="Repository\Dto\PlayerDto.cs" />
@@ -24,6 +26,8 @@
     <PackageReference Include="Autofac" Version="4.6.2" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
     <PackageReference Include="AutoMapper" Version="6.1.1" />
+    <PackageReference Include="CacheManager.Core" Version="1.1.1" />
+    <PackageReference Include="CacheManager.Microsoft.Extensions.Configuration" Version="1.1.1" />
     <PackageReference Include="Discord.Net" Version="1.0.2" />
     <PackageReference Include="Discord.Net.Commands" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.0" />

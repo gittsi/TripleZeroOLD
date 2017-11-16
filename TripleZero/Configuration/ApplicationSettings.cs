@@ -14,6 +14,9 @@ namespace TripleZero.Configuration
         }
         public ApplicationSettingsModel Get()
         {
+            var boolRepositoryCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["RepositoryCachingInMinutes"], out int RepositoryCachingInMinutes);
+            var boolModuleCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["ModuleCachingInMinutes"], out int ModuleCachingInMinutes);
+
 
             ApplicationSettingsModel appSettings = new ApplicationSettingsModel
             {
@@ -43,6 +46,14 @@ namespace TripleZero.Configuration
                     ApiKey = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["ApiKey"]
                     ,
                     DB = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["DB"]
+                }
+                ,
+                CachingSettings = new CachingSettings()
+                {
+
+                    RepositoryCachingInMinutesApiKey = RepositoryCachingInMinutes
+                    ,
+                    ModuleCachingInMinutes = ModuleCachingInMinutes
                 }
             };
 
