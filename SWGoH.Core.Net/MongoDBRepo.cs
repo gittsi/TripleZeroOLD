@@ -12,8 +12,7 @@ namespace SWGoH
         {
             try
             {
-                //string uri = @"mongodb://Dev:dev123qwe@ds245805.mlab.com:45805/" + SWGoH.Settings.appSettings.Database;
-                string uri = @"mongodb://Dev:dev123qwe@ds161455.mlab.com:61455/" + SWGoH.Settings.appSettings.Database;
+                string uri = @"mongodb://Dev:dev123qwe@ds" + SWGoH.Settings.appSettings.DatabaseID1.ToString() + ".mlab.com:"+ SWGoH.Settings.appSettings.DatabaseID2.ToString() + "/" + SWGoH.Settings.appSettings.Database;
                 var client = new MongoClient(uri);
                 
                 IMongoDatabase db = client.GetDatabase(SWGoH.Settings.appSettings.Database);

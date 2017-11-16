@@ -9,7 +9,10 @@ namespace SWGoH
         static bool mExportToFile = false;
         public static void Initialize(string Fname, bool exporttofile)
         {
-            stream = new StreamWriter(Fname, false);
+            string directory = AppDomain.CurrentDomain.BaseDirectory + "Settings";
+            string finalname = directory + "\\" + Fname;
+
+            stream = new StreamWriter(finalname, false);
             mExportToFile = exporttofile;
             stream.AutoFlush = true;
         }
