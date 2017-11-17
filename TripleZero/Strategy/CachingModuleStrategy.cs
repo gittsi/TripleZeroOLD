@@ -41,10 +41,5 @@ namespace TripleZero.Strategy
             
             return _cacheFactory.Get(key);
         }
-
-        //public override ICacheManager<object> GetCacheManager()
-        //{
-        //    return IResolver.Current.CachingFactory.GetFactoryModule();
-        //}
     }
 }

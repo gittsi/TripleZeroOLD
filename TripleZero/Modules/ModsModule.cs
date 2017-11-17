@@ -7,6 +7,7 @@ using TripleZero.Infrastructure.DI;
 using SWGoH.Model.Extensions;
 using SWGoH.Model.Enums;
 using SWGoH.Model;
+using TripleZero.Helper;
 
 namespace TripleZero.Modules
 {
@@ -54,6 +55,9 @@ namespace TripleZero.Modules
                 retStr = $"I didn't find any mods for username {playerUserName}`";
                 await ReplyAsync($"{retStr}");
             }
+            string functionName = "mods-s";
+            string key = string.Concat(playerUserName, modStatType.GetDescription());
+            await ModuleCache.AddToCache(functionName, key, retStr);
         }
         private async Task<List<Tuple<string, Mod>>> GetSpecificSecondaryMods(string playerUserName, ModStatType modStatType, ModValueType modValueType, int rows = 20)
         {
@@ -84,6 +88,16 @@ namespace TripleZero.Modules
         {
             playerUserName = playerUserName.Trim();
             modType = modType.Trim();
+
+            //get from cache if possible and exit sub
+            string functionName = "mods-s";
+            string key = string.Concat(playerUserName,modType);
+            string retStr = ModuleCache.MessageFromCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
 
             ModValueType secondaryStatValueType = ModValueType.None;
             if (modType.Substring(modType.Length - 1, 1) == "%")
@@ -139,6 +153,10 @@ namespace TripleZero.Modules
                 retStr = $"I didn't find any mods for username {playerUserName}`";
                 await ReplyAsync($"{retStr}");
             }
+
+            string functionName = "mods-p";
+            string key = string.Concat(playerUserName, modStatType.GetDescription());
+            await ModuleCache.AddToCache(functionName, key, retStr);
         }
         private async Task<List<Tuple<string, Mod>>> GetSpecificPrimaryMods(string playerUserName, ModStatType modStatType, int rows = 20)
         {
@@ -168,6 +186,16 @@ namespace TripleZero.Modules
         {
             playerUserName = playerUserName.Trim();
             modType = modType.Trim();
+
+            //get from cache if possible and exit sub
+            string functionName = "mods-p";
+            string key = string.Concat(playerUserName, modType);
+            string retStr = ModuleCache.MessageFromCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
 
             ModStatType primaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(), typeof(ModStatType));
 

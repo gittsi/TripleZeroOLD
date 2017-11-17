@@ -24,14 +24,14 @@ namespace TripleZero.Repository
     {
         private IMapper _Mapper;
         private readonly ApplicationSettingsModel appSettings = IResolver.Current.ApplicationSettings.Get();
-        private readonly CachingStrategyContext _CachingStrategyContext;
+        private readonly CachingStrategyContext _CachingStrategyContext;        
         private readonly CachingRepositoryStrategy _CachingRepositoryStrategy;        
 
         public MongoDBRepository(IMappingConfiguration mappingConfiguration, CachingStrategyContext cachingStrategyContext, CachingRepositoryStrategy cachingRepositoryStrategy)
         {
             _Mapper = mappingConfiguration.GetConfigureMapper();            
             _CachingStrategyContext = cachingStrategyContext;
-            _CachingRepositoryStrategy = cachingRepositoryStrategy;
+            _CachingRepositoryStrategy = cachingRepositoryStrategy;            
             //set strategy for caching
             _CachingStrategyContext.SetStrategy(_CachingRepositoryStrategy);
         }

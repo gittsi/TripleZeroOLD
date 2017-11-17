@@ -9,6 +9,7 @@ using TripleZero.Modules;
 using TripleZero.Configuration;
 using TripleZero.Helper;
 using TripleZero._Mapping;
+using TripleZero.Strategy;
 
 namespace TripleZero
 {
@@ -33,7 +34,7 @@ namespace TripleZero
                 mongoDBSettings = scope.Resolve<MongoDBSettings>();
                 commands = scope.Resolve<CommandService>();
                 client = scope.Resolve<DiscordSocketClient>();
-                scope.Resolve<IMappingConfiguration>();
+                scope.Resolve<IMappingConfiguration>();                                
 
                 var appSettings = applicationSettings.Get();
 
@@ -46,7 +47,7 @@ namespace TripleZero
 
             //client.MessageReceived += MessageReceived;
 
-            await Task.Delay(3000);
+            await Task.Delay(2000);
 
             Logo.ConsolePrintLogo(); //prints application name,version etc 
             //await TestCharAliasesDelete();
@@ -129,7 +130,11 @@ namespace TripleZero
                 // Uncomment the following lines if you want the bot
                 // to send a message if it failed (not advised for most situations).
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+                {
+                    Consoler.WriteLineInColor(string.Format("error  : '{0}' ", result.ErrorReason), ConsoleColor.Green);
                     await msg.Channel.SendMessageAsync(result.ErrorReason);
+                }
+                    
             }
         }
         #region "tests"  

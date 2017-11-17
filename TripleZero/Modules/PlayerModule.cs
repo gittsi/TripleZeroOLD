@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
+using TripleZero.Strategy;
+using TripleZero.Helper;
 
 namespace TripleZero.Modules
 {
@@ -14,9 +16,23 @@ namespace TripleZero.Modules
         [Remarks("*player-report {playerUserName}*")]
         public async Task GetPlayerReport(string playerUserName)
         {
-            playerUserName = playerUserName.Trim();
+            await Task.FromResult(1);
 
-            string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
+            playerUserName = playerUserName.Trim();
+            string retStr = "";
+            string loadingStr = "";
+
+            //get from cache if possible and exit sub
+            string functionName = "player-report";
+            string key = playerUserName;
+            retStr = ModuleCache.MessageFromCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
 
             await ReplyAsync($"{loadingStr}");
 
@@ -28,7 +44,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            string retStr = string.Format("Last update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
+            retStr = string.Format("Last update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
 
             var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();
 
@@ -154,6 +170,8 @@ namespace TripleZero.Modules
             retStr += string.Format("{0} characters with **gear 11**\n", gear11.Count());
             retStr += string.Format("{0} characters with **gear 12**\n", gear12.Count());
 
+
+            await ModuleCache.AddToCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
         }
     }

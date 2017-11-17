@@ -24,6 +24,9 @@ namespace TripleZero.Infrastructure.DI
         public ISWGoHRepository SWGoHRepository { get { return Container.Resolve<ISWGoHRepository>(); } }
         public IMongoDBRepository MongoDBRepository { get { return Container.Resolve<IMongoDBRepository>(); } }
         public IMappingConfiguration MappingConfiguration { get { return Container.Resolve<IMappingConfiguration>(); } }
+
+        public CachingStrategyContext CachingStrategyContext { get { return Container.Resolve<CachingStrategyContext>(); } }
+        public CachingModuleStrategy CachingModuleStrategy { get { return Container.Resolve<CachingModuleStrategy>(); } }
         public static IContainer ConfigureContainer()
         {
             var builder = new ContainerBuilder();

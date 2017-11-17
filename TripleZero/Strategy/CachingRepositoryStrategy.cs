@@ -18,7 +18,6 @@ namespace TripleZero.Strategy
             _cacheFactory.Expire(key, TimeSpan.FromMinutes(minutesBeforeExpiration));
             return isAdded;
         }
-
         public override bool CacheAdd(string key, object obj)
         {
             bool isAdded = _cacheFactory.Add(key, obj);
@@ -30,7 +29,7 @@ namespace TripleZero.Strategy
             int minutesBeforeExpiration = IResolver.Current.ApplicationSettings.Get().CachingSettings.RepositoryCachingInMinutesApiKey;
 
             _cacheFactory.Expire(key, TimeSpan.FromMinutes(minutesBeforeExpiration));
-            Consoler.WriteLineInColor(string.Format("added repository cache key : {0} for {1} minutes", key, minutesBeforeExpiration), ConsoleColor.Green);
+             Consoler.WriteLineInColor(string.Format("added repository cache key : {0} for {1} minutes", key, minutesBeforeExpiration), ConsoleColor.Green);
             return isAdded;
         }
 
@@ -38,7 +37,7 @@ namespace TripleZero.Strategy
         {
             var ret = _cacheFactory.Get(key);
             if (ret != null)
-                Consoler.WriteLineInColor(string.Format("found module cache key : {0} ", key), ConsoleColor.Green);
+                Consoler.WriteLineInColor(string.Format("found repository cache key : {0} ", key), ConsoleColor.Green);
 
             return _cacheFactory.Get(key);
         }
