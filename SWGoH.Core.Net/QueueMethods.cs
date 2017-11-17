@@ -92,7 +92,7 @@ namespace SWGoH
                         {
                             IsUpsert = false,
                             ReturnDocument = ReturnDocument.After,
-                            Sort = Builders<QueueDto>.Sort.Descending(r => r.InsertedDate).Ascending (r => r.InsertedDate)
+                            Sort = Builders<QueueDto>.Sort.Descending(r => r.Priority).Descending(r => r.InsertedDate)
                         };
                         QueueDto found = collection.FindOneAndUpdate<QueueDto>(filter, update, opts);
 
