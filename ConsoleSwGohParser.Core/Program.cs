@@ -36,7 +36,7 @@ namespace SWGoH
             Timer t = o as Timer;
             t.Change(Timeout.Infinite, Timeout.Infinite);
 
-            //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 3, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
+            //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 1, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
             //SWGoH.QueueMethods.AddPlayer("tsitas_66", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow.AddHours (15.0));
             //SWGoH.QueueMethods.AddPlayer("tsitas", Command.UpdatePlayer, 1, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
             //SWGoH.QueueMethods.AddPlayer("Roukoun", Command.UpdatePlayer, 5, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
@@ -47,7 +47,7 @@ namespace SWGoH
             //SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , 4, Enums.QueueEnum.QueueType.Guild, DateTime.UtcNow);
             //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
-            //ExecuteCommand(Command.Test, "newholborn");
+            //ExecuteCommand(Command.Test, "newholborn", null);
 
             QueueDto q = QueueMethods.GetQueu();
             if (q != null)
@@ -57,18 +57,18 @@ namespace SWGoH
             }
             else
             {
-                int now = DateTime.UtcNow.Minute;
-                double minutes = 0.0;
-                minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
-                bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
-                if (check)
-                {
-                    PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
-                    if (player != null)
-                    {
-                        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.UtcNow);
-                    }
-                }
+                //int now = DateTime.UtcNow.Minute;
+                //double minutes = 0.0;
+                //minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
+                //bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
+                //if (check)
+                //{
+                //    PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
+                //    if (player != null)
+                //    {
+                //        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.UtcNow);
+                //    }
+                //}
                 Console.WriteLine("Nothing to process");
             }
             isWorking = false;
@@ -93,8 +93,8 @@ namespace SWGoH
                                 player.Export(mExportMethod);
                                 player.DeletePlayerFromDBAsync();
                             }
-                            //if (q != null) QueueMethods.UpdateQueueAndProcessLater(q);
-                            if (q != null) QueueMethods.RemoveFromQueu(q);
+                            if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player);
+                            //if (q != null) QueueMethods.RemoveFromQueu(q);
                         }
                         else if (ret == 0)
                         {
@@ -129,10 +129,7 @@ namespace SWGoH
                     }
                 case Command.UpdateGuildWithNoChars:
                     {
-                        SWGoH.GuildDto guild = new GuildDto
-                        {
-                            Name = GuildDto.GetGuildNameFromAlias(pname)
-                        };
+                        SWGoH.GuildDto guild = new GuildDto{Name = GuildDto.GetGuildNameFromAlias(pname)};
                         guild.ParseSwGoh();
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0) guild.UpdateOnlyGuildWithNoChars(mExportMethod);
                         break;

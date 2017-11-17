@@ -9,12 +9,12 @@ namespace SWGoH
     {
         public Nullable<ObjectId> Id { get; set; }
         public string Name { get; set; }
-        [BsonRepresentation(BsonType.DateTime)]
-        public DateTime InsertedDate { get; set; }
-        [BsonRepresentation(BsonType.DateTime)]
-        public Nullable<DateTime> ProcessingStartDate { get; set; }
-        [BsonRepresentation(BsonType.DateTime)]
-        public Nullable<DateTime> NextRunDate { get; set; }
+        
+        public string InsertedDate { get; set; }
+        
+        public string ProcessingStartDate { get; set; }
+        
+        public string NextRunDate { get; set; }
         public Command Command { get; set; }
         public int Priority { get; set; }
         public QueueStatus Status { get; set; }
