@@ -36,15 +36,15 @@ namespace SWGoH
             Timer t = o as Timer;
             t.Change(Timeout.Infinite, Timeout.Infinite);
 
-            //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 3, Enums.QueueEnum.QueueType.Player, DateTime.Now);
-            //SWGoH.QueueMethods.AddPlayer("tsitas_66", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player, DateTime.Now.AddHours (15.0));
-            //SWGoH.QueueMethods.AddPlayer("tsitas", Command.UpdatePlayer, 1, Enums.QueueEnum.QueueType.Player, DateTime.Now);
-            //SWGoH.QueueMethods.AddPlayer("Roukoun", Command.UpdatePlayer, 2, Enums.QueueEnum.QueueType.Player, DateTime.Now);
-            //SWGoH.QueueMethods.AddPlayer("palladas", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player, DateTime.Now);
+            //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 3, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
+            //SWGoH.QueueMethods.AddPlayer("tsitas_66", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow.AddHours (15.0));
+            //SWGoH.QueueMethods.AddPlayer("tsitas", Command.UpdatePlayer, 1, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
+            //SWGoH.QueueMethods.AddPlayer("Roukoun", Command.UpdatePlayer, 5, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
+            //SWGoH.QueueMethods.AddPlayer("palladas", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
 
-            //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 3, Enums.QueueEnum.QueueType.Player, DateTime.Now);
+            //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 3, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
 
-            //SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , 4, Enums.QueueEnum.QueueType.Guild, DateTime.Now);
+            //SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , 4, Enums.QueueEnum.QueueType.Guild, DateTime.UtcNow);
             //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
             //ExecuteCommand(Command.Test, "newholborn");
@@ -52,22 +52,21 @@ namespace SWGoH
             QueueDto q = QueueMethods.GetQueu();
             if (q != null)
             {
-                int ret = ExecuteCommand(q.Command, q.Name);
-                QueueMethods.RemoveFromQueu(q);
-                if (ret != 3) mLastProcess = DateTime.Now;
+                int ret = ExecuteCommand(q.Command, q.Name , q);
+                if (ret != 3) mLastProcess = DateTime.UtcNow;
             }
             else
             {
-                int now = DateTime.Now.Minute;
+                int now = DateTime.UtcNow.Minute;
                 double minutes = 0.0;
-                minutes = DateTime.Now.Subtract(mLastProcess).TotalMinutes;
+                minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
                 bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
                 if (check)
                 {
                     PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
                     if (player != null)
                     {
-                        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.Now);
+                        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.UtcNow);
                     }
                 }
                 Console.WriteLine("Nothing to process");
@@ -76,7 +75,7 @@ namespace SWGoH
             t.Change(Settings.appSettings.GlobalConsoleTimerInterval, Settings.appSettings.GlobalConsoleTimerInterval);
             GC.Collect();
         }
-        private static int ExecuteCommand(Command commandstr, string pname)
+        private static int ExecuteCommand(Command commandstr, string pname, QueueDto q)
         {
             ExportMethodEnum mExportMethod = ExportMethodEnum.Database;
 
@@ -86,10 +85,19 @@ namespace SWGoH
                     {
                         SWGoH.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true,false);
-                        if (ret == 1)
+                        if (ret == 1 || ret == 2)
                         {
                             player.LastClassUpdated = DateTime.UtcNow;
-                            player.Export(mExportMethod);
+                            if (ret == 1)
+                            {
+                                player.Export(mExportMethod);
+                                player.DeletePlayerFromDBAsync();
+                            }
+                            if (q != null) QueueMethods.UpdateQueueAndProcessLater(q);
+                        }
+                        else if (ret == 0)
+                        {
+                            if (q != null) QueueMethods.RemoveFromQueu (q);
                         }
                         return ret;
                     }
@@ -166,9 +174,9 @@ namespace SWGoH
                         guild.ParseSwGoh();
                         for (int i = 0; i < guild.PlayerNames.Count; i++)
                         {
-                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, 2, QueueType.Player,DateTime.Now );
+                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, 2, QueueType.Player,DateTime.UtcNow );
                         }
-                        QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars, 1, QueueType.Guild, DateTime.Now);
+                        QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars, 1, QueueType.Guild, DateTime.UtcNow);
 
                         //QueueMethods.AddPlayer("newholborn", "up",3);
                         //QueueMethods.AddPlayer("oaraug", "up", 3);

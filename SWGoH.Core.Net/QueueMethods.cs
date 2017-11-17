@@ -26,7 +26,7 @@ namespace SWGoH
                 {
                     JObject data = new JObject(
                     new JProperty("Name", PlayerName),
-                    new JProperty("InsertedDate", DateTime.Now),
+                    new JProperty("InsertedDate", DateTime.UtcNow),
                     new JProperty("NextRunDate", nextrundate),
                     new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
@@ -45,6 +45,32 @@ namespace SWGoH
             catch(Exception e)
             {
                 SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
+            }
+        }
+        public static void UpdateQueueAndProcessLater(QueueDto q)
+        {
+            try
+            {
+                JObject data = new JObject(
+                                   new JProperty("Name", q.Name),
+                                   new JProperty("InsertedDate", DateTime.UtcNow),
+                                   new JProperty("NextRunDate", DateTime.UtcNow.AddHours(24.0)),
+                                   new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
+                                   new JProperty("Priority", q.Priority),
+                                   new JProperty("Type", q.Type),
+                                   new JProperty("Command", q.Command));
+
+                var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", q.Id.ToString());
+                using (HttpClient client1 = new HttpClient())
+                {
+                    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                }
+                SWGoH.Log.ConsoleMessage(q.Name + " Added To Queu to be processed later :");
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Error updating Queu to be processed later :" + e.Message);
             }
         }
         public static void RemoveFromQueu(QueueDto q)
@@ -87,7 +113,7 @@ namespace SWGoH
                     {
 
                         FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
-                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1);
+                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).CurrentDate ("ProcessingStartDate");
                         var opts = new FindOneAndUpdateOptions<QueueDto>()
                         {
                             IsUpsert = false,
@@ -114,13 +140,13 @@ namespace SWGoH
                             if (result1 != null)
                             {
                                 //check nextrundate
-
+                                
 
                                 //UPDATE with Status = 1
                                 JObject data = new JObject(
                                 new JProperty("Name", result1.Name),
                                 new JProperty("InsertedDate", result1.InsertedDate),
-                                new JProperty("ProcessingStartDate", DateTime.Now),
+                                new JProperty("ProcessingStartDate", DateTime.UtcNow),
                                 new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.Processing),
                                 new JProperty("Priority", result1.Priority),
                                 new JProperty("Type", result1.Type),
