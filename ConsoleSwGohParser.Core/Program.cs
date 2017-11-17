@@ -92,8 +92,13 @@ namespace SWGoH
                             {
                                 player.Export(mExportMethod);
                                 player.DeletePlayerFromDBAsync();
+                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player , 24.2);
                             }
-                            if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player);
+                            else if (ret == 2)
+                            {
+                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player, 0.5);
+                            }
+                            
                             //if (q != null) QueueMethods.RemoveFromQueu(q);
                         }
                         else if (ret == 0)

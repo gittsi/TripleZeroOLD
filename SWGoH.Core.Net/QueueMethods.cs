@@ -48,7 +48,7 @@ namespace SWGoH
                 SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
         }
-        public static void UpdateQueueAndProcessLater(QueueDto q, PlayerDto player)
+        public static void UpdateQueueAndProcessLater(QueueDto q, PlayerDto player , double hours)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace SWGoH
                                    new JProperty("Name", q.Name),
                                    new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
                                    new JProperty("ProcessingStartDate", ""),
-                                   new JProperty("NextRunDate", player.LastSwGohUpdated.AddHours(24.0).ToString ("o")),
+                                   new JProperty("NextRunDate", player.LastSwGohUpdated.AddHours(hours).ToString ("o")),
                                    new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                                    new JProperty("Priority", q.Priority),
                                    new JProperty("Type", q.Type),
