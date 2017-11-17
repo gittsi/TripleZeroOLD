@@ -37,6 +37,7 @@ namespace TripleZero.Repository
         }
         private string BuildApiUrl(string collection, string query = "", string orderBy = "", string limit = "", string fields = "")
         {
+            if (string.IsNullOrWhiteSpace(limit)) limit = "1000";
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/?apiKey={2}&q={3}&s={4}&l={5}&f={6}"
                 , appSettings.MongoDBSettings.DB
                 , collection

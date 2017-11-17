@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
+using TripleZero.Helper;
 
 namespace TripleZero.Modules
 {
@@ -19,6 +20,17 @@ namespace TripleZero.Modules
         {
             playerUserName = playerUserName.Trim();
             characterAlias = characterAlias.Trim();
+
+            string retStr = "";
+            //get from cache if possible and exit sub
+            string functionName = "character";
+            string key = string.Concat(playerUserName,characterAlias);
+            retStr = ModuleCache.MessageFromCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
 
             string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
 
@@ -46,8 +58,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find data for character : ***{characterConfig.Name}*** for player : ***{playerUserName}***.");
                 return;
             }
-
-            string retStr = "";
+            
             retStr += string.Format("\n{0} - {1}* g{2} lvl:{3}", character.Name, character.Stars, character.Gear, character.Level);
             retStr += string.Format("\nPower {0} - StatPower {1}", character.Power, character.StatPower);
 
@@ -83,6 +94,7 @@ namespace TripleZero.Modules
             retStr += $"\nSpecial Critical Avoidance: {character.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} %";
 
             await ReplyAsync($"{retStr}");
+            await ModuleCache.AddToCache(functionName, key, retStr);
         }
 
         [Command("character-compare")]
@@ -93,6 +105,17 @@ namespace TripleZero.Modules
             player1UserName = player1UserName.Trim();
             player2UserName = player2UserName.Trim();
             characterAlias = characterAlias.Trim();
+
+            string retStr = "";
+            //get from cache if possible and exit sub
+            string functionName = "character-compare";
+            string key = string.Concat(player1UserName, player2UserName, characterAlias);
+            retStr = ModuleCache.MessageFromCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
 
             string loadingStr = string.Format("\n**{0} and {1}** are loading...\n\n", player1UserName, player2UserName);
 
@@ -132,8 +155,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find data for character : ***{characterConfig.Name}*** for player : ***{player2UserName}***.");
                 return;
             }
-
-            string retStr = "";
+            
             retStr += string.Format("\n{0} - {1}* g{2} lvl:{3} - {4}* g{5} lvl:{6}  ", character1.Name, character1.Stars, character1.Gear, character1.Level, character2.Stars, character2.Gear, character2.Level);
             retStr += string.Format("\nPower {0} vs {2} - StatPower {1} vs {3}", character1.Power, character1.StatPower, character2.Power, character2.StatPower);
 
@@ -176,6 +198,7 @@ namespace TripleZero.Modules
             retStr += $"\nSpecial Critical Avoidance: {character1.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} % - {character2.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} %";
 
             await ReplyAsync($"{retStr}");
+            await ModuleCache.AddToCache(functionName, key, retStr);
         }
     }
 }

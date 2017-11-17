@@ -20,6 +20,16 @@ namespace TripleZero.Modules
         {
             string retStr = "";
 
+            //get from cache if possible and exit sub
+            string functionName = "stats-players";
+            string key = "all";
+            retStr = ModuleCache.MessageFromCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
@@ -43,6 +53,7 @@ namespace TripleZero.Modules
                 retStr = string.Format("\nSomething is wrong with stats -p!!!");
 
             await ReplyAsync($"{retStr}");
+            await ModuleCache.AddToCache(functionName, key, retStr);
         }
 
         [Command("player-getall")]
