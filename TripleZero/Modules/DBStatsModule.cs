@@ -23,7 +23,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "stats-players";
             string key = "all";
-            retStr = ModuleCache.MessageFromCache(functionName, key);
+            retStr = CacheClient.MessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -53,7 +53,7 @@ namespace TripleZero.Modules
                 retStr = string.Format("\nSomething is wrong with stats -p!!!");
 
             await ReplyAsync($"{retStr}");
-            await ModuleCache.AddToCache(functionName, key, retStr);
+            await CacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
         [Command("player-getall")]

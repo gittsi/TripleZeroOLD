@@ -57,7 +57,7 @@ namespace TripleZero.Modules
             }
             string functionName = "mods-s";
             string key = string.Concat(playerUserName, modStatType.GetDescription());
-            await ModuleCache.AddToCache(functionName, key, retStr);
+            await CacheClient.AddToModuleCache(functionName, key, retStr);
         }
         private async Task<List<Tuple<string, Mod>>> GetSpecificSecondaryMods(string playerUserName, ModStatType modStatType, ModValueType modValueType, int rows = 20)
         {
@@ -92,7 +92,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "mods-s";
             string key = string.Concat(playerUserName,modType);
-            string retStr = ModuleCache.MessageFromCache(functionName, key);
+            string retStr = CacheClient.MessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -156,7 +156,7 @@ namespace TripleZero.Modules
 
             string functionName = "mods-p";
             string key = string.Concat(playerUserName, modStatType.GetDescription());
-            await ModuleCache.AddToCache(functionName, key, retStr);
+            await CacheClient.AddToModuleCache(functionName, key, retStr);
         }
         private async Task<List<Tuple<string, Mod>>> GetSpecificPrimaryMods(string playerUserName, ModStatType modStatType, int rows = 20)
         {
@@ -190,7 +190,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "mods-p";
             string key = string.Concat(playerUserName, modType);
-            string retStr = ModuleCache.MessageFromCache(functionName, key);
+            string retStr = CacheClient.MessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");

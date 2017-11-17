@@ -17,6 +17,7 @@ using TripleZero.Configuration;
 using SWGoH.Model;
 using SWGoH.Model.Enums;
 using TripleZero.Strategy;
+using TripleZero.Helper;
 
 namespace TripleZero.Repository
 {
@@ -62,12 +63,24 @@ namespace TripleZero.Repository
         {
             await Task.FromResult(1);
 
-            //get from cache if possible
-            string strCacheKey = string.Concat("GetPlayerRepo-", userName);
-            var objCache = _CachingStrategyContext.CacheGetFromKey(strCacheKey);
+            ////get from cache if possible
+            //string strCacheKey = string.Concat("GetPlayerRepo", userName);
+            //var objCache = _CachingStrategyContext.CacheGetFromKey(strCacheKey);
+            //if (objCache != null)
+            //{
+            //    var player = (Player)objCache;
+            //    player.LoadedFromCache = true;
+            //    return player;
+            //}
+            //get from cache if possible and exit sub
+            string functionName = "GetPlayerRepo";
+            string key = userName;
+            var objCache = CacheClient.MessageFromRepositoryCache(functionName, key);
             if (objCache != null)
-            {                
-                return (Player)objCache;
+            {
+                var player = (Player)objCache;
+                player.LoadedFromCache = true;
+                return player;
             }
 
             var queryData = string.Concat("{\"PlayerName\":\"", userName, "\"}");
@@ -85,7 +98,8 @@ namespace TripleZero.Repository
 
                     var players = _Mapper.Map<List<Player>>(ret);
                     //load to cache
-                    _CachingStrategyContext.CacheAdd(strCacheKey, players.FirstOrDefault());
+                    await CacheClient.AddToRepositoryCache(functionName, key, players.FirstOrDefault());
+                    //_CachingStrategyContext.CacheAdd(strCacheKey, players.FirstOrDefault());
                     return players.FirstOrDefault();
                 }
             }

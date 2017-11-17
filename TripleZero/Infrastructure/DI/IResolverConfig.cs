@@ -27,6 +27,7 @@ namespace TripleZero.Infrastructure.DI
 
         public CachingStrategyContext CachingStrategyContext { get { return Container.Resolve<CachingStrategyContext>(); } }
         public CachingModuleStrategy CachingModuleStrategy { get { return Container.Resolve<CachingModuleStrategy>(); } }
+        public CachingRepositoryStrategy CachingRepositoryStrategy { get { return Container.Resolve<CachingRepositoryStrategy>(); } }
         public static IContainer ConfigureContainer()
         {
             var builder = new ContainerBuilder();

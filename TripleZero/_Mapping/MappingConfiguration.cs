@@ -29,6 +29,7 @@ namespace TripleZero._Mapping
                     .ForMember(dest => dest.SWGoHUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))
                     .ForMember(dest => dest.GalacticPowerCharacters, src => src.MapFrom(source => source.GPcharacters))
                     .ForMember(dest => dest.GalacticPowerShips, src => src.MapFrom(source => source.GPships))
+                    .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
                     //guildDto to guild

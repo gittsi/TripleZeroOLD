@@ -25,26 +25,30 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "player-report";
             string key = playerUserName;
-            retStr = ModuleCache.MessageFromCache(functionName, key);
+            retStr = CacheClient.MessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
                 return;
             }
 
-            loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
+            loadingStr = string.Format("\n**{0}** is loading...\n", playerUserName);
 
             await ReplyAsync($"{loadingStr}");
 
-            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
+            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;            
 
             if (playerData == null)
             {
                 await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
                 return;
             }
+            if (playerData.LoadedFromCache)
+            {
+                retStr+= "\n(cached data**)";
+            }
 
-            retStr = string.Format("Last update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
+            retStr += string.Format("\nLast update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
 
             var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();
 
@@ -171,7 +175,7 @@ namespace TripleZero.Modules
             retStr += string.Format("{0} characters with **gear 12**\n", gear12.Count());
 
 
-            await ModuleCache.AddToCache(functionName, key, retStr);
+            await CacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
         }
     }
