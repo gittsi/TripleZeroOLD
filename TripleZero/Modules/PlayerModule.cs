@@ -45,7 +45,7 @@ namespace TripleZero.Modules
             }
             if (playerData.LoadedFromCache)
             {
-                retStr+= "\n(cached data**)";
+                retStr+= "\n(cached data^^)";
             }
 
             retStr += string.Format("\nLast update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));

@@ -18,17 +18,7 @@ namespace TripleZero.Modules
         [Remarks("*stats-players*")]
         public async Task GetStats()
         {
-            string retStr = "";
-
-            //get from cache if possible and exit sub
-            string functionName = "stats-players";
-            string key = "all";
-            retStr = CacheClient.MessageFromModuleCache(functionName, key);
-            if (!string.IsNullOrWhiteSpace(retStr))
-            {
-                await ReplyAsync($"{retStr}");
-                return;
-            }
+            string retStr = "";           
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
@@ -40,11 +30,25 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var result = IResolver.Current.MongoDBRepository.GetAllPlayersWithoutCharacters().Result;
+            //get from cache if possible and exit sub
+            string functionName = "stats-players";
+            string key = "all";
+            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
 
+            var result = IResolver.Current.MongoDBRepository.GetAllPlayersWithoutCharacters().Result;
 
             if (result != null)
             {
+                if (result.FirstOrDefault().LoadedFromCache)
+                {
+                    retStr += "\n(cached data^^)";
+                }
+
                 retStr += string.Format("\nTotal players loaded to DB : **{0}** ", result.Count());
                 retStr += string.Format("\nSWGoH date - Latest: **{0}** - Oldest: **{1}** ", result.OrderByDescending(p => p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate, result.OrderBy(p => p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate);
                 retStr += string.Format("\nDB date - Latest: **{0}** - Oldest: **{1}** ", result.OrderByDescending(p => p.EntryUpdateDate).Take(1).FirstOrDefault().EntryUpdateDate, result.OrderBy(p => p.EntryUpdateDate).Take(1).FirstOrDefault().EntryUpdateDate);
@@ -77,6 +81,11 @@ namespace TripleZero.Modules
 
             if (result != null)
             {
+                if (result.FirstOrDefault().LoadedFromCache)
+                {
+                    retStr += "\n(cached data^^)";
+                }
+
                 retStr += string.Format("\nTotal players loaded to DB : **{0}**\n", result.Count());
                 result = result.OrderBy(p => p.GuildName).ThenByDescending(p => p.SWGoHUpdateDate).ToList();
                 foreach (var player in result)

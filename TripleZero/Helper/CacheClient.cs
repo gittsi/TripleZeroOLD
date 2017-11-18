@@ -24,7 +24,7 @@ namespace TripleZero.Helper
             {
                 //loadingStr = "\nCommand is loaded from module cache\n\n";
                 //loadingStr = "\n---------------------------------------------";
-                loadingStr = "\n(cached data*)";
+                loadingStr = "\n(cached data^)";
                 retStr = (string)objCache;                
                 return string.Concat(loadingStr,retStr);
             }
