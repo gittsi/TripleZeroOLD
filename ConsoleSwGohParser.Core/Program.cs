@@ -52,8 +52,15 @@ namespace SWGoH
             QueueDto q = QueueMethods.GetQueu();
             if (q != null)
             {
-                int ret = ExecuteCommand(q.Command, q.Name , q);
-                if (ret != 3) mLastProcess = DateTime.UtcNow;
+                int now = DateTime.UtcNow.Minute;
+                double minutes = 0.0;
+                minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
+                bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
+                if (check)
+                {
+                    int ret = ExecuteCommand(q.Command, q.Name, q);
+                    if (ret != 3) mLastProcess = DateTime.UtcNow;
+                }
             }
             else
             {
