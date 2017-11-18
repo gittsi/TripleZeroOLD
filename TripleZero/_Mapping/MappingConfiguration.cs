@@ -39,6 +39,7 @@ namespace TripleZero._Mapping
                     .ForMember(dest => dest.EntryUpdateDate, src => src.MapFrom(source => source.LastClassUpdated))
                     .ForMember(dest => dest.SWGoHUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))
                     .ForMember(dest => dest.Players, src => src.MapFrom(source => source.Players))
+                    .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
                     //characterDto to Character
@@ -82,10 +83,14 @@ namespace TripleZero._Mapping
                     ;
 
                     //character config
-                    cfg.CreateMap<CharacterConfigDto, CharacterConfig>();
+                    cfg.CreateMap<CharacterConfigDto, CharacterConfig>()
+                    .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
+                    ;
 
                     //guild config
-                    cfg.CreateMap<GuildConfigDto, GuildConfig>();
+                    cfg.CreateMap<GuildConfigDto, GuildConfig>()
+                    .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
+                    ;
 
                     //guildCharacter
                     cfg.CreateMap<GuildCharacterDto, GuildCharacter>()
