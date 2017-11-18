@@ -48,35 +48,41 @@ namespace SWGoH
             //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
             //ExecuteCommand(Command.Test, "newholborn", null);
+            QueueDto q = null;
 
-            QueueDto q = QueueMethods.GetQueu();
-            if (q != null)
+            int now = DateTime.UtcNow.Minute;
+            double minutes = 0.0;
+            minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
+            int restminutes = (int)(DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes - minutes);
+            bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
+            if (check)
             {
-                int now = DateTime.UtcNow.Minute;
-                double minutes = 0.0;
-                minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
-                bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
-                if (check)
+                q = QueueMethods.GetQueu();
+                if (q != null)
                 {
                     int ret = ExecuteCommand(q.Command, q.Name, q);
                     if (ret != 3) mLastProcess = DateTime.UtcNow;
                 }
+                else
+                {
+                    //int now = DateTime.UtcNow.Minute;
+                    //double minutes = 0.0;
+                    //minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
+                    //bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
+                    //if (check)
+                    //{
+                    //    PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
+                    //    if (player != null)
+                    //    {
+                    //        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.UtcNow);
+                    //    }
+                    //}
+                    Console.WriteLine("Nothing to process");
+                }
             }
             else
             {
-                //int now = DateTime.UtcNow.Minute;
-                //double minutes = 0.0;
-                //minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
-                //bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
-                //if (check)
-                //{
-                //    PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
-                //    if (player != null)
-                //    {
-                //        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.UtcNow);
-                //    }
-                //}
-                Console.WriteLine("Nothing to process");
+                Console.WriteLine("Waiting...  " + restminutes.ToString () + " minutes");
             }
             isWorking = false;
             t.Change(Settings.appSettings.GlobalConsoleTimerInterval, Settings.appSettings.GlobalConsoleTimerInterval);
