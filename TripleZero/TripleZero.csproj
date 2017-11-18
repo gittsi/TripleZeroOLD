@@ -43,6 +43,12 @@
     <ProjectReference Include="..\SWGoH.Model\SWGoH.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Configuration\config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties Configuration_4config_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
