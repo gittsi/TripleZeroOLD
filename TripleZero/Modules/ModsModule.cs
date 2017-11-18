@@ -31,6 +31,7 @@ namespace TripleZero.Modules
             string retStr = "";
             if (result != null)
             {
+                retStr = string.Format("Returned mods : {0}", result.Count());
                 foreach (var row in result)
                 {
                     var modStats = row.Item2.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == secondaryStatValueType).FirstOrDefault();
@@ -65,6 +66,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find player : {playerUserName}...");
                 return null;
             }
+            if (res.LoadedFromCache) await ReplyAsync($"**{CacheClient.CachedDataRepository()}**");
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
                               from Mod in Character.Mods.Where(p => p.SecondaryStat != null)
@@ -119,6 +121,7 @@ namespace TripleZero.Modules
             string retStr = "";
             if (result != null)
             {
+                retStr = string.Format("Returned mods : {0}", result.Count());
                 foreach (var row in result)
                 {
                     var modStats = row.Item2.PrimaryStat;
@@ -153,6 +156,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find player : {playerUserName}...");
                 return null;
             }
+            if (res.LoadedFromCache) await ReplyAsync($"**{CacheClient.CachedDataRepository()}**");
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
                               from Mod in Character.Mods.Where(p => p.PrimaryStat != null && p.PrimaryStat.StatType == modStatType)
