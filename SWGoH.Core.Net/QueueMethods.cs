@@ -26,8 +26,9 @@ namespace SWGoH
                 {
                     JObject data = new JObject(
                     new JProperty("Name", PlayerName),
-                    new JProperty("InsertedDate", DateTime.Now),
-                    new JProperty("NextRunDate", nextrundate),
+                    new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
+                    new JProperty("ProcessingStartDate", ""),
+                    new JProperty("NextRunDate", nextrundate.ToString ("o")),
                     new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
                     new JProperty("Type", type),
@@ -45,6 +46,33 @@ namespace SWGoH
             catch(Exception e)
             {
                 SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
+            }
+        }
+        public static void UpdateQueueAndProcessLater(QueueDto q, PlayerDto player , double hours)
+        {
+            try
+            {
+                JObject data = new JObject(
+                                   new JProperty("Name", q.Name),
+                                   new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
+                                   new JProperty("ProcessingStartDate", ""),
+                                   new JProperty("NextRunDate", player.LastSwGohUpdated.AddHours(hours).ToString ("o")),
+                                   new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
+                                   new JProperty("Priority", q.Priority),
+                                   new JProperty("Type", q.Type),
+                                   new JProperty("Command", q.Command));
+
+                var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", q.Id.ToString());
+                using (HttpClient client1 = new HttpClient())
+                {
+                    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                }
+                SWGoH.Log.ConsoleMessage(q.Name + " Added To Queu to be processed later :");
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Error updating Queu to be processed later :" + e.Message);
             }
         }
         public static void RemoveFromQueu(QueueDto q)
@@ -87,15 +115,17 @@ namespace SWGoH
                     {
 
                         FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
-                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1);
+                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o"));
                         var opts = new FindOneAndUpdateOptions<QueueDto>()
                         {
                             IsUpsert = false,
                             ReturnDocument = ReturnDocument.After,
-                            Sort = Builders<QueueDto>.Sort.Descending(r => r.InsertedDate).Ascending (r => r.InsertedDate)
+                            Sort = Builders<QueueDto>.Sort.Descending(r => r.Priority).Ascending(r => r.NextRunDate)
                         };
                         QueueDto found = collection.FindOneAndUpdate<QueueDto>(filter, update, opts);
 
+                        DateTime nextrun = DateTime.Parse(found.NextRunDate).ToUniversalTime ();
+                        if (DateTime.UtcNow < nextrun) return null;
                         return found;
                     }
                 }
@@ -104,7 +134,7 @@ namespace SWGoH
                     SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!!");
                     using (HttpClient client = new HttpClient())
                     {
-                        string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", "&q={\"Status\":0}", "&s={\"Priority\":-1,\"InsertedDate\":1}", "&l=1", "");
+                        string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", "&q={\"Status\":0}", "&s={\"Priority\":-1,\"NextRunDate\":1}", "&l=1", "");
 
                         string response = client.GetStringAsync(url).Result;
                         if (response != "" && response != "[  ]")
@@ -114,13 +144,14 @@ namespace SWGoH
                             if (result1 != null)
                             {
                                 //check nextrundate
-
+                                
 
                                 //UPDATE with Status = 1
                                 JObject data = new JObject(
                                 new JProperty("Name", result1.Name),
                                 new JProperty("InsertedDate", result1.InsertedDate),
-                                new JProperty("ProcessingStartDate", DateTime.Now),
+                                new JProperty("ProcessingStartDate", DateTime.UtcNow.ToString("o")),
+                                new JProperty("NextRunDate", result1.NextRunDate),
                                 new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.Processing),
                                 new JProperty("Priority", result1.Priority),
                                 new JProperty("Type", result1.Type),

@@ -48,7 +48,7 @@ namespace SWGoH
                 }
             }
         }
-        private void DeletePlayerFromDBAsync()
+        public void DeletePlayerFromDBAsync()
         {
             try
             {
@@ -130,11 +130,6 @@ namespace SWGoH
                         if (response.IsSuccessStatusCode)
                         {
                             SWGoH.Log.ConsoleMessage("Added To Database : " + PlayerNameInGame);
-
-                            DeletePlayerFromDBAsync();
-
-                            //DateTime nextrundate = DateTime.Now.AddDays(1.0);
-                            //SwGoh.QueueMethods.AddPlayer(PlayerName, Enums.QueueEnum.Command.UpdatePlayer, 2, Enums.QueueEnum.QueueType.Player, nextrundate);
                         }
                         else
                         {
@@ -168,7 +163,7 @@ namespace SWGoH
             }
             catch (Exception e)
             {
-                SWGoH.Log.ConsoleMessage("Exception : " + e.Message);
+                SWGoH.Log.ConsoleMessage("Exception on Player : " + PlayerName + " : " + e.Message);
                 web = null;
                 return 0;
             }
@@ -219,7 +214,7 @@ namespace SWGoH
             }
             catch (Exception e)
             {
-                SWGoH.Log.ConsoleMessage("Error Retrieving Real Player Name From Allias : " + e.Message);
+                SWGoH.Log.ConsoleMessage("Error Retrieving Real Player Name From Allias : " + this.PlayerName + "  " + e.Message);
                 return pname;
             }
         }
@@ -305,7 +300,7 @@ namespace SWGoH
                 }
                 catch(Exception e)
                 {
-                    SWGoH.Log.ConsoleMessage("Error in CkeckLastUpdated :" + e.Message);
+                    SWGoH.Log.ConsoleMessage("Error in CkeckLastUpdated :" + this.PlayerName + "  " + e.Message);
                     return true;
                 }
             }

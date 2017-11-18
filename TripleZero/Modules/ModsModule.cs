@@ -7,6 +7,7 @@ using TripleZero.Infrastructure.DI;
 using SWGoH.Model.Extensions;
 using SWGoH.Model.Enums;
 using SWGoH.Model;
+using TripleZero.Helper;
 
 namespace TripleZero.Modules
 {
@@ -30,6 +31,7 @@ namespace TripleZero.Modules
             string retStr = "";
             if (result != null)
             {
+                retStr = string.Format("Returned mods : {0}", result.Count());
                 foreach (var row in result)
                 {
                     var modStats = row.Item2.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == secondaryStatValueType).FirstOrDefault();
@@ -64,6 +66,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find player : {playerUserName}...");
                 return null;
             }
+            if (res.LoadedFromCache) await ReplyAsync($"**{CacheClient.CachedDataRepository()}**");
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
                               from Mod in Character.Mods.Where(p => p.SecondaryStat != null)
@@ -80,8 +83,11 @@ namespace TripleZero.Modules
         [Command("mods-s")]
         [Summary("Get mods sorted by a **secondary** stat of a given player")]
         [Remarks("*mods-s {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n examples \n1) $mods-s playerName defense \n2) $mods-s playerName defense% 5)*")]
-        public async Task GetSecondaryStatMods(string playerUserName, string modType, int rows = 20)
+        public async Task GetSecondaryStatMods(string playerUserName, string modType, string resultsRows = "20")
         {
+            bool rowsIsNumber = int.TryParse(resultsRows, out int rows);
+            if (!rowsIsNumber) { await ReplyAsync($"If you want to specify how many results want, you have to put a number as third parameter! '{rows}' is not a number!");  return; }
+
             playerUserName = playerUserName.Trim();
             modType = modType.Trim();
 
@@ -115,6 +121,7 @@ namespace TripleZero.Modules
             string retStr = "";
             if (result != null)
             {
+                retStr = string.Format("Returned mods : {0}", result.Count());
                 foreach (var row in result)
                 {
                     var modStats = row.Item2.PrimaryStat;
@@ -149,6 +156,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find player : {playerUserName}...");
                 return null;
             }
+            if (res.LoadedFromCache) await ReplyAsync($"**{CacheClient.CachedDataRepository()}**");
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
                               from Mod in Character.Mods.Where(p => p.PrimaryStat != null && p.PrimaryStat.StatType == modStatType)
@@ -164,10 +172,13 @@ namespace TripleZero.Modules
         [Command("mods-p")]
         [Summary("Get mods sorted by a **primary** stat of a given player")]
         [Remarks("*mods-p {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n example \n$mods-p playerName speed 5)*")]
-        public async Task GetPrimaryStatMods(string playerUserName, string modType, int rows = 20)
+        public async Task GetPrimaryStatMods(string playerUserName, string modType, string resultsRows = "20")
         {
+            bool rowsIsNumber = int.TryParse(resultsRows, out int rows);
+            if (!rowsIsNumber) { await ReplyAsync($"If you want to specify how many results want, you have to put a number as third parameter! '{rows}' is not a number!"); return; }
+
             playerUserName = playerUserName.Trim();
-            modType = modType.Trim();
+            modType = modType.Trim();            
 
             ModStatType primaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(), typeof(ModStatType));
 

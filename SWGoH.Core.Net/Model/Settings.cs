@@ -18,6 +18,16 @@ namespace SWGoH
             {
                 var lines = File.ReadAllText(fname);
                 JsonConvert.PopulateObject(lines, appSettings);
+                if (appSettings.Database.Equals("triplezero", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    appSettings.DatabaseID1 = 245805;
+                    appSettings.DatabaseID2 = 45805;
+                }
+                else if (appSettings.Database.Equals("triplezerodev", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    appSettings.DatabaseID1 = 161455;
+                    appSettings.DatabaseID2 = 61455;
+                }
             }
             else
             {
@@ -41,5 +51,7 @@ namespace SWGoH
         public  double MinutesUntilNextProcess { get; set; }
         public int LogToFile { get; set; }
         public string Database { get; set; }
+        public int DatabaseID1 { get; set; }
+        public int DatabaseID2 { get; set; }
     }
 }

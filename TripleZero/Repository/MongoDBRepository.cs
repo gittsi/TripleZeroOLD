@@ -16,20 +16,29 @@ using MongoDB.Bson.Serialization;
 using TripleZero.Configuration;
 using SWGoH.Model;
 using SWGoH.Model.Enums;
+using TripleZero.Strategy;
+using TripleZero.Helper;
 
 namespace TripleZero.Repository
 {
     public class MongoDBRepository : IMongoDBRepository
     {
         private IMapper _Mapper;
-        public ApplicationSettingsModel appSettings = IResolver.Current.ApplicationSettings.Get();
+        private readonly ApplicationSettingsModel appSettings = IResolver.Current.ApplicationSettings.Get();
+        //private readonly CachingStrategyContext _CachingStrategyContext;        
+        //private readonly CachingRepositoryStrategy _CachingRepositoryStrategy;        
 
-        public MongoDBRepository(IMappingConfiguration mappingConfiguration)
+        public MongoDBRepository(IMappingConfiguration mappingConfiguration /*,CachingStrategyContext cachingStrategyContext, CachingRepositoryStrategy cachingRepositoryStrategy*/)
         {
-            _Mapper = mappingConfiguration.GetConfigureMapper();
+            _Mapper = mappingConfiguration.GetConfigureMapper();            
+            //_CachingStrategyContext = cachingStrategyContext;
+            //_CachingRepositoryStrategy = cachingRepositoryStrategy;            
+            ////set strategy for caching
+            //_CachingStrategyContext.SetStrategy(_CachingRepositoryStrategy);
         }
         private string BuildApiUrl(string collection, string query = "", string orderBy = "", string limit = "", string fields = "")
         {
+            if (string.IsNullOrWhiteSpace(limit)) limit = "1000";
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/?apiKey={2}&q={3}&s={4}&l={5}&f={6}"
                 , appSettings.MongoDBSettings.DB
                 , collection
@@ -41,8 +50,7 @@ namespace TripleZero.Repository
             return url;
         }
         private string BuildApiUrlFromId(string collection, string id)
-        {
-            //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", characterConfig.Id, apiKey);
+        {            
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/{2}?apiKey={3}"
                 , appSettings.MongoDBSettings.DB
                 , collection
@@ -54,6 +62,16 @@ namespace TripleZero.Repository
         public async Task<Player> GetPlayer(string userName)
         {
             await Task.FromResult(1);
+           
+            string functionName = "GetPlayerRepo";
+            string key = userName;
+            var objCache = CacheClient.MessageFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var player = (Player)objCache;
+                player.LoadedFromCache = true;
+                return player;
+            }
 
             var queryData = string.Concat("{\"PlayerName\":\"", userName, "\"}");
             var orderby = "{\"LastSwGohUpdated\":-1}";
@@ -69,6 +87,9 @@ namespace TripleZero.Repository
                     List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
 
                     var players = _Mapper.Map<List<Player>>(ret);
+                    if (players == null || players.Count == 0) return players.FirstOrDefault();
+                    //load to cache
+                    await CacheClient.AddToRepositoryCache(functionName, key, players.FirstOrDefault());
                     return players.FirstOrDefault();
                 }
             }
@@ -80,6 +101,16 @@ namespace TripleZero.Repository
         public async Task<Guild> GetGuildPlayers(string guildName)
         {
             await Task.FromResult(1);
+
+            string functionName = "GetGuildPlayersRepo";
+            string key = guildName;
+            var objCache = CacheClient.MessageFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var guild = (Guild)objCache;
+                guild.LoadedFromCache = true;
+                return guild;
+            }
 
             var queryData = string.Concat("{\"Name\":\"", guildName, "\"}");
             var orderby = "{\"LastSwGohUpdated\":-1}";
@@ -97,6 +128,8 @@ namespace TripleZero.Repository
 
                     Guild guild = _Mapper.Map<Guild>(ret);
 
+                    //load to cache
+                    await CacheClient.AddToRepositoryCache(functionName, key, guild);
                     return guild;
                 }
             }
@@ -248,6 +281,16 @@ namespace TripleZero.Repository
         {
             await Task.FromResult(1);
 
+            string functionName = "GetAllPlayersWithoutCharactersRepo";
+            string key = "key";
+            var objCache = CacheClient.MessageFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var guild = (List<Player>)objCache;
+                guild.ForEach(p => p.LoadedFromCache = true);                
+                return guild;
+            }
+
             var orderby = "{\"LastSwGohUpdated\":-1}";
             var fields = "{\"Characters\": 0}";
 
@@ -262,6 +305,8 @@ namespace TripleZero.Repository
                     List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
 
                     var players = _Mapper.Map<List<Player>>(ret);
+                    //load to cache
+                    await CacheClient.AddToRepositoryCache(functionName, key, players,30);
                     return players;
                 }
             }
@@ -272,6 +317,15 @@ namespace TripleZero.Repository
         }
         public async Task<List<CharacterConfig>> GetCharactersConfig()
         {
+            string functionName = "GetCharactersConfigRepo";
+            string key = "key";
+            var objCache = CacheClient.MessageFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var charactersConfig = (List<CharacterConfig>)objCache;
+                charactersConfig.ForEach(p => p.LoadedFromCache = true);
+                return charactersConfig;
+            }
 
             string url = BuildApiUrl("Config.Character", null, null, null, null);
             //string url = string.Format("https://api.mlab.com/api/1/databases/{1}/collections/Config.Character/?apiKey={0}", apiKey, db);
@@ -288,6 +342,8 @@ namespace TripleZero.Repository
                     var charactersConfigDto = ret.OrderBy(p => p.Name).ToList();
 
                     List<CharacterConfig> charactersConfig = _Mapper.Map<List<CharacterConfig>>(charactersConfigDto);
+                    //load to cache
+                    await CacheClient.AddToRepositoryCache(functionName, key, charactersConfig, 30);
                     return charactersConfig;
                 }
             }
@@ -298,6 +354,16 @@ namespace TripleZero.Repository
         }
         public async Task<List<GuildConfig>> GetGuildsConfig()
         {
+            string functionName = "GetGuildsConfigRepo";
+            string key = "key";
+            var objCache = CacheClient.MessageFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var guildsConfig = (List<GuildConfig>)objCache;
+                guildsConfig.ForEach(p => p.LoadedFromCache = true);
+                return guildsConfig;
+            }
+
             string url = BuildApiUrl("Config.Guild", null, null, null, null);
 
             try
@@ -308,6 +374,8 @@ namespace TripleZero.Repository
                     List<GuildConfigDto> ret = JsonConvert.DeserializeObject<List<GuildConfigDto>>(response, Converter.Settings);
 
                     List<GuildConfig> guildsConfig = _Mapper.Map<List<GuildConfig>>(ret);
+                    //load to cache
+                    await CacheClient.AddToRepositoryCache(functionName, key, guildsConfig, 30);
                     return guildsConfig;
                 }
             }

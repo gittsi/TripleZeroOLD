@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using System;
 using SWGoH.Enums.QueueEnum;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace SWGoH
 {
@@ -8,9 +9,12 @@ namespace SWGoH
     {
         public Nullable<ObjectId> Id { get; set; }
         public string Name { get; set; }
-        public DateTime InsertedDate { get; set; }
-        public Nullable<DateTime> ProcessingStartDate { get; set; }
-        public Nullable<DateTime> NextRunDate { get; set; }
+        
+        public string InsertedDate { get; set; }
+        
+        public string ProcessingStartDate { get; set; }
+        
+        public string NextRunDate { get; set; }
         public Command Command { get; set; }
         public int Priority { get; set; }
         public QueueStatus Status { get; set; }

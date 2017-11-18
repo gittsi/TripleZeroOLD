@@ -23,6 +23,17 @@ namespace TripleZero.Modules
             characterAlias = characterAlias.Trim();
 
             string retStr = "";
+
+            //get from cache if possible and exit sub
+            string functionName = "guildCharacter";
+            string key = string.Concat(guildAlias,characterAlias);
+            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
@@ -40,8 +51,8 @@ namespace TripleZero.Modules
             var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId, characterConfig.Command);
 
             if (res != null)
-            {
-                await ReplyAsync($"***Guild : {guildConfig.Name} - Character : {characterConfig.Name}***");
+            {                
+                retStr += $"\n***Guild : {guildConfig.Name} - Character : {characterConfig.Name}***";
 
                 foreach (var player in res.Players.OrderByDescending(p => p.Rarity).ThenByDescending(t => t.Power))
                 {
@@ -52,9 +63,11 @@ namespace TripleZero.Modules
             }
             else
             {
-                retStr = $"I didn't find any players having `{guildConfig.Name} for guild {characterConfig.Name}`";
+                retStr = $"I didn't find any players having `{guildConfig.Name} for guild {characterConfig.Name}`";                
                 await ReplyAsync($"{retStr}");
             }
+
+            await CacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
         [Command("slackers")]
@@ -65,6 +78,7 @@ namespace TripleZero.Modules
             guildAlias = guildAlias.Trim();
 
             string retStr = "";
+
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
@@ -121,6 +135,16 @@ namespace TripleZero.Modules
             guildAlias = guildAlias.Trim();
 
             string retStr = "";
+            //get from cache if possible and exit sub
+            string functionName = "tb";
+            string key = guildAlias;
+            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
@@ -136,6 +160,7 @@ namespace TripleZero.Modules
             retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerShips));
 
             await ReplyAsync($"{retStr}");
+            await CacheClient.AddToModuleCache(functionName, key, retStr);
 
         }
 
@@ -148,6 +173,16 @@ namespace TripleZero.Modules
             searchStr = searchStr.Trim();
 
             string retStr = "";
+            //get from cache if possible and exit sub
+            string functionName = "guildPlayers";
+            string key = string.Concat(guildAlias,searchStr);
+            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
@@ -185,7 +220,7 @@ namespace TripleZero.Modules
                 counter += 1;
                 //retStr += string.Format("\n{0} {1} {2} {3}", player.GPcharacters.ToString().PadRight(7, ' '), player.GPships.ToString().PadRight(7,' '),player.PlayerNameInGame,player.PlayerName);
             }
-
+            await CacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
 
         }
