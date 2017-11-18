@@ -9,6 +9,8 @@ namespace TripleZero.Helper
 {
     public static class CacheClient
     {
+        public static string CachedDataRepository() { return "\n(cached data^^)";  }
+
         public static string MessageFromModuleCache(string functionName, string key)
         {
             CachingStrategyContext _CachingStrategyContext = IResolver.Current.CachingStrategyContext;

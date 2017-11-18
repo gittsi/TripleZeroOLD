@@ -7,6 +7,8 @@ using System.Linq;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Helper;
 using SWGoH.Model.Enums;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace TripleZero.Modules
 {
@@ -116,7 +118,7 @@ namespace TripleZero.Modules
 
         [Command("characters-config")]
         //[Summary("Get config for specific character(Admin Command).\nUsage : ***$characters -config***")]
-        [Summary("Get config for specific character(Admin Command)")]
+        [Summary("Get config all characters(Admin Command)")]
         [Remarks("*characters-config*")]
         public async Task GetCharacterConfig()
         {
@@ -194,7 +196,7 @@ namespace TripleZero.Modules
             var result = IResolver.Current.MongoDBRepository.GetQueue().Result;
 
             var guildQueues = result.Where(p => p.Type == QueueType.Guild);
-            var playerQueues = result.Where(p => p.Type == QueueType.Player);
+            var playerQueues = result.Where(p => p.Type == QueueType.Player).OrderByDescending(p=>p.Status).ThenBy(p=>p.NextRunDate);
 
             if (result == null)
             {
@@ -202,10 +204,44 @@ namespace TripleZero.Modules
                 return;
             }
 
-            retStr = "\n**Players**";
-            foreach (var queuePlayer in playerQueues)
+            var processing = playerQueues.Where(p => p.Status == QueueStatus.Processing);
+            var pending = playerQueues.Where(p => p.Status == QueueStatus.PendingProcess);
+            var failed = playerQueues.Where(p => p.Status == QueueStatus.Failed);
+
+            if(processing.Count()>0) retStr += "\n**Processing**";
+            foreach (var queuePlayer in processing)
             {
-                retStr += string.Format("\nPlayer : **{0}** - Status : **{1}**", queuePlayer.Name, queuePlayer.Status);
+                retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.NextRunDate?.ToString("yyyy-MM-dd HH:mm"));
+
+                if (retStr.Length > 1800)
+                {
+                    await ReplyAsync($"{retStr}");
+                    retStr = "";
+                }
+            }
+
+            if (pending.Count() > 0) retStr += "\n\n**Pending Process**";
+            foreach (var queuePlayer in pending)
+            {
+                retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.NextRunDate?.ToString("yyyy-MM-dd HH:mm"));
+
+                if (retStr.Length > 1800)
+                {
+                    await ReplyAsync($"{retStr}");
+                    retStr = "";
+                }
+            }
+
+            if (failed.Count() > 0) retStr += "\n**failed**";
+            foreach (var queuePlayer in failed)
+            {
+                retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.NextRunDate?.ToString("yyyy-MM-dd HH:mm"));
+
+                if (retStr.Length > 1800)
+                {
+                    await ReplyAsync($"{retStr}");
+                    retStr = "";
+                }
             }
 
             await ReplyAsync($"{retStr}");
@@ -305,6 +341,21 @@ namespace TripleZero.Modules
                 retStr = string.Format("\nGuild {0} added to queue. Please be patient, I need tons of time to retrieve data!!!", guildName);
             else
                 retStr = string.Format("\nGuild {0} not added to queue!!!!!");
+
+            await ReplyAsync($"{retStr}");
+        }
+
+        [Command("mem")]
+        [Summary("Check application diagnostics")]
+        [Remarks("*mem*")]
+        public async Task CheckDiagnostics()
+        {
+            Process currentProc = Process.GetCurrentProcess();
+
+            var threads = currentProc.Threads;
+            long memoryUsed = currentProc.PrivateMemorySize64;
+
+            string retStr = string.Format("\nMemory : {0} - Threads : {1}", memoryUsed.ToString("#,##0,Kb", CultureInfo.InvariantCulture), threads.Count);
 
             await ReplyAsync($"{retStr}");
         }

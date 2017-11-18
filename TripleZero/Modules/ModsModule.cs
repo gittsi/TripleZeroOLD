@@ -55,9 +55,6 @@ namespace TripleZero.Modules
                 retStr = $"I didn't find any mods for username {playerUserName}`";
                 await ReplyAsync($"{retStr}");
             }
-            string functionName = "mods-s";
-            string key = string.Concat(playerUserName, modStatType.GetDescription());
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
         }
         private async Task<List<Tuple<string, Mod>>> GetSpecificSecondaryMods(string playerUserName, ModStatType modStatType, ModValueType modValueType, int rows = 20)
         {
@@ -84,20 +81,13 @@ namespace TripleZero.Modules
         [Command("mods-s")]
         [Summary("Get mods sorted by a **secondary** stat of a given player")]
         [Remarks("*mods-s {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n examples \n1) $mods-s playerName defense \n2) $mods-s playerName defense% 5)*")]
-        public async Task GetSecondaryStatMods(string playerUserName, string modType, int rows = 20)
+        public async Task GetSecondaryStatMods(string playerUserName, string modType, string resultsRows = "20")
         {
+            bool rowsIsNumber = int.TryParse(resultsRows, out int rows);
+            if (!rowsIsNumber) { await ReplyAsync($"If you want to specify how many results want, you have to put a number as third parameter! '{rows}' is not a number!");  return; }
+
             playerUserName = playerUserName.Trim();
             modType = modType.Trim();
-
-            //get from cache if possible and exit sub
-            string functionName = "mods-s";
-            string key = string.Concat(playerUserName,modType);
-            string retStr = CacheClient.MessageFromModuleCache(functionName, key);
-            if (!string.IsNullOrWhiteSpace(retStr))
-            {
-                await ReplyAsync($"{retStr}");
-                return;
-            }
 
             ModValueType secondaryStatValueType = ModValueType.None;
             if (modType.Substring(modType.Length - 1, 1) == "%")
@@ -153,10 +143,6 @@ namespace TripleZero.Modules
                 retStr = $"I didn't find any mods for username {playerUserName}`";
                 await ReplyAsync($"{retStr}");
             }
-
-            string functionName = "mods-p";
-            string key = string.Concat(playerUserName, modStatType.GetDescription());
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
         }
         private async Task<List<Tuple<string, Mod>>> GetSpecificPrimaryMods(string playerUserName, ModStatType modStatType, int rows = 20)
         {
@@ -182,20 +168,13 @@ namespace TripleZero.Modules
         [Command("mods-p")]
         [Summary("Get mods sorted by a **primary** stat of a given player")]
         [Remarks("*mods-p {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n example \n$mods-p playerName speed 5)*")]
-        public async Task GetPrimaryStatMods(string playerUserName, string modType, int rows = 20)
+        public async Task GetPrimaryStatMods(string playerUserName, string modType, string resultsRows = "20")
         {
-            playerUserName = playerUserName.Trim();
-            modType = modType.Trim();
+            bool rowsIsNumber = int.TryParse(resultsRows, out int rows);
+            if (!rowsIsNumber) { await ReplyAsync($"If you want to specify how many results want, you have to put a number as third parameter! '{rows}' is not a number!"); return; }
 
-            //get from cache if possible and exit sub
-            string functionName = "mods-p";
-            string key = string.Concat(playerUserName, modType);
-            string retStr = CacheClient.MessageFromModuleCache(functionName, key);
-            if (!string.IsNullOrWhiteSpace(retStr))
-            {
-                await ReplyAsync($"{retStr}");
-                return;
-            }
+            playerUserName = playerUserName.Trim();
+            modType = modType.Trim();            
 
             ModStatType primaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(), typeof(ModStatType));
 

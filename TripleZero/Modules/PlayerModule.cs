@@ -43,10 +43,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
                 return;
             }
-            if (playerData.LoadedFromCache)
-            {
-                retStr+= "\n(cached data^^)";
-            }
+            if (playerData.LoadedFromCache) retStr+= CacheClient.CachedDataRepository();            
 
             retStr += string.Format("\nLast update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
 

@@ -87,6 +87,7 @@ namespace TripleZero.Repository
                     List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
 
                     var players = _Mapper.Map<List<Player>>(ret);
+                    if (players == null || players.Count == 0) return players.FirstOrDefault();
                     //load to cache
                     await CacheClient.AddToRepositoryCache(functionName, key, players.FirstOrDefault());
                     return players.FirstOrDefault();
