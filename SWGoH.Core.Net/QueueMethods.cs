@@ -48,15 +48,18 @@ namespace SWGoH
                 SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
         }
-        public static void UpdateQueueAndProcessLater(QueueDto q, PlayerDto player , double hours)
+        public static void UpdateQueueAndProcessLater(QueueDto q, PlayerDto player , double hours,bool fromnow)
         {
             try
             {
+                string nextrun = player.LastSwGohUpdated.AddHours(hours).ToString("o");
+                if (fromnow) nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
+
                 JObject data = new JObject(
                                    new JProperty("Name", q.Name),
                                    new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
                                    new JProperty("ProcessingStartDate", ""),
-                                   new JProperty("NextRunDate", player.LastSwGohUpdated.AddHours(hours).ToString ("o")),
+                                   new JProperty("NextRunDate", nextrun),
                                    new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                                    new JProperty("Priority", q.Priority),
                                    new JProperty("Type", q.Type),
@@ -113,6 +116,11 @@ namespace SWGoH
                     IMongoCollection <QueueDto> collection = db.GetCollection<QueueDto>("Queue");
                     if (collection != null)
                     {
+                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("Status" , 1);
+                        //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Status", 0);
+                        //UpdateOptions opts2 = new UpdateOptions();
+                        //opts2.IsUpsert = false;
+                        //UpdateResult res = collection.UpdateMany (filter2, update2, opts2);
 
                         FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
                         UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o"));
@@ -123,9 +131,24 @@ namespace SWGoH
                             Sort = Builders<QueueDto>.Sort.Descending(r => r.Priority).Ascending(r => r.NextRunDate)
                         };
                         QueueDto found = collection.FindOneAndUpdate<QueueDto>(filter, update, opts);
+                        if (found != null)
+                        {
+                            DateTime nextrun = DateTime.Parse(found.NextRunDate).ToUniversalTime();
+                            if (DateTime.UtcNow < nextrun)
+                            {
+                                found.Status = QueueStatus.PendingProcess;
 
-                        DateTime nextrun = DateTime.Parse(found.NextRunDate).ToUniversalTime ();
-                        if (DateTime.UtcNow < nextrun) return null;
+                                FilterDefinition<QueueDto> filter1 = Builders<QueueDto>.Filter.Eq("_id", found.Id);
+                                UpdateDefinition<QueueDto> update1 = Builders<QueueDto>.Update.Set("Status", 0);
+                                UpdateOptions opts1 = new UpdateOptions();
+                                opts1.IsUpsert = false;
+
+                                UpdateResult res = collection.UpdateOne(filter1, update1, opts1);
+
+
+                                return null;
+                            }
+                        }
                         return found;
                     }
                 }
