@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using SwGoh;
+using SWGoH;
 using System;
 using System.Collections.Generic;
 using System.Linq;

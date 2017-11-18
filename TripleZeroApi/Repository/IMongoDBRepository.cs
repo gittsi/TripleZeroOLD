@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using TripleZeroApi.Models;
-using SwGoh;
+using SWGoH;
 
 namespace TripleZeroApi.Repository
 {

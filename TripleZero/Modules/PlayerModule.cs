@@ -1,18 +1,8 @@
 ﻿using Discord.Commands;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Configuration;
-using TripleZero.Repository.Dto;
-using SwGoh;
-using Discord.WebSocket;
-using Discord;
+using TripleZero.Strategy;
 using TripleZero.Helper;
 
 namespace TripleZero.Modules
@@ -20,55 +10,42 @@ namespace TripleZero.Modules
     [Name("Player")]
     [Summary("Player Commands")]
     public class PlayerModule : ModuleBase<SocketCommandContext>
-    {        
-
-        [Command("playerreload")]
-        [Summary("Set a player for reload.\nUsage : ***$playerreload {playerUserName}***")]
-        public async Task SetPlayerReload(string playerUserName)
+    {
+        [Command("player-report")]
+        [Summary("Get full report for a player")]
+        [Remarks("*player-report {playerUserName}*")]
+        public async Task GetPlayerReport(string playerUserName)
         {
-            string retStr = "";
+            await Task.FromResult(1);
 
-            //check if user is in role in order to proceed with the action
-            var userAllowed = Roles.UserInRole(Context, "botadmin");
-            if (!userAllowed)
+            playerUserName = playerUserName.Trim();
+            string retStr = "";
+            string loadingStr = "";
+
+            //get from cache if possible and exit sub
+            string functionName = "player-report";
+            string key = playerUserName;
+            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
             {
-                retStr = "\nNot authorized!!!";
                 await ReplyAsync($"{retStr}");
                 return;
             }
 
-            playerUserName = playerUserName.Trim();
-
-            var result = IResolver.Current.MongoDBRepository.SendPlayerToQueue(playerUserName).Result;
-
-            
-            if (result != null)
-                retStr = string.Format("\nPlayer {0} added to queue. Please be patient, I need some time to retrieve data!!!",playerUserName);
-            else
-                retStr = string.Format("\nPlayer {0} not added to queue!!!!!");
-
-            await ReplyAsync($"{retStr}");
-        }
-
-        [Command("playerReport")]
-        [Summary("Get full report for a player. You can check available players of a guild by using ***$guildPlayers*** command.\nUsage : ***$playerReport {playerUserName}***")]
-        public async Task CheckPlayer(string playerUserName)
-        {
-            playerUserName = playerUserName.Trim();
-
-            string loadingStr = string.Format("\n**{0}** is loading...\n\n", playerUserName);
+            loadingStr = string.Format("\n**{0}** is loading...\n", playerUserName);
 
             await ReplyAsync($"{loadingStr}");
-            //fil data
-            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
+
+            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;            
 
             if (playerData == null)
             {
                 await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
                 return;
             }
+            if (playerData.LoadedFromCache) retStr+= CacheClient.CachedDataRepository();            
 
-            string retStr = string.Format("Last update : {0}(UTC)\n\n", playerData.LastSwGohUpdated.ToString("yyyy-MM-dd HH:mm:ss"));
+            retStr += string.Format("\nLast update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
 
             var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();
 
@@ -128,13 +105,15 @@ namespace TripleZero.Modules
                             }
                             ).ToList();
             var modsLevelLessThan9 = _allMods.Where(p => p._Mods.Level < 9).ToList();
-            var modsLevel9_12 = _allMods.Where(p => p._Mods.Level >= 9 && p._Mods.Level <= 12).ToList();
-            var modsLevel13_15 = _allMods.Where(p => p._Mods.Level >= 13 && p._Mods.Level <= 15).ToList();
+            var modsLevel9_11 = _allMods.Where(p => p._Mods.Level >= 9 && p._Mods.Level <= 11).ToList();
+            var modsLevel12_14 = _allMods.Where(p => p._Mods.Level >= 12 && p._Mods.Level <= 14).ToList();
+            var modsLevel15 = _allMods.Where(p => p._Mods.Level == 15).ToList();
 
             //gear
-            var gear5orLess = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear <= 5).ToList();
-            var gear6_8 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 6 && p.Gear <= 8).ToList();
-            var gear9_10 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 9 && p.Gear <= 10).ToList();
+            var gearLessThan5 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear < 5).ToList();
+            var gear5_7 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 5 && p.Gear <= 7).ToList();
+            var gear8_9 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear >= 8 && p.Gear <= 9).ToList();
+            var gear10 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 10).ToList();
             var gear11 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 11).ToList();
             var gear12 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 12).ToList();
 
@@ -142,10 +121,9 @@ namespace TripleZero.Modules
             //build post string
             retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
 
-
-            retStr += string.Format("Total GP: **{0}**\n", playerData.GPcharacters + playerData.GPships);
-            retStr += string.Format("Toons GP: **{0}**\n", playerData.GPcharacters);
-            retStr += string.Format("Ships GP: **{0}**\n", playerData.GPships);
+            retStr += string.Format("Total GP: **{0}**\n", playerData.GalacticPowerShips + playerData.GalacticPowerCharacters);
+            retStr += string.Format("Toons GP: **{0}**\n", playerData.GalacticPowerCharacters);
+            retStr += string.Format("Ships GP: **{0}**\n", playerData.GalacticPowerShips);
 
             retStr += "\n**Stars**\n";
             retStr += string.Format("{0} characters at **1***\n", chars1star.Count());
@@ -181,156 +159,21 @@ namespace TripleZero.Modules
 
             retStr += "\n**Mods Level**\n";
             retStr += string.Format("{0} mods at **level <9**\n", modsLevelLessThan9.Count());
-            retStr += string.Format("{0} mods at **level 9-12**\n", modsLevel9_12.Count());
-            retStr += string.Format("{0} mods at **level 13-15**\n", modsLevel13_15.Count());
+            retStr += string.Format("{0} mods at **level 9-11**\n", modsLevel9_11.Count());
+            retStr += string.Format("{0} mods at **level 12-14**\n", modsLevel12_14.Count());
+            retStr += string.Format("{0} mods at **level 15**\n", modsLevel15.Count());
 
             retStr += "\n**Gear**\n";
-            retStr += string.Format("{0} characters with **gear 5 or less**\n", gear5orLess.Count());
-            retStr += string.Format("{0} characters with **gear 6-8**\n", gear6_8.Count());
-            retStr += string.Format("{0} characters with **gear 9-10**\n", gear9_10.Count());
+            retStr += string.Format("{0} characters with **gear 4 or less**\n", gearLessThan5.Count());
+            retStr += string.Format("{0} characters with **gear 5-7**\n", gear5_7.Count());
+            retStr += string.Format("{0} characters with **gear 8-9**\n", gear8_9.Count());
+            retStr += string.Format("{0} characters with **gear 10**\n", gear10.Count());
             retStr += string.Format("{0} characters with **gear 11**\n", gear11.Count());
             retStr += string.Format("{0} characters with **gear 12**\n", gear12.Count());
 
+
+            await CacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
         }
-
-        //[Command("characterstats -c")]
-        //[Summary("Compares character stats for 2 specific players.\nUsage : ***$characterstats -c {player1UserName} {player2UserName} {characterAlias}***")]
-        //public async Task GetCharacterStatsCompare(string player1UserName, string player2UserName, string characterAlias)
-        //{
-        //    player1UserName = player1UserName.Trim();
-        //    player2UserName = player2UserName.Trim();
-        //    characterAlias = characterAlias.Trim();
-
-        //    string loadingStr = string.Format("\n**{0} and {1}** are loading...\n\n", player1UserName, player2UserName);
-
-        //    await ReplyAsync($"{loadingStr}");
-
-        //    var player1Data = IResolver.Current.MongoDBRepository.GetPlayer(player1UserName).Result;
-        //    if (player1Data == null)
-        //    {
-        //        await ReplyAsync($"I couldn't find data for player with name : ***{player1UserName}***.");
-        //        return;
-        //    }
-
-        //    var player2Data = IResolver.Current.MongoDBRepository.GetPlayer(player2UserName).Result;
-        //    if (player2Data == null)
-        //    {
-        //        await ReplyAsync($"I couldn't find data for player with name : ***{player2UserName}***.");
-        //        return;
-        //    }
-
-        //    var characterConfig = IResolver.Current.CharacterConfig.GetCharacterConfigByAlias(characterAlias).Result;
-
-        //    var character1 = player1Data.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
-        //    if (character1 == null)
-        //    {
-        //        await ReplyAsync($"I couldn't find data for character : ***{characterConfig.Name}*** for player : ***{player1UserName}***.");
-        //        return;
-        //    }
-
-        //    var character2 = player2Data.Characters.Where(p => p.Name.ToLower() == characterConfig.Name.ToLower()).FirstOrDefault();
-        //    if (character2 == null)
-        //    {
-        //        await ReplyAsync($"I couldn't find data for character : ***{characterConfig.Name}*** for player : ***{player2UserName}***.");
-        //        return;
-        //    }
-
-        //    string retStr = "";
-        //    retStr += string.Format("\n{0} - {1}* g{2} lvl:{3} - {4}* g{5} lvl:{6}  ", character1.Name, character1.Stars, character1.Gear, character1.Level, character2.Stars, character2.Gear, character2.Level);
-        //    retStr += string.Format("\nPower {0} vs {2} - StatPower {1} vs {3}", character1.Power, character1.StatPower, character2.Power, character2.StatPower);
-
-        //    var strAbilities = "\n\n**Abilities**";
-        //    for(int i=0;i<character1.Abilities.Count();i++)
-        //    {
-        //        strAbilities += string.Format("\n{0} {1}/{2} vs {3}/{4}", character1.Abilities[i].Name, character1.Abilities[i].Level, character1.Abilities[i].MaxLevel, character2.Abilities[i].Level, character2.Abilities[i].MaxLevel);
-        //    }
-        //    retStr += strAbilities;
-
-        //    //string strAbilities1 = "";
-        //    //foreach (var ability1 in character1.Abilities)
-        //    //{
-        //    //    strAbilities1 += string.Format("{0}/{1} ", ability1.Level.ToString(), ability1.MaxLevel.ToString());
-        //    //}
-        //    //string strAbilities2 = "";
-        //    //foreach (var ability2 in character2.Abilities)
-        //    //{
-        //    //    strAbilities2 += string.Format("{0}/{1} ", ability2.Level.ToString(), ability2.MaxLevel.ToString());
-        //    //}
-        //    //retStr += string.Format("\n{0} vs {1}", strAbilities1, strAbilities2);
-
-
-
-        //    retStr += "\n\n**General**";
-        //    retStr += $"\nProtection: {character1.Protection} - {character2.Protection}";
-        //    retStr += $"\nHealth: {character1.Health} - {character2.Health}";
-        //    retStr += $"\nSpeed: {character1.Speed} - {character2.Speed}";
-        //    retStr += $"\nHealth Steal: {character1.HealthSteal} % - {character2.HealthSteal} %";
-        //    retStr += $"\nCritical Damage: {character1.CriticalDamage} %";
-        //    retStr += $"\nPotency: {character1.Potency} % - {character2.Potency} %";
-        //    retStr += $"\nTenacity: {character1.Tenacity} % - {character2.Tenacity} %";
-
-        //    retStr += "\n\n**Physical Offense**";
-        //    retStr += $"\nPhysical Damage: {character1.PhysicalDamage} - {character2.PhysicalDamage}";
-        //    retStr += $"\nPhysical Critical Chance: {character1.PhysicalCriticalChance} % - {character2.PhysicalCriticalChance} %";
-        //    retStr += $"\nPhysical Accuracy: {character1.PhysicalAccuracy} % - {character2.PhysicalAccuracy} %";
-        //    retStr += $"\nArmor Penetration: {character1.ArmorPenetration} - {character2.ArmorPenetration}";
-
-        //    retStr += "\n\n**Special Offense**";
-        //    retStr += $"\nSpecial Damage: {character1.SpecialDamage} - {character2.SpecialDamage}";
-        //    retStr += $"\nSpecial Critical Chance: {character1.SpecialCriticalChance} % - {character2.SpecialCriticalChance} %";
-        //    retStr += $"\nSpecial Accuracy: {character1.SpecialAccuracy} % - {character2.SpecialAccuracy} %";
-
-        //    retStr += "\n\n**Physical Survivability**";
-        //    retStr += $"\nArmor: {character1.Armor} % - {character2.Armor} %";
-        //    retStr += $"\nDodge Chance: {character1.DodgeChance} % - {character2.DodgeChance} %";
-        //    retStr += $"\nPhysical Critical Avoidance: {character1.PhysicalCriticalAvoidance} % - {character2.PhysicalCriticalAvoidance} %";
-
-        //    retStr += "\n\n**Special Survivability**";
-        //    retStr += $"\nResistance: {character1.Resistance} % - {character2.Resistance} %";
-        //    retStr += $"\nDeflection Chance: {character1.DeflectionChance} % - {character2.DeflectionChance} %";
-        //    retStr += $"\nSpecial Critical Avoidance: {character1.SpecialCriticalAvoidance} % - {character2.SpecialCriticalAvoidance} %";
-
-
-
-        //    await ReplyAsync($"{retStr}");
-        //}
-
-        //public async Task GetCharacterStats(string playerUserName, string characterAlias)
-        //{
-        //    //characters
-        //    var matchedCharacter =  IResolver.Current.CharacterSettings.Get(characterAlias);
-        //    string commandCharacter = characterAlias;
-        //    if (matchedCharacter != null)
-        //    {
-        //        commandCharacter = matchedCharacter.SWGoHUrl;
-        //    }
-        //    var fullCharacterName = matchedCharacter != null ? matchedCharacter.Name ?? characterAlias : characterAlias;
-
-
-        //    CharacterDto character = new CharacterDto
-        //    {
-        //        Name = fullCharacterName
-        //    };
-        //    character = IResolver.Current.SWGoHRepository.GetCharacter(playerUserName, commandCharacter).Result;
-
-
-        //    string retStr = "";
-        //    if (character!=null)
-        //    {
-        //        await ReplyAsync($"***User : {playerUserName} - Character : {fullCharacterName}***");
-
-        //        retStr += string.Format("\nProtection : {0}", character.Protection);
-        //        retStr += string.Format("\nHealth : {0}", character.Health);
-
-        //        await ReplyAsync($"{retStr}");
-        //    }
-        //    else
-        //    {
-
-        //        retStr = $"I didn't find `{playerUserName} having {fullCharacterName}`";
-        //        await ReplyAsync($"{retStr}");
-        //    }            
-        //}
     }
 }

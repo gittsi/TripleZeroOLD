@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SWGoH;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using SWGoH.Enums.ModEnum;
 
-namespace SwGoh
+namespace SWGoH
 {
     public partial class PlayerDto
     {
@@ -32,13 +34,8 @@ namespace SwGoh
             else
             {
                 using (HttpClient client = new HttpClient())
-                {
-                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
-                    var orderby = "s={\"LastSwGohUpdated\":-1}";
-                    var limit = "l=1";
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
+                {   
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastSwGohUpdated\":-1}", "&l=1", "");
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
@@ -51,35 +48,41 @@ namespace SwGoh
                 }
             }
         }
-        private void DeletePlayerFromDBAsync()
+        public void DeletePlayerFromDBAsync()
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName , "\"}");
-                    var orderby = "s={\"LastClassUpdated\":1}";
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", queryData, orderby, apikey);
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastClassUpdated\":1}", "", "&f={\"PlayerName\": 1}");
                     var response = client.GetStringAsync(url).Result;
 
-                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    List <BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
                     if (document.Count == 1) return;
                     PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
 
                     if (result1 != null)
                     {
-                        var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", result1.Id, apikey);
+                        
+                        var deleteurl = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", result1.Id.ToString() );
                         WebRequest request = WebRequest.Create(deleteurl);
                         request.Method = "DELETE";
                     
-                            HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                        HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
+                        if (response1.StatusCode == HttpStatusCode.OK)
+                        {
+                            SWGoH.Log.ConsoleMessage("Removed Previous from Players!");
+                        }
+                        else
+                        {
+                            SWGoH.Log.ConsoleMessage("Error : Could not remove previous from Pleayers!");
+                        }
                     }
                 }
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error deleting player " + PlayerName + " : " + e.Message);
+                SWGoH.Log.ConsoleMessage("Error deleting player " + PlayerName + " : " + e.Message);
             }
         }
         public void Export(ExportMethodEnum ExportMethod)
@@ -94,9 +97,11 @@ namespace SwGoh
                         Directory.CreateDirectory(directory);
                     }
 
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.NullValueHandling = NullValueHandling.Ignore;
-                    serializer.Formatting = Formatting.Indented;
+                    JsonSerializer serializer = new JsonSerializer
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        Formatting = Formatting.Indented
+                    };
 
                     string fname = directory + "\\" + PlayerName + @".json";
                     using (StreamWriter sw = new StreamWriter(fname))
@@ -104,37 +109,41 @@ namespace SwGoh
                     {
                         serializer.Serialize(writer, this);
                     }
-                    SWGoH.Core.Net.Log.ConsoleMessage("Created : " + PlayerName + "'s json File");
+                    SWGoH.Log.ConsoleMessage("Created : " + PlayerName + "'s json File");
                 }
                 catch (Exception e)
                 {
-                    SWGoH.Core.Net.Log.ConsoleMessage("Error : " + e.Message);
+                    SWGoH.Log.ConsoleMessage("Error : " + e.Message);
                     //Error Occured , Contact Developer
                 }
             }
             else if (ExportMethod == ExportMethodEnum.Database)
             {
-                using (HttpClient client = new HttpClient())
+                try
                 {
-                    
-                    string json = JsonConvert.SerializeObject(this, Converter.Settings);
-
-                    client.BaseAddress = new Uri("https://api.mlab.com/api/1/databases/triplezero/collections/Player?apiKey=JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O");
-                    HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
-                    if (response.IsSuccessStatusCode)
+                    using (HttpClient client = new HttpClient())
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Added To Database : " + PlayerNameInGame);
 
-                        DeletePlayerFromDBAsync();
+                        string json = JsonConvert.SerializeObject(this, Converter.Settings);
+                        client.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Player", "", "", "", ""));
+                        HttpResponseMessage response = client.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            SWGoH.Log.ConsoleMessage("Added To Database : " + PlayerNameInGame);
+                        }
+                        else
+                        {
+                            SWGoH.Log.ConsoleMessage("Error Adding To Database : " + PlayerName);
+                        }
                     }
-                    else
-                    {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Error Adding To Database : " + PlayerName);
-                    }
+                }
+                catch (Exception e)
+                {
+                    SWGoH.Log.ConsoleMessage("Exception Adding To Database : " + PlayerName + " : " + e.Message);
                 }
             }
         }
-        public int ParseSwGoh(ExportMethodEnum ExportMethod, bool AddCharacters)
+        public int ParseSwGoh(ExportMethodEnum ExportMethod, bool AddCharacters ,bool checkForCharAllias)
         {
             if (PlayerName == null || PlayerName == "") return 0;
 
@@ -154,24 +163,23 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Exception : " + e.Message);
+                SWGoH.Log.ConsoleMessage("Exception on Player : " + PlayerName + " : " + e.Message);
                 web = null;
                 return 0;
             }
 
-            int Position = 0;
-            bool retPlayer = FillPlayerData(html, out Position);
+            bool retPlayer = FillPlayerData(html, out int Position);
             if (!retPlayer)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Player NOT FOUND : " + this.PlayerName + " aka " + PlayerNameInGame);
+                SWGoH.Log.ConsoleMessage("Player NOT FOUND : " + this.PlayerName + " aka " + PlayerNameInGame);
                 return 0;
             }
-            SWGoH.Core.Net.Log.ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
+            SWGoH.Log.ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
             if (!AddCharacters) return 1;
             bool ret = CheckLastUpdateWithCurrent(ExportMethod);
-            if (ret)
+            if (ret || checkForCharAllias)
             {
-                FillPlayerCharacters(html, Position);
+                FillPlayerCharacters(html, Position, checkForCharAllias);
                 retbool = 1;
             }
             else
@@ -189,12 +197,7 @@ namespace SwGoh
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var queryData = string.Concat("q={\"Aliases\":\"", pname, "\"}");
-                    var limit = "l=1";
-                    var field = "f={\"PlayerName\": 1}";
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Players/?{0}&{1}&{2}&apiKey={3}", queryData, field, limit, apikey);
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Players", "&q={\"Aliases\":\"" + pname + "\"}", "", "&l=1", "&f={\"PlayerName\": 1}");
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
@@ -211,7 +214,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error Retrieving Real Player Name From Allias : " + e.Message);
+                SWGoH.Log.ConsoleMessage("Error Retrieving Real Player Name From Allias : " + this.PlayerName + "  " + e.Message);
                 return pname;
             }
         }
@@ -223,6 +226,7 @@ namespace SwGoh
         /// <returns></returns>
         private bool CheckLastUpdateWithCurrent(ExportMethodEnum ExportMethod)
         {
+            //return true;
             if (ExportMethod == ExportMethodEnum.File)
             {
                 string directory = AppDomain.CurrentDomain.BaseDirectory + "PlayerJsons";
@@ -248,7 +252,7 @@ namespace SwGoh
                         DateTime filelastupdated = DateTime.ParseExact(ThirdLine, "yyyy-MM-dd,HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                         if (filelastupdated.CompareTo(this.LastSwGohUpdated) == 0)
                         {
-                            SWGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
+                            SWGoH.Log.ConsoleMessage("No need to update!!!!");
                             return false;
                         }
                         else return true;
@@ -262,23 +266,28 @@ namespace SwGoh
                 {
                     using (HttpClient client = new HttpClient())
                     {
-                        var queryData = string.Concat("q={\"PlayerName\":\"", PlayerName, "\"}");
-                        var orderby = "s={\"LastSwGohUpdated\":1}";
-                        var limit = "l=1";
-                        var field = "f={\"LastSwGohUpdated\": 1}";
-                        string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-
-                        string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, orderby, limit, apikey);
+                        string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastSwGohUpdated\":1}", "&l=1", "&f={\"LastSwGohUpdated\": 1 , \"id\" : 1}");
                         string response = client.GetStringAsync(url).Result;
                         if (response != "" && response != "[  ]")
                         {
-                            List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                            List<PlayerDto> result = BsonSerializer.Deserialize<List<PlayerDto>>(response);
                             if (result.Count == 1)
                             {
                                 PlayerDto Found = result[0];
                                 if (LastSwGohUpdated.CompareTo(Found.LastSwGohUpdated) == 0)
                                 {
-                                    SWGoH.Core.Net.Log.ConsoleMessage("No need to update!!!!");
+                                    SWGoH.Log.ConsoleMessage("No need to update!!!!");
+
+                                    string date = JsonConvert.SerializeObject(DateTime.UtcNow, Converter.Settings).ToString();
+
+                                    var httpContent = new StringContent("{\"$set\" : { \"LastClassUpdated\" :" + date + "}}", Encoding.UTF8, "application/json");
+                                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", Found.Id , Settings.appSettings.MongoApiKey);
+                                    using (HttpClient client1 = new HttpClient())
+                                    {
+                                        HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                                    }
+
+
                                     return false;
                                 }
                                 else
@@ -291,7 +300,7 @@ namespace SwGoh
                 }
                 catch(Exception e)
                 {
-                    SWGoH.Core.Net.Log.ConsoleMessage("Error in CkeckLastUpdated :" + e.Message);
+                    SWGoH.Log.ConsoleMessage("Error in CkeckLastUpdated :" + this.PlayerName + "  " + e.Message);
                     return true;
                 }
             }
@@ -302,7 +311,7 @@ namespace SwGoh
         /// </summary>
         /// <param name="html"></param>
         /// <param name="Position"></param>
-        private void FillPlayerCharacters(string html, int Position)
+        private void FillPlayerCharacters(string html, int Position, bool CheckForAllias)
         {
             if (Position == -1) return;
 
@@ -313,6 +322,19 @@ namespace SwGoh
             bool exit = false;
             int count = 0;
             int previousPosition = 0;
+            List<BsonDocument> Base_ID_Document = null;
+            if (CheckForAllias)
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = string.Format("https://swgoh.gg/api/characters/?format=json");
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "" && response != "[  ]")
+                    {
+                        Base_ID_Document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    }
+                }
+            }
             while (!exit)
             {
                 previousPosition = Position;
@@ -325,19 +347,106 @@ namespace SwGoh
                     if (newchar.Name != null)
                     {
                         count++;
+                        FixCharacterName(newchar);
                         Characters.Add(newchar);
-                        SWGoH.Core.Net.Log.ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
-                        Thread.Sleep(mDelayCharacter);
+                        SWGoH.Log.ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
+
+                        if (CheckForAllias){AddCharacterToAlliasConfig(newchar, Base_ID_Document);}
+
+                        Thread.Sleep(Settings.appSettings.DelayPerCharacter);
                     }
                 }
                 else
                 {
-                    Thread.Sleep(mDelayError);
+                    Thread.Sleep(Settings.appSettings.DelayErrorAtCharacter);
                     Position = previousPosition;
                 }
             }
         }
 
+        private void FixCharacterName(CharacterDto newchar)
+        {
+            newchar.Name = newchar.Name.Replace("\"", "");
+            newchar.Name = newchar.Name.Replace("'", "");
+            newchar.Name = newchar.Name.Replace("Î", "");
+        }
+
+        private void AddCharacterToAlliasConfig(CharacterDto newchar, List<BsonDocument> Base_ID_Document)
+        {
+            //try
+            //{
+            using (HttpClient client = new HttpClient())
+            {
+                string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Character", "&q={\"Name\" : \"" + newchar.Name + "\" }", "", "", "");
+                string response = client.GetStringAsync(url).Result;
+
+                string replace = "/u/"+PlayerName+ "/collection/";
+
+                string Base_ID = "";
+                string lowername = newchar.Name.ToLower();
+                foreach (BsonDocument item in Base_ID_Document)
+                {
+                    string name = (string)item[0];
+                    name = name.ToLower();
+                    if (name.Equals(lowername))
+                    {
+                        Base_ID = ((string)item[1]).ToLower (); break;
+                    }
+                }
+
+                if (Base_ID == "") SWGoH.Log.ConsoleMessage("Did not find BaseID for character : " + newchar.Name + "!!!!!!!");
+
+                if (response != "" && response != "[  ]")
+                {
+                    SWGoH.Log.ConsoleMessage("Found Allias Char " + newchar.Name);
+                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    CharacterConfigDto result1 = BsonSerializer.Deserialize<CharacterConfigDto>(document.FirstOrDefault());
+
+                    if (newchar.SWGoHUrl != null)
+                    {
+                        if (result1.Command != "") Base_ID = result1.Command;
+                        JObject data = new JObject(
+                            new JProperty("Name", result1.Name),
+                            new JProperty("Command", Base_ID),
+                            new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
+                            new JProperty("Aliases", result1.Aliases));
+
+                        var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                        var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", result1.Id.ToString());
+                        using (HttpClient client1 = new HttpClient())
+                        {
+                            HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                        }
+                    }
+                }
+                else
+                {
+                    if (newchar.SWGoHUrl == null) newchar.SWGoHUrl = "";
+                    JObject data = new JObject(
+                        new JProperty("Name", newchar.Name),
+                        new JProperty("Command", Base_ID),
+                        new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
+                        new JProperty("Aliases", new List<string> { }));
+                    string json = JsonConvert.SerializeObject(data, Converter.Settings);
+                    using (HttpClient client1 = new HttpClient())
+                    {
+                        client1.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Config.Character", "", "", "", ""));
+                        HttpResponseMessage response1 = client1.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
+                        SWGoH.Log.ConsoleMessage("Added new Allias Char " + newchar.Name + "!!!!!!!");
+                    }
+
+                    //var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                    //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", apikey);
+                    //using (HttpClient client1 = new HttpClient())
+                    //{
+                    //    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                    //    SWGoH.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + "!!!!!!!");
+                    //}
+                }
+            }
+            //}
+            //catch (Exception e) { SWGoH.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + ":" + e.Message); }
+        }
         /// <summary>
         /// Fills player properties like LastUpdated
         /// </summary>
@@ -548,7 +657,7 @@ namespace SwGoh
             string html = "";
             bool ret1 = false;
             int valueint = 0;
-            decimal valuedecimal = 0;
+            double valuedecimal = 0;
 
             Uri uri = new Uri("https://swgoh.gg" + newchar.SWGoHUrl);
             try
@@ -557,7 +666,7 @@ namespace SwGoh
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Exception : " + e.Message);
+                SWGoH.Log.ConsoleMessage("Exception : " + e.Message);
                 return false;
             }
 
@@ -755,7 +864,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Potency = valuedecimal;
                 }
 
@@ -770,7 +879,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Tenacity = valuedecimal;
                 }
 
@@ -824,7 +933,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.PhysicalCriticalChance = valuedecimal;
                 }
 
@@ -877,7 +986,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Armor = valuedecimal;
                 }
 
@@ -892,7 +1001,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.DodgeChance = valuedecimal;
                 }
 
@@ -907,7 +1016,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.PhysicalCriticalAvoidance = valuedecimal;
                 }
             }
@@ -945,7 +1054,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.SpecialCriticalChance = valuedecimal;
                 }
 
@@ -975,7 +1084,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.SpecialAccuracy = valuedecimal;
                 }
             }
@@ -998,7 +1107,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.Resistance = valuedecimal;
                 }
 
@@ -1013,7 +1122,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.DeflectionChance = valuedecimal;
                 }
 
@@ -1028,7 +1137,7 @@ namespace SwGoh
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = decimal.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
                     if (ret1) newchar.SpecialCriticalAvoidance = valuedecimal;
                 }
             }
@@ -1139,8 +1248,7 @@ namespace SwGoh
                     int length = restindexEnd - start;
                     value = rest.Substring(start, length);
                     Position = restindexEnd;
-                    int level = 0;
-                    bool ret = int.TryParse(value, out level);
+                    bool ret = int.TryParse(value, out int level);
                     if (ret) mod.Level = level;
                 }
 
@@ -1197,8 +1305,10 @@ namespace SwGoh
                         value1 = rest.Substring(start, length);
                         Position = restindexEnd;
                     }
-                    mod.SecondaryStat = new List<ModStat>();
-                    mod.SecondaryStat.Add(GetModFromString(value, value1));
+                    mod.SecondaryStat = new List<ModStat>
+                    {
+                        GetModFromString(value, value1)
+                    };
                 }
 
                 reststrTosearchStart = "statmod-stat-value\">";
@@ -1299,12 +1409,14 @@ namespace SwGoh
         {
             ModStat ret = new ModStat();
 
+            value1 = value1.Replace(" ", "");
+
             if (value.Contains("%")) ret.ValueType = ModValueType.Percentage;
             else ret.ValueType = ModValueType.Flat;
 
             if (value1.ToLower().Contains("speed")) ret.StatType = ModStatType.Speed;
             else if (value1.ToLower().Contains("criticalchance")) ret.StatType = ModStatType.CriticalChance;
-            else if (value1.ToLower().Contains("sriticaldamage")) ret.StatType = ModStatType.CriticalDamage;
+            else if (value1.ToLower().Contains("criticaldamage")) ret.StatType = ModStatType.CriticalDamage;
             else if (value1.ToLower().Contains("potency")) ret.StatType = ModStatType.Potency;
             else if (value1.ToLower().Contains("tenacity")) ret.StatType = ModStatType.Tenacity;
             else if (value1.ToLower().Contains("accuracy")) ret.StatType = ModStatType.Accuracy;
@@ -1317,8 +1429,7 @@ namespace SwGoh
             string val = value.Replace('%', ' ');
             val = val.Replace('+', ' ');
             val = val.Trim();
-            decimal dec = 0;
-            bool boolret = decimal.TryParse(val, NumberStyles.Any, new CultureInfo("en-US"), out dec);
+            bool boolret = double.TryParse(val, NumberStyles.Any, new CultureInfo("en-US"), out double dec);
             if (boolret) ret.Value = dec;
 
             return ret;
@@ -1334,7 +1445,7 @@ namespace SwGoh
             return rarity;
         }
 
-        private long GetModStar(string value)
+        private int GetModStar(string value)
         {
             if (value.ToLower().StartsWith("mk v")) return 5;
             else if (value.ToLower().StartsWith("mk iv")) return 4;
@@ -1359,8 +1470,7 @@ namespace SwGoh
         {
             string tmp = value.Replace(",", "");
 
-            int valueint = 0;
-            bool ret1 = int.TryParse(tmp, out valueint);
+            bool ret1 = int.TryParse(tmp, out int valueint);
             if (ret1)
             {
                 if (valueint > 4000) return 7;
@@ -1380,14 +1490,12 @@ namespace SwGoh
             string value1 = values[0];
             value1 = value1.Replace("Level", "");
             value1 = value1.Trim();
-            int lvl = 0;
-            bool ret = int.TryParse(value1, out lvl);
+            bool ret = int.TryParse(value1, out int lvl);
             if (!ret) return;
             string value2 = values[2];
             value2 = value2.Replace("(MAXED)", "");
             value2 = value2.Trim();
-            int maxlvl = 0;
-            ret = int.TryParse(value2, out maxlvl);
+            ret = int.TryParse(value2, out int maxlvl);
             if (!ret) return;
             abil.Level = lvl;
             abil.MaxLevel = maxlvl;
