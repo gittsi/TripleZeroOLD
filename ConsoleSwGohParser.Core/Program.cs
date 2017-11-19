@@ -67,6 +67,7 @@ namespace SWGoH
                 {
                     int ret = ExecuteCommand(workingQ.Command, workingQ.Name, workingQ);
                     if (ret == 1) mLastProcess = DateTime.UtcNow;
+                    workingQ = null;
                 }
                 else
                 {
