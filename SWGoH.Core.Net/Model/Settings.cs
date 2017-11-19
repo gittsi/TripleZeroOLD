@@ -53,5 +53,6 @@ namespace SWGoH
         public string Database { get; set; }
         public int DatabaseID1 { get; set; }
         public int DatabaseID2 { get; set; }
+        public string ComputerName { get; set; }
     }
 }

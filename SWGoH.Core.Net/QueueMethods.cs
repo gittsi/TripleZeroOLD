@@ -52,7 +52,10 @@ namespace SWGoH
         {
             try
             {
-                string nextrun = player.LastSwGohUpdated.AddHours(hours).ToString("o");
+                string nextrun = "";
+                if (player != null) nextrun = player.LastSwGohUpdated.AddHours(hours).ToString("o");
+                else nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
+
                 if (fromnow) nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
 
                 JObject data = new JObject(
