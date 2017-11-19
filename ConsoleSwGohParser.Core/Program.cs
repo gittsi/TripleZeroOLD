@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using SWGoH.Enums.QueueEnum;
+using System.Runtime.InteropServices;
 
 namespace SWGoH
 {
@@ -15,10 +16,16 @@ namespace SWGoH
     {
         private static bool isWorking = false;
         private static DateTime mLastProcess = DateTime.MinValue;
-        
+        private static QueueDto workingQ = null;
+
         static void Main(string[] args)
         {
+            _handler += new EventHandler(Handler);
+            SetConsoleCtrlHandler(_handler, true);
+
             if (!Settings.Get()) return;
+
+            SWGoH.MongoDBRepo.SetWorking(true);
 
             if (SWGoH.Settings.appSettings.LogToFile == 1) SWGoH.Log.Initialize("log.txt" , SWGoH.Settings.appSettings.LogToFile == 1);
 
@@ -48,19 +55,17 @@ namespace SWGoH
             //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
             //ExecuteCommand(Command.Test, "newholborn", null);
-            QueueDto q = null;
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
             minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
-            int restminutes = (int)(DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes - minutes);
             bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
             if (check)
             {
-                q = QueueMethods.GetQueu();
-                if (q != null)
+                workingQ = QueueMethods.GetQueu();
+                if (workingQ != null)
                 {
-                    int ret = ExecuteCommand(q.Command, q.Name, q);
+                    int ret = ExecuteCommand(workingQ.Command, workingQ.Name, workingQ);
                     if (ret != 3) mLastProcess = DateTime.UtcNow;
                 }
                 else
@@ -82,7 +87,7 @@ namespace SWGoH
             }
             else
             {
-                Console.WriteLine("Waiting...  " + restminutes.ToString () + " minutes");
+                Console.WriteLine("Waiting...  " + ((int)minutes).ToString () + " minutes");
             }
             isWorking = false;
             t.Change(Settings.appSettings.GlobalConsoleTimerInterval, Settings.appSettings.GlobalConsoleTimerInterval);
@@ -214,5 +219,45 @@ namespace SWGoH
             }
             return commandstr.GetHashCode();
         }
+
+
+        [DllImport("Kernel32")]
+        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+
+        private delegate bool EventHandler(CtrlType sig);
+        static EventHandler _handler;
+
+        enum CtrlType
+        {
+            CTRL_C_EVENT = 0,
+            CTRL_BREAK_EVENT = 1,
+            CTRL_CLOSE_EVENT = 2,
+            CTRL_LOGOFF_EVENT = 5,
+            CTRL_SHUTDOWN_EVENT = 6
+        }
+
+        private static bool Handler(CtrlType sig)
+        {
+            switch (sig)
+            {
+                case CtrlType.CTRL_C_EVENT:
+                case CtrlType.CTRL_LOGOFF_EVENT:
+                case CtrlType.CTRL_SHUTDOWN_EVENT:
+                case CtrlType.CTRL_CLOSE_EVENT:
+                    {
+                        isWorking = true;
+                        SWGoH.MongoDBRepo.SetWorking(false);
+                        if (workingQ != null)
+                        {
+                            QueueMethods.UpdateQueueAndProcessLater(workingQ, null , 0.5, true);
+                        }
+                        Thread.Sleep(5000);
+                        return false;
+                    }
+                default:
+                    return false;
+            }
+        }
+
     }
 }
