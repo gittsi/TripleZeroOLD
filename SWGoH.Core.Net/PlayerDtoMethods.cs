@@ -18,6 +18,7 @@ namespace SWGoH
 {
     public partial class PlayerDto
     {
+        public static bool isOnExit = false;
         public void Import(ExportMethodEnum ExportMethod)
         {
             if (ExportMethod == ExportMethodEnum.File)
@@ -337,6 +338,7 @@ namespace SWGoH
             }
             while (!exit)
             {
+                if (isOnExit) return;
                 previousPosition = Position;
                 CharacterDto newchar = GetChar(html, out Position);
                 bool ret = FillCharData(newchar);

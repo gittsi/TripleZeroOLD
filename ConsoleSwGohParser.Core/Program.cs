@@ -66,7 +66,7 @@ namespace SWGoH
                 if (workingQ != null)
                 {
                     int ret = ExecuteCommand(workingQ.Command, workingQ.Name, workingQ);
-                    if (ret != 3) mLastProcess = DateTime.UtcNow;
+                    if (ret == 1) mLastProcess = DateTime.UtcNow;
                 }
                 else
                 {
@@ -103,25 +103,24 @@ namespace SWGoH
                     {
                         SWGoH.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true,false);
-                        if (ret == 1 || ret == 2)
+                        if (ret == 0 || (q != null && q.Priority == PriorityEnum.ManualLoad))
+                        {
+                            QueueMethods.RemoveFromQueu(q);
+                        }
+                        else if (ret == 1 || ret == 2)
                         {
                             player.LastClassUpdated = DateTime.UtcNow;
                             if (ret == 1)
                             {
                                 player.Export(mExportMethod);
                                 player.DeletePlayerFromDBAsync();
-                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player , 24.2,false);
+                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player, 24.2, false);
                             }
                             else if (ret == 2)
                             {
-                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player, 0.5,true);
+                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player, 0.5, true);
                             }
-                            
-                            //if (q != null) QueueMethods.RemoveFromQueu(q);
-                        }
-                        else if (ret == 0)
-                        {
-                            if (q != null) QueueMethods.RemoveFromQueu (q);
+
                         }
                         return ret;
                     }
@@ -245,6 +244,7 @@ namespace SWGoH
                 case CtrlType.CTRL_SHUTDOWN_EVENT:
                 case CtrlType.CTRL_CLOSE_EVENT:
                     {
+                        PlayerDto.isOnExit = true;
                         isWorking = true;
                         SWGoH.MongoDBRepo.SetWorking(false);
                         if (workingQ != null)

@@ -119,11 +119,11 @@ namespace SWGoH
                     IMongoCollection <QueueDto> collection = db.GetCollection<QueueDto>("Queue");
                     if (collection != null)
                     {
-                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("Status" , 1);
-                        //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Status", 0);
+                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("Priority", 2);
+                        //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Priority", 1);
                         //UpdateOptions opts2 = new UpdateOptions();
                         //opts2.IsUpsert = false;
-                        //UpdateResult res = collection.UpdateMany (filter2, update2, opts2);
+                        //UpdateResult res2 = collection.UpdateMany(filter2, update2, opts2);
 
                         FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
                         UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o"));
