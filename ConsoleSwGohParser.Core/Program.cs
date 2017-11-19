@@ -54,7 +54,7 @@ namespace SWGoH
             //SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , 4, Enums.QueueEnum.QueueType.Guild, DateTime.UtcNow);
             //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
-            ExecuteCommand(Command.Test, "newholborn", null);
+            //ExecuteCommand(Command.Test, "newholborn", null);
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
