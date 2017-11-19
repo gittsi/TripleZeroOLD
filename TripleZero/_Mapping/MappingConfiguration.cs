@@ -80,6 +80,7 @@ namespace TripleZero._Mapping
                     //queue
                     cfg.CreateMap<QueueDto, Queue>()
                     .ForMember(dest => dest.InsertDate, src => src.MapFrom(source => source.InsertedDate))
+                    .ForMember(dest => dest.ProcessingBy, src => src.MapFrom(source => source.ComputerName))
                     ;
 
                     //character config

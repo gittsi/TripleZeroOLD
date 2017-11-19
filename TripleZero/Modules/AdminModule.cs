@@ -206,6 +206,10 @@ namespace TripleZero.Modules
                 await ReplyAsync($"Problem!! Cannot get queue!!!");
                 return;
             }
+            else
+            {
+                await ReplyAsync($"Found **{result.Count()} rows in queue!**");
+            }
 
             var guildQueues = result.Where(p => p.Type == QueueType.Guild).OrderByDescending(p => p.Status).ThenBy(p => p.NextRunDate).Take(rows);
             var playerQueues = result.Where(p => p.Type == QueueType.Player).OrderByDescending(p => p.Status).ThenBy(p => p.NextRunDate).Take(rows);
@@ -219,15 +223,19 @@ namespace TripleZero.Modules
                 }
             }
 
+            if(playerQueues.Count()>0)
+            {
+                retStr += "\n\n**--------Player Queue--------**";
+            }            
+
             var processingPlayer = playerQueues.Where(p => p.Status == QueueStatus.Processing);
             var pendingPlayer = playerQueues.Where(p => p.Status == QueueStatus.PendingProcess);
             var failedPlayer = playerQueues.Where(p => p.Status == QueueStatus.Failed);
-
-            retStr += "\n\n**--------Player Queue--------**";
+            
             if (processingPlayer.Count()>0) retStr += "\n**--Processing**";
             foreach (var queuePlayer in processingPlayer)
             {
-                retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.NextRunDate?.ToString("yyyy-MM-dd HH:mm"));
+                retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Processing started by {3} at **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.NextRunDate?.ToString("yyyy-MM-dd HH:mm"),queuePlayer.ProcessingBy);
 
                 if (retStr.Length > 1800)
                 {
@@ -259,7 +267,7 @@ namespace TripleZero.Modules
                     retStr = "";
                 }
             }
-
+            if(retStr.Length==0) { ReplyAsync("Empty queue!!!!"); return; }
             await ReplyAsync($"{retStr}");
         }
 

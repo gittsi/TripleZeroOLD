@@ -155,7 +155,7 @@ namespace TripleZero.Repository
                     new JProperty("ProcessingStartDate", null),
                     new JProperty("NextRunDate", DateTime.UtcNow),
                     new JProperty("Status", QueueStatus.PendingProcess),
-                    new JProperty("Priority", 3),
+                    new JProperty("Priority", Priority.ManualLoad),
                     new JProperty("Command", queueType == QueueType.Player ? Command.UpdatePlayer : Command.UpdateGuildWithNoChars),
                     new JProperty("Type", queueType)
                );
