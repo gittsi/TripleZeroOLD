@@ -70,14 +70,14 @@ namespace SWGoH
                     {
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                         var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
-                        client.PostAsync(requestUri, httpContent);
+                        HttpResponseMessage res = client.PostAsync(requestUri, httpContent).Result;
                     }
                     else
                     {
 
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                         var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
-                        client.PutAsync(requestUri, httpContent);
+                        HttpResponseMessage res = client.PutAsync(requestUri, httpContent).Result;
                     }
                 }
             }

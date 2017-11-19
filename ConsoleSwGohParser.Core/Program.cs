@@ -103,6 +103,7 @@ namespace SWGoH
                     {
                         SWGoH.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true,false);
+                        if (SWGoH.PlayerDto.isOnExit) return -1;
                         if (ret == 0 || (q != null && q.Priority == PriorityEnum.ManualLoad))
                         {
                             QueueMethods.RemoveFromQueu(q);

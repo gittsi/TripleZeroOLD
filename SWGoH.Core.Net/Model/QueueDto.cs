@@ -25,5 +25,6 @@ namespace SWGoH
         public PriorityEnum Priority { get; set; }
         public QueueStatus Status { get; set; }
         public QueueType Type { get; set; }
+        public string ComputerName { get; set; }
     }
 }
