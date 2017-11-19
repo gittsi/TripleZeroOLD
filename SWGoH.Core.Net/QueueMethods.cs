@@ -119,14 +119,14 @@ namespace SWGoH
                     IMongoCollection <QueueDto> collection = db.GetCollection<QueueDto>("Queue");
                     if (collection != null)
                     {
-                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("Status" , 1);
-                        //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Status", 0);
+                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("Priority", 2);
+                        //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Priority", 1);
                         //UpdateOptions opts2 = new UpdateOptions();
                         //opts2.IsUpsert = false;
-                        //UpdateResult res = collection.UpdateMany (filter2, update2, opts2);
+                        //UpdateResult res2 = collection.UpdateMany(filter2, update2, opts2);
 
                         FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
-                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o"));
+                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o")).Set ("ComputerName" , SWGoH.Settings.appSettings.ComputerName);
                         var opts = new FindOneAndUpdateOptions<QueueDto>()
                         {
                             IsUpsert = false,
@@ -142,7 +142,7 @@ namespace SWGoH
                                 found.Status = QueueStatus.PendingProcess;
 
                                 FilterDefinition<QueueDto> filter1 = Builders<QueueDto>.Filter.Eq("_id", found.Id);
-                                UpdateDefinition<QueueDto> update1 = Builders<QueueDto>.Update.Set("Status", 0);
+                                UpdateDefinition<QueueDto> update1 = Builders<QueueDto>.Update.Set("Status", 0).Set("ComputerName", "");
                                 UpdateOptions opts1 = new UpdateOptions();
                                 opts1.IsUpsert = false;
 
@@ -181,7 +181,8 @@ namespace SWGoH
                                 new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.Processing),
                                 new JProperty("Priority", result1.Priority),
                                 new JProperty("Type", result1.Type),
-                                new JProperty("Command", result1.Command));
+                                new JProperty("Command", result1.Command),
+                                new JProperty("ComputerName", SWGoH.Settings.appSettings.ComputerName));
 
                                 var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                                 var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", result1.Id.ToString());

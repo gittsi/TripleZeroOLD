@@ -70,22 +70,14 @@ namespace SWGoH
                     {
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                         var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
-                        HttpResponseMessage updateresult1 = client.PostAsync(requestUri, httpContent).Result;
-                        if (updateresult1.IsSuccessStatusCode)
-                        {
-                            SWGoH.Log.ConsoleMessage("Added Working PC:" + computername);
-                        }
+                        HttpResponseMessage res = client.PostAsync(requestUri, httpContent).Result;
                     }
                     else
                     {
 
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                         var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
-                        HttpResponseMessage updateresult = client.PutAsync(requestUri, httpContent).Result;
-                        if (updateresult.IsSuccessStatusCode)
-                        {
-                            SWGoH.Log.ConsoleMessage("Added Working PC:" + computername);
-                        }
+                        HttpResponseMessage res = client.PutAsync(requestUri, httpContent).Result;
                     }
                 }
             }
