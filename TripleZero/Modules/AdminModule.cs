@@ -9,6 +9,7 @@ using TripleZero.Helper;
 using SWGoH.Model.Enums;
 using System.Diagnostics;
 using System.Globalization;
+using Discord;
 
 namespace TripleZero.Modules
 {
@@ -179,9 +180,14 @@ namespace TripleZero.Modules
         //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         [Summary("Get current for specific character(Admin Command)")]
         [Remarks("*queue*")]
-        public async Task GetQueue()
+        public async Task GetQueue(string resultsRows = "10")
         {
+            bool rowsIsNumber = int.TryParse(resultsRows, out int rows);
+            if (!rowsIsNumber) { await ReplyAsync($"If you want to specify how many results want, you have to put a number as third parameter! '{rows}' is not a number!"); return; }
+
+
             string retStr = "";
+
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
@@ -193,10 +199,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var result = IResolver.Current.MongoDBRepository.GetQueue().Result;
-
-            var guildQueues = result.Where(p => p.Type == QueueType.Guild);
-            var playerQueues = result.Where(p => p.Type == QueueType.Player).OrderByDescending(p=>p.Status).ThenBy(p=>p.NextRunDate);
+            var result = IResolver.Current.MongoDBRepository.GetQueue().Result;            
 
             if (result == null)
             {
@@ -204,12 +207,25 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var processing = playerQueues.Where(p => p.Status == QueueStatus.Processing);
-            var pending = playerQueues.Where(p => p.Status == QueueStatus.PendingProcess);
-            var failed = playerQueues.Where(p => p.Status == QueueStatus.Failed);
+            var guildQueues = result.Where(p => p.Type == QueueType.Guild).OrderByDescending(p => p.Status).ThenBy(p => p.NextRunDate).Take(rows);
+            var playerQueues = result.Where(p => p.Type == QueueType.Player).OrderByDescending(p => p.Status).ThenBy(p => p.NextRunDate).Take(rows);
 
-            if(processing.Count()>0) retStr += "\n**Processing**";
-            foreach (var queuePlayer in processing)
+            if(guildQueues.Count()>0)
+            {
+                retStr += "\n**--------Guild Queue--------**";
+                foreach(var guild in guildQueues)
+                {
+                    retStr += string.Format("\nGuild : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC)", guild.Name, guild.Status, guild.NextRunDate?.ToString("yyyy-MM-dd HH:mm"));
+                }
+            }
+
+            var processingPlayer = playerQueues.Where(p => p.Status == QueueStatus.Processing);
+            var pendingPlayer = playerQueues.Where(p => p.Status == QueueStatus.PendingProcess);
+            var failedPlayer = playerQueues.Where(p => p.Status == QueueStatus.Failed);
+
+            retStr += "\n\n**--------Player Queue--------**";
+            if (processingPlayer.Count()>0) retStr += "\n**--Processing**";
+            foreach (var queuePlayer in processingPlayer)
             {
                 retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.NextRunDate?.ToString("yyyy-MM-dd HH:mm"));
 
@@ -220,8 +236,8 @@ namespace TripleZero.Modules
                 }
             }
 
-            if (pending.Count() > 0) retStr += "\n\n**Pending Process**";
-            foreach (var queuePlayer in pending)
+            if (pendingPlayer.Count() > 0) retStr += "\n**--Pending Process**";
+            foreach (var queuePlayer in pendingPlayer)
             {
                 retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.NextRunDate?.ToString("yyyy-MM-dd HH:mm"));
 
@@ -232,8 +248,8 @@ namespace TripleZero.Modules
                 }
             }
 
-            if (failed.Count() > 0) retStr += "\n**failed**";
-            foreach (var queuePlayer in failed)
+            if (failedPlayer.Count() > 0) retStr += "\n**--Failed**";
+            foreach (var queuePlayer in failedPlayer)
             {
                 retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.NextRunDate?.ToString("yyyy-MM-dd HH:mm"));
 
@@ -350,14 +366,48 @@ namespace TripleZero.Modules
         [Remarks("*mem*")]
         public async Task CheckDiagnostics()
         {
+            string retStr = "";
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
             Process currentProc = Process.GetCurrentProcess();
 
             var threads = currentProc.Threads;
             long memoryUsed = currentProc.PrivateMemorySize64;
 
-            string retStr = string.Format("\nMemory : {0} - Threads : {1}", memoryUsed.ToString("#,##0,Kb", CultureInfo.InvariantCulture), threads.Count);
+            retStr += string.Format("\nMemory : {0} - Threads : {1}", memoryUsed.ToString("#,##0,Kb", CultureInfo.InvariantCulture), threads.Count);
 
             await ReplyAsync($"{retStr}");
         }
+
+        [Command("prune")]
+        public async Task Prune(int countMessagesToDelete=0) 
+        {
+            string retStr = "";
+            await Context.Message.DeleteAsync();
+
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var userAllowed = Roles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            var messagesToDelete = await Context.Channel.GetMessagesAsync(countMessagesToDelete).Flatten();
+            await Context.Channel.DeleteMessagesAsync(messagesToDelete);
+
+            await Context.Channel.SendMessageAsync($"`{Context.User.Username} deleted {messagesToDelete.Count()} messages`");
+        }
+    
     }
 }
