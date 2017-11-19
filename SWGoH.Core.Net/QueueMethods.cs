@@ -32,7 +32,8 @@ namespace SWGoH
                     new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
                     new JProperty("Type", type),
-                    new JProperty("Command", cmd));
+                    new JProperty("Command", cmd),
+                    new JProperty("ComputerName", ""));
 
                     var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                     var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Queue", "", "", "", ""));
@@ -66,7 +67,8 @@ namespace SWGoH
                                    new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                                    new JProperty("Priority", q.Priority),
                                    new JProperty("Type", q.Type),
-                                   new JProperty("Command", q.Command));
+                                   new JProperty("Command", q.Command),
+                                   new JProperty("ComputerName", ""));
 
                 var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                 var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", q.Id.ToString());
