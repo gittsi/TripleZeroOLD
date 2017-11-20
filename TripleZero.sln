@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TripleZero.Bot", "TripleZero\TripleZero.Bot.csproj", "{51B3D272-7116-40C8-BEB7-3574985D4A37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TripleZero.Bot", "TripleZero.Bot\TripleZero.Bot.csproj", "{51B3D272-7116-40C8-BEB7-3574985D4A37}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TripleZeroApi", "TripleZeroApi\TripleZeroApi.csproj", "{D144B3C1-FBED-4AE8-B3EA-EF53DF498BD8}"
 EndProject

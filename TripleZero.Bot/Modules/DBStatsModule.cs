@@ -33,7 +33,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "stats-players";
             string key = "all";
-            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");

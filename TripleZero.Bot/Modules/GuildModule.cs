@@ -27,7 +27,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "guildCharacter";
             string key = string.Concat(guildAlias,characterAlias);
-            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -138,7 +138,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "tb";
             string key = guildAlias;
-            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -176,7 +176,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "guildPlayers";
             string key = string.Concat(guildAlias,searchStr);
-            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");

@@ -25,7 +25,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "character";
             string key = string.Concat(playerUserName,characterAlias);
-            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -110,7 +110,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "character-compare";
             string key = string.Concat(player1UserName, player2UserName, characterAlias);
-            retStr = CacheClient.MessageFromModuleCache(functionName, key);
+            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
