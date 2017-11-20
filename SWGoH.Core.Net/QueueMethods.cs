@@ -18,7 +18,7 @@ namespace SWGoH
 {
     public class QueueMethods
     {
-        public static void AddPlayer(string PlayerName,Command cmd ,int priority , SWGoH.Enums.QueueEnum.QueueType type, DateTime nextrundate)
+        public static void AddPlayer(string PlayerName,Command cmd ,PriorityEnum priority , SWGoH.Enums.QueueEnum.QueueType type, DateTime nextrundate)
         {
             try
             {
