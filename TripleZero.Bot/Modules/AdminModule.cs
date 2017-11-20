@@ -233,7 +233,7 @@ namespace TripleZero.Modules
                         , guild.Name
                         , guild.Status
                         , guild.NextRunDate?.ToString("yyyy-MM-dd HH:mm")
-                        , string.IsNullOrWhiteSpace(guild.ProcessingBy) ? "" : string.Format(" - Processing started by : {0} at {1}", guild.ProcessingBy,guild.ProcessingStartDate?.ToString("yyyy-MM-dd HH:mm")));
+                        , string.IsNullOrWhiteSpace(guild.ProcessingBy) ? "" : string.Format(" - Processing started by : {0} at {1}(UTC)", guild.ProcessingBy,guild.ProcessingStartDate?.ToString("yyyy-MM-dd HH:mm")));
                 }
             }
 
