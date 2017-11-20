@@ -8,17 +8,13 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using TripleZero.Repository._Mapping;
 using TripleZero.Repository.Dto;
+using TripleZero.Repository.Infrastructure.DI;
 
 namespace TripleZero.Repository
 {
     public class SWGoHRepository : ISWGoHRepository
     {
-        private IMapper _Mapper;
-
-        public SWGoHRepository(IMappingConfiguration mappingConfiguration)
-        {
-            _Mapper = mappingConfiguration.GetConfigureMapper();
-        }
+        private IMapper _Mapper = IResolver.Current.MappingConfiguration.GetConfigureMapper();        
         public async Task<GuildCharacter> GetGuildCharacter(int guildId, string characterName)
         {
             List<GuildCharacter> chars = null;
@@ -29,6 +25,8 @@ namespace TripleZero.Repository
         }
         public async Task<List<GuildCharacter>> GetGuildCharacters(int guildId)
         {
+            var configCharacters = await IResolver.Current.CharacterSettings.GetCharactersConfig();
+
             var url = string.Format("https://swgoh.gg/api/guilds/{0}/units/", guildId.ToString());
             List<GuildCharacterDto> chars = new List<GuildCharacterDto>();
             using (var client = new HttpClient())
@@ -50,9 +48,15 @@ namespace TripleZero.Repository
 
                 foreach (var row in json)
                 {
+                    var charName = row.Key;
+                    if(configCharacters.Where(p => p.Command?.ToLower() == row.Key.ToLower())!=null && configCharacters.Where(p => p.Command?.ToLower() == row.Key.ToLower()).Count()>0)
+                    {
+                        charName = configCharacters.Where(p => p.Command?.ToLower() == row.Key.ToLower()).FirstOrDefault().Name;
+                    }
+
                     GuildCharacterDto gc = new GuildCharacterDto
                     {
-                        Name = row.Key
+                        Name = charName
                     };
 
                     List<GuildPlayerCharacterDto> players = new List<GuildPlayerCharacterDto>();

@@ -9,7 +9,7 @@ namespace TripleZero.Helper
 {
     public static class CacheClient
     {
-        public static string CachedDataRepository() { return "\n(cached data^^)";  }
+        public static string GetCachedDataRepositoryMessage() { return "\n**(cached data^^)**";  }
 
         public static string GetMessageFromModuleCache(string functionName, string key)
         {
@@ -26,7 +26,7 @@ namespace TripleZero.Helper
             {
                 //loadingStr = "\nCommand is loaded from module cache\n\n";
                 //loadingStr = "\n---------------------------------------------";
-                loadingStr = "\n(cached data^)";
+                loadingStr = "\n**(cached data^)**";
                 retStr = (string)objCache;                
                 return string.Concat(loadingStr,retStr);
             }

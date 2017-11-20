@@ -44,8 +44,9 @@ namespace TripleZero.Modules
 
             if (result != null)
             {
-                if (result.FirstOrDefault().LoadedFromCache) retStr += CacheClient.CachedDataRepository();
-               
+                //if (result.FirstOrDefault().LoadedFromCache) retStr += CacheClient.GetCachedDataRepositoryMessage();
+                if (result.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{CacheClient.GetCachedDataRepositoryMessage()}");
+
                 retStr += string.Format("\nTotal players loaded to DB : **{0}** ", result.Count());
                 retStr += string.Format("\nSWGoH date - Latest: **{0}** - Oldest: **{1}** ", result.OrderByDescending(p => p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate, result.OrderBy(p => p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate);
                 retStr += string.Format("\nDB date - Latest: **{0}** - Oldest: **{1}** ", result.OrderByDescending(p => p.EntryUpdateDate).Take(1).FirstOrDefault().EntryUpdateDate, result.OrderBy(p => p.EntryUpdateDate).Take(1).FirstOrDefault().EntryUpdateDate);
@@ -78,8 +79,9 @@ namespace TripleZero.Modules
 
             if (result != null)
             {
-                if (result.FirstOrDefault().LoadedFromCache) retStr += CacheClient.CachedDataRepository();
-                
+                //if (result.FirstOrDefault().LoadedFromCache) retStr += CacheClient.GetCachedDataRepositoryMessage();
+                if (result.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{CacheClient.GetCachedDataRepositoryMessage()}");
+
                 retStr += string.Format("\nTotal players loaded to DB : **{0}**\n", result.Count());
                 result = result.OrderBy(p => p.GuildName).ThenByDescending(p => p.SWGoHUpdateDate).ToList();
                 foreach (var player in result)

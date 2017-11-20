@@ -66,7 +66,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find player : {playerUserName}...");
                 return null;
             }
-            if (res.LoadedFromCache) await ReplyAsync($"**{CacheClient.CachedDataRepository()}**");
+            if (res.LoadedFromCache) await ReplyAsync($"{CacheClient.GetCachedDataRepositoryMessage()}");
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
                               from Mod in Character.Mods.Where(p => p.SecondaryStat != null)
@@ -156,7 +156,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find player : {playerUserName}...");
                 return null;
             }
-            if (res.LoadedFromCache) await ReplyAsync($"**{CacheClient.CachedDataRepository()}**");
+            if (res.LoadedFromCache) await ReplyAsync($"{CacheClient.GetCachedDataRepositoryMessage()}");
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
                               from Mod in Character.Mods.Where(p => p.PrimaryStat != null && p.PrimaryStat.StatType == modStatType)

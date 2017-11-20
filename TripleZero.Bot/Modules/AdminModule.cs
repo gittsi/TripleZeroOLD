@@ -166,6 +166,16 @@ namespace TripleZero.Modules
                     retStr += string.Format("{0} - **No aliases**", chStr);
                 }
 
+                if(string.IsNullOrWhiteSpace(characterConfig.Command))
+                {
+                    retStr += string.Format(" - **No Command**", chStr);
+                }
+                else
+                {
+                    retStr += string.Format(" - Command : {0}", characterConfig.Command);
+                }
+                
+
                 if (retStr.Length > 1800)
                 {
                     await ReplyAsync($"{retStr}");
@@ -208,7 +218,7 @@ namespace TripleZero.Modules
             }
             else
             {
-                await ReplyAsync($"Found **{result.Count()} rows in queue!**");
+                await ReplyAsync($"I Found **{result.Count()} total entries in queue!**");
             }
 
             var guildQueues = result.Where(p => p.Type == QueueType.Guild).OrderByDescending(p => p.Status).ThenBy(p => p.NextRunDate).Take(rows);
