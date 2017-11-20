@@ -71,6 +71,6 @@
     <Folder Include="Repository\Dto\" />
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties Configuration_4config_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>

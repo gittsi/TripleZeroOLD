@@ -229,7 +229,11 @@ namespace TripleZero.Modules
                 retStr += "\n**--------Guild Queue--------**";
                 foreach(var guild in guildQueues)
                 {
-                    retStr += string.Format("\nGuild : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC)", guild.Name, guild.Status, guild.NextRunDate?.ToString("yyyy-MM-dd HH:mm"));
+                    retStr += string.Format("\nGuild : **{0}** - Status : **{1}** - Next Run : **{2}**(UTC){3}"
+                        , guild.Name
+                        , guild.Status
+                        , guild.NextRunDate?.ToString("yyyy-MM-dd HH:mm")
+                        , string.IsNullOrWhiteSpace(guild.ProcessingBy) ? "" : string.Format(" - Processing started by : {0} at {1}", guild.ProcessingBy,guild.ProcessingStartDate?.ToString("yyyy-MM-dd HH:mm")));
                 }
             }
 
@@ -245,7 +249,7 @@ namespace TripleZero.Modules
             if (processingPlayer.Count()>0) retStr += "\n**--Processing**";
             foreach (var queuePlayer in processingPlayer)
             {
-                retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Processing started by {3} at **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.NextRunDate?.ToString("yyyy-MM-dd HH:mm"),queuePlayer.ProcessingBy);
+                retStr += string.Format("\nPlayer : **{0}** - Status : **{1}** - Processing started by {3} at **{2}**(UTC)", queuePlayer.Name, queuePlayer.Status, queuePlayer.ProcessingStartDate?.ToString("yyyy-MM-dd HH:mm"),queuePlayer.ProcessingBy);
 
                 if (retStr.Length > 1800)
                 {
