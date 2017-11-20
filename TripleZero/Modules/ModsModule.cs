@@ -88,8 +88,8 @@ namespace TripleZero.Modules
             bool rowsIsNumber = int.TryParse(resultsRows, out int rows);
             if (!rowsIsNumber) { await ReplyAsync($"If you want to specify how many results want, you have to put a number as third parameter! '{rows}' is not a number!");  return; }
 
-            playerUserName = playerUserName.Trim();
-            modType = modType.Trim();
+            playerUserName = playerUserName.ToLower().Trim();
+            modType = modType.ToLower().Trim();
 
             ModValueType secondaryStatValueType = ModValueType.None;
             if (modType.Substring(modType.Length - 1, 1) == "%")
@@ -102,7 +102,7 @@ namespace TripleZero.Modules
                 secondaryStatValueType = ModValueType.Flat;
             }
 
-            ModStatType secondaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(), typeof(ModStatType));
+            ModStatType secondaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType, typeof(ModStatType));
 
             if (secondaryStatType == ModStatType.None)
             {
@@ -177,10 +177,10 @@ namespace TripleZero.Modules
             bool rowsIsNumber = int.TryParse(resultsRows, out int rows);
             if (!rowsIsNumber) { await ReplyAsync($"If you want to specify how many results want, you have to put a number as third parameter! '{rows}' is not a number!"); return; }
 
-            playerUserName = playerUserName.Trim();
-            modType = modType.Trim();            
+            playerUserName = playerUserName.Trim().ToLower();
+            modType = modType.Trim().ToLower();
 
-            ModStatType primaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType.ToLower(), typeof(ModStatType));
+            ModStatType primaryStatType = (ModStatType)EnumExtensions.GetEnumFromDescription(modType, typeof(ModStatType));
 
             if (primaryStatType == ModStatType.None)
             {

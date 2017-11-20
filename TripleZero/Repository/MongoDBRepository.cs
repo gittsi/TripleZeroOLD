@@ -157,7 +157,8 @@ namespace TripleZero.Repository
                     new JProperty("Status", QueueStatus.PendingProcess),
                     new JProperty("Priority", Priority.ManualLoad),
                     new JProperty("Command", queueType == QueueType.Player ? Command.UpdatePlayer : Command.UpdateGuildWithNoChars),
-                    new JProperty("Type", queueType)
+                    new JProperty("Type", queueType),
+                    new JProperty("ComputerName", string.Empty)
                );
 
             using (HttpClient client = new HttpClient())

@@ -396,8 +396,11 @@ namespace TripleZero.Modules
         }
 
         [Command("prune")]
-        public async Task Prune(int countMessagesToDelete=0) 
+        public async Task Prune(string countMessagesToDelete) 
         {
+            bool rowsIsNumber = int.TryParse(countMessagesToDelete, out int rows);
+            if (!rowsIsNumber) { await ReplyAsync($"If you want to specify how many results want, you have to put a number as a parameter! '{rows}' is not a number!"); return; }
+
             string retStr = "";
             await Context.Message.DeleteAsync();
 
@@ -411,10 +414,12 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var messagesToDelete = await Context.Channel.GetMessagesAsync(countMessagesToDelete).Flatten();
+            var messagesToDelete = await Context.Channel.GetMessagesAsync(rows).Flatten();
             await Context.Channel.DeleteMessagesAsync(messagesToDelete);
 
-            await Context.Channel.SendMessageAsync($"`{Context.User.Username} deleted {messagesToDelete.Count()} messages`");
+            var lastmessage = await Context.Channel.SendMessageAsync($"`{Context.User.Username} deleted {messagesToDelete.Count()} messages`");
+            await Task.Delay(2000);
+            await lastmessage.DeleteAsync();
         }
     
     }
