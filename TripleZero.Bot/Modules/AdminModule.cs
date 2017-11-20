@@ -277,7 +277,7 @@ namespace TripleZero.Modules
                     retStr = "";
                 }
             }
-            if(retStr.Length==0) { ReplyAsync("Empty queue!!!!"); return; }
+            if(retStr.Length==0) { await ReplyAsync("Empty queue!!!!"); return; }
             await ReplyAsync($"{retStr}");
         }
 
