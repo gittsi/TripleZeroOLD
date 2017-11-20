@@ -51,7 +51,7 @@ namespace TripleZero.Configuration
                 CachingSettings = new CachingSettings()
                 {
 
-                    RepositoryCachingInMinutesApiKey = RepositoryCachingInMinutes
+                    RepositoryCachingInMinutes = RepositoryCachingInMinutes
                     ,
                     ModuleCachingInMinutes = ModuleCachingInMinutes
                 }

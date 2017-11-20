@@ -26,7 +26,7 @@ namespace TripleZero.Strategy
                 Consoler.WriteLineInColor(string.Format("repository cache key : {0} not added!!!", key), ConsoleColor.Red);
                 return false;
             }
-            int minutesBeforeExpiration = IResolver.Current.ApplicationSettings.Get().CachingSettings.RepositoryCachingInMinutesApiKey;
+            int minutesBeforeExpiration = IResolver.Current.ApplicationSettings.Get().CachingSettings.RepositoryCachingInMinutes;
 
             _cacheFactory.Expire(key, TimeSpan.FromMinutes(minutesBeforeExpiration));
              Consoler.WriteLineInColor(string.Format("added repository cache key : {0} for {1} minutes", key, minutesBeforeExpiration), ConsoleColor.Green);

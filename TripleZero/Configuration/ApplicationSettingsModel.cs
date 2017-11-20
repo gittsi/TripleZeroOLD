@@ -31,7 +31,7 @@ namespace TripleZero.Configuration
 
     public class CachingSettings
     {
-        public int RepositoryCachingInMinutesApiKey { get; set; }
+        public int RepositoryCachingInMinutes { get; set; }
         public int ModuleCachingInMinutes { get; set; }
     }
 }
