@@ -396,6 +396,8 @@ namespace TripleZero.Modules
         }
 
         [Command("prune")]
+        [Summary("Delete messages")]
+        [Remarks("*prune {number of messages}*")]
         public async Task Prune(string countMessagesToDelete) 
         {
             bool rowsIsNumber = int.TryParse(countMessagesToDelete, out int rows);

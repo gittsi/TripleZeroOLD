@@ -14,7 +14,7 @@ namespace TripleZero.Configuration
         }
         public ApplicationSettingsModel Get()
         {
-            var boolRepositoryCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["RepositoryCachingInMinutes"], out int RepositoryCachingInMinutes);
+            //var boolRepositoryCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["RepositoryCachingInMinutes"], out int RepositoryCachingInMinutes);
             var boolModuleCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["ModuleCachingInMinutes"], out int ModuleCachingInMinutes);
 
 
@@ -41,18 +41,18 @@ namespace TripleZero.Configuration
                     BotAdminRole = _SettingsConfigurationRoot.GetSection("Discord_Settings")["BotAdminRole"]
 
                 },
-                MongoDBSettings = new MongoDBSettings()
-                {
-                    ApiKey = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["ApiKey"]
-                    ,
-                    DB = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["DB"]
-                }
-                ,
+                //MongoDBSettings = new MongoDBSettings()
+                //{
+                //    ApiKey = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["ApiKey"]
+                //    ,
+                //    DB = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["DB"]
+                //},
+                
                 CachingSettings = new CachingSettings()
                 {
 
-                    RepositoryCachingInMinutes = RepositoryCachingInMinutes
-                    ,
+                    //RepositoryCachingInMinutes = RepositoryCachingInMinutes
+                    //,
                     ModuleCachingInMinutes = ModuleCachingInMinutes
                 }
             };

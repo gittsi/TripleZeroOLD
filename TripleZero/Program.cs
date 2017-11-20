@@ -8,8 +8,6 @@ using TripleZero.Infrastructure.DI;
 using TripleZero.Modules;
 using TripleZero.Configuration;
 using TripleZero.Helper;
-using TripleZero._Mapping;
-using TripleZero.Strategy;
 
 namespace TripleZero
 {
@@ -17,7 +15,7 @@ namespace TripleZero
     {
         static Autofac.IContainer autoFacContainer = null;
         static ApplicationSettings applicationSettings = null;
-        static MongoDBSettings mongoDBSettings = null;
+        //static MongoDBSettings mongoDBSettings = null;
         private DiscordSocketClient client = null;
         private IServiceProvider services = null;
         private CommandService commands = null;
@@ -31,10 +29,10 @@ namespace TripleZero
             using (var scope = autoFacContainer.BeginLifetimeScope())
             {
                 applicationSettings = scope.Resolve<ApplicationSettings>();
-                mongoDBSettings = scope.Resolve<MongoDBSettings>();
+                //mongoDBSettings = scope.Resolve<MongoDBSettings>();
                 commands = scope.Resolve<CommandService>();
                 client = scope.Resolve<DiscordSocketClient>();
-                scope.Resolve<IMappingConfiguration>();                                
+                //scope.Resolve<IMappingConfiguration>();                                
 
                 var appSettings = applicationSettings.Get();
 

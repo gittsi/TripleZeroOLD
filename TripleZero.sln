@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TripleZero", "TripleZero\TripleZero.csproj", "{51B3D272-7116-40C8-BEB7-3574985D4A37}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleSwGohParser.Core", "ConsoleSwGohParser.Core\ConsoleSwGohParser.Core.csproj", "{22EA07A2-E55A-44DD-9026-1EF8BBDBDB93}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWGoH.Model", "SWGoH.Model\SWGoH.Model.csproj", "{5322618E-EB8B-41E4-AFD6-7541C416880A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripleZero.Repository", "TripleZero.Repository\TripleZero.Repository.csproj", "{18E4E11A-06D1-4AC6-8262-23038BEB2840}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{5322618E-EB8B-41E4-AFD6-7541C416880A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5322618E-EB8B-41E4-AFD6-7541C416880A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5322618E-EB8B-41E4-AFD6-7541C416880A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18E4E11A-06D1-4AC6-8262-23038BEB2840}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18E4E11A-06D1-4AC6-8262-23038BEB2840}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18E4E11A-06D1-4AC6-8262-23038BEB2840}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18E4E11A-06D1-4AC6-8262-23038BEB2840}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

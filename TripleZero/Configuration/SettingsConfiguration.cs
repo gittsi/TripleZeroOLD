@@ -17,7 +17,7 @@ namespace TripleZero.Configuration
         {
             var builder = new ConfigurationBuilder()
             .SetBasePath(string.Concat(Directory.GetCurrentDirectory(), "/Configuration"))
-            .AddJsonFile("config.json", optional: false, reloadOnChange: true);
+            .AddJsonFile("configBot.json", optional: false, reloadOnChange: true);
             //.AddJsonFile("characters.json", optional: false, reloadOnChange: true)
             //.AddJsonFile("guilds.json", optional: false, reloadOnChange: true);
             Configuration = builder.Build();

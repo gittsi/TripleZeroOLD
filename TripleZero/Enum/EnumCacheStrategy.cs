@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace TripleZero.Helper.Enum
-
 {
     public enum EnumCacheStrategy
     {
