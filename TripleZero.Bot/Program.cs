@@ -6,7 +6,6 @@ using Discord.WebSocket;
 using Autofac;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Modules;
-using TripleZero.Configuration;
 using TripleZero.Helper;
 using TripleZero.Core.Settings;
 

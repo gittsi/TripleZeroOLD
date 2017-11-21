@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TripleZero.Repository.EnumDto
+namespace TripleZero.Core.Caching.Enum
 {
-    internal enum EnumCacheStrategy
+    public enum EnumCacheStrategy
     {
         Unknown = 0,
         RepositoryCache = 1,

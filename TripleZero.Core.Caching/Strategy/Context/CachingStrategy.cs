@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TripleZero.Repository.EnumDto;
+using TripleZero.Core.Caching.Enum;
 
-namespace TripleZero.Repository.Strategy
+namespace TripleZero.Core.Caching.Strategy
 {
-    internal abstract class CachingStrategy : ICachingStrategy
+    public abstract class CachingStrategy : ICachingStrategy
     {
         public abstract bool CacheAdd(string key, object obj, short minutesBeforeExpiration);
         public abstract bool CacheAdd(string key, object obj);

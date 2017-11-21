@@ -11,19 +11,19 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using SWGoH.Model;
-using TripleZero.Repository.Configuration;
-using TripleZero.Repository.Helper.Cache;
-using TripleZero.Repository._Mapping;
 using TripleZero.Repository.Infrastructure.DI;
 using TripleZero.Repository.Dto;
 using SWGoH.Model.Enums;
 using TripleZero.Repository.Helper;
 using TripleZero.Core.Settings;
+using TripleZero.Core.Caching;
 
 namespace TripleZero.Repository
 {
     public class MongoDBRepository : IMongoDBRepository
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         private IMapper _Mapper = IResolver.Current.MappingConfiguration.GetConfigureMapper();
         private readonly SettingsTripleZeroRepository settingsTripleZeroRepository = IResolver.Current.ApplicationSettings.GetTripleZeroRepositorySettings();
         private string BuildApiUrl(string collection, string query = "", string orderBy = "", string limit = "", string fields = "")
@@ -95,7 +95,7 @@ namespace TripleZero.Repository
            
             string functionName = "GetPlayerRepo";
             string key = userName;
-            var objCache = CacheClient.GetDataFromRepositoryCache(functionName, key);
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
                 var player = (Player)objCache;
@@ -119,7 +119,7 @@ namespace TripleZero.Repository
                     var players = _Mapper.Map<List<Player>>(ret);
                     if (players == null || players.Count == 0) return players.FirstOrDefault();
                     //load to cache
-                    await CacheClient.AddToRepositoryCache(functionName, key, players.FirstOrDefault());
+                    await cacheClient.AddToRepositoryCache(functionName, key, players.FirstOrDefault());
                     return players.FirstOrDefault();
                 }
             }
@@ -134,7 +134,7 @@ namespace TripleZero.Repository
 
             string functionName = "GetGuildPlayersRepo";
             string key = guildName;
-            var objCache = CacheClient.GetDataFromRepositoryCache(functionName, key);
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
                 var guild = (Guild)objCache;
@@ -159,7 +159,7 @@ namespace TripleZero.Repository
                     Guild guild = _Mapper.Map<Guild>(ret);
 
                     //load to cache
-                    await CacheClient.AddToRepositoryCache(functionName, key, guild);
+                    await cacheClient.AddToRepositoryCache(functionName, key, guild);
                     return guild;
                 }
             }
@@ -274,7 +274,7 @@ namespace TripleZero.Repository
 
             string functionName = "GetAllPlayersWithoutCharactersRepo";
             string key = "key";
-            var objCache = CacheClient.GetDataFromRepositoryCache(functionName, key);
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
                 var guild = (List<Player>)objCache;
@@ -297,7 +297,7 @@ namespace TripleZero.Repository
 
                     var players = _Mapper.Map<List<Player>>(ret);
                     //load to cache
-                    await CacheClient.AddToRepositoryCache(functionName, key, players,30);
+                    await cacheClient.AddToRepositoryCache(functionName, key, players,30);
                     return players;
                 }
             }
@@ -310,7 +310,7 @@ namespace TripleZero.Repository
         {
             string functionName = "GetCharactersConfigRepo";
             string key = "key";
-            var objCache = CacheClient.GetDataFromRepositoryCache(functionName, key);
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
                 var charactersConfig = (List<CharacterConfig>)objCache;
@@ -334,7 +334,7 @@ namespace TripleZero.Repository
 
                     List<CharacterConfig> charactersConfig = _Mapper.Map<List<CharacterConfig>>(charactersConfigDto);
                     //load to cache
-                    await CacheClient.AddToRepositoryCache(functionName, key, charactersConfig, 30);
+                    await cacheClient.AddToRepositoryCache(functionName, key, charactersConfig, 30);
                     return charactersConfig;
                 }
             }
@@ -347,7 +347,7 @@ namespace TripleZero.Repository
         {
             string functionName = "GetGuildsConfigRepo";
             string key = "key";
-            var objCache = CacheClient.GetDataFromRepositoryCache(functionName, key);
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
                 var guildsConfig = (List<GuildConfig>)objCache;
@@ -366,7 +366,7 @@ namespace TripleZero.Repository
 
                     List<GuildConfig> guildsConfig = _Mapper.Map<List<GuildConfig>>(ret);
                     //load to cache
-                    await CacheClient.AddToRepositoryCache(functionName, key, guildsConfig, 30);
+                    await cacheClient.AddToRepositoryCache(functionName, key, guildsConfig, 30);
                     return guildsConfig;
                 }
             }

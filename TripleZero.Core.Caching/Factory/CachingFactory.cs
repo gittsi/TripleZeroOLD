@@ -2,11 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TripleZero.Repository.Configuration;
 
-namespace TripleZero.Repository.Helper.Cache
+namespace TripleZero.Core.Caching
 {
-    internal class CachingFactory
+    public class CachingFactory
     {
         private readonly ICacheManagerConfiguration _cacheManagerConfiguration = null;
         public CachingFactory(ICacheConfiguration cachingConfiguration)

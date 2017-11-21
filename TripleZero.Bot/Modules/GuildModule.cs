@@ -7,6 +7,7 @@ using TripleZero.Infrastructure.DI;
 using TripleZero.Helper;
 using SWGoH.Model;
 using SWGoH.Model.Enums;
+using TripleZero.Core.Caching;
 
 namespace TripleZero.Modules
 {
@@ -14,6 +15,8 @@ namespace TripleZero.Modules
     [Summary("Guild Commands")]
     public class GuildModule : ModuleBase<SocketCommandContext>
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         [Command("guildCharacter")]
         [Summary("Get report for specific character in the given guild")]
         [Remarks("*guildCharacter {guildAlias or guildId} {characterAlias}*")]
@@ -27,7 +30,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "guildCharacter";
             string key = string.Concat(guildAlias,characterAlias);
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -67,7 +70,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"{retStr}");
             }
 
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
         [Command("slackers")]
@@ -138,7 +141,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "tb";
             string key = guildAlias;
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -160,7 +163,7 @@ namespace TripleZero.Modules
             retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerShips));
 
             await ReplyAsync($"{retStr}");
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
 
         }
 
@@ -176,7 +179,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "guildPlayers";
             string key = string.Concat(guildAlias,searchStr);
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -220,7 +223,7 @@ namespace TripleZero.Modules
                 counter += 1;
                 //retStr += string.Format("\n{0} {1} {2} {3}", player.GPcharacters.ToString().PadRight(7, ' '), player.GPships.ToString().PadRight(7,' '),player.PlayerNameInGame,player.PlayerName);
             }
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
 
         }

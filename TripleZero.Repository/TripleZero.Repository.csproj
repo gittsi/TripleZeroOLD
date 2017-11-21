@@ -6,10 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helper\Cache\**" />
+    <Compile Remove="Strategy\**" />
+    <EmbeddedResource Remove="Helper\Cache\**" />
+    <EmbeddedResource Remove="Strategy\**" />
+    <None Remove="Helper\Cache\**" />
+    <None Remove="Strategy\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Configuration\ApplicationSettings.cs" />
     <Compile Remove="Configuration\ApplicationSettingsModel.cs" />
+    <Compile Remove="Configuration\CacheManagerConfiguration.cs" />
+    <Compile Remove="Configuration\ICacheManagerConfiguration.cs" />
     <Compile Remove="Configuration\ISettingsConfiguration.cs" />
     <Compile Remove="Configuration\SettingsConfiguration.cs" />
+    <Compile Remove="Enum\EnumCacheStrategy.cs" />
     <Compile Remove="Infrastructure\DI\AutofacConfig.cs" />
   </ItemGroup>
 
@@ -26,6 +38,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SWGoH.Model\SWGoH.Model.csproj" />
+    <ProjectReference Include="..\TripleZero.Core.Caching\TripleZero.Core.Caching.csproj" />
     <ProjectReference Include="..\TripleZero.Core.Settings\TripleZero.Core.Settings.csproj" />
   </ItemGroup>
 

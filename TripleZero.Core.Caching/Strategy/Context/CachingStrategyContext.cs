@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TripleZero.Repository.EnumDto;
+using TripleZero.Core.Caching.Enum;
 
-namespace TripleZero.Repository.Strategy
+//using TripleZero.Strategy.Decorator;
+//using TripleZero.Strategy.Decorator;
+
+namespace TripleZero.Core.Caching.Strategy
 {
-    internal class CachingStrategyContext    
+    public class CachingStrategyContext    
     {
-        private CachingStrategy _CachingStrategy;
+        private CachingStrategy _CachingStrategy;//= IResolver.Current.CachingStrategy;
+        //private _DEL_CachingLogDecorator _CachingLogDecorator=  IResolver.Current.CachingLogDecorator;
 
+        //public CachingStrategyContext(CachingLogDecorator cachingLogDecorator)
+        //{
+        //    _CachingLogDecorator = cachingLogDecorator;
+        //}
         public void SetStrategy(CachingStrategy cachingStrategy)
         {
             _CachingStrategy = cachingStrategy;            
@@ -22,24 +30,39 @@ namespace TripleZero.Repository.Strategy
             if (_CachingStrategy is null)
             {
                 throw new Exception("You have to choose strategy");
-            }            
+            }
+            //return this._CachingLogDecorator.CacheAdd(key, obj, minutesBeforeExpiration);
             return this._CachingStrategy.CacheAdd(key,obj,minutesBeforeExpiration);
         }
+
         public bool CacheAdd(string key, object obj)
         {
             if (_CachingStrategy is null)
             {
                 throw new Exception("You have to choose strategy");
-            }            
+            }
+            //return this._CachingLogDecorator.CacheAdd(key, obj);
             return this._CachingStrategy.CacheAdd(key, obj);
         }
+
         public object CacheGetFromKey(string key)
         {
             if (_CachingStrategy is null)
             {
                 throw new Exception("You have to choose strategy");
-            }         
+            }
+            //return this._CachingLogDecorator.CacheGetFromKey(key);
             return this._CachingStrategy.CacheGetFromKey(key);
-        }        
+        }
+
+        //public ICacheManager<object> GetCacheManager()
+        //{
+        //    if (_CachingStrategy is null)
+        //    {
+        //        throw new Exception("You have to choose strategy");
+        //    }
+
+        //    return this._CachingStrategy.GetCacheManager();
+        //}
     }
 }
