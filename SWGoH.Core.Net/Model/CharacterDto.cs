@@ -54,7 +54,7 @@ namespace SWGoH
         public int Speed { get; set; }
         [JsonProperty("CD")]
         [BsonElement("CD")]
-        public int CriticalDamage { get; set; }
+        public double CriticalDamage { get; set; }
         [JsonProperty("Pot")]
         [BsonElement("Pot")]
         public double Potency { get; set; }
