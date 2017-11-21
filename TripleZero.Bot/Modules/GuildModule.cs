@@ -98,6 +98,21 @@ namespace TripleZero.Modules
             {
                 for (int level = 1; level < 50; level++)
                 {
+                    var list = res.SelectMany(p => p.Players.Where(t => t.CombatType == UnitCombatType.Character && t.Level == level).ToList());
+                    var a = 1;
+
+                    //var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
+                    //                  from Mod in Character.Mods.Where(p => p.SecondaryStat != null)
+                    //                  from Stats in Mod.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == modValueType)
+                    //                  select new
+                    //                  {
+                    //                      Character.Name,
+                    //                      Mod
+                    //                  }
+                    //    ).OrderByDescending(t => t.Mod.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == modValueType).FirstOrDefault().Value).Take(rows).ToList();
+
+                    //return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
+
                     foreach (var guildCharacter in res)
                     {
                         foreach (var player in guildCharacter.Players.Where(p => p.CombatType == UnitCombatType.Character))
