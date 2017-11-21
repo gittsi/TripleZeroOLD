@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TripleZero.Core.Caching
 {
-    public class CachingFactory
+    internal class CachingFactory
     {
         private readonly ICacheManagerConfiguration _cacheManagerConfiguration = null;
         public CachingFactory(ICacheConfiguration cachingConfiguration)

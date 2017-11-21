@@ -3,7 +3,7 @@ using System;
 
 namespace TripleZero.Core.Caching
 {
-    public interface ICacheConfiguration
+    internal interface ICacheConfiguration
     {
         ICacheManagerConfiguration GetConfiguration();
     }

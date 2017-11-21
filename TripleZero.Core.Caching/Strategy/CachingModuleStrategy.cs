@@ -6,7 +6,7 @@ using TripleZero.Core.Caching.Infrastructure.DI;
 
 namespace TripleZero.Core.Caching.Strategy
 {
-    public class CachingModuleStrategy : CachingStrategy
+    internal class CachingModuleStrategy : CachingStrategy
     {
         ICacheManager<object> _cacheFactory = IResolver.Current.CachingFactory.GetFactoryModule();
 

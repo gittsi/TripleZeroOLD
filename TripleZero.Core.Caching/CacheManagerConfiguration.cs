@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TripleZero.Core.Caching
 {
-    public class CacheConfiguration : ICacheConfiguration
+    internal class CacheConfiguration : ICacheConfiguration
     {
         public static ICacheManagerConfiguration Configuration { get; set; }
         public CacheConfiguration()

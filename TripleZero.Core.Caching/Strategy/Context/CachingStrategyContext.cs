@@ -5,7 +5,7 @@ using TripleZero.Core.Caching.Enum;
 
 namespace TripleZero.Core.Caching.Strategy
 {
-    public class CachingStrategyContext    
+    internal class CachingStrategyContext    
     {
         private CachingStrategy _CachingStrategy;//= IResolver.Current.CachingStrategy;
         //private _DEL_CachingLogDecorator _CachingLogDecorator=  IResolver.Current.CachingLogDecorator;

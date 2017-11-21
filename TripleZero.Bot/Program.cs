@@ -14,8 +14,7 @@ namespace TripleZero
     class Program
     {
         static Autofac.IContainer autoFacContainer = null;
-        static ApplicationSettings applicationSettings = null;
-        //static MongoDBSettings mongoDBSettings = null;
+        static ApplicationSettings applicationSettings = null;        
         private DiscordSocketClient client = null;
         private IServiceProvider services = null;
         private CommandService commands = null;
@@ -28,11 +27,9 @@ namespace TripleZero
             autoFacContainer = AutofacConfig.ConfigureContainer();
             using (var scope = autoFacContainer.BeginLifetimeScope())
             {
-                applicationSettings = scope.Resolve<ApplicationSettings>();
-                //mongoDBSettings = scope.Resolve<MongoDBSettings>();
+                applicationSettings = scope.Resolve<ApplicationSettings>();                
                 commands = scope.Resolve<CommandService>();
-                client = scope.Resolve<DiscordSocketClient>();
-                //scope.Resolve<IMappingConfiguration>();                                
+                client = scope.Resolve<DiscordSocketClient>();                
 
                 var appSettings = applicationSettings.GetTripleZeroBotSettings();
 
@@ -41,7 +38,6 @@ namespace TripleZero
                 await client.LoginAsync(TokenType.Bot, appSettings.DiscordSettings.Token);
                 await client.StartAsync();
             }
-
 
             //client.MessageReceived += MessageReceived;
 
@@ -91,31 +87,14 @@ namespace TripleZero
             // We don't want the bot to respond to itself or other bots.
             // NOTE: Selfbots should invert this first check and remove the second
             // as they should ONLY be allowed to respond to messages from the same account.
-
-
-
-
-
-
-
-            /////////////////////////////Don't forget to exclude bots///////////////////////
             if (msg.Author.Id == client.CurrentUser.Id || msg.Author.IsBot) return;
 
-
-
-
-
-
-
-
             // Create a number to track where the prefix ends and the command begins
-            int pos = 0;
-            // Replace the '!' with whatever character
-            // you want to prefix your commands with.
+            int pos = 0;            
             // Uncomment the second half if you also want
             // commands to be invoked by mentioning the bot instead.
             var prefix = applicationSettings.GetTripleZeroBotSettings().DiscordSettings.Prefix;
-            if (msg.HasCharPrefix(Convert.ToChar(prefix), ref pos) /* || msg.HasMentionPrefix(_client.CurrentUser, ref pos) */)
+            if (msg.HasCharPrefix(Convert.ToChar(prefix), ref pos)  || msg.HasMentionPrefix(client.CurrentUser, ref pos))
             {
                 // Create a Command Context.
                 var context = new SocketCommandContext(client, msg);
@@ -139,8 +118,7 @@ namespace TripleZero
                     var message = msg.Channel.SendMessageAsync($"I am pretty sure that there is no command `{msg}`!!!\nTry `{prefix}help` to get an idea!").Result;
                     await Task.Delay(3000);
                     await message.DeleteAsync();
-                }
-                    
+                }                    
             }
         }
         #region "tests"  

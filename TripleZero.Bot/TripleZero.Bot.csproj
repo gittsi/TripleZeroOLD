@@ -12,15 +12,12 @@
   <ItemGroup>
     <Compile Remove="Enum\**" />
     <Compile Remove="Helper\Cache\**" />
-    <Compile Remove="Strategy\Context\**" />
     <Compile Remove="_Mapping\**" />
     <EmbeddedResource Remove="Enum\**" />
     <EmbeddedResource Remove="Helper\Cache\**" />
-    <EmbeddedResource Remove="Strategy\Context\**" />
     <EmbeddedResource Remove="_Mapping\**" />
     <None Remove="Enum\**" />
     <None Remove="Helper\Cache\**" />
-    <None Remove="Strategy\Context\**" />
     <None Remove="_Mapping\**" />
   </ItemGroup>
 
@@ -35,16 +32,6 @@
     <Compile Remove="Configuration\ISettingsConfiguration.cs" />
     <Compile Remove="Configuration\SettingsConfiguration.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
-    <Compile Remove="Repository\Dto\CharacterDto.cs" />
-    <Compile Remove="Repository\Dto\GuildCharacterDto.cs" />
-    <Compile Remove="Repository\Dto\GuildPlayerCharacterDto.cs" />
-    <Compile Remove="Repository\Dto\PlayerDto.cs" />
-    <Compile Remove="Repository\IMongoDBRepository.cs" />
-    <Compile Remove="Repository\ISWGoHRepository.cs" />
-    <Compile Remove="Repository\MongoDBRepository.cs" />
-    <Compile Remove="Repository\SWGoHRepository.cs" />
-    <Compile Remove="Strategy\CachingModuleStrategy.cs" />
-    <Compile Remove="Strategy\CachingRepositoryStrategy.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,11 +39,6 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
     <PackageReference Include="Discord.Net" Version="1.0.2" />
     <PackageReference Include="Discord.Net.Commands" Version="1.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -73,11 +55,6 @@
     <None Update="Configuration\configRepository.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Repository\" />
-    <Folder Include="Repository\Dto\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>

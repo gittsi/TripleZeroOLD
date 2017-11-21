@@ -30,7 +30,7 @@ namespace TripleZero.Modules
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -79,7 +79,7 @@ namespace TripleZero.Modules
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -128,7 +128,7 @@ namespace TripleZero.Modules
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -201,7 +201,7 @@ namespace TripleZero.Modules
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -297,7 +297,7 @@ namespace TripleZero.Modules
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -332,7 +332,7 @@ namespace TripleZero.Modules
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -362,7 +362,7 @@ namespace TripleZero.Modules
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -391,7 +391,7 @@ namespace TripleZero.Modules
             string retStr = "";
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -422,7 +422,7 @@ namespace TripleZero.Modules
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";

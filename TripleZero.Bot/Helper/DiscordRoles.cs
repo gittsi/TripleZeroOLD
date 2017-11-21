@@ -8,7 +8,7 @@ using System.Text;
 
 namespace TripleZero.Helper
 {
-    public static class Roles
+    public static class DiscordRoles
     {
         public static bool UserInRole(SocketCommandContext context, string roleTocheck)
         {

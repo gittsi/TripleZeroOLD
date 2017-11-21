@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TripleZero.Core.Caching.Enum
 {
-    public enum EnumCacheStrategy
+    internal enum EnumCacheStrategy
     {
         Unknown = 0,
         RepositoryCache = 1,

@@ -5,7 +5,7 @@ using TripleZero.Core.Caching.Enum;
 
 namespace TripleZero.Core.Caching.Strategy
 {
-    public abstract class CachingStrategy : ICachingStrategy
+    internal abstract class CachingStrategy : ICachingStrategy
     {
         public abstract bool CacheAdd(string key, object obj, short minutesBeforeExpiration);
         public abstract bool CacheAdd(string key, object obj);
