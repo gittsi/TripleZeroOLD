@@ -22,7 +22,6 @@ namespace TripleZero.Core.Settings
         public string Prefix { get; set; }
         public string BotAdminRole { get; set; }
     }    
-
     public partial class CachingSettings
     {        
         public int ModuleCachingInMinutes { get; set; }

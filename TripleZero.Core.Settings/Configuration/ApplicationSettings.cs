@@ -14,13 +14,10 @@ namespace TripleZero.Core.Settings
         }
         public SettingsTripleZeroBot GetTripleZeroBotSettings()
         {
-            //var boolRepositoryCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["RepositoryCachingInMinutes"], out int RepositoryCachingInMinutes);
             var boolModuleCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["ModuleCachingInMinutes"], out int ModuleCachingInMinutes);
-
 
             SettingsTripleZeroBot appSettings = new SettingsTripleZeroBot
             {
-
                 //general settings
                 GeneralSettings = new GeneralSettings()
                 {
@@ -30,7 +27,6 @@ namespace TripleZero.Core.Settings
                     ,
                     JsonSettingsVersion = _SettingsConfigurationRoot.GetSection("General_Settings")["JsonSettingsVersion"]
                 },
-
                 //discord settings
                 DiscordSettings = new DiscordSettings()
                 {
@@ -41,18 +37,8 @@ namespace TripleZero.Core.Settings
                     BotAdminRole = _SettingsConfigurationRoot.GetSection("Discord_Settings")["BotAdminRole"]
 
                 },
-                //MongoDBSettings = new MongoDBSettings()
-                //{
-                //    ApiKey = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["ApiKey"]
-                //    ,
-                //    DB = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["DB"]
-                //},
-                
                 CachingSettings = new CachingSettings()
                 {
-
-                    //RepositoryCachingInMinutes = RepositoryCachingInMinutes
-                    //,
                     ModuleCachingInMinutes = ModuleCachingInMinutes
                 }
             };
@@ -62,7 +48,6 @@ namespace TripleZero.Core.Settings
         public SettingsTripleZeroRepository GetTripleZeroRepositorySettings()
         {
             var boolRepositoryCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["RepositoryCachingInMinutes"], out int RepositoryCachingInMinutes);
-
 
             SettingsTripleZeroRepository appSettings = new SettingsTripleZeroRepository
             {               
