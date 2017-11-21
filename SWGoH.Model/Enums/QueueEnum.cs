@@ -26,4 +26,10 @@ namespace SWGoH.Model.Enums
         Player = 0,
         Guild = 1
     }
+
+    public enum Priority
+    {
+        DailyUpdate = 1,
+        ManualLoad = 2
+    }
 }

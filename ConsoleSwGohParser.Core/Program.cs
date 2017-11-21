@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using SWGoH.Enums.QueueEnum;
+using System.Runtime.InteropServices;
 
 namespace SWGoH
 {
@@ -15,10 +16,16 @@ namespace SWGoH
     {
         private static bool isWorking = false;
         private static DateTime mLastProcess = DateTime.MinValue;
-        
+        private static QueueDto workingQ = null;
+
         static void Main(string[] args)
         {
+            _handler += new EventHandler(Handler);
+            SetConsoleCtrlHandler(_handler, true);
+
             if (!Settings.Get()) return;
+
+            SWGoH.MongoDBRepo.SetWorking(true);
 
             if (SWGoH.Settings.appSettings.LogToFile == 1) SWGoH.Log.Initialize("log.txt" , SWGoH.Settings.appSettings.LogToFile == 1);
 
@@ -49,27 +56,39 @@ namespace SWGoH
             //ExecuteCommand(Command.UpdatePlayer, "newholborn");
             //ExecuteCommand(Command.Test, "newholborn", null);
 
-            QueueDto q = QueueMethods.GetQueu();
-            if (q != null)
+            int now = DateTime.UtcNow.Minute;
+            double minutes = 0.0;
+            minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
+            bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
+            if (check)
             {
-                int ret = ExecuteCommand(q.Command, q.Name , q);
-                if (ret != 3) mLastProcess = DateTime.UtcNow;
+                workingQ = QueueMethods.GetQueu();
+                if (workingQ != null)
+                {
+                    int ret = ExecuteCommand(workingQ.Command, workingQ.Name, workingQ);
+                    if (ret == 1) mLastProcess = DateTime.UtcNow;
+                    workingQ = null;
+                }
+                else
+                {
+                    //int now = DateTime.UtcNow.Minute;
+                    //double minutes = 0.0;
+                    //minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
+                    //bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
+                    //if (check)
+                    //{
+                    //    PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
+                    //    if (player != null)
+                    //    {
+                    //        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.UtcNow);
+                    //    }
+                    //}
+                    Console.WriteLine("Nothing to process");
+                }
             }
             else
             {
-                //int now = DateTime.UtcNow.Minute;
-                //double minutes = 0.0;
-                //minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
-                //bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
-                //if (check)
-                //{
-                //    PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
-                //    if (player != null)
-                //    {
-                //        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.UtcNow);
-                //    }
-                //}
-                Console.WriteLine("Nothing to process");
+                Console.WriteLine("Waiting...  " + ((int)minutes).ToString () + " minutes");
             }
             isWorking = false;
             t.Change(Settings.appSettings.GlobalConsoleTimerInterval, Settings.appSettings.GlobalConsoleTimerInterval);
@@ -85,25 +104,25 @@ namespace SWGoH
                     {
                         SWGoH.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true,false);
-                        if (ret == 1 || ret == 2)
+                        if (SWGoH.PlayerDto.isOnExit) return -1;
+                        if (ret == 0 || (q != null && q.Priority == PriorityEnum.ManualLoad))
+                        {
+                            QueueMethods.RemoveFromQueu(q);
+                        }
+                        else if (ret == 1 || ret == 2)
                         {
                             player.LastClassUpdated = DateTime.UtcNow;
                             if (ret == 1)
                             {
                                 player.Export(mExportMethod);
                                 player.DeletePlayerFromDBAsync();
-                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player , 24.2);
+                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player, 24.2, false);
                             }
                             else if (ret == 2)
                             {
-                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player, 0.5);
+                                if (q != null) QueueMethods.UpdateQueueAndProcessLater(q, player, 0.5, true);
                             }
-                            
-                            //if (q != null) QueueMethods.RemoveFromQueu(q);
-                        }
-                        else if (ret == 0)
-                        {
-                            if (q != null) QueueMethods.RemoveFromQueu (q);
+
                         }
                         return ret;
                     }
@@ -177,9 +196,9 @@ namespace SWGoH
                         guild.ParseSwGoh();
                         for (int i = 0; i < guild.PlayerNames.Count; i++)
                         {
-                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, 2, QueueType.Player,DateTime.UtcNow );
+                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, PriorityEnum.DailyUpdate, QueueType.Player,DateTime.UtcNow );
                         }
-                        QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars, 1, QueueType.Guild, DateTime.UtcNow);
+                        QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars, PriorityEnum.DailyUpdate, QueueType.Guild, DateTime.UtcNow);
 
                         //QueueMethods.AddPlayer("newholborn", "up",3);
                         //QueueMethods.AddPlayer("oaraug", "up", 3);
@@ -201,5 +220,46 @@ namespace SWGoH
             }
             return commandstr.GetHashCode();
         }
+
+
+        [DllImport("Kernel32")]
+        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+
+        private delegate bool EventHandler(CtrlType sig);
+        static EventHandler _handler;
+
+        enum CtrlType
+        {
+            CTRL_C_EVENT = 0,
+            CTRL_BREAK_EVENT = 1,
+            CTRL_CLOSE_EVENT = 2,
+            CTRL_LOGOFF_EVENT = 5,
+            CTRL_SHUTDOWN_EVENT = 6
+        }
+
+        private static bool Handler(CtrlType sig)
+        {
+            switch (sig)
+            {
+                case CtrlType.CTRL_C_EVENT:
+                case CtrlType.CTRL_LOGOFF_EVENT:
+                case CtrlType.CTRL_SHUTDOWN_EVENT:
+                case CtrlType.CTRL_CLOSE_EVENT:
+                    {
+                        PlayerDto.isOnExit = true;
+                        isWorking = true;
+                        SWGoH.MongoDBRepo.SetWorking(false);
+                        if (workingQ != null)
+                        {
+                            QueueMethods.UpdateQueueAndProcessLater(workingQ, null , 0.5, true);
+                        }
+                        Thread.Sleep(5000);
+                        return false;
+                    }
+                default:
+                    return false;
+            }
+        }
+
     }
 }

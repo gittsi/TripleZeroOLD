@@ -18,7 +18,7 @@ namespace SWGoH
 {
     public class QueueMethods
     {
-        public static void AddPlayer(string PlayerName,Command cmd ,int priority , SWGoH.Enums.QueueEnum.QueueType type, DateTime nextrundate)
+        public static void AddPlayer(string PlayerName,Command cmd ,PriorityEnum priority , SWGoH.Enums.QueueEnum.QueueType type, DateTime nextrundate)
         {
             try
             {
@@ -32,7 +32,8 @@ namespace SWGoH
                     new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
                     new JProperty("Type", type),
-                    new JProperty("Command", cmd));
+                    new JProperty("Command", cmd),
+                    new JProperty("ComputerName", ""));
 
                     var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                     var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Queue", "", "", "", ""));
@@ -48,19 +49,26 @@ namespace SWGoH
                 SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
         }
-        public static void UpdateQueueAndProcessLater(QueueDto q, PlayerDto player , double hours)
+        public static void UpdateQueueAndProcessLater(QueueDto q, PlayerDto player , double hours,bool fromnow)
         {
             try
             {
+                string nextrun = "";
+                if (player != null) nextrun = player.LastSwGohUpdated.AddHours(hours).ToString("o");
+                else nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
+
+                if (fromnow) nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
+
                 JObject data = new JObject(
                                    new JProperty("Name", q.Name),
                                    new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
                                    new JProperty("ProcessingStartDate", ""),
-                                   new JProperty("NextRunDate", player.LastSwGohUpdated.AddHours(hours).ToString ("o")),
+                                   new JProperty("NextRunDate", nextrun),
                                    new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                                    new JProperty("Priority", q.Priority),
                                    new JProperty("Type", q.Type),
-                                   new JProperty("Command", q.Command));
+                                   new JProperty("Command", q.Command),
+                                   new JProperty("ComputerName", ""));
 
                 var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                 var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", q.Id.ToString());
@@ -113,9 +121,14 @@ namespace SWGoH
                     IMongoCollection <QueueDto> collection = db.GetCollection<QueueDto>("Queue");
                     if (collection != null)
                     {
+                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("Priority", 2);
+                        //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Priority", 1);
+                        //UpdateOptions opts2 = new UpdateOptions();
+                        //opts2.IsUpsert = false;
+                        //UpdateResult res2 = collection.UpdateMany(filter2, update2, opts2);
 
                         FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
-                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o"));
+                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o")).Set ("ComputerName" , SWGoH.Settings.appSettings.ComputerName);
                         var opts = new FindOneAndUpdateOptions<QueueDto>()
                         {
                             IsUpsert = false,
@@ -123,9 +136,24 @@ namespace SWGoH
                             Sort = Builders<QueueDto>.Sort.Descending(r => r.Priority).Ascending(r => r.NextRunDate)
                         };
                         QueueDto found = collection.FindOneAndUpdate<QueueDto>(filter, update, opts);
+                        if (found != null)
+                        {
+                            DateTime nextrun = DateTime.Parse(found.NextRunDate).ToUniversalTime();
+                            if (DateTime.UtcNow < nextrun)
+                            {
+                                found.Status = QueueStatus.PendingProcess;
 
-                        DateTime nextrun = DateTime.Parse(found.NextRunDate).ToUniversalTime ();
-                        if (DateTime.UtcNow < nextrun) return null;
+                                FilterDefinition<QueueDto> filter1 = Builders<QueueDto>.Filter.Eq("_id", found.Id);
+                                UpdateDefinition<QueueDto> update1 = Builders<QueueDto>.Update.Set("Status", 0).Set("ComputerName", "");
+                                UpdateOptions opts1 = new UpdateOptions();
+                                opts1.IsUpsert = false;
+
+                                UpdateResult res = collection.UpdateOne(filter1, update1, opts1);
+
+
+                                return null;
+                            }
+                        }
                         return found;
                     }
                 }
@@ -155,7 +183,8 @@ namespace SWGoH
                                 new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.Processing),
                                 new JProperty("Priority", result1.Priority),
                                 new JProperty("Type", result1.Type),
-                                new JProperty("Command", result1.Command));
+                                new JProperty("Command", result1.Command),
+                                new JProperty("ComputerName", SWGoH.Settings.appSettings.ComputerName));
 
                                 var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                                 var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", result1.Id.ToString());

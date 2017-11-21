@@ -1,7 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 
 namespace SWGoH
@@ -47,6 +49,42 @@ namespace SWGoH
                 , SWGoH.Settings.appSettings.MongoApiKey
                 );
             return url;
+        }
+
+        public static void SetWorking(bool working)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string computername = SWGoH.Settings.appSettings.ComputerName;
+
+                    JObject data = new JObject(
+                                           new JProperty("ComputerName", computername),
+                                           new JProperty("Working", working));
+
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "&q={\"ComputerName\":\"" + computername + "\"}", "", "&l=1", "");
+                    string response = client.GetStringAsync(url).Result;
+                    response = response.Replace(" ", "");
+                    if (response == "" || response == "[]")
+                    {
+                        var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                        var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
+                        HttpResponseMessage res = client.PostAsync(requestUri, httpContent).Result;
+                    }
+                    else
+                    {
+
+                        var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                        var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
+                        HttpResponseMessage res = client.PutAsync(requestUri, httpContent).Result;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Error Adding Working PC:");
+            }
         }
     }
 }
