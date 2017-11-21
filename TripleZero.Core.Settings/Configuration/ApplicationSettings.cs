@@ -42,7 +42,6 @@ namespace TripleZero.Core.Settings
                     ModuleCachingInMinutes = ModuleCachingInMinutes
                 }
             };
-
             return appSettings;
         }
         public SettingsTripleZeroRepository GetTripleZeroRepositorySettings()
@@ -63,7 +62,6 @@ namespace TripleZero.Core.Settings
                     RepositoryCachingInMinutes = RepositoryCachingInMinutes
                 }
             };
-
             return appSettings;
         }
     }
