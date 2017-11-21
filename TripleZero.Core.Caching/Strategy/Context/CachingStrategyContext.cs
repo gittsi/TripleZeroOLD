@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using TripleZero.Core.Caching.Enum;
 
-//using TripleZero.Strategy.Decorator;
-//using TripleZero.Strategy.Decorator;
-
 namespace TripleZero.Core.Caching.Strategy
 {
     public class CachingStrategyContext    
@@ -54,15 +51,5 @@ namespace TripleZero.Core.Caching.Strategy
             //return this._CachingLogDecorator.CacheGetFromKey(key);
             return this._CachingStrategy.CacheGetFromKey(key);
         }
-
-        //public ICacheManager<object> GetCacheManager()
-        //{
-        //    if (_CachingStrategy is null)
-        //    {
-        //        throw new Exception("You have to choose strategy");
-        //    }
-
-        //    return this._CachingStrategy.GetCacheManager();
-        //}
     }
 }

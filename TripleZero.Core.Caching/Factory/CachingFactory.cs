@@ -21,7 +21,6 @@ namespace TripleZero.Core.Caching
 
             return cacheFactory;
         }
-
         public ICacheManager<object> GetFactoryModule()
         {
             var cacheFactory = CacheFactory.Build("cacheModule", settings => settings
