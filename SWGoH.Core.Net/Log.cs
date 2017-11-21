@@ -1,14 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
 
-namespace SWGoH.Core.Net
+namespace SWGoH
 {
-    public static class Log
+    public class Log
     {
+        static StreamWriter stream = null;
+        static bool mExportToFile = false;
+        public static void Initialize(string Fname, bool exporttofile)
+        {
+            string directory = AppDomain.CurrentDomain.BaseDirectory + "Settings";
+            string finalname = directory + "\\" + Fname;
+
+            stream = new StreamWriter(finalname, false);
+            mExportToFile = exporttofile;
+            stream.AutoFlush = true;
+        }
+        public static void FileFinalize()
+        {
+            stream.Close();
+        }
         public static void ConsoleMessage(string message)
         {
-            Console.WriteLine(message + "  Time:" + DateTime.Now.TimeOfDay.ToString("h':'m':'s''"));
+            if (mExportToFile) stream.WriteLine(message + "  Time:" + DateTime.UtcNow.TimeOfDay.ToString("h':'m':'s''"));
+            Console.WriteLine(message + "  Time:" + DateTime.UtcNow.TimeOfDay.ToString("h':'m':'s''"));
+        }
+        public static void ConsoleMessageNotInFile(string message)
+        {
+            Console.WriteLine(message + "  Time:" + DateTime.UtcNow.TimeOfDay.ToString("h':'m':'s''"));
         }
     }
 }

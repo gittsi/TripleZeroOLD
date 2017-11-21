@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TripleZeroApi.Repository;
-using SwGoh;
+using SWGoH;
 using TripleZeroApi.Models;
 using System.Net;
 using TripleZeroApi.Infrastructure.DI;

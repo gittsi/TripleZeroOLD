@@ -11,142 +11,267 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SWGoH.Enums.QueueEnum;
+using MongoDB.Driver;
 
-namespace SwGoh
+namespace SWGoH
 {
     public class QueueMethods
     {
-        public static void AddPlayer(string PlayerName, string command, int priority)
+        public static void AddPlayer(string PlayerName,Command cmd ,PriorityEnum priority , SWGoH.Enums.QueueEnum.QueueType type, DateTime nextrundate)
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
                     JObject data = new JObject(
-                    new JProperty("PlayerName", PlayerName),
-                    new JProperty("Date", DateTime.UtcNow),
-                    new JProperty("Status", 0),
+                    new JProperty("Name", PlayerName),
+                    new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
+                    new JProperty("ProcessingStartDate", ""),
+                    new JProperty("NextRunDate", nextrundate.ToString ("o")),
+                    new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
                     new JProperty("Priority", priority),
-                    new JProperty("Command", command));
-
-                    var apiKey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                    new JProperty("Type", type),
+                    new JProperty("Command", cmd),
+                    new JProperty("ComputerName", ""));
 
                     var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player?apiKey={0}", apiKey);
+                    var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Queue", "", "", "", ""));
                     HttpResponseMessage response = client.PostAsync(requestUri, httpContent).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
+                        SWGoH.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
                     }
                 }
             }
             catch(Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
+                SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
         }
-        public static void RemoveFromQueu(QueuePlayer q)
+        public static void UpdateQueueAndProcessLater(QueueDto q, PlayerDto player , double hours,bool fromnow)
+        {
+            try
+            {
+                string nextrun = "";
+                if (player != null) nextrun = player.LastSwGohUpdated.AddHours(hours).ToString("o");
+                else nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
+
+                if (fromnow) nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
+
+                JObject data = new JObject(
+                                   new JProperty("Name", q.Name),
+                                   new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
+                                   new JProperty("ProcessingStartDate", ""),
+                                   new JProperty("NextRunDate", nextrun),
+                                   new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
+                                   new JProperty("Priority", q.Priority),
+                                   new JProperty("Type", q.Type),
+                                   new JProperty("Command", q.Command),
+                                   new JProperty("ComputerName", ""));
+
+                var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", q.Id.ToString());
+                using (HttpClient client1 = new HttpClient())
+                {
+                    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                }
+                SWGoH.Log.ConsoleMessage(q.Name + " Added To Queu to be processed later :");
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Error updating Queu to be processed later :" + e.Message);
+            }
+        }
+        public static void RemoveFromQueu(QueueDto q)
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-                    var deleteurl = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/{0}?apiKey={1}", q.Id, apikey);
+                    var deleteurl = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", q.Id.ToString());
                     WebRequest request = WebRequest.Create(deleteurl);
                     request.Method = "DELETE";
 
                     HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
                     if (response1.StatusCode == HttpStatusCode.OK)
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Removed From Queu!");
+                        SWGoH.Log.ConsoleMessage("Removed From Queu!");
                     }
                     else
                     {
-                        SWGoH.Core.Net.Log.ConsoleMessage("Could not remove from Queu!");
+                        SWGoH.Log.ConsoleMessage("Could not remove from Queu!");
                     }
                 }
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
+                SWGoH.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
             }
         }
-        public static QueuePlayer GetQueu()
+        public static QueueDto GetQueu()
         {
             try
             {
-                using (HttpClient client = new HttpClient())
+                MongoDBRepo mongo = new MongoDBRepo();
+                IMongoDatabase db = mongo.Connect();
+                if (db != null)
                 {
-                    var queryData = string.Concat("q={\"Status\":0}");
-                    var orderby = "s={\"Priority\":-1,\"Date\":1}";
-                    var limit = "l=1";
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/?{0}&{1}&{2}&apiKey={3}", queryData, orderby, limit, apikey);
-
-                    string response = client.GetStringAsync(url).Result;
-                    if (response != "" && response != "[  ]")
+                    SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!! (mongo)");
+                    IMongoCollection <QueueDto> collection = db.GetCollection<QueueDto>("Queue");
+                    if (collection != null)
                     {
-                        List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                        QueuePlayer result1 = BsonSerializer.Deserialize<QueuePlayer>(document.FirstOrDefault());
-                        if (result1 != null)
-                        {
-                            //UPDATE with Status = 1
-                            JObject data = new JObject(
-                            new JProperty("PlayerName", result1.PlayerName),
-                            new JProperty("Date", result1.Date),
-                            new JProperty("Status", 1),
-                            new JProperty("Priority", result1.Priority),
-                            new JProperty("Command", result1.Command));
+                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("Priority", 2);
+                        //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Priority", 1);
+                        //UpdateOptions opts2 = new UpdateOptions();
+                        //opts2.IsUpsert = false;
+                        //UpdateResult res2 = collection.UpdateMany(filter2, update2, opts2);
 
-                            var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                            var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Queue.Player/{0}?apiKey={1}", result1.Id, apikey);
-                            using (HttpClient client1 = new HttpClient())
+                        FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
+                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o")).Set ("ComputerName" , SWGoH.Settings.appSettings.ComputerName);
+                        var opts = new FindOneAndUpdateOptions<QueueDto>()
+                        {
+                            IsUpsert = false,
+                            ReturnDocument = ReturnDocument.After,
+                            Sort = Builders<QueueDto>.Sort.Descending(r => r.Priority).Ascending(r => r.NextRunDate)
+                        };
+                        QueueDto found = collection.FindOneAndUpdate<QueueDto>(filter, update, opts);
+                        if (found != null)
+                        {
+                            DateTime nextrun = DateTime.Parse(found.NextRunDate).ToUniversalTime();
+                            if (DateTime.UtcNow < nextrun)
                             {
-                                HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                                found.Status = QueueStatus.PendingProcess;
+
+                                FilterDefinition<QueueDto> filter1 = Builders<QueueDto>.Filter.Eq("_id", found.Id);
+                                UpdateDefinition<QueueDto> update1 = Builders<QueueDto>.Update.Set("Status", 0).Set("ComputerName", "");
+                                UpdateOptions opts1 = new UpdateOptions();
+                                opts1.IsUpsert = false;
+
+                                UpdateResult res = collection.UpdateOne(filter1, update1, opts1);
+
+
+                                return null;
                             }
                         }
-                        return result1;
+                        return found;
+                    }
+                }
+                else
+                {
+                    SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!!");
+                    using (HttpClient client = new HttpClient())
+                    {
+                        string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", "&q={\"Status\":0}", "&s={\"Priority\":-1,\"NextRunDate\":1}", "&l=1", "");
+
+                        string response = client.GetStringAsync(url).Result;
+                        if (response != "" && response != "[  ]")
+                        {
+                            List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                            QueueDto result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
+                            if (result1 != null)
+                            {
+                                //check nextrundate
+                                
+
+                                //UPDATE with Status = 1
+                                JObject data = new JObject(
+                                new JProperty("Name", result1.Name),
+                                new JProperty("InsertedDate", result1.InsertedDate),
+                                new JProperty("ProcessingStartDate", DateTime.UtcNow.ToString("o")),
+                                new JProperty("NextRunDate", result1.NextRunDate),
+                                new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.Processing),
+                                new JProperty("Priority", result1.Priority),
+                                new JProperty("Type", result1.Type),
+                                new JProperty("Command", result1.Command),
+                                new JProperty("ComputerName", SWGoH.Settings.appSettings.ComputerName));
+
+                                var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                                var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", result1.Id.ToString());
+                                using (HttpClient client1 = new HttpClient())
+                                {
+                                    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                                }
+                                SWGoH.Log.ConsoleMessage("Got from Queu Player " + result1.Name);
+                            }
+                            return result1;
+                        }
                     }
                 }
             }
             catch (Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                SWGoH.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
                 return null;
             }
             return null;
         }
         public static PlayerDto GetLastUpdatedPlayer(string guildname)
         {
+            SWGoH.Log.ConsoleMessageNotInFile("Getting LastUpdated From Queu!!");
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var queryData = string.Concat("q={\"GuildName\" : \"" + GuildDto.GetGuildNameFromAlias(guildname) + "\" }");
-                    var orderby = "s={\"LastSwGohUpdated\":1}";
-                    var limit = "l=1";
-                    var field = "f={\"PlayerName\": 1,\"LastSwGohUpdated\": 1}";
-                    string apikey = "JmQkm6eGcaYwn_EqePgpNm57-0LcgA0O";
+                    var queryData = string.Concat("&q={\"GuildName\" : \"" + GuildDto.GetGuildNameFromAlias(guildname) + "\" }");
+                    var field = "f={\"PlayerName\": 1,\"LastSwGohUpdated\": 1, \"LastClassUpdated\" : 1 }";
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", queryData, "&s={\"LastSwGohUpdated\":1}", "", field);
 
-                    string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&{2}&{3}&apiKey={4}", queryData, field, limit, orderby, apikey);
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
                         List<PlayerDto> result = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PlayerDto>>(response);
-                        if (result.Count == 1)
+                        if (result.Count > 0 )
                         {
-                            return result[0];
+                            foreach (PlayerDto item in result)
+                            {
+                                DateTime lastc = item.LastClassUpdated.Value;
+                                if (DateTime.UtcNow.Subtract (lastc).TotalHours < Settings.appSettings.HoursForNextCheckLastswGohUpdate) continue;
+                                bool check = CheckStatusForPlayer(item.PlayerName);
+                                if (check) continue;
+                                return item;
+                            }
+                            
                         }
                     }
                 }
             }
             catch(Exception e)
             {
-                SWGoH.Core.Net.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!! : " + e.Message);
+                SWGoH.Log.ConsoleMessage("Error getting LastUpdatedPlayerToQueu!! : " + e.Message);
                 return null;
             }
             return null;
+        }
+
+        private static bool CheckStatusForPlayer(string playerName)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var queryData = string.Concat("&q={\"Name\":\"", playerName, "\",  \"Status\" : 1 }");
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", queryData, "", "", "");
+
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "" && response != "[  ]")
+                    {
+                        List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                        QueueDto result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
+                        if (result1 != null)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                return false;
+            }
+            return false;
         }
     }
 }
