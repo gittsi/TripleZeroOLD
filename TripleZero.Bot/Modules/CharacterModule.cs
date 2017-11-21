@@ -75,12 +75,12 @@ namespace TripleZero.Modules
 
             retStr += "\n\n**Physical Offense**";
             retStr += $"\nPhysical Damage: {character.OffenseStats.PhysicalOffense.PhysicalDamage}";
-            retStr += $"\nPhysical Critical Chance: {character.OffenseStats.PhysicalOffense.PhysicalCriticalChance}";
+            retStr += $"\nPhysical Critical Chance: {character.OffenseStats.PhysicalOffense.PhysicalCriticalChance} %";
             retStr += $"\nPhysical Accuracy: {character.OffenseStats.PhysicalOffense.PhysicalAccuracy} %";
             retStr += $"\nArmor Penetration: {character.OffenseStats.PhysicalOffense.ArmorPenetration} %";
 
             retStr += "\n\n**Special Offense**";
-            retStr += $"\nSpecial Damage: {character.OffenseStats.SpecialOffense.SpecialDamage} %";
+            retStr += $"\nSpecial Damage: {character.OffenseStats.SpecialOffense.SpecialDamage}";
             retStr += $"\nSpecial Critical Chance: {character.OffenseStats.SpecialOffense.SpecialCriticalChance} %";
             retStr += $"\nSpecial Accuracy: {character.OffenseStats.SpecialOffense.SpecialAccuracy} %";
             retStr += $"\nResistance Penetration: {character.OffenseStats.SpecialOffense.ResistancePenetration} %";
