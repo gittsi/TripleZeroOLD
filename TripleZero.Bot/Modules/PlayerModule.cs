@@ -2,8 +2,7 @@
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Strategy;
-using TripleZero.Helper;
+using TripleZero.Core.Caching;
 
 namespace TripleZero.Modules
 {
@@ -11,6 +10,8 @@ namespace TripleZero.Modules
     [Summary("Player Commands")]
     public class PlayerModule : ModuleBase<SocketCommandContext>
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         [Command("player-report")]
         [Summary("Get full report for a player")]
         [Remarks("*player-report {playerUserName}*")]
@@ -25,7 +26,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "player-report";
             string key = playerUserName;
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -44,7 +45,7 @@ namespace TripleZero.Modules
                 return;
             }
             //if (playerData.LoadedFromCache) retStr+= CacheClient.GetCachedDataRepositoryMessage();
-            if (playerData.LoadedFromCache) await ReplyAsync($"{CacheClient.GetCachedDataRepositoryMessage()}");
+            if (playerData.LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
             retStr += string.Format("\nLast update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
 
@@ -173,7 +174,7 @@ namespace TripleZero.Modules
             retStr += string.Format("{0} characters with **gear 12**\n", gear12.Count());
 
 
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
         }
     }

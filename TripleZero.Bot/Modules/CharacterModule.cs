@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
-using TripleZero.Helper;
+using TripleZero.Core.Caching;
 
 namespace TripleZero.Modules
 {
@@ -13,6 +13,8 @@ namespace TripleZero.Modules
     [Summary("Character Commands")]
     public class CharacterModule : ModuleBase<SocketCommandContext>
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         [Command("character")]
         [Summary("Get character stats for specific player")]
         [Remarks("*character {playerUserName} {characterAlias}*")]
@@ -25,7 +27,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "character";
             string key = string.Concat(playerUserName,characterAlias);
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -94,7 +96,7 @@ namespace TripleZero.Modules
             retStr += $"\nSpecial Critical Avoidance: {character.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} %";
 
             await ReplyAsync($"{retStr}");
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
         [Command("character-compare")]
@@ -110,7 +112,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "character-compare";
             string key = string.Concat(player1UserName, player2UserName, characterAlias);
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -198,7 +200,7 @@ namespace TripleZero.Modules
             retStr += $"\nSpecial Critical Avoidance: {character1.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} % - {character2.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} %";
 
             await ReplyAsync($"{retStr}");
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
     }
 }

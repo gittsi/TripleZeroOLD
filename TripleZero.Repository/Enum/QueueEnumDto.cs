@@ -15,24 +15,20 @@ namespace TripleZero.Repository.EnumDto
         UnKnown = 7,
         Test = 8,
     }
-
     internal enum QueueStatus
     {
         PendingProcess = 0,
         Processing = 1,
         Failed = 101
     }
-
     internal enum QueueType
     {
         Player = 0,
         Guild = 1
     }
-
     internal enum PriorityEnum
     {
         DailyUpdate = 1,
         ManualLoad = 2
     }
-
 }
