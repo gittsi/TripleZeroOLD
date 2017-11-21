@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TripleZero.Repository.Configuration
+namespace TripleZero.Core.Settings
 {
-    internal interface ISettingsConfiguration
+    public interface ISettingsConfiguration
     {
         IConfigurationRoot GetConfiguration();
     }

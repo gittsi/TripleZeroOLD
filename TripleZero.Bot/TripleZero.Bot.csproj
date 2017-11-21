@@ -16,13 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Configuration\ApplicationSettings.cs" />
+    <Compile Remove="Configuration\ApplicationSettingsModel.cs" />
     <Compile Remove="Configuration\CharacterSettingsModel.cs" />
     <Compile Remove="Configuration\GuildSettingsModel.cs" />
     <Compile Remove="Configuration\GuildsSettings.cs" />
-    <Compile Remove="Configuration\SWGoH\CharacterSettings.cs" />
-    <Compile Remove="Configuration\SWGoH\CharacterSettingsModel.cs" />
-    <Compile Remove="Configuration\SWGoH\GuildSettings.cs" />
-    <Compile Remove="Configuration\SWGoH\GuildSettingsModel.cs" />
+    <Compile Remove="Configuration\ISettingsConfiguration.cs" />
+    <Compile Remove="Configuration\SettingsConfiguration.cs" />
     <Compile Remove="Helper\Cache\Caching.cs" />
     <Compile Remove="Helper\Cache\ICaching.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
@@ -53,6 +53,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SWGoH.Model\SWGoH.Model.csproj" />
+    <ProjectReference Include="..\TripleZero.Core.Settings\TripleZero.Core.Settings.csproj" />
     <ProjectReference Include="..\TripleZero.Repository\TripleZero.Repository.csproj" />
   </ItemGroup>
 
@@ -66,7 +67,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configuration\SWGoH\" />
     <Folder Include="Repository\" />
     <Folder Include="Repository\Dto\" />
   </ItemGroup>

@@ -23,7 +23,7 @@ namespace TripleZero.Repository.Strategy
             {
                 return false;
             }
-            int minutesBeforeExpiration = IResolver.Current.ApplicationSettings.Get().CachingSettings.RepositoryCachingInMinutes;
+            int minutesBeforeExpiration = IResolver.Current.ApplicationSettings.GetTripleZeroRepositorySettings().CachingSettings.RepositoryCachingInMinutes;
 
             _cacheFactory.Expire(key, TimeSpan.FromMinutes(minutesBeforeExpiration));
             return isAdded;

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TripleZero.Configuration;
+using TripleZero.Core.Settings;
 //using TripleZero.Infrastructure.DI;
 using TripleZero.Modules;
 using TripleZero.Repository;

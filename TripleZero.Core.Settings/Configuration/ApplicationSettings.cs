@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TripleZero.Configuration
+namespace TripleZero.Core.Settings
 {
     public class ApplicationSettings
     {
@@ -12,13 +12,13 @@ namespace TripleZero.Configuration
         {
             _SettingsConfigurationRoot = settingsConfiguration.GetConfiguration();
         }
-        public ApplicationSettingsModel Get()
+        public SettingsTripleZeroBot GetTripleZeroBotSettings()
         {
             //var boolRepositoryCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["RepositoryCachingInMinutes"], out int RepositoryCachingInMinutes);
             var boolModuleCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["ModuleCachingInMinutes"], out int ModuleCachingInMinutes);
 
 
-            ApplicationSettingsModel appSettings = new ApplicationSettingsModel
+            SettingsTripleZeroBot appSettings = new SettingsTripleZeroBot
             {
 
                 //general settings
@@ -54,6 +54,28 @@ namespace TripleZero.Configuration
                     //RepositoryCachingInMinutes = RepositoryCachingInMinutes
                     //,
                     ModuleCachingInMinutes = ModuleCachingInMinutes
+                }
+            };
+
+            return appSettings;
+        }
+        public SettingsTripleZeroRepository GetTripleZeroRepositorySettings()
+        {
+            var boolRepositoryCachingInMinutes = int.TryParse(_SettingsConfigurationRoot.GetSection("Caching_Settings")["RepositoryCachingInMinutes"], out int RepositoryCachingInMinutes);
+
+
+            SettingsTripleZeroRepository appSettings = new SettingsTripleZeroRepository
+            {               
+                MongoDBSettings = new MongoDBSettings()
+                {
+                    ApiKey = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["ApiKey"]
+                    ,
+                    DB = _SettingsConfigurationRoot.GetSection("MongoDB_Settings")["DB"]
+                },
+
+                CachingSettings = new CachingSettings()
+                {                    
+                    RepositoryCachingInMinutes = RepositoryCachingInMinutes
                 }
             };
 

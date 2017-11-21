@@ -18,20 +18,21 @@ using TripleZero.Repository.Infrastructure.DI;
 using TripleZero.Repository.Dto;
 using SWGoH.Model.Enums;
 using TripleZero.Repository.Helper;
+using TripleZero.Core.Settings;
 
 namespace TripleZero.Repository
 {
     public class MongoDBRepository : IMongoDBRepository
     {
         private IMapper _Mapper = IResolver.Current.MappingConfiguration.GetConfigureMapper();
-        private readonly ApplicationSettingsModel appSettings = IResolver.Current.ApplicationSettings.Get();
+        private readonly SettingsTripleZeroRepository settingsTripleZeroRepository = IResolver.Current.ApplicationSettings.GetTripleZeroRepositorySettings();
         private string BuildApiUrl(string collection, string query = "", string orderBy = "", string limit = "", string fields = "")
         {
             if (string.IsNullOrWhiteSpace(limit)) limit = "1000";
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/?apiKey={2}&q={3}&s={4}&l={5}&f={6}"
-                , appSettings.MongoDBSettings.DB
+                , settingsTripleZeroRepository.MongoDBSettings.DB
                 , collection
-                , appSettings.MongoDBSettings.ApiKey
+                , settingsTripleZeroRepository.MongoDBSettings.ApiKey
                 , query
                 , orderBy
                 , limit
@@ -41,10 +42,10 @@ namespace TripleZero.Repository
         private string BuildApiUrlFromId(string collection, string id)
         {            
             string url = string.Format("https://api.mlab.com/api/1/databases/{0}/collections/{1}/{2}?apiKey={3}"
-                , appSettings.MongoDBSettings.DB
+                , settingsTripleZeroRepository.MongoDBSettings.DB
                 , collection
                 , id
-                , appSettings.MongoDBSettings.ApiKey
+                , settingsTripleZeroRepository.MongoDBSettings.ApiKey
                 );
             return url;
         }

@@ -29,7 +29,7 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
@@ -78,7 +78,7 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
@@ -127,7 +127,7 @@ namespace TripleZero.Modules
             string chStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
@@ -200,7 +200,7 @@ namespace TripleZero.Modules
 
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
@@ -296,7 +296,7 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
@@ -331,7 +331,7 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
@@ -361,7 +361,7 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
@@ -390,7 +390,7 @@ namespace TripleZero.Modules
         {
             string retStr = "";
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
@@ -421,7 +421,7 @@ namespace TripleZero.Modules
             await Context.Message.DeleteAsync();
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
             var userAllowed = Roles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {

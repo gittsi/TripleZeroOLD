@@ -12,7 +12,7 @@ namespace TripleZero.Helper
         public static void ConsolePrintLogo() //prints application name,version etc
         {
             //get application Settings
-            var appSettings = IResolver.Current.ApplicationSettings.Get();
+            var appSettings = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings();
 
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             Consoler.WriteLineInColor(string.Format("{0} - {1}", appSettings.GeneralSettings.ApplicationName, appSettings.GeneralSettings.Environment), ConsoleColor.DarkYellow);

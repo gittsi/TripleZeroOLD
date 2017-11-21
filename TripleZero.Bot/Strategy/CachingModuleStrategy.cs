@@ -26,7 +26,7 @@ namespace TripleZero.Strategy
                 Consoler.WriteLineInColor(string.Format("module cache key : {0} not added!!!", key), ConsoleColor.Red);
                 return false;
             }
-            int minutesBeforeExpiration = IResolver.Current.ApplicationSettings.Get().CachingSettings.ModuleCachingInMinutes;
+            int minutesBeforeExpiration = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().CachingSettings.ModuleCachingInMinutes;
 
             _cacheFactory.Expire(key, TimeSpan.FromMinutes(minutesBeforeExpiration));
             Consoler.WriteLineInColor(string.Format("added module cache key : {0} for {1} minutes", key, minutesBeforeExpiration), ConsoleColor.Green);

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TripleZero.Core.Settings;
 using TripleZero.Repository._Mapping;
 using TripleZero.Repository.Configuration;
 using TripleZero.Repository.Helper.Cache;
@@ -16,7 +17,7 @@ namespace TripleZero.Repository.Infrastructure.DI
         internal IContainer Container { get; set; }
         internal ApplicationSettings ApplicationSettings { get { return Container.Resolve<ApplicationSettings>(); } }
         internal CachingFactory CachingFactory { get { return Container.Resolve<CachingFactory>(); } }
-        internal MongoDBSettings MongoDBSettings { get { return Container.Resolve<MongoDBSettings>(); } }
+        //internal MongoDBSettings MongoDBSettings { get { return Container.Resolve<MongoDBSettings>(); } }
         internal GuildSettings GuildSettings { get { return Container.Resolve<GuildSettings>(); } }
         internal CharacterSettings CharacterSettings { get { return Container.Resolve<CharacterSettings>(); } }
         internal ISWGoHRepository SWGoHRepository { get { return Container.Resolve<ISWGoHRepository>(); } }
@@ -33,7 +34,7 @@ namespace TripleZero.Repository.Infrastructure.DI
             builder.RegisterType<MappingConfiguration>().As<IMappingConfiguration>().SingleInstance();
             builder.RegisterType<ApplicationSettings>().SingleInstance();
             builder.RegisterType<CachingFactory>().SingleInstance();
-            builder.RegisterType<MongoDBSettings>().SingleInstance();
+            //builder.RegisterType<MongoDBSettings>().SingleInstance();
             builder.RegisterType<GuildSettings>().SingleInstance();
             builder.RegisterType<CharacterSettings>().SingleInstance();
             //builder.RegisterType<CharacterSettings>().SingleInstance();

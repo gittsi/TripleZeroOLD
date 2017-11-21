@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Configuration\ApplicationSettings.cs" />
+    <Compile Remove="Configuration\ApplicationSettingsModel.cs" />
+    <Compile Remove="Configuration\ISettingsConfiguration.cs" />
+    <Compile Remove="Configuration\SettingsConfiguration.cs" />
     <Compile Remove="Infrastructure\DI\AutofacConfig.cs" />
   </ItemGroup>
 
@@ -22,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SWGoH.Model\SWGoH.Model.csproj" />
+    <ProjectReference Include="..\TripleZero.Core.Settings\TripleZero.Core.Settings.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace TripleZero.Configuration
+namespace TripleZero.Core.Settings
 {
     public class SettingsConfiguration : ISettingsConfiguration
     {
@@ -17,9 +17,9 @@ namespace TripleZero.Configuration
         {
             var builder = new ConfigurationBuilder()
             .SetBasePath(string.Concat(Directory.GetCurrentDirectory(), "/Configuration"))
-            .AddJsonFile("configBot.json", optional: false, reloadOnChange: true);
-            //.AddJsonFile("characters.json", optional: false, reloadOnChange: true)
-            //.AddJsonFile("guilds.json", optional: false, reloadOnChange: true);
+            .AddJsonFile("configBot.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("configRepository.json", optional: false, reloadOnChange: true);
+
             Configuration = builder.Build();
 
             return Configuration;

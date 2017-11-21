@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TripleZero.Configuration
+namespace TripleZero.Core.Settings
 {
-    public class ApplicationSettingsModel
+    public class SettingsTripleZeroBot
     {
         public GeneralSettings GeneralSettings { get; set; }
-        public DiscordSettings DiscordSettings { get; set; }
-        //public MongoDBSettings MongoDBSettings { get; set; }
+        public DiscordSettings DiscordSettings { get; set; }        
         public CachingSettings CachingSettings { get; set; }
     }
     public class GeneralSettings
@@ -22,16 +21,10 @@ namespace TripleZero.Configuration
         public string Token { get; set; }
         public string Prefix { get; set; }
         public string BotAdminRole { get; set; }
-    }
-    //public class MongoDBSettings
-    //{
-    //    public string ApiKey { get; set; }
-    //    public string DB { get; set; }
-    //}
+    }    
 
-    public class CachingSettings
-    {
-        //public int RepositoryCachingInMinutes { get; set; }
+    public partial class CachingSettings
+    {        
         public int ModuleCachingInMinutes { get; set; }
     }
 }

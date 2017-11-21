@@ -8,6 +8,7 @@ using TripleZero.Infrastructure.DI;
 using TripleZero.Modules;
 using TripleZero.Configuration;
 using TripleZero.Helper;
+using TripleZero.Core.Settings;
 
 namespace TripleZero
 {
@@ -34,7 +35,7 @@ namespace TripleZero
                 client = scope.Resolve<DiscordSocketClient>();
                 //scope.Resolve<IMappingConfiguration>();                                
 
-                var appSettings = applicationSettings.Get();
+                var appSettings = applicationSettings.GetTripleZeroBotSettings();
 
                 await InstallCommands();
 
@@ -114,7 +115,7 @@ namespace TripleZero
             // you want to prefix your commands with.
             // Uncomment the second half if you also want
             // commands to be invoked by mentioning the bot instead.
-            if (msg.HasCharPrefix(Convert.ToChar(applicationSettings.Get().DiscordSettings.Prefix), ref pos) /* || msg.HasMentionPrefix(_client.CurrentUser, ref pos) */)
+            if (msg.HasCharPrefix(Convert.ToChar(applicationSettings.GetTripleZeroBotSettings().DiscordSettings.Prefix), ref pos) /* || msg.HasMentionPrefix(_client.CurrentUser, ref pos) */)
             {
                 // Create a Command Context.
                 var context = new SocketCommandContext(client, msg);
