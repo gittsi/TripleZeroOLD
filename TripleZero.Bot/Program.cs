@@ -114,7 +114,8 @@ namespace TripleZero
             // you want to prefix your commands with.
             // Uncomment the second half if you also want
             // commands to be invoked by mentioning the bot instead.
-            if (msg.HasCharPrefix(Convert.ToChar(applicationSettings.GetTripleZeroBotSettings().DiscordSettings.Prefix), ref pos) /* || msg.HasMentionPrefix(_client.CurrentUser, ref pos) */)
+            var prefix = applicationSettings.GetTripleZeroBotSettings().DiscordSettings.Prefix;
+            if (msg.HasCharPrefix(Convert.ToChar(prefix), ref pos) /* || msg.HasMentionPrefix(_client.CurrentUser, ref pos) */)
             {
                 // Create a Command Context.
                 var context = new SocketCommandContext(client, msg);
@@ -131,6 +132,13 @@ namespace TripleZero
                 {
                     Consoler.WriteLineInColor(string.Format("error  : '{0}' ", result.ErrorReason), ConsoleColor.Green);
                     await msg.Channel.SendMessageAsync(result.ErrorReason);
+                }
+
+                if(result.Error==CommandError.UnknownCommand)
+                {
+                    var message = msg.Channel.SendMessageAsync($"I am pretty sure that there is no command `{msg}`!!!\nTry `{prefix}help` to get an idea!").Result;
+                    await Task.Delay(3000);
+                    await message.DeleteAsync();
                 }
                     
             }

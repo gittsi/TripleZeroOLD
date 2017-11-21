@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using TripleZero.Repository.Repository.Dto;
 
 namespace TripleZero.Repository.Dto
-{  
+{
     internal class CharacterDto
     {
         [BsonElement("Nm")]
@@ -16,7 +16,7 @@ namespace TripleZero.Repository.Dto
         public string SWGoHUrl { get; set; }
         [JsonProperty("S")]
         [BsonElement("S")]
-        [DefaultValue (7)]
+        [DefaultValue(7)]
         [BsonDefaultValue(7)]
         public int Stars { get; set; }
         [JsonProperty("Ge")]
