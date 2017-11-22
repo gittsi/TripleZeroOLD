@@ -42,6 +42,8 @@ namespace SWGoH
         [BsonElement("Ab")]
         public List<Ability> Abilities { get; set; }
 
+        public List<string> CharacterTags { get; set; }
+
         #region General
         [JsonProperty("Hl")]
         [BsonElement("Hl")]
