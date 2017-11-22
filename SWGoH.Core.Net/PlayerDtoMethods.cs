@@ -896,8 +896,8 @@ namespace SWGoH
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
-                    if (ret1) newchar.HealthSteal = valueint;
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.HealthSteal = valuedecimal;
                 }
 
             }
@@ -965,8 +965,8 @@ namespace SWGoH
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
-                    if (ret1) newchar.PhysicalAccuracy = valueint;
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.PhysicalAccuracy = valuedecimal;
                 }
             }
             #endregion
