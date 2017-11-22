@@ -49,7 +49,7 @@ namespace TripleZero.Repository.Dto
         public int Speed { get; set; }
         [JsonProperty("CD")]
         [BsonElement("CD")]
-        public int CriticalDamage { get; set; }
+        public double CriticalDamage { get; set; }
         [JsonProperty("Pot")]
         [BsonElement("Pot")]
         public double Potency { get; set; }
@@ -58,7 +58,7 @@ namespace TripleZero.Repository.Dto
         public double Tenacity { get; set; }
         [JsonProperty("HlS")]
         [BsonElement("HlS")]
-        public int HealthSteal { get; set; }
+        public double HealthSteal { get; set; }
         #endregion
 
         #region Physical Offense
@@ -75,7 +75,7 @@ namespace TripleZero.Repository.Dto
         [BsonElement("PA")]
         [DefaultValue(0)]
         [BsonDefaultValue(0)]
-        public int PhysicalAccuracy { get; set; }
+        public double PhysicalAccuracy { get; set; }
         #endregion
 
         #region Physical Survivability
