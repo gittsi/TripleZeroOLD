@@ -51,7 +51,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId, characterConfig.Command);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId, characterConfig.Name);
 
             if (res != null)
             {                
