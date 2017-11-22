@@ -22,15 +22,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Configuration\ApplicationSettings.cs" />
-    <Compile Remove="Configuration\ApplicationSettingsModel.cs" />
-    <Compile Remove="Configuration\CacheManagerConfiguration.cs" />
-    <Compile Remove="Configuration\CharacterSettingsModel.cs" />
-    <Compile Remove="Configuration\GuildSettingsModel.cs" />
-    <Compile Remove="Configuration\GuildsSettings.cs" />
-    <Compile Remove="Configuration\ICacheManagerConfiguration.cs" />
-    <Compile Remove="Configuration\ISettingsConfiguration.cs" />
-    <Compile Remove="Configuration\SettingsConfiguration.cs" />
+    <Compile Remove="JsonAppSettings\ApplicationSettings.cs" />
+    <Compile Remove="JsonAppSettings\ApplicationSettingsModel.cs" />
+    <Compile Remove="JsonAppSettings\CacheManagerConfiguration.cs" />
+    <Compile Remove="JsonAppSettings\CharacterSettingsModel.cs" />
+    <Compile Remove="JsonAppSettings\GuildSettingsModel.cs" />
+    <Compile Remove="JsonAppSettings\GuildsSettings.cs" />
+    <Compile Remove="JsonAppSettings\ICacheManagerConfiguration.cs" />
+    <Compile Remove="JsonAppSettings\ISettingsConfiguration.cs" />
+    <Compile Remove="JsonAppSettings\SettingsConfiguration.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
   </ItemGroup>
 
@@ -49,10 +49,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Configuration\configBot.json">
+    <None Update="JsonAppSettings\configBot.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Configuration\configRepository.json">
+    <None Update="JsonAppSettings\configRepository.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

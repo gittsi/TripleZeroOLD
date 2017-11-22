@@ -16,7 +16,7 @@ namespace TripleZero.Core.Settings
         public IConfigurationRoot GetConfiguration()
         {
             var builder = new ConfigurationBuilder()
-            .SetBasePath(string.Concat(Directory.GetCurrentDirectory(), "/Configuration"))
+            .SetBasePath(string.Concat(Directory.GetCurrentDirectory(), "/JsonAppSettings"))
             .AddJsonFile("configBot.json", optional: false, reloadOnChange: true)//bot settings
             .AddJsonFile("configRepository.json", optional: false, reloadOnChange: true);//repository settings
 
