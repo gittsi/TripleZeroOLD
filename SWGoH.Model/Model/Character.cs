@@ -7,6 +7,7 @@ namespace SWGoH.Model
     public class Character
     {
         public string Name { get; set; }
+        public string Tags { get; set; }
         public string SWGoHUrl { get; set; }
         public int Stars { get; set; }
         public int Gear { get; set; }

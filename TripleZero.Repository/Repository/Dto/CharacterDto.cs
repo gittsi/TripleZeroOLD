@@ -36,6 +36,7 @@ namespace TripleZero.Repository.Dto
         [JsonProperty("Ab")]
         [BsonElement("Ab")]
         public List<CharacterAbilityDto> Abilities { get; set; }
+        public List<string> CharacterTags { get; set; }
 
         #region General
         [JsonProperty("Hl")]
