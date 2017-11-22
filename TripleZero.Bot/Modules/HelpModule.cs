@@ -23,7 +23,7 @@ namespace TripleZero.Modules
         [Remarks("*info*")]
         public async Task InfoAsync()
         {
-            var applicationSettings = IResolver.Current.ApplicationSettings.Get();
+            var applicationSettings = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings();
 
             string prefix = applicationSettings.DiscordSettings.Prefix;
             Version version = Assembly.GetEntryAssembly().GetName().Version;
@@ -41,7 +41,7 @@ namespace TripleZero.Modules
         [Remarks("*help*")]
         public async Task HelpAsync()
         {
-            string prefix = IResolver.Current.ApplicationSettings.Get().DiscordSettings.Prefix;
+            string prefix = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.Prefix;
 
             var builder = new EmbedBuilder()
             {
@@ -74,8 +74,8 @@ namespace TripleZero.Modules
         public async Task HelpAdminAsync()
         {
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 var retStr = "\nNot authorized!!!";
@@ -83,7 +83,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            string prefix = IResolver.Current.ApplicationSettings.Get().DiscordSettings.Prefix;
+            string prefix = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.Prefix;
 
             var builder = new EmbedBuilder()
             {
@@ -123,7 +123,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            string prefix = IResolver.Current.ApplicationSettings.Get().DiscordSettings.Prefix;
+            string prefix = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.Prefix;
             var builder = new EmbedBuilder();
 
             foreach (var match in result.Commands)

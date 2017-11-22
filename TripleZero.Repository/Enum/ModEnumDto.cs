@@ -14,7 +14,6 @@ namespace TripleZero.Repository.EnumDto
         [Description("percentage")]
         Percentage = 1
     }
-
     internal enum ModStatType
     {
         [Description("none")]
@@ -42,7 +41,6 @@ namespace TripleZero.Repository.EnumDto
         [Description("rotection")]
         Protection = 11
     }
-
     internal enum ModSlot
     {
         [Description("none")]
@@ -59,9 +57,7 @@ namespace TripleZero.Repository.EnumDto
         DataBus = 5,
         [Description("cross")]
         Multiplexer = 6
-
     }
-
     internal enum ModSet
     {
         [Description("none")]

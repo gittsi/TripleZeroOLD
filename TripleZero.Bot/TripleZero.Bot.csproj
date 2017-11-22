@@ -4,55 +4,47 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RuntimeIdentifiers>portable;win10-x64;osx.10.11-x64;android</RuntimeIdentifiers>
-    <AssemblyVersion>1.2.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
-    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.1.0</AssemblyVersion>
+    <FileVersion>1.2.1.0</FileVersion>
+    <Version>1.2.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Enum\**" />
+    <Compile Remove="Helper\Cache\**" />
     <Compile Remove="_Mapping\**" />
+    <EmbeddedResource Remove="Enum\**" />
+    <EmbeddedResource Remove="Helper\Cache\**" />
     <EmbeddedResource Remove="_Mapping\**" />
+    <None Remove="Enum\**" />
+    <None Remove="Helper\Cache\**" />
     <None Remove="_Mapping\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Configuration\ApplicationSettings.cs" />
+    <Compile Remove="Configuration\ApplicationSettingsModel.cs" />
+    <Compile Remove="Configuration\CacheManagerConfiguration.cs" />
     <Compile Remove="Configuration\CharacterSettingsModel.cs" />
     <Compile Remove="Configuration\GuildSettingsModel.cs" />
     <Compile Remove="Configuration\GuildsSettings.cs" />
-    <Compile Remove="Configuration\SWGoH\CharacterSettings.cs" />
-    <Compile Remove="Configuration\SWGoH\CharacterSettingsModel.cs" />
-    <Compile Remove="Configuration\SWGoH\GuildSettings.cs" />
-    <Compile Remove="Configuration\SWGoH\GuildSettingsModel.cs" />
-    <Compile Remove="Helper\Cache\Caching.cs" />
-    <Compile Remove="Helper\Cache\ICaching.cs" />
+    <Compile Remove="Configuration\ICacheManagerConfiguration.cs" />
+    <Compile Remove="Configuration\ISettingsConfiguration.cs" />
+    <Compile Remove="Configuration\SettingsConfiguration.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
-    <Compile Remove="Repository\Dto\CharacterDto.cs" />
-    <Compile Remove="Repository\Dto\GuildCharacterDto.cs" />
-    <Compile Remove="Repository\Dto\GuildPlayerCharacterDto.cs" />
-    <Compile Remove="Repository\Dto\PlayerDto.cs" />
-    <Compile Remove="Repository\IMongoDBRepository.cs" />
-    <Compile Remove="Repository\ISWGoHRepository.cs" />
-    <Compile Remove="Repository\MongoDBRepository.cs" />
-    <Compile Remove="Repository\SWGoHRepository.cs" />
-    <Compile Remove="Strategy\CachingRepositoryStrategy.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.2" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
-    <PackageReference Include="CacheManager.Core" Version="1.1.2" />
-    <PackageReference Include="CacheManager.Microsoft.Extensions.Configuration" Version="1.1.2" />
     <PackageReference Include="Discord.Net" Version="1.0.2" />
     <PackageReference Include="Discord.Net.Commands" Version="1.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SWGoH.Model\SWGoH.Model.csproj" />
+    <ProjectReference Include="..\TripleZero.Core.Caching\TripleZero.Core.Caching.csproj" />
+    <ProjectReference Include="..\TripleZero.Core.Settings\TripleZero.Core.Settings.csproj" />
     <ProjectReference Include="..\TripleZero.Repository\TripleZero.Repository.csproj" />
   </ItemGroup>
 
@@ -63,12 +55,6 @@
     <None Update="Configuration\configRepository.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Configuration\SWGoH\" />
-    <Folder Include="Repository\" />
-    <Folder Include="Repository\Dto\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>

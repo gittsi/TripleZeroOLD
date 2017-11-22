@@ -7,6 +7,7 @@ using TripleZero.Infrastructure.DI;
 using TripleZero.Helper;
 using SWGoH.Model;
 using SWGoH.Model.Enums;
+using TripleZero.Core.Caching;
 
 namespace TripleZero.Modules
 {
@@ -14,6 +15,8 @@ namespace TripleZero.Modules
     [Summary("Guild Commands")]
     public class GuildModule : ModuleBase<SocketCommandContext>
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         [Command("guildCharacter")]
         [Summary("Get report for specific character in the given guild")]
         [Remarks("*guildCharacter {guildAlias or guildId} {characterAlias}*")]
@@ -27,7 +30,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "guildCharacter";
             string key = string.Concat(guildAlias,characterAlias);
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -67,7 +70,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"{retStr}");
             }
 
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
         [Command("slackers")]
@@ -95,26 +98,68 @@ namespace TripleZero.Modules
             {
                 for (int level = 1; level < 50; level++)
                 {
-                    foreach (var guildCharacter in res)
+                    //var list = res.SelectMany(p => p.Players.Where(t => t.CombatType == UnitCombatType.Character && t.Level == level).ToList());
+                    //var a = 1;
+
+                    var characters = (from character in res
+                                      from players in character.Players.Where(t => t.CombatType == UnitCombatType.Character && t.Level == level)
+                                      select new
+                                      {
+                                          character.CharacterName,
+                                          players
+                                      }
+                                      ).ToList().OrderBy(p=>p.players.PlayerName);
+
+                    var listCharacters = characters.Select(x => new Tuple<string, GuildPlayerCharacter>(x.CharacterName, x.players)).ToList();
+
+                    if (listCharacters.Count() == 0) continue;
+
+                    
+
+                    retStr += $"\n\n-------**Level {level}**-------";
+                    foreach(var row in listCharacters.ToList() )
                     {
-                        foreach (var player in guildCharacter.Players.Where(p => p.CombatType == UnitCombatType.Character))
+                        retStr += $"\n**{row.Item2.PlayerName}** : {row.Item1}";
+
+                        if (retStr.Length > 1900)
                         {
-                            if (player.Level == level)
-                            {
-                                retStr += "\n";
-                                retStr += string.Format("{0} - {1} - level:{2}", player.PlayerName, guildCharacter.CharacterName, player.Level);
-
-                                if (retStr.Length > 1800)
-                                {
-                                    await ReplyAsync($"{retStr}");
-                                    retStr = "";
-                                }
-
-                                counter += 1;
-                                if (counter > totalRows) break;
-                            }
+                            await ReplyAsync($"{retStr}");
+                            retStr = "";
                         }
                     }
+
+                    //var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
+                    //                  from Mod in Character.Mods.Where(p => p.SecondaryStat != null)
+                    //                  from Stats in Mod.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == modValueType)
+                    //                  select new
+                    //                  {
+                    //                      Character.Name,
+                    //                      Mod
+                    //                  }
+                    //    ).OrderByDescending(t => t.Mod.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == modValueType).FirstOrDefault().Value).Take(rows).ToList();
+
+                                      //return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
+
+                    //foreach (var guildCharacter in res)
+                    //{
+                    //    foreach (var player in guildCharacter.Players.Where(p => p.CombatType == UnitCombatType.Character))
+                    //    {
+                    //        if (player.Level == level)
+                    //        {
+                    //            retStr += "\n";
+                    //            retStr += string.Format("{0} - {1} - level:{2}", player.PlayerName, guildCharacter.CharacterName, player.Level);
+
+                    //            if (retStr.Length > 1800)
+                    //            {
+                    //                await ReplyAsync($"{retStr}");
+                    //                retStr = "";
+                    //            }
+
+                    //            counter += 1;
+                    //            if (counter > totalRows) break;
+                    //        }
+                    //    }
+                    //}
                     if (counter > totalRows) break;
                 }
             }
@@ -138,7 +183,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "tb";
             string key = guildAlias;
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -160,7 +205,7 @@ namespace TripleZero.Modules
             retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerShips));
 
             await ReplyAsync($"{retStr}");
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
 
         }
 
@@ -176,7 +221,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "guildPlayers";
             string key = string.Concat(guildAlias,searchStr);
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -220,7 +265,7 @@ namespace TripleZero.Modules
                 counter += 1;
                 //retStr += string.Format("\n{0} {1} {2} {3}", player.GPcharacters.ToString().PadRight(7, ' '), player.GPships.ToString().PadRight(7,' '),player.PlayerNameInGame,player.PlayerName);
             }
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
 
         }

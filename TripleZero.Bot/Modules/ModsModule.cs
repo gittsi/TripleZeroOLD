@@ -8,6 +8,7 @@ using SWGoH.Model.Extensions;
 using SWGoH.Model.Enums;
 using SWGoH.Model;
 using TripleZero.Helper;
+using TripleZero.Core.Caching;
 
 namespace TripleZero.Modules
 {
@@ -15,6 +16,8 @@ namespace TripleZero.Modules
     [Summary("Mods Commands")]
     public class ModsModule : ModuleBase<SocketCommandContext>
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         #region "Filter Mods"
         [Command("mods")]
         [Summary("test")]
@@ -66,7 +69,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find player : {playerUserName}...");
                 return null;
             }
-            if (res.LoadedFromCache) await ReplyAsync($"{CacheClient.GetCachedDataRepositoryMessage()}");
+            if (res.LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
                               from Mod in Character.Mods.Where(p => p.SecondaryStat != null)
@@ -156,7 +159,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"I couldn't find player : {playerUserName}...");
                 return null;
             }
-            if (res.LoadedFromCache) await ReplyAsync($"{CacheClient.GetCachedDataRepositoryMessage()}");
+            if (res.LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
             var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
                               from Mod in Character.Mods.Where(p => p.PrimaryStat != null && p.PrimaryStat.StatType == modStatType)

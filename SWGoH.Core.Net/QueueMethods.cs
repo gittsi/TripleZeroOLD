@@ -49,12 +49,15 @@ namespace SWGoH
                 SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
         }
-        public static void UpdateQueueAndProcessLater(QueueDto q, PlayerDto player , double hours,bool fromnow)
+        public static void UpdateQueueAndProcessLater(QueueDto q, object whotoupdate , double hours,bool fromnow)
         {
+            PlayerDto player = whotoupdate as PlayerDto;
+            SWGoH.GuildDto guild = whotoupdate as GuildDto;
             try
             {
                 string nextrun = "";
                 if (player != null) nextrun = player.LastSwGohUpdated.AddHours(hours).ToString("o");
+                else if (guild != null) nextrun = guild.LastSwGohUpdated.AddHours(hours).ToString("o");
                 else nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
 
                 if (fromnow) nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
@@ -149,8 +152,6 @@ namespace SWGoH
                                 opts1.IsUpsert = false;
 
                                 UpdateResult res = collection.UpdateOne(filter1, update1, opts1);
-
-
                                 return null;
                             }
                         }
