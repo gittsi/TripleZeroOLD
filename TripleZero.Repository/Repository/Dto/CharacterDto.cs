@@ -50,6 +50,8 @@ namespace TripleZero.Repository.Dto
         public int Speed { get; set; }
         [JsonProperty("CD")]
         [BsonElement("CD")]
+        [DefaultValue(150.0)]
+        [BsonDefaultValue(150.0)]
         public double CriticalDamage { get; set; }
         [JsonProperty("Pot")]
         [BsonElement("Pot")]

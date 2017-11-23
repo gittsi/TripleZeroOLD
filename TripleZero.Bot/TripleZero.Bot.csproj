@@ -4,9 +4,9 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RuntimeIdentifiers>portable;win10-x64;osx.10.11-x64;android</RuntimeIdentifiers>
-    <AssemblyVersion>1.2.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
-    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
+    <FileVersion>1.2.2.0</FileVersion>
+    <Version>1.2.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,15 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="JsonAppSettings\ApplicationSettings.cs" />
-    <Compile Remove="JsonAppSettings\ApplicationSettingsModel.cs" />
-    <Compile Remove="JsonAppSettings\CacheManagerConfiguration.cs" />
-    <Compile Remove="JsonAppSettings\CharacterSettingsModel.cs" />
-    <Compile Remove="JsonAppSettings\GuildSettingsModel.cs" />
-    <Compile Remove="JsonAppSettings\GuildsSettings.cs" />
-    <Compile Remove="JsonAppSettings\ICacheManagerConfiguration.cs" />
-    <Compile Remove="JsonAppSettings\ISettingsConfiguration.cs" />
-    <Compile Remove="JsonAppSettings\SettingsConfiguration.cs" />
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
   </ItemGroup>
 

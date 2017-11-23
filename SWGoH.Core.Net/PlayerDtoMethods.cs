@@ -282,7 +282,7 @@ namespace SWGoH
                                     string date = JsonConvert.SerializeObject(DateTime.UtcNow, Converter.Settings).ToString();
 
                                     var httpContent = new StringContent("{\"$set\" : { \"LastClassUpdated\" :" + date + "}}", Encoding.UTF8, "application/json");
-                                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", Found.Id , Settings.appSettings.MongoApiKey);
+                                    var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", Found.Id.ToString());
                                     using (HttpClient client1 = new HttpClient())
                                     {
                                         HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
