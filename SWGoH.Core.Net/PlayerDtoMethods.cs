@@ -434,7 +434,7 @@ namespace SWGoH
                     {
                         client1.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Config.Character", "", "", "", ""));
                         HttpResponseMessage response1 = client1.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
-                        SWGoH.Log.ConsoleMessage("Added new Allias Char " + newchar.Name + "!!!!!!!");
+                        SWGoH.Log.ConsoleMessageNotInFile("Added new Allias Char " + newchar.Name + "!!!!!!!");
                     }
 
                     //var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
