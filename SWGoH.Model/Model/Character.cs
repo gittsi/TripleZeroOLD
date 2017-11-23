@@ -30,10 +30,10 @@ namespace SWGoH.Model
         public int Health { get; set; }
         public int Protection { get; set; }
         public int Speed { get; set; }
-        public int CriticalDamage { get; set; }
+        public double CriticalDamage { get; set; }
         public double Potency { get; set; }
         public double Tenacity { get; set; }
-        public int HealthSteal { get; set; }
+        public double HealthSteal { get; set; }
     }
     public class OffenseStats
     {
@@ -45,7 +45,7 @@ namespace SWGoH.Model
         public int PhysicalDamage { get; set; }
         public double PhysicalCriticalChance { get; set; }
         public int ArmorPenetration { get; set; }
-        public int PhysicalAccuracy { get; set; }     
+        public double PhysicalAccuracy { get; set; }     
     }
     public class SpecialOffense
     {        

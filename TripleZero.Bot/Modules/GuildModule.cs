@@ -51,7 +51,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId, characterConfig.Command);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId, characterConfig.Name);
 
             if (res != null)
             {                
@@ -112,9 +112,7 @@ namespace TripleZero.Modules
 
                     var listCharacters = characters.Select(x => new Tuple<string, GuildPlayerCharacter>(x.CharacterName, x.players)).ToList();
 
-                    if (listCharacters.Count() == 0) continue;
-
-                    
+                    if (listCharacters.Count() == 0) continue;                    
 
                     retStr += $"\n\n-------**Level {level}**-------";
                     foreach(var row in listCharacters.ToList() )
@@ -126,19 +124,7 @@ namespace TripleZero.Modules
                             await ReplyAsync($"{retStr}");
                             retStr = "";
                         }
-                    }
-
-                    //var sortedMods = (from Character in res.Characters.Where(p => p.Mods != null)
-                    //                  from Mod in Character.Mods.Where(p => p.SecondaryStat != null)
-                    //                  from Stats in Mod.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == modValueType)
-                    //                  select new
-                    //                  {
-                    //                      Character.Name,
-                    //                      Mod
-                    //                  }
-                    //    ).OrderByDescending(t => t.Mod.SecondaryStat.Where(p => p.StatType == modStatType && p.ValueType == modValueType).FirstOrDefault().Value).Take(rows).ToList();
-
-                                      //return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
+                    }                   
 
                     //foreach (var guildCharacter in res)
                     //{

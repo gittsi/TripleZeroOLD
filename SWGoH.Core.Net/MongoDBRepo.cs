@@ -22,7 +22,7 @@ namespace SWGoH
                 if (isMongoLive) return db;
                 else return null;
             }
-            catch (Exception e)
+            catch
             {
                 return null;
             }
@@ -83,7 +83,7 @@ namespace SWGoH
             }
             catch (Exception e)
             {
-                SWGoH.Log.ConsoleMessage("Error Adding Working PC:");
+                SWGoH.Log.ConsoleMessage("Error Adding Working PC:" + e.Message);
             }
         }
     }
