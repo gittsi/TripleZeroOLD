@@ -282,7 +282,7 @@ namespace SWGoH
                                     string date = JsonConvert.SerializeObject(DateTime.UtcNow, Converter.Settings).ToString();
 
                                     var httpContent = new StringContent("{\"$set\" : { \"LastClassUpdated\" :" + date + "}}", Encoding.UTF8, "application/json");
-                                    var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", Found.Id.ToString());
+                                    var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", Found.Id.ToString());
                                     using (HttpClient client1 = new HttpClient())
                                     {
                                         HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
