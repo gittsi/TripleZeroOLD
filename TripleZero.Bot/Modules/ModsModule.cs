@@ -18,16 +18,6 @@ namespace TripleZero.Modules
     {
         private CacheClient cacheClient = IResolver.Current.CacheClient;
 
-        //#region "Filter Mods"
-        //[Command("mods")]
-        //[Summary("test")]
-        //[Remarks("*test")]
-        //public async Task GetMods()
-        //{
-        //    await ReplyAsync($"test");
-        //}
-        //#endregion
-
         #region "Secondary stats"
         private async void SendSecondaryModReply(string playerUserName, ModStatType modStatType, ModValueType secondaryStatValueType, List<Tuple<string, Mod>> result)
         {

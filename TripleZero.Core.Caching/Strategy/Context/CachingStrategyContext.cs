@@ -7,18 +7,18 @@ namespace TripleZero.Core.Caching.Strategy
 {
     internal class CachingStrategyContext    
     {
-        private CachingStrategy _CachingStrategy;//= IResolver.Current.CachingStrategy;
+        internal CachingStrategy _CachingStrategy;//= IResolver.Current.CachingStrategy;
         //private _DEL_CachingLogDecorator _CachingLogDecorator=  IResolver.Current.CachingLogDecorator;
 
         //public CachingStrategyContext(CachingLogDecorator cachingLogDecorator)
         //{
         //    _CachingLogDecorator = cachingLogDecorator;
         //}
-        public void SetStrategy(CachingStrategy cachingStrategy)
+        internal void SetStrategy(CachingStrategy cachingStrategy)
         {
             _CachingStrategy = cachingStrategy;            
         }
-        public EnumCacheStrategy GetStrategy()
+        internal EnumCacheStrategy GetStrategy()
         {
             return this._CachingStrategy.Strategy();
         }

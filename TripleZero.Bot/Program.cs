@@ -37,6 +37,7 @@ namespace TripleZero
 
                 await client.LoginAsync(TokenType.Bot, appSettings.DiscordSettings.Token);
                 await client.StartAsync();
+                await client.SetGameAsync(string.Format("{0}help", appSettings.DiscordSettings.Prefix)); 
             }
 
             //client.MessageReceived += MessageReceived;
@@ -56,7 +57,7 @@ namespace TripleZero
         }        
         public async Task InstallCommands()
         {
-            client.MessageReceived += HandleCommandAsync;
+            //client.MessageReceived += HandleCommandAsync;
             await commands.AddModuleAsync<GuildModule>();
             await commands.AddModuleAsync<CharacterModule>();
             await commands.AddModuleAsync<ModsModule>();
@@ -66,12 +67,12 @@ namespace TripleZero
             await commands.AddModuleAsync<FunModule>();
             await commands.AddModuleAsync<DBStatsModule>();
         }
-        public async Task MessageReceived(SocketGuildUser user)
-        {
-            var channel = client.GetChannel(370581837560676354) as SocketTextChannel;
+        //public async Task MessageReceived(SocketGuildUser user)
+        //{
+        //    var channel = client.GetChannel(370581837560676354) as SocketTextChannel;
 
-            await channel.SendMessageAsync("safsgasgags");
-        }
+        //    await channel.SendMessageAsync("safsgasgags");
+        //}
         //public async Task UserJoined(SocketGuildUser user)
         //{
         //    var channel = client.GetChannel(370581837560676354) as SocketTextChannel;
@@ -83,7 +84,7 @@ namespace TripleZero
             // Bail out if it's a System Message.
             var msg = arg as SocketUserMessage;
             if (msg == null) return;
-
+            
             // We don't want the bot to respond to itself or other bots.
             // NOTE: Selfbots should invert this first check and remove the second
             // as they should ONLY be allowed to respond to messages from the same account.
@@ -98,7 +99,7 @@ namespace TripleZero
             {
                 // Create a Command Context.
                 var context = new SocketCommandContext(client, msg);
-
+                
                 // Execute the command. (result does not indicate a return value, 
                 // rather an object stating if the command executed succesfully).
                 var result = await commands.ExecuteAsync(context, pos, services);

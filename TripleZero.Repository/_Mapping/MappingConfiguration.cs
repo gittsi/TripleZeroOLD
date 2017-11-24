@@ -75,6 +75,7 @@ namespace TripleZero.Repository._Mapping
                     .ForMember(dest => dest.GeneralStats, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.OffenseStats, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.Tags, src => src.MapFrom(s => s.CharacterTags))
                     ;
 
                     //queue
