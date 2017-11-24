@@ -481,6 +481,34 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
+        [Command("characterconfig-update")]
+        [Summary("Reload character config(Admin Command)")]
+        [Remarks("*characterconfig-update*")]
+        public async Task SetCharacterConfigUpdate()
+        {
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }            
+
+            var result = IResolver.Current.MongoDBRepository.SendCharacterConfigToQueue().Result;
+
+
+            if (result != null)
+                retStr = "\nCharacter config update added to queue. Please be patient, I need some time to retrieve data!!!";
+            else
+                retStr = string.Format("\nNot added to queue!!!!!");
+
+            await ReplyAsync($"{retStr}");
+        }
+
         [Command("mem")]
         [Summary("Check application diagnostics")]
         [Remarks("*mem*")]

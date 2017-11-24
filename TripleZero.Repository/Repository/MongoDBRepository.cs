@@ -49,7 +49,7 @@ namespace TripleZero.Repository
                 );
             return url;
         }
-        private async Task<string> SendToQueue(string name, QueueType queueType)
+        private async Task<string> SendToQueue(string name, QueueType queueType, Command command)
         {
 
             JObject data = new JObject(
@@ -59,7 +59,7 @@ namespace TripleZero.Repository
                     new JProperty("NextRunDate", DateTime.UtcNow),
                     new JProperty("Status", QueueStatus.PendingProcess),
                     new JProperty("Priority", Priority.ManualLoad),
-                    new JProperty("Command", queueType == QueueType.Player ? Command.UpdatePlayer : Command.UpdateGuildWithNoChars),
+                    new JProperty("Command", command),
                     new JProperty("Type", queueType),
                     new JProperty("ComputerName", string.Empty)
                );
@@ -168,13 +168,17 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
+        public async Task<string> SendCharacterConfigToQueue()
+        {
+            return await SendToQueue("Aramil", QueueType.Player,Command.GetNewCharacters);
+        }
         public async Task<string> SendPlayerToQueue(string playerName)
         {
-            return await SendToQueue(playerName, QueueType.Player);
+            return await SendToQueue(playerName, QueueType.Player,Command.UpdatePlayer);
         }
         public async Task<string> SendGuildToQueue(string guildName)
         {
-            return await SendToQueue(guildName, QueueType.Guild);
+            return await SendToQueue(guildName, QueueType.Guild,Command.UpdateGuildWithNoChars);
         }        
         public async Task<List<Queue>> GetQueue()
         {
