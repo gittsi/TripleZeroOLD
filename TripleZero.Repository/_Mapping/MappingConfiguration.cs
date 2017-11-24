@@ -97,6 +97,7 @@ namespace TripleZero.Repository._Mapping
                     //guildCharacter
                     cfg.CreateMap<GuildCharacterDto, GuildCharacter>()
                     .ForMember(dest => dest.CharacterName, src => src.MapFrom(source => source.Name))
+                    .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
                     //guildPlayerCharacter

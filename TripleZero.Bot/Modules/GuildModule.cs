@@ -91,6 +91,8 @@ namespace TripleZero.Modules
 
             var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
 
+            if (res.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
+
             int counter = 1;
             int totalRows = 300;
 
