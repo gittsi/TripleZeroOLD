@@ -240,6 +240,30 @@ namespace TripleZero.Repository
             characterConfig = await IResolver.Current.CharacterSettings.GetCharacterConfigByName(characterFullName);
             return characterConfig;
         }
+        public async Task<CharacterConfig> SetCharacterCommand(string characterFullName, string command)
+        {
+            CharacterConfig characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByName(characterFullName).Result;
+            if (characterConfig == null) return null;
+
+            characterConfig.Command=command;
+            var result = PutCharacterConfig(characterConfig).Result;
+            if (!result) return null;
+
+            characterConfig = await IResolver.Current.CharacterSettings.GetCharacterConfigByName(characterFullName);
+            return characterConfig;
+        }
+        public async Task<CharacterConfig> RemoveCharacterCommand(string characterFullName)
+        {
+            CharacterConfig characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByName(characterFullName).Result;
+            if (characterConfig == null) return null;
+
+            characterConfig.Command="";            
+            var result = PutCharacterConfig(characterConfig).Result;
+            if (!result) return null;
+
+            characterConfig = await IResolver.Current.CharacterSettings.GetCharacterConfigByName(characterFullName);
+            return characterConfig;
+        }
         private async Task<bool> PutCharacterConfig(CharacterConfig characterConfig)
         {
             JObject data = null;
