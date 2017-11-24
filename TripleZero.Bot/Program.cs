@@ -37,10 +37,11 @@ namespace TripleZero
 
                 await client.LoginAsync(TokenType.Bot, appSettings.DiscordSettings.Token);
                 await client.StartAsync();
-                await client.SetGameAsync(string.Format("{0}help", appSettings.DiscordSettings.Prefix)); 
+                await client.SetGameAsync(string.Format("{0}help", appSettings.DiscordSettings.Prefix));                
             }
 
-            //client.MessageReceived += MessageReceived;
+            //client.MessageReceived += MessageReceived;           
+            
 
             await Task.Delay(2000);
 
@@ -51,13 +52,14 @@ namespace TripleZero
             //await TestPlayerReport("tsitas_66");
             //await TestGuildModule("41s", "gk");
             //await TestCharacterModule("tsitas_66", "cls");
-
+            await client.GetUser("TSiTaS", "1984").SendMessageAsync(Logo.GetLogo());            
             await Task.Delay(-1);
+            
 
         }        
         public async Task InstallCommands()
         {
-            //client.MessageReceived += HandleCommandAsync;
+            client.MessageReceived += HandleCommandAsync;
             await commands.AddModuleAsync<GuildModule>();
             await commands.AddModuleAsync<CharacterModule>();
             await commands.AddModuleAsync<ModsModule>();

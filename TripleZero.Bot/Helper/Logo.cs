@@ -19,5 +19,17 @@ namespace TripleZero.Helper
             Console.Title = string.Format("{0} - version {1}", appSettings.GeneralSettings.ApplicationName, version);
             Console.WriteLine(); Console.WriteLine();
         }
+
+        public static string GetLogo() //prints application name,version etc
+        {
+            //get application Settings
+            var appSettings = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings();
+
+            Version version = Assembly.GetEntryAssembly().GetName().Version;
+            string retStr = string.Format("{0} - {1}", appSettings.GeneralSettings.ApplicationName, appSettings.GeneralSettings.Environment);
+            retStr+=string.Format("\nApplication Version : {0}", version);
+
+            return retStr;
+        }
     }
 }
