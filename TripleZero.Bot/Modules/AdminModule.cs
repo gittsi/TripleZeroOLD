@@ -563,6 +563,16 @@ namespace TripleZero.Modules
             await Task.Delay(2000);
             await lastmessage.DeleteAsync();
         }
-    
+
+        [Command("delay")]
+        [Summary("delay")]
+        [Remarks("*delay {ms}*")]
+        public async Task Delay(string ms)
+        {
+            bool msIsNumber = int.TryParse(ms, out int delay);
+            await Task.Delay(delay);            
+            await ReplyAsync($"Delayed for {delay}ms");
+        }
+
     }
 }
