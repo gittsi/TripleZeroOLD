@@ -73,10 +73,10 @@ namespace TripleZero.Modules
             await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
-        [Command("slackers")]
+        [Command("slackers-level")]
         [Summary("Get all players of guild with low level characters")]
-        [Remarks("*slackers {guildAlias or guildId}*")]
-        public async Task GetSlackers(string guildAlias)
+        [Remarks("*slackers-level {guildAlias or guildId}*")]
+        public async Task GetSlackersLevel(string guildAlias)
         {
             guildAlias = guildAlias.Trim();
 
@@ -90,6 +90,8 @@ namespace TripleZero.Modules
             }
 
             var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
+
+            if (res.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
             int counter = 1;
             int totalRows = 300;
@@ -152,6 +154,53 @@ namespace TripleZero.Modules
             catch (Exception ex)
             {
                 Consoler.WriteLineInColor(string.Format("Slackers say : {0}", ex.Message), ConsoleColor.Red);
+            }
+
+            if (retStr.Length > 0)
+                await ReplyAsync($"{retStr}");
+        }
+
+        [Command("tw")]
+        [Summary("Get all players of guild with characters having less than 6000 power")]
+        [Remarks("*tw {guildAlias or guildId}*")]
+        public async Task GetSlackersPower(string guildAlias)
+        {
+            guildAlias = guildAlias.Trim();
+
+            string retStr = "";
+
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
+            if (guildConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                return;
+            }
+
+            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
+
+            if (res.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
+
+            var characters = (from character in res
+                              from players in character.Players.Where(t => t.CombatType == UnitCombatType.Character && t.Power < 6000)
+                              select new
+                              {
+                                  players.PlayerName,
+                                  character.CharacterName,
+                                  players.Power
+                              }
+                                       ).ToList().OrderBy(p => p.PlayerName);
+
+            var listCharacters = characters.Select(x => new Tuple<string, string, int>(x.PlayerName, x.CharacterName, x.Power)).ToList();
+            var sumList = listCharacters.GroupBy(a => a.Item1).Select(p => new { PlayerName = p.Key, Count = p.Count() }).OrderByDescending(p=>p.Count);
+
+            foreach (var row in sumList)
+            {
+                if (retStr.Length > 1900)
+                {
+                    await ReplyAsync($"{retStr}");
+                    retStr = "";
+                }
+                retStr += $"\n**{row.PlayerName}** : {row.Count} character with less than 6000 power";
             }
 
             if (retStr.Length > 0)

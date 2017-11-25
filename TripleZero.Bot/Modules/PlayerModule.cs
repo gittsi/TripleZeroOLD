@@ -119,6 +119,8 @@ namespace TripleZero.Modules
             var gear11 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 11).ToList();
             var gear12 = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Gear == 12).ToList();
 
+            //power
+            var powerLessThan6k = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Power < 6000).ToList();
 
             //build post string
             retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
@@ -173,6 +175,65 @@ namespace TripleZero.Modules
             retStr += string.Format("{0} characters with **gear 11**\n", gear11.Count());
             retStr += string.Format("{0} characters with **gear 12**\n", gear12.Count());
 
+            //power less than 6k
+            retStr += "\n**Power**\n";
+            retStr += string.Format("{0} characters with **less than 6000 power**\n", powerLessThan6k.Count());
+
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
+            await ReplyAsync($"{retStr}");
+        }
+
+        [Command("player-tw")]
+        [Summary("Get which characters are ineligible for Territory Wars")]
+        [Remarks("*player-tw {playerUserName}*")]
+        public async Task GetPlayerReportTW(string playerUserName)
+        {
+            await Task.FromResult(1);
+
+            playerUserName = playerUserName.Trim();
+            string retStr = "";
+            string loadingStr = "";
+
+            //get from cache if possible and exit sub
+            string functionName = "player-tw";
+            string key = playerUserName;
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            loadingStr = string.Format("\n**{0}** is loading...\n", playerUserName);
+
+            await ReplyAsync($"{loadingStr}");
+
+            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
+
+            if (playerData == null)
+            {
+                await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
+                return;
+            }
+            //if (playerData.LoadedFromCache) retStr+= CacheClient.GetCachedDataRepositoryMessage();
+            if (playerData.LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
+
+            retStr += string.Format("\nLast update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();            
+
+            //power
+            var powerLessThan6k = playerData.Characters.Where(p => p.Level != 0).Where(p => p.Power < 6000).ToList().OrderByDescending(p => p.Power);
+
+            //build post string
+            retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
+
+            //power less than 6k
+            retStr += string.Format("\n**{0}** characters with **less than 6000 power**\n", powerLessThan6k.Count());
+            foreach (var character in powerLessThan6k)
+            {
+                retStr += string.Format("{0} : **{1}**\n", character.Name, character.Power);
+            }
 
             await cacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
