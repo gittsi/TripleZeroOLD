@@ -18,7 +18,7 @@ namespace TripleZero.Modules
             _service = service;
         }
 
-        [Command("info")]
+        [Command("info", RunMode = RunMode.Async)]
         [Summary("Get general info")]
         [Remarks("*info*")]
         public async Task InfoAsync()
@@ -36,7 +36,7 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("help")]
+        [Command("help", RunMode = RunMode.Async)]
         [Summary("Gets general help")]
         [Remarks("*help*")]
         public async Task HelpAsync()
@@ -58,7 +58,7 @@ namespace TripleZero.Modules
                     {
                         builder.AddField(x =>
                         {
-                            x.Name = string.Concat(string.Join(", ", cmd.Name));
+                            x.Name = string.Join(" | ", cmd.Aliases);
                             x.Value = $"{cmd.Summary}\n";
                             x.IsInline = false;
                         });
@@ -68,9 +68,10 @@ namespace TripleZero.Modules
             await ReplyAsync("", false, builder.Build());
         }
 
-        [Command("help-admin")]
+        [Command("help-admin", RunMode = RunMode.Async)]
         [Summary("Gets admin help")]
         [Remarks("*help-admin*")]
+        [Alias("ha")]
         public async Task HelpAdminAsync()
         {
             //check if user is in role in order to proceed with the action
@@ -100,7 +101,7 @@ namespace TripleZero.Modules
                     {
                         builder.AddField(x =>
                         {
-                            x.Name = string.Concat(string.Join(", ", cmd.Name));
+                            x.Name = string.Join(" | ", cmd.Aliases);
                             x.Value = $"{cmd.Summary}\n";
                             x.IsInline = false;
                         });
@@ -110,7 +111,7 @@ namespace TripleZero.Modules
             await ReplyAsync("", false, builder.Build());
         }
 
-        [Command("help")]
+        [Command("help", RunMode = RunMode.Async)]
         [Summary("*Gets helps for specific command*")]
         [Remarks("*help {command}*")]
         public async Task HelpAsync(string command)

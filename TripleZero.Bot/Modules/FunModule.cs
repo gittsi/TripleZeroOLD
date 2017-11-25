@@ -10,7 +10,7 @@ namespace TripleZero.Modules
     [Summary("Have some fun with commands!!!")]
     public class FunModule : ModuleBase<SocketCommandContext>
     {
-        [Command("roll")]
+        [Command("roll", RunMode = RunMode.Async)]
         [Summary("Roll a dice")]
         [Remarks("*I am sure you can guess it!!!*")]
         public async Task Say()
@@ -22,10 +22,9 @@ namespace TripleZero.Modules
             await ReplyAsync($"You rolled {roll}!!!");
         }
 
-        [Command("imba")]
+        [Command("imba", RunMode = RunMode.Async)]
         [Summary("Shows who is imba currently by analyzing all data")]
-        [Remarks("*imba*")]
-        [Alias("*tsitas*")]
+        [Remarks("*imba*")]        
         public async Task SayImba()
         {
             await ReplyAsync("TSiTaS is imba!\nNo need to retrieve any data!\nFor now and till the end of time!!!");

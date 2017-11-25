@@ -77,9 +77,11 @@ namespace TripleZero
 
             //client.MessageReceived += MessageReceived;           
 
-
-            await Task.Delay(2000);
-
+            while (client.ConnectionState != ConnectionState.Connected)
+            {                
+                Consoler.WriteLineInColor(string.Format("Still not connected... {0}", DateTime.Now), ConsoleColor.Yellow);
+                await Task.Delay(2000);
+            }
             Logo.ConsolePrintLogo(); //prints application name,version etc 
             //await TestCharAliasesDelete();
             //await TestDelete();

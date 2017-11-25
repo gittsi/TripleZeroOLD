@@ -15,9 +15,10 @@ namespace TripleZero.Modules
     {
         private CacheClient cacheClient = IResolver.Current.CacheClient;
 
-        [Command("character")]
+        [Command("character", RunMode = RunMode.Async)]
         [Summary("Get character stats for specific player")]
         [Remarks("*character {playerUserName} {characterAlias}*")]
+        [Alias("c")]
         public async Task GetCharacterStats(string playerUserName, string characterAlias)
         {
             playerUserName = playerUserName.Trim();
@@ -99,9 +100,10 @@ namespace TripleZero.Modules
             await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
-        [Command("character-compare")]
+        [Command("character-compare", RunMode = RunMode.Async)]
         [Summary("Compares character stats for 2 specific players")]
         [Remarks("*character-compare {player1UserName} {player2UserName} {characterAlias}*")]
+        [Alias("cc")]
         public async Task GetCharacterStatsCompare(string player1UserName, string player2UserName, string characterAlias)
         {
             player1UserName = player1UserName.Trim();

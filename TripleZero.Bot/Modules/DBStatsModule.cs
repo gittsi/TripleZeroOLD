@@ -16,9 +16,10 @@ namespace TripleZero.Modules
     {
         private CacheClient cacheClient = IResolver.Current.CacheClient;
 
-        [Command("stats-players")]
+        [Command("stats-players", RunMode = RunMode.Async)]
         [Summary("Get stats about player collection")]
         [Remarks("*stats-players*")]
+        [Alias("sp")]
         public async Task GetStats()
         {
             string retStr = "";           
@@ -61,9 +62,10 @@ namespace TripleZero.Modules
             await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
-        [Command("player-getall")]
+        [Command("player-getall", RunMode = RunMode.Async)]
         [Summary("Get all players in collection")]
         [Remarks("*player-getall*")]
+        [Alias("players")]
         public async Task GetAllPlayers()
         {
             string retStr = "";

@@ -17,10 +17,10 @@ namespace TripleZero.Modules
     [Summary("Admin Commands")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
-        [Command("alias-remove")]
-        //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
+        [Command("alias-remove", RunMode = RunMode.Async)]
         [Summary("Remove alias for specific character(Admin Command)")]
         [Remarks("*alias-remove {characterFullName} {alias}*")]
+        [Alias("ar")]
         public async Task RemoveAlias(string characterFullName, string alias)
         {
             characterFullName = characterFullName.Trim();
@@ -66,10 +66,10 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("alias-add")]
-        //[Summary("Add alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
+        [Command("alias-add", RunMode = RunMode.Async)]
         [Summary("Add alias for specific character(Admin Command)")]
         [Remarks("*alias-add {characterFullName} {alias}*")]
+        [Alias("aa")]
         public async Task AddAlias(string characterFullName, string alias)
         {
             characterFullName = characterFullName.Trim();
@@ -116,10 +116,11 @@ namespace TripleZero.Modules
 
 
         }
-        [Command("command-remove")]
-        
+
+        [Command("command-remove", RunMode = RunMode.Async)]        
         [Summary("Remove command for specific character(Admin Command)")]
         [Remarks("*command-remove {characterFullName}*")]
+        [Alias("cr")]
         public async Task RemoveCommand(string characterFullName)
         {
             characterFullName = characterFullName.Trim();            
@@ -164,10 +165,10 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("command-add")]
-        //[Summary("Add alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
+        [Command("command-add", RunMode = RunMode.Async)]
         [Summary("Add command for specific character(Admin Command)")]
         [Remarks("*command-add {characterFullName} {command}*")]
+        [Alias("ca")]
         public async Task AddCommand(string characterFullName, string command)
         {
             characterFullName = characterFullName.Trim();
@@ -215,10 +216,11 @@ namespace TripleZero.Modules
 
         }
 
-        [Command("characters-config")]
+        [Command("characters-config", RunMode = RunMode.Async)]
         //[Summary("Get config for specific character(Admin Command).\nUsage : ***$characters -config***")]
         [Summary("Get config all characters(Admin Command)")]
         [Remarks("*characters-config*")]
+        [Alias("config")]
         public async Task GetCharacterConfig()
         {
             string retStr = "";
@@ -284,10 +286,11 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("queue")]
+        [Command("queue", RunMode = RunMode.Async)]
         //[Summary("Set alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
         [Summary("Get current for specific character(Admin Command)")]
         [Remarks("*queue*")]
+        [Alias("q")]
         public async Task GetQueue(string resultsRows = "10")
         {
             bool rowsIsNumber = int.TryParse(resultsRows, out int rows);
@@ -383,10 +386,11 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("queue-remove")]
+        [Command("queue-remove", RunMode = RunMode.Async)]
         //[Summary("Remove row from queue(Admin Command).\nUsage : ***$queue-remove {characterFullName}***")]
         [Summary("Remove row from queue(Admin Command)")]
         [Remarks("*queue-remove {name}*")]
+        [Alias("qr")]
         public async Task RemoveQueue(string name)
         {
             name = name.Trim().ToLower();
@@ -421,9 +425,10 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("player-update")]
+        [Command("player-update", RunMode = RunMode.Async)]
         [Summary("Add a player for reload(Admin Command)")]
         [Remarks("*player-update {playerUserName}*")]
+        [Alias("pu")]
         public async Task SetPlayerUpdate(string playerUserName)
         {
             string retStr = "";
@@ -451,9 +456,10 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("guild-update")]
+        [Command("guild-update", RunMode = RunMode.Async)]
         [Summary("Set a guild for reload")]
         [Remarks("*guild-update {guildName}*")]
+        [Alias("gu")]
         public async Task SetGuildUpdate(string guildName)
         {
             string retStr = "";
@@ -481,9 +487,10 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("characterconfig-update")]
+        [Command("characterconfig-update", RunMode = RunMode.Async)]
         [Summary("Reload character config(Admin Command)")]
         [Remarks("*characterconfig-update*")]
+        [Alias("ccu")]
         public async Task SetCharacterConfigUpdate()
         {
             string retStr = "";
@@ -509,7 +516,7 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("mem")]
+        [Command("mem", RunMode = RunMode.Async)]
         [Summary("Check application diagnostics")]
         [Remarks("*mem*")]
         public async Task CheckDiagnostics()
@@ -535,7 +542,7 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("prune")]
+        [Command("prune", RunMode = RunMode.Async)]
         [Summary("Delete messages")]
         [Remarks("*prune {number of messages}*")]
         public async Task Prune(string countMessagesToDelete) 
@@ -564,7 +571,7 @@ namespace TripleZero.Modules
             await lastmessage.DeleteAsync();
         }
 
-        [Command("delay")]
+        [Command("delay", RunMode = RunMode.Async)]
         [Summary("delay")]
         [Remarks("*delay {ms}*")]
         public async Task Delay(string ms)
