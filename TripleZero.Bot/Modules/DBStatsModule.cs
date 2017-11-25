@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using TripleZero.Infrastructure.DI;
 using TripleZero.Helper;
+using TripleZero.Core.Caching;
 
 namespace TripleZero.Modules
 {
@@ -13,6 +14,8 @@ namespace TripleZero.Modules
     [Summary("Stats Commands")]
     public class DBStatsModule : ModuleBase<SocketCommandContext>
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         [Command("stats-players")]
         [Summary("Get stats about player collection")]
         [Remarks("*stats-players*")]
@@ -21,8 +24,8 @@ namespace TripleZero.Modules
             string retStr = "";           
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -33,7 +36,7 @@ namespace TripleZero.Modules
             //get from cache if possible and exit sub
             string functionName = "stats-players";
             string key = "all";
-            retStr = CacheClient.GetMessageFromModuleCache(functionName, key);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
                 await ReplyAsync($"{retStr}");
@@ -45,7 +48,7 @@ namespace TripleZero.Modules
             if (result != null)
             {
                 //if (result.FirstOrDefault().LoadedFromCache) retStr += CacheClient.GetCachedDataRepositoryMessage();
-                if (result.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{CacheClient.GetCachedDataRepositoryMessage()}");
+                if (result.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
                 retStr += string.Format("\nTotal players loaded to DB : **{0}** ", result.Count());
                 retStr += string.Format("\nSWGoH date - Latest: **{0}** - Oldest: **{1}** ", result.OrderByDescending(p => p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate, result.OrderBy(p => p.SWGoHUpdateDate).Take(1).FirstOrDefault().SWGoHUpdateDate);
@@ -55,7 +58,7 @@ namespace TripleZero.Modules
                 retStr = string.Format("\nSomething is wrong with stats -p!!!");
 
             await ReplyAsync($"{retStr}");
-            await CacheClient.AddToModuleCache(functionName, key, retStr);
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
         [Command("player-getall")]
@@ -66,8 +69,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -80,7 +83,7 @@ namespace TripleZero.Modules
             if (result != null)
             {
                 //if (result.FirstOrDefault().LoadedFromCache) retStr += CacheClient.GetCachedDataRepositoryMessage();
-                if (result.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{CacheClient.GetCachedDataRepositoryMessage()}");
+                if (result.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
                 retStr += string.Format("\nTotal players loaded to DB : **{0}**\n", result.Count());
                 result = result.OrderBy(p => p.GuildName).ThenByDescending(p => p.SWGoHUpdateDate).ToList();

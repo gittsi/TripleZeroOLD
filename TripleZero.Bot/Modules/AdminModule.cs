@@ -29,8 +29,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -42,7 +42,7 @@ namespace TripleZero.Modules
 
             if (result != null)
             {
-                retStr += $"\nNew alias '**{alias}**' for '**{characterFullName}**' was added!\n";
+                retStr += $"\nAlias '**{alias}**' for '**{characterFullName}**' was removed!\n";
                 retStr += string.Format("\nName:**{0}**", result.Name);
                 retStr += string.Format("\nCommand:**{0}**", result.Command != null ? result.Command.Length == 0 ? "empty!!!" : result.Command : "empty!!!");
                 retStr += string.Format("\nSWGoH url:**{0}**", result.SWGoHUrl);
@@ -78,8 +78,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -116,6 +116,104 @@ namespace TripleZero.Modules
 
 
         }
+        [Command("command-remove")]
+        
+        [Summary("Remove command for specific character(Admin Command)")]
+        [Remarks("*command-remove {characterFullName}*")]
+        public async Task RemoveCommand(string characterFullName)
+        {
+            characterFullName = characterFullName.Trim();            
+
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            var result = IResolver.Current.MongoDBRepository.RemoveCharacterCommand(characterFullName).Result;
+
+            if (result != null)
+            {
+                retStr += $"\nCommand for '**{characterFullName}**' was deleted!\n";
+                retStr += string.Format("\nName:**{0}**", result.Name);                
+                retStr += string.Format("\nCommand:**{0}**", result.Command != null ? result.Command.Length == 0 ? "empty!!!" : result.Command : "empty!!!");
+                retStr += string.Format("\nSWGoH url:**{0}**", result.SWGoHUrl);
+
+                string aliases = "";
+                int countAliases = 0;
+                foreach (var _alias in result.Aliases)
+                {
+                    countAliases += 1;
+                    aliases += _alias;
+                    if (countAliases != result.Aliases.Count()) aliases += ", ";
+                }
+
+                retStr += string.Format("\nAliases: [**{0}**]", aliases.Count() > 0 ? aliases : "empty!!!");
+            }
+            else
+            {
+                retStr = "Not updated. Probably something is wrong with your command!";
+            }
+
+            await ReplyAsync($"{retStr}");
+        }
+
+        [Command("command-add")]
+        //[Summary("Add alias for specific character(Admin Command).\nUsage : ***$alias -set {characterFullName}***")]
+        [Summary("Add command for specific character(Admin Command)")]
+        [Remarks("*command-add {characterFullName} {command}*")]
+        public async Task AddCommand(string characterFullName, string command)
+        {
+            characterFullName = characterFullName.Trim();
+            command = command.Trim().ToLower();
+
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            var result = IResolver.Current.MongoDBRepository.SetCharacterCommand(characterFullName, command.ToLower()).Result;
+
+            if (result != null)
+            {
+                retStr += $"\nNew command '**{command}**' for '**{characterFullName}**' was added!\n";
+                retStr += string.Format("\nName:**{0}**", result.Name);
+                retStr += string.Format("\nCommand:**{0}**", result.Command != null ? result.Command.Length == 0 ? "empty!!!" : result.Command : "empty!!!");
+                retStr += string.Format("\nSWGoH url:**{0}**", result.SWGoHUrl);
+
+                string aliases = "";
+                int countAliases = 0;
+                foreach (var _alias in result.Aliases)
+                {
+                    countAliases += 1;
+                    aliases += _alias;
+                    if (countAliases != result.Aliases.Count()) aliases += ", ";
+                }
+
+                retStr += string.Format("\nAliases: [**{0}**]", aliases.Count() > 0 ? aliases : "empty!!!");
+            }
+            else
+            {
+                retStr = "Not updated. Probably something is wrong with your command!";
+            }
+
+            await ReplyAsync($"{retStr}");
+
+
+        }
 
         [Command("characters-config")]
         //[Summary("Get config for specific character(Admin Command).\nUsage : ***$characters -config***")]
@@ -127,8 +225,8 @@ namespace TripleZero.Modules
             string chStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -200,8 +298,8 @@ namespace TripleZero.Modules
 
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -296,8 +394,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -331,8 +429,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -361,8 +459,8 @@ namespace TripleZero.Modules
             string retStr = "";
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -383,6 +481,34 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
+        [Command("characterconfig-update")]
+        [Summary("Reload character config(Admin Command)")]
+        [Remarks("*characterconfig-update*")]
+        public async Task SetCharacterConfigUpdate()
+        {
+            string retStr = "";
+
+            //check if user is in role in order to proceed with the action
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
+            if (!userAllowed)
+            {
+                retStr = "\nNot authorized!!!";
+                await ReplyAsync($"{retStr}");
+                return;
+            }            
+
+            var result = IResolver.Current.MongoDBRepository.SendCharacterConfigToQueue().Result;
+
+
+            if (result != null)
+                retStr = "\nCharacter config update added to queue. Please be patient, I need some time to retrieve data!!!";
+            else
+                retStr = string.Format("\nNot added to queue!!!!!");
+
+            await ReplyAsync($"{retStr}");
+        }
+
         [Command("mem")]
         [Summary("Check application diagnostics")]
         [Remarks("*mem*")]
@@ -390,8 +516,8 @@ namespace TripleZero.Modules
         {
             string retStr = "";
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -421,8 +547,8 @@ namespace TripleZero.Modules
             await Context.Message.DeleteAsync();
 
             //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.Get().DiscordSettings.BotAdminRole;
-            var userAllowed = Roles.UserInRole(Context, adminRole);
+            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
             if (!userAllowed)
             {
                 retStr = "\nNot authorized!!!";
@@ -437,6 +563,16 @@ namespace TripleZero.Modules
             await Task.Delay(2000);
             await lastmessage.DeleteAsync();
         }
-    
+
+        [Command("delay")]
+        [Summary("delay")]
+        [Remarks("*delay {ms}*")]
+        public async Task Delay(string ms)
+        {
+            bool msIsNumber = int.TryParse(ms, out int delay);
+            await Task.Delay(delay);            
+            await ReplyAsync($"Delayed for {delay}ms");
+        }
+
     }
 }

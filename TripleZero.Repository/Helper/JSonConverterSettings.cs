@@ -7,7 +7,6 @@ namespace TripleZero.Repository.Helper
 {
     internal class JSonConverterSettings
     {
-
         public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,

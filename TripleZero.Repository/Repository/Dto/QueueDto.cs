@@ -4,7 +4,6 @@ using TripleZero.Repository.EnumDto;
 
 namespace TripleZero.Repository.Dto
 {   
-
     internal class QueueDto
     {
         public Nullable<ObjectId> Id { get; set; }

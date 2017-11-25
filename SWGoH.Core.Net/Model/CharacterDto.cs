@@ -42,6 +42,8 @@ namespace SWGoH
         [BsonElement("Ab")]
         public List<Ability> Abilities { get; set; }
 
+        public List<string> CharacterTags { get; set; }
+
         #region General
         [JsonProperty("Hl")]
         [BsonElement("Hl")]
@@ -54,7 +56,9 @@ namespace SWGoH
         public int Speed { get; set; }
         [JsonProperty("CD")]
         [BsonElement("CD")]
-        public int CriticalDamage { get; set; }
+        [DefaultValue(150.0)]
+        [BsonDefaultValue(150.0)]
+        public double CriticalDamage { get; set; }
         [JsonProperty("Pot")]
         [BsonElement("Pot")]
         public double Potency { get; set; }
@@ -63,7 +67,7 @@ namespace SWGoH
         public double Tenacity { get; set; }
         [JsonProperty("HlS")]
         [BsonElement("HlS")]
-        public int HealthSteal { get; set; }
+        public double HealthSteal { get; set; }
         #endregion
 
         #region Physical Offense
@@ -78,9 +82,9 @@ namespace SWGoH
         public int ArmorPenetration { get; set; }
         [JsonProperty("PA")]
         [BsonElement("PA")]
-        [DefaultValue(0)]
-        [BsonDefaultValue(0)]
-        public int PhysicalAccuracy { get; set; }
+        [DefaultValue(0.0)]
+        [BsonDefaultValue(0.0)]
+        public double PhysicalAccuracy { get; set; }
         #endregion
 
         #region Physical Survivability

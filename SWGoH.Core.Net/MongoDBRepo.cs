@@ -22,7 +22,7 @@ namespace SWGoH
                 if (isMongoLive) return db;
                 else return null;
             }
-            catch (Exception e)
+            catch
             {
                 return null;
             }
@@ -66,7 +66,7 @@ namespace SWGoH
                     string url = SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "&q={\"ComputerName\":\"" + computername + "\"}", "", "&l=1", "");
                     string response = client.GetStringAsync(url).Result;
                     response = response.Replace(" ", "");
-                    if (response == "" || response == "[]")
+                    if (working && (response == "" || response == "[]"))
                     {
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                         var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
@@ -83,7 +83,7 @@ namespace SWGoH
             }
             catch (Exception e)
             {
-                SWGoH.Log.ConsoleMessage("Error Adding Working PC:");
+                SWGoH.Log.ConsoleMessage("Error Adding Working PC:" + e.Message);
             }
         }
     }

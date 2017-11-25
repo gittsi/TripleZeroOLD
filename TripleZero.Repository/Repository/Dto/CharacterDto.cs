@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using TripleZero.Repository.Repository.Dto;
 
 namespace TripleZero.Repository.Dto
-{  
+{
     internal class CharacterDto
     {
         [BsonElement("Nm")]
@@ -16,7 +16,7 @@ namespace TripleZero.Repository.Dto
         public string SWGoHUrl { get; set; }
         [JsonProperty("S")]
         [BsonElement("S")]
-        [DefaultValue (7)]
+        [DefaultValue(7)]
         [BsonDefaultValue(7)]
         public int Stars { get; set; }
         [JsonProperty("Ge")]
@@ -36,6 +36,7 @@ namespace TripleZero.Repository.Dto
         [JsonProperty("Ab")]
         [BsonElement("Ab")]
         public List<CharacterAbilityDto> Abilities { get; set; }
+        public List<string> CharacterTags { get; set; }
 
         #region General
         [JsonProperty("Hl")]
@@ -49,7 +50,9 @@ namespace TripleZero.Repository.Dto
         public int Speed { get; set; }
         [JsonProperty("CD")]
         [BsonElement("CD")]
-        public int CriticalDamage { get; set; }
+        [DefaultValue(150.0)]
+        [BsonDefaultValue(150.0)]
+        public double CriticalDamage { get; set; }
         [JsonProperty("Pot")]
         [BsonElement("Pot")]
         public double Potency { get; set; }
@@ -58,7 +61,7 @@ namespace TripleZero.Repository.Dto
         public double Tenacity { get; set; }
         [JsonProperty("HlS")]
         [BsonElement("HlS")]
-        public int HealthSteal { get; set; }
+        public double HealthSteal { get; set; }
         #endregion
 
         #region Physical Offense
@@ -75,7 +78,7 @@ namespace TripleZero.Repository.Dto
         [BsonElement("PA")]
         [DefaultValue(0)]
         [BsonDefaultValue(0)]
-        public int PhysicalAccuracy { get; set; }
+        public double PhysicalAccuracy { get; set; }
         #endregion
 
         #region Physical Survivability

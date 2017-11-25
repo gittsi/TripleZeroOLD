@@ -282,7 +282,7 @@ namespace SWGoH
                                     string date = JsonConvert.SerializeObject(DateTime.UtcNow, Converter.Settings).ToString();
 
                                     var httpContent = new StringContent("{\"$set\" : { \"LastClassUpdated\" :" + date + "}}", Encoding.UTF8, "application/json");
-                                    var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/{0}?apiKey={1}", Found.Id , Settings.appSettings.MongoApiKey);
+                                    var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", Found.Id.ToString());
                                     using (HttpClient client1 = new HttpClient())
                                     {
                                         HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
@@ -414,7 +414,7 @@ namespace SWGoH
                             new JProperty("Aliases", result1.Aliases));
 
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                        var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", result1.Id.ToString());
+                        var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Config.Character", result1.Id.ToString());
                         using (HttpClient client1 = new HttpClient())
                         {
                             HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
@@ -434,7 +434,7 @@ namespace SWGoH
                     {
                         client1.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Config.Character", "", "", "", ""));
                         HttpResponseMessage response1 = client1.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
-                        SWGoH.Log.ConsoleMessage("Added new Allias Char " + newchar.Name + "!!!!!!!");
+                        SWGoH.Log.ConsoleMessageNotInFile("Added new Allias Char " + newchar.Name + "!!!!!!!");
                     }
 
                     //var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
@@ -674,11 +674,85 @@ namespace SWGoH
 
             string value;
 
+            #region Labels
+            bool exit = false;
+            int Position = 0;
+            string strtosearch = "";
+            int index = 0;
+
+            strtosearch = "char-tag char-alignment";
+            index = html.IndexOf(strtosearch, Position);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position+40);
+                string reststrTosearchEnd = "</a>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (newchar.CharacterTags == null) newchar.CharacterTags = new List<string>();
+                    newchar.CharacterTags.Add(value);
+                }
+            }
+
+            strtosearch = "char-tag char-role\">";
+            index = html.IndexOf(strtosearch, Position);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "</a>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (newchar.CharacterTags == null) newchar.CharacterTags = new List<string>();
+                    newchar.CharacterTags.Add(value);
+                }
+            }
+
+            while (!exit)
+            { 
+                strtosearch = "char-category\"";
+                index = html.IndexOf(strtosearch, Position);
+                Position = index + strtosearch.Length;
+                if (index != -1)
+                {
+                    string reststrTosearchStart = "\">";
+                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    string reststrTosearchEnd = "</a>";
+                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value = html.Substring(start, length);
+                        Position = restindexEnd;
+
+                        if (newchar.CharacterTags == null) newchar.CharacterTags = new List<string>();
+                        newchar.CharacterTags.Add(value);
+                    }
+                }
+                else
+                    exit = true;
+            }
+            #endregion
 
             #region GP BreakDown // Stars
-            string strtosearch = "<h4>Galactic Power Breakdown</h4>";
-            int index = html.IndexOf(strtosearch);
-            int Position = index + strtosearch.Length;
+            strtosearch = "<h4>Galactic Power Breakdown</h4>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
             if (index != -1)
             {
                 strtosearch = "Stars";
@@ -708,7 +782,7 @@ namespace SWGoH
             Position = index + strtosearch.Length;
             if (index != -1)
             {
-                bool exit = false;
+                exit = false;
                 strtosearch = "<h4>Gear Needed</h4>";
                 int EndIndex = html.IndexOf(strtosearch, Position);
                 if (EndIndex != -1)
@@ -851,8 +925,8 @@ namespace SWGoH
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
-                    if (ret1) newchar.CriticalDamage = valueint;
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.CriticalDamage = valuedecimal;
                 }
 
                 reststrTosearchStart = "pc-stat-value\">";
@@ -896,8 +970,8 @@ namespace SWGoH
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
-                    if (ret1) newchar.HealthSteal = valueint;
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.HealthSteal = valuedecimal;
                 }
 
             }
@@ -965,8 +1039,8 @@ namespace SWGoH
                     value = html.Substring(start, length);
                     Position = restindexEnd;
 
-                    ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
-                    if (ret1) newchar.PhysicalAccuracy = valueint;
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newchar.PhysicalAccuracy = valuedecimal;
                 }
             }
             #endregion

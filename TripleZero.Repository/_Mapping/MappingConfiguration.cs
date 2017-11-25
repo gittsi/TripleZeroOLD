@@ -75,6 +75,7 @@ namespace TripleZero.Repository._Mapping
                     .ForMember(dest => dest.GeneralStats, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.OffenseStats, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.Tags, src => src.MapFrom(s => s.CharacterTags))
                     ;
 
                     //queue
@@ -96,6 +97,7 @@ namespace TripleZero.Repository._Mapping
                     //guildCharacter
                     cfg.CreateMap<GuildCharacterDto, GuildCharacter>()
                     .ForMember(dest => dest.CharacterName, src => src.MapFrom(source => source.Name))
+                    .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
                     //guildPlayerCharacter

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using TripleZero.Repository._Mapping;
+using TripleZero.Core.Caching;
 using TripleZero.Repository.Dto;
 using TripleZero.Repository.Infrastructure.DI;
 
@@ -14,6 +14,8 @@ namespace TripleZero.Repository
 {
     public class SWGoHRepository : ISWGoHRepository
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         private IMapper _Mapper = IResolver.Current.MappingConfiguration.GetConfigureMapper();        
         public async Task<GuildCharacter> GetGuildCharacter(int guildId, string characterName)
         {
@@ -25,6 +27,17 @@ namespace TripleZero.Repository
         }
         public async Task<List<GuildCharacter>> GetGuildCharacters(int guildId)
         {
+            string functionName = "GetGuildCharactersRepo";
+            string key = guildId.ToString();
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var _guildCharacters = (List<GuildCharacter>)objCache;
+                _guildCharacters.ForEach(p => p.LoadedFromCache = true);
+                return _guildCharacters;
+            }
+
+
             var configCharacters = await IResolver.Current.CharacterSettings.GetCharactersConfig();
 
             var url = string.Format("https://swgoh.gg/api/guilds/{0}/units/", guildId.ToString());
@@ -70,6 +83,7 @@ namespace TripleZero.Repository
             }
             List<GuildCharacter> guildCharacters = _Mapper.Map<List<GuildCharacter>>(chars);
 
+            await cacheClient.AddToRepositoryCache(functionName, key, guildCharacters, 30);
             return guildCharacters;
         }
     }
