@@ -35,7 +35,7 @@ namespace SWGoH
             else
             {
                 using (HttpClient client = new HttpClient())
-                {   
+                {
                     string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastSwGohUpdated\":-1}", "&l=1", "");
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
@@ -58,17 +58,17 @@ namespace SWGoH
                     string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastClassUpdated\":1}", "", "&f={\"PlayerName\": 1}");
                     var response = client.GetStringAsync(url).Result;
 
-                    List <BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
                     if (document.Count == 1) return;
                     PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
 
                     if (result1 != null)
                     {
-                        
-                        var deleteurl = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", result1.Id.ToString() );
+
+                        var deleteurl = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", result1.Id.ToString());
                         WebRequest request = WebRequest.Create(deleteurl);
                         request.Method = "DELETE";
-                    
+
                         HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
                         if (response1.StatusCode == HttpStatusCode.OK)
                         {
@@ -144,7 +144,7 @@ namespace SWGoH
                 }
             }
         }
-        public int ParseSwGoh(ExportMethodEnum ExportMethod, bool AddCharacters ,bool checkForCharAllias)
+        public int ParseSwGoh(ExportMethodEnum ExportMethod, bool AddCharacters, bool checkForCharAllias)
         {
             if (PlayerName == null || PlayerName == "") return 0;
 
@@ -181,6 +181,7 @@ namespace SWGoH
             if (ret || checkForCharAllias)
             {
                 FillPlayerCharacters(html, Position, checkForCharAllias);
+                FillPlayerShips(pname , Position, checkForCharAllias);
                 retbool = 1;
             }
             else
@@ -190,6 +191,27 @@ namespace SWGoH
             }
             web = null;
             return retbool;
+        }
+
+        private void FillPlayerShips(string pname,int Position, bool checkForCharAllias)
+        {
+            if (Position == -1) return;
+            using (WebClient web = new System.Net.WebClient())
+            {
+                Uri uri = new Uri("https://swgoh.gg/u/" + pname + "/ships/");
+
+                string html = "";
+                try
+                {
+                    html = web.DownloadString(uri);
+                }
+                catch (Exception e)
+                {
+                    SWGoH.Log.ConsoleMessage("Exception on Player Ships : " + PlayerName + " : " + e.Message);
+                }
+            }
+
+
         }
 
         private string TryGetRealURLFromAlliasPlayerName(string pname)
