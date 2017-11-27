@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RuntimeIdentifiers>portable;win10-x64;osx.10.11-x64;android</RuntimeIdentifiers>
+    <AssemblyVersion>1.2.3.0</AssemblyVersion>
+    <FileVersion>1.2.3.0</FileVersion>
+    <Version>1.2.3</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Enum\**" />
+    <Compile Remove="Helper\Cache\**" />
+    <Compile Remove="_Mapping\**" />
+    <EmbeddedResource Remove="Enum\**" />
+    <EmbeddedResource Remove="Helper\Cache\**" />
+    <EmbeddedResource Remove="_Mapping\**" />
+    <None Remove="Enum\**" />
+    <None Remove="Helper\Cache\**" />
+    <None Remove="_Mapping\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.2" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
+    <PackageReference Include="Discord.Net" Version="1.0.2" />
+    <PackageReference Include="Discord.Net.Commands" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SWGoH.Model\SWGoH.Model.csproj" />
+    <ProjectReference Include="..\TripleZero.Core.Caching\TripleZero.Core.Caching.csproj" />
+    <ProjectReference Include="..\TripleZero.Core.Settings\TripleZero.Core.Settings.csproj" />
+    <ProjectReference Include="..\TripleZero.Repository\TripleZero.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="JsonAppSettings\configBot.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="JsonAppSettings\configRepository.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
+</Project>

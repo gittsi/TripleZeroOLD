@@ -7,77 +7,77 @@ namespace SWGoH.Model.Enums
 {
     public enum ModValueType
     {
-        [Description("none")]
+        [Description("None")]
         None = -1,
-        [Description("flat")]
+        [Description("Flat")]
         Flat = 0,
-        [Description("percentage")]
+        [Description("Percentage")]
         Percentage = 1
     }
     public enum ModStatType
     {
-        [Description("none")]
+        [Description("None")]
         None = 0,
-        [Description("speed")]
+        [Description("Speed")]
         Speed = 1,
-        [Description("criticalchance")]
+        [Description("CriticalChance")]
         CriticalChance = 2,
-        [Description("criticaldamage")]
+        [Description("CriticalDamage")]
         CriticalDamage = 3,
-        [Description("potency")]
+        [Description("Potency")]
         Potency = 4,
-        [Description("tenacity")]
+        [Description("Tenacity")]
         Tenacity = 5,
-        [Description("accuracy")]
+        [Description("Accuracy")]
         Accuracy = 6,
-        [Description("criticalavoidance")]
+        [Description("CriticalAvoidance")]
         CriticalAvoidance = 7,
-        [Description("offense")]
+        [Description("Offense")]
         Offense = 8,
-        [Description("defense")]
+        [Description("Defense")]
         Defense = 9,
-        [Description("health")]
+        [Description("Health")]
         Health = 10,
-        [Description("rotection")]
+        [Description("Protection")]
         Protection = 11
     }
     public enum ModSlot
     {
-        [Description("none")]
+        [Description("None")]
         None = 0,
-        [Description("rectangle")]
+        [Description("Rectangle")]
         Transmitter = 1,
-        [Description("arrow")]
+        [Description("Arrow")]
         Receiver = 2,
-        [Description("diamond")]
+        [Description("Diamond")]
         Processor = 3,
-        [Description("triangle")]
+        [Description("Triangle")]
         HoloArray = 4,
-        [Description("circle")]
+        [Description("Circle")]
         DataBus = 5,
-        [Description("cross")]
+        [Description("Cross")]
         Multiplexer = 6
 
     }
     public enum ModSet
     {
-        [Description("none")]
+        [Description("None")]
         None = 0,
-        [Description("health")]
+        [Description("Health")]
         Health = 1,
-        [Description("defense")]
+        [Description("Defense")]
         Defense = 2,
-        [Description("criticaldamage")]
+        [Description("CriticalDDamage")]
         CriticalDamage = 3,
-        [Description("criticalchange")]
+        [Description("CriticalChance")]
         CriticalChance = 4,
-        [Description("tenacity")]
+        [Description("Tenacity")]
         Tenacity = 5,
-        [Description("offense")]
+        [Description("Offense")]
         Offense = 6,
-        [Description("potency")]
+        [Description("Potency")]
         Potency = 7,
-        [Description("speed")]
+        [Description("Speed")]
         Speed = 8
     }
 }

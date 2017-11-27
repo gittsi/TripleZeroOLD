@@ -34,7 +34,7 @@ namespace SWGoH.Model.Extensions
                     = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
                 if (attribute == null)
                     continue;
-                if (attribute.Description == description)
+                if (attribute.Description.ToLower() == description)
                 {
                     return (int)field.GetValue(null);
                 }
