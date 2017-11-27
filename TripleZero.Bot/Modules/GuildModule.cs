@@ -17,9 +17,10 @@ namespace TripleZero.Modules
     {
         private CacheClient cacheClient = IResolver.Current.CacheClient;
 
-        [Command("guildCharacter")]
+        [Command("guildCharacter", RunMode = RunMode.Async)]
         [Summary("Get report for specific character in the given guild")]
         [Remarks("*guildCharacter {guildAlias or guildId} {characterAlias}*")]
+        [Alias("gc")]
         public async Task GetGuildCharacter(string guildAlias, string characterAlias)
         {
             guildAlias = guildAlias.Trim();
@@ -57,10 +58,12 @@ namespace TripleZero.Modules
             {                
                 retStr += $"\n***Guild : {guildConfig.Name} - Character : {characterConfig.Name}***";
 
+                int counter = 1;
                 foreach (var player in res.Players.OrderByDescending(p => p.Rarity).ThenByDescending(t => t.Power))
                 {
                     retStr += "\n";
-                    retStr += string.Format("{3}* - {2} - {1} : {0}", player.PlayerName, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity);
+                    retStr += string.Format("{4} : `{3}* - {2} - {1} : {0}`", player.PlayerName, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity, counter);
+                    counter += 1;
                 }
                 await ReplyAsync($"{retStr}");
             }
@@ -73,9 +76,10 @@ namespace TripleZero.Modules
             await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
-        [Command("slackers-level")]
+        [Command("slackers-level", RunMode = RunMode.Async)]
         [Summary("Get all players of guild with low level characters")]
         [Remarks("*slackers-level {guildAlias or guildId}*")]
+        [Alias("slackers","sl")]
         public async Task GetSlackersLevel(string guildAlias)
         {
             guildAlias = guildAlias.Trim();
@@ -160,7 +164,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"{retStr}");
         }
 
-        [Command("tw")]
+        [Command("tw", RunMode = RunMode.Async)]
         [Summary("Get all players of guild with characters having less than 6000 power")]
         [Remarks("*tw {guildAlias or guildId}*")]
         public async Task GetSlackersPower(string guildAlias)
@@ -207,7 +211,7 @@ namespace TripleZero.Modules
                 await ReplyAsync($"{retStr}");
         }
 
-        [Command("tb")]
+        [Command("tb", RunMode = RunMode.Async)]
         [Summary("Get details about Galactic Power for the specified guild")]
         [Remarks("*tb {guildAlias or guildId}*")]
         public async Task GetCharacterGP(string guildAlias)
@@ -244,9 +248,10 @@ namespace TripleZero.Modules
 
         }
 
-        [Command("guildPlayers")]
+        [Command("guildPlayers", RunMode = RunMode.Async)]
         [Summary("Get available players in specified guild")]
         [Remarks("*guildPlayers {guildAlias or guildId} {searchString(optional)}*")]
+        [Alias("gp")]
         public async Task GetGuildPlayers(string guildAlias, string searchStr = "")
         {
             guildAlias = guildAlias.Trim();
