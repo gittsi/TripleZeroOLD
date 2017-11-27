@@ -58,10 +58,12 @@ namespace TripleZero.Modules
             {                
                 retStr += $"\n***Guild : {guildConfig.Name} - Character : {characterConfig.Name}***";
 
+                int counter = 1;
                 foreach (var player in res.Players.OrderByDescending(p => p.Rarity).ThenByDescending(t => t.Power))
                 {
                     retStr += "\n";
-                    retStr += string.Format("{3}* - {2} - {1} : {0}", player.PlayerName, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity);
+                    retStr += string.Format("{4} : `{3}* - {2} - {1} : {0}`", player.PlayerName, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity, counter);
+                    counter += 1;
                 }
                 await ReplyAsync($"{retStr}");
             }

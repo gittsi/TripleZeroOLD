@@ -23,7 +23,7 @@ namespace TripleZero.Repository.Configuration
             await Task.FromResult(1);
 
             var result = IResolver.Current.MongoDBRepository.GetCharactersConfig().Result;
-            return result.Where(p => p.Name == name).FirstOrDefault();
+            return result.Where(p => p.Name.ToLower() == name.ToLower()).FirstOrDefault();
         }
         public async Task<List<CharacterConfig>> GetCharactersConfig()
         {

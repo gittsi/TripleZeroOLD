@@ -38,7 +38,7 @@ namespace TripleZero.Modules
 
             await ReplyAsync($"{loadingStr}");
 
-            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;            
+            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName.ToLower()).Result;            
 
             if (playerData == null)
             {
@@ -210,7 +210,7 @@ namespace TripleZero.Modules
 
             await ReplyAsync($"{loadingStr}");
 
-            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
+            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName.ToLower()).Result;
 
             if (playerData == null)
             {

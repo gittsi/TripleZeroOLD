@@ -62,39 +62,39 @@ namespace TripleZero.Modules
                 return;
             }
             
-            retStr += string.Format("\n{0} - {1}* g{2} lvl:{3}", character.Name, character.Stars, character.Gear, character.Level);
-            retStr += string.Format("\nPower {0} - StatPower {1}", character.Power, character.StatPower);
+            retStr += string.Format("\n{0} - `{1}* g{2} lvl:{3}`", character.Name, character.Stars, character.Gear, character.Level);
+            retStr += string.Format("\nPower `{0}` - StatPower `{1}`", character.Power, character.StatPower);
 
             retStr += "\n\n**General**";
-            retStr += $"\nProtection: {character.GeneralStats.Protection}";
-            retStr += $"\nHealth: {character.GeneralStats.Health}";
-            retStr += $"\nSpeed: {character.GeneralStats.Speed}";
-            retStr += $"\nHealth Steal: {character.GeneralStats.HealthSteal} %";
-            retStr += $"\nCritical Damage: {character.GeneralStats.CriticalDamage} %";
-            retStr += $"\nPotency: {character.GeneralStats.Potency} %";
-            retStr += $"\nTenacity: {character.GeneralStats.Tenacity} %";
+            retStr += $"\nProtection: `{character.GeneralStats.Protection}`";
+            retStr += $"\nHealth: `{character.GeneralStats.Health}`";
+            retStr += $"\nSpeed: `{character.GeneralStats.Speed}`";
+            retStr += $"\nHealth Steal: `{character.GeneralStats.HealthSteal}%`";
+            retStr += $"\nCritical Damage: `{character.GeneralStats.CriticalDamage}%`";
+            retStr += $"\nPotency: `{character.GeneralStats.Potency}%`";
+            retStr += $"\nTenacity: `{character.GeneralStats.Tenacity}%`";
 
             retStr += "\n\n**Physical Offense**";
-            retStr += $"\nPhysical Damage: {character.OffenseStats.PhysicalOffense.PhysicalDamage}";
-            retStr += $"\nPhysical Critical Chance: {character.OffenseStats.PhysicalOffense.PhysicalCriticalChance} %";
-            retStr += $"\nPhysical Accuracy: {character.OffenseStats.PhysicalOffense.PhysicalAccuracy} %";
-            retStr += $"\nArmor Penetration: {character.OffenseStats.PhysicalOffense.ArmorPenetration} %";
+            retStr += $"\nPhysical Damage: `{character.OffenseStats.PhysicalOffense.PhysicalDamage}`";
+            retStr += $"\nPhysical Critical Chance: `{character.OffenseStats.PhysicalOffense.PhysicalCriticalChance}%`";
+            retStr += $"\nPhysical Accuracy: `{character.OffenseStats.PhysicalOffense.PhysicalAccuracy}%`";
+            retStr += $"\nArmor Penetration: `{character.OffenseStats.PhysicalOffense.ArmorPenetration}%`";
 
             retStr += "\n\n**Special Offense**";
-            retStr += $"\nSpecial Damage: {character.OffenseStats.SpecialOffense.SpecialDamage}";
-            retStr += $"\nSpecial Critical Chance: {character.OffenseStats.SpecialOffense.SpecialCriticalChance} %";
-            retStr += $"\nSpecial Accuracy: {character.OffenseStats.SpecialOffense.SpecialAccuracy} %";
-            retStr += $"\nResistance Penetration: {character.OffenseStats.SpecialOffense.ResistancePenetration} %";
+            retStr += $"\nSpecial Damage: `{character.OffenseStats.SpecialOffense.SpecialDamage}`";
+            retStr += $"\nSpecial Critical Chance: `{character.OffenseStats.SpecialOffense.SpecialCriticalChance}%`";
+            retStr += $"\nSpecial Accuracy: `{character.OffenseStats.SpecialOffense.SpecialAccuracy}%`";
+            retStr += $"\nResistance Penetration: `{character.OffenseStats.SpecialOffense.ResistancePenetration}%`";
 
             retStr += "\n\n**Physical Survivability**";
-            retStr += $"\nArmor: {character.Survivability.PhysicalSurvivability.Armor} %";
-            retStr += $"\nDodge Chance: {character.Survivability.PhysicalSurvivability.DodgeChance} %";
-            retStr += $"\nPhysical Critical Avoidance: {character.Survivability.PhysicalSurvivability.PhysicalCriticalAvoidance} %";
+            retStr += $"\nArmor: `{character.Survivability.PhysicalSurvivability.Armor}%`";
+            retStr += $"\nDodge Chance: `{character.Survivability.PhysicalSurvivability.DodgeChance}%`";
+            retStr += $"\nPhysical Critical Avoidance: `{character.Survivability.PhysicalSurvivability.PhysicalCriticalAvoidance}%`";
 
             retStr += "\n\n**Special Survivability**";
-            retStr += $"\nResistance: {character.Survivability.SpecialSurvivability.Resistance} %";
-            retStr += $"\nDeflection Chance: {character.Survivability.SpecialSurvivability.DeflectionChance} %";
-            retStr += $"\nSpecial Critical Avoidance: {character.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} %";
+            retStr += $"\nResistance: `{character.Survivability.SpecialSurvivability.Resistance}%`";
+            retStr += $"\nDeflection Chance: `{character.Survivability.SpecialSurvivability.DeflectionChance}%`";
+            retStr += $"\nSpecial Critical Avoidance: `{character.Survivability.SpecialSurvivability.SpecialCriticalAvoidance}%`";
 
             await ReplyAsync($"{retStr}");
             await cacheClient.AddToModuleCache(functionName, key, retStr);
@@ -160,49 +160,118 @@ namespace TripleZero.Modules
                 return;
             }
             
-            retStr += string.Format("\n{0} - {1}* g{2} lvl:{3} - {4}* g{5} lvl:{6}  ", character1.Name, character1.Stars, character1.Gear, character1.Level, character2.Stars, character2.Gear, character2.Level);
-            retStr += string.Format("\nPower {0} vs {2} - StatPower {1} vs {3}", character1.Power, character1.StatPower, character2.Power, character2.StatPower);
+            retStr += string.Format("\n{0} - `{1}* g{2} lvl:{3}` - `{4}* g{5} lvl:{6}`  ", character1.Name, character1.Stars, character1.Gear, character1.Level, character2.Stars, character2.Gear, character2.Level);
+            retStr += string.Format("\nPower `{0}` vs `{2}` - StatPower `{1}` vs `{3}`", character1.Power, character1.StatPower, character2.Power, character2.StatPower);
 
             var strAbilities = "\n\n**Abilities**";
             for (int i = 0; i < character1.Abilities.Count(); i++)
             {
-                strAbilities += string.Format("\n{0} {1}/{2} vs {3}/{4}", character1.Abilities[i].Name, character1.Abilities[i].Level, character1.Abilities[i].MaxLevel, character2.Abilities[i].Level, character2.Abilities[i].MaxLevel);
+                strAbilities += string.Format("\n{0} `{1}/{2}` vs `{3}/{4}`", character1.Abilities[i].Name, character1.Abilities[i].Level, character1.Abilities[i].MaxLevel, character2.Abilities[i].Level, character2.Abilities[i].MaxLevel);
             }
             retStr += strAbilities;
 
             retStr += "\n\n**General**";
-            retStr += $"\nProtection: {character1.GeneralStats.Protection} - {character2.GeneralStats.Protection}";
-            retStr += $"\nHealth: {character1.GeneralStats.Health} - {character2.GeneralStats.Health}";
-            retStr += $"\nSpeed: {character1.GeneralStats.Speed} - {character2.GeneralStats.Speed}";
-            retStr += $"\nHealth Steal: {character1.GeneralStats.HealthSteal} % - {character2.GeneralStats.HealthSteal} %";
-            retStr += $"\nCritical Damage: {character1.GeneralStats.CriticalDamage} % - {character2.GeneralStats.CriticalDamage} %";
-            retStr += $"\nPotency: {character1.GeneralStats.Potency} % - {character2.GeneralStats.Potency} %";
-            retStr += $"\nTenacity: {character1.GeneralStats.Tenacity} % - {character2.GeneralStats.Tenacity} %";
+            retStr += $"\nProtection: `{character1.GeneralStats.Protection}` - `{character2.GeneralStats.Protection}`";
+            retStr += $"\nHealth: `{character1.GeneralStats.Health}` - `{character2.GeneralStats.Health}`";
+            retStr += $"\nSpeed: `{character1.GeneralStats.Speed}` - `{character2.GeneralStats.Speed}`";
+            retStr += $"\nHealth Steal: `{character1.GeneralStats.HealthSteal}%` - `{character2.GeneralStats.HealthSteal}%`";
+            retStr += $"\nCritical Damage: `{character1.GeneralStats.CriticalDamage}%` - `{character2.GeneralStats.CriticalDamage}%`";
+            retStr += $"\nPotency: `{character1.GeneralStats.Potency}%` - `{character2.GeneralStats.Potency}%`";
+            retStr += $"\nTenacity: `{character1.GeneralStats.Tenacity}%` - `{character2.GeneralStats.Tenacity}%`";
 
             retStr += "\n\n**Physical Offense**";
-            retStr += $"\nPhysical Damage: {character1.OffenseStats.PhysicalOffense.PhysicalDamage} - {character2.OffenseStats.PhysicalOffense.PhysicalDamage}";
-            retStr += $"\nPhysical Critical Chance: {character1.OffenseStats.PhysicalOffense.PhysicalCriticalChance} % - {character2.OffenseStats.PhysicalOffense.PhysicalCriticalChance} %";
-            retStr += $"\nPhysical Accuracy: {character1.OffenseStats.PhysicalOffense.PhysicalAccuracy} % - {character2.OffenseStats.PhysicalOffense.PhysicalAccuracy} %";
-            retStr += $"\nArmor Penetration: {character1.OffenseStats.PhysicalOffense.ArmorPenetration} - {character2.OffenseStats.PhysicalOffense.ArmorPenetration}";
+            retStr += $"\nPhysical Damage: `{character1.OffenseStats.PhysicalOffense.PhysicalDamage}` - `{character2.OffenseStats.PhysicalOffense.PhysicalDamage}`";
+            retStr += $"\nPhysical Critical Chance: `{character1.OffenseStats.PhysicalOffense.PhysicalCriticalChance}%` - `{character2.OffenseStats.PhysicalOffense.PhysicalCriticalChance}%`";
+            retStr += $"\nPhysical Accuracy: `{character1.OffenseStats.PhysicalOffense.PhysicalAccuracy}%` - `{character2.OffenseStats.PhysicalOffense.PhysicalAccuracy}%`";
+            retStr += $"\nArmor Penetration: `{character1.OffenseStats.PhysicalOffense.ArmorPenetration}` - `{character2.OffenseStats.PhysicalOffense.ArmorPenetration}`";
 
             retStr += "\n\n**Special Offense**";
-            retStr += $"\nSpecial Damage: {character1.OffenseStats.SpecialOffense.SpecialDamage} - {character2.OffenseStats.SpecialOffense.SpecialDamage}";
-            retStr += $"\nSpecial Critical Chance: {character1.OffenseStats.SpecialOffense.SpecialCriticalChance} % - {character2.OffenseStats.SpecialOffense.SpecialCriticalChance} %";
-            retStr += $"\nSpecial Accuracy: {character1.OffenseStats.SpecialOffense.SpecialAccuracy} % - {character2.OffenseStats.SpecialOffense.SpecialAccuracy} %";
-            retStr += $"\nResistance Penetration: {character1.OffenseStats.SpecialOffense.ResistancePenetration} % - {character2.OffenseStats.SpecialOffense.ResistancePenetration} %";
+            retStr += $"\nSpecial Damage: `{character1.OffenseStats.SpecialOffense.SpecialDamage}` - `{character2.OffenseStats.SpecialOffense.SpecialDamage}`";
+            retStr += $"\nSpecial Critical Chance: `{character1.OffenseStats.SpecialOffense.SpecialCriticalChance}%` - `{character2.OffenseStats.SpecialOffense.SpecialCriticalChance}%`";
+            retStr += $"\nSpecial Accuracy: `{character1.OffenseStats.SpecialOffense.SpecialAccuracy}%` - `{character2.OffenseStats.SpecialOffense.SpecialAccuracy}%`";
+            retStr += $"\nResistance Penetration: `{character1.OffenseStats.SpecialOffense.ResistancePenetration}%` - `{character2.OffenseStats.SpecialOffense.ResistancePenetration}%`";
 
             retStr += "\n\n**Physical Survivability**";
-            retStr += $"\nArmor: {character1.Survivability.PhysicalSurvivability.Armor} % - {character2.Survivability.PhysicalSurvivability.Armor} %";
-            retStr += $"\nDodge Chance: {character1.Survivability.PhysicalSurvivability.DodgeChance} % - {character2.Survivability.PhysicalSurvivability.DodgeChance} %";
-            retStr += $"\nPhysical Critical Avoidance: {character1.Survivability.PhysicalSurvivability.PhysicalCriticalAvoidance} % - {character2.Survivability.PhysicalSurvivability.PhysicalCriticalAvoidance} %";
+            retStr += $"\nArmor: `{character1.Survivability.PhysicalSurvivability.Armor}%` - `{character2.Survivability.PhysicalSurvivability.Armor}%`";
+            retStr += $"\nDodge Chance: `{character1.Survivability.PhysicalSurvivability.DodgeChance}%` - `{character2.Survivability.PhysicalSurvivability.DodgeChance}%`";
+            retStr += $"\nPhysical Critical Avoidance: `{character1.Survivability.PhysicalSurvivability.PhysicalCriticalAvoidance}%` - `{character2.Survivability.PhysicalSurvivability.PhysicalCriticalAvoidance}%`";
 
             retStr += "\n\n**Special Survivability**";
-            retStr += $"\nResistance: {character1.Survivability.SpecialSurvivability.Resistance} % - {character2.Survivability.SpecialSurvivability.Resistance} %";
-            retStr += $"\nDeflection Chance: {character1.Survivability.SpecialSurvivability.DeflectionChance} % - {character2.Survivability.SpecialSurvivability.DeflectionChance} %";
-            retStr += $"\nSpecial Critical Avoidance: {character1.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} % - {character2.Survivability.SpecialSurvivability.SpecialCriticalAvoidance} %";
+            retStr += $"\nResistance: `{character1.Survivability.SpecialSurvivability.Resistance}%` - `{character2.Survivability.SpecialSurvivability.Resistance}%`";
+            retStr += $"\nDeflection Chance: `{character1.Survivability.SpecialSurvivability.DeflectionChance}%` - `{character2.Survivability.SpecialSurvivability.DeflectionChance}%`";
+            retStr += $"\nSpecial Critical Avoidance: `{character1.Survivability.SpecialSurvivability.SpecialCriticalAvoidance}%` - `{character2.Survivability.SpecialSurvivability.SpecialCriticalAvoidance}%`";
 
             await ReplyAsync($"{retStr}");
             await cacheClient.AddToModuleCache(functionName, key, retStr);
+        }
+
+        [Command("characters-config", RunMode = RunMode.Async)]
+        [Summary("Get config all characters")]
+        [Remarks("*characters-config*")]
+        [Alias("cconfig")]
+        public async Task GetCharacterConfig()
+        {
+            string retStr = "";
+            string chStr = "";
+
+            ////check if user is in role in order to proceed with the action
+            //var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
+            //var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
+            //if (!userAllowed)
+            //{
+            //    retStr = "\nNot authorized!!!";
+            //    await ReplyAsync($"{retStr}");
+            //    return;
+            //}
+
+            var charactersConfig = IResolver.Current.CharacterSettings.GetCharactersConfig().Result;
+            int debugcount = 0;
+            foreach (var characterConfig in charactersConfig)
+            {
+                chStr = string.Format("\n{0}", characterConfig.Name);
+                string aliases = "";
+                int countAliases = 0;
+                foreach (var alias in characterConfig.Aliases)
+                {
+                    if (alias.ToString().ToLower() == "empty") break;
+
+                    countAliases += 1;
+                    aliases += string.Format("`{0}`", alias);
+                    if (countAliases != characterConfig.Aliases.Count()) aliases += ", ";
+                }
+                debugcount = debugcount + 1;
+                if (debugcount > 2000)
+                {
+                    break;
+                }
+
+                if (countAliases > 0)
+                {
+                    retStr += string.Format("{0} - Aliases:[{1}]", chStr, aliases);
+                }
+                else
+                {
+                    retStr += string.Format("{0} - **No aliases**", chStr);
+                }
+
+                if (string.IsNullOrWhiteSpace(characterConfig.Command))
+                {
+                    retStr += string.Format(" - **No Command**", chStr);
+                }
+                else
+                {
+                    retStr += string.Format(" - Command : {0}", characterConfig.Command);
+                }
+
+
+                if (retStr.Length > 1800)
+                {
+                    await ReplyAsync($"{retStr}");
+                    retStr = "";
+                }
+            }
+
+            await ReplyAsync($"{retStr}");
         }
     }
 }
