@@ -35,7 +35,7 @@ namespace SWGoH
             else
             {
                 using (HttpClient client = new HttpClient())
-                {   
+                {
                     string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastSwGohUpdated\":-1}", "&l=1", "");
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
@@ -58,17 +58,17 @@ namespace SWGoH
                     string url = SWGoH.MongoDBRepo.BuildApiUrl("Player", "&q={\"PlayerName\":\"" + PlayerName + "\"}", "&s={\"LastClassUpdated\":1}", "", "&f={\"PlayerName\": 1}");
                     var response = client.GetStringAsync(url).Result;
 
-                    List <BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
                     if (document.Count == 1) return;
                     PlayerDto result1 = BsonSerializer.Deserialize<PlayerDto>(document.FirstOrDefault());
 
                     if (result1 != null)
                     {
-                        
-                        var deleteurl = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", result1.Id.ToString() );
+
+                        var deleteurl = SWGoH.MongoDBRepo.BuildApiUrlFromId("Player", result1.Id.ToString());
                         WebRequest request = WebRequest.Create(deleteurl);
                         request.Method = "DELETE";
-                    
+
                         HttpWebResponse response1 = (HttpWebResponse)request.GetResponse();
                         if (response1.StatusCode == HttpStatusCode.OK)
                         {
@@ -144,7 +144,7 @@ namespace SWGoH
                 }
             }
         }
-        public int ParseSwGoh(ExportMethodEnum ExportMethod, bool AddCharacters ,bool checkForCharAllias)
+        public int ParseSwGoh(ExportMethodEnum ExportMethod, bool AddCharacters, bool checkForCharAllias)
         {
             if (PlayerName == null || PlayerName == "") return 0;
 
@@ -181,6 +181,7 @@ namespace SWGoH
             if (ret || checkForCharAllias)
             {
                 FillPlayerCharacters(html, Position, checkForCharAllias);
+                FillPlayerShips(pname , Position, checkForCharAllias);
                 retbool = 1;
             }
             else
@@ -190,6 +191,73 @@ namespace SWGoH
             }
             web = null;
             return retbool;
+        }
+
+        private void FillPlayerShips(string pname,int Position, bool checkForCharAllias)
+        {
+            if (Position == -1) return;
+            string html = "";
+            using (WebClient web = new System.Net.WebClient())
+            {
+                Uri uri = new Uri("https://swgoh.gg/u/" + pname + "/ships/");
+                try
+                {
+                    html = web.DownloadString(uri);
+                }
+                catch (Exception e)
+                {
+                    SWGoH.Log.ConsoleMessage("Exception on Player Ships : " + PlayerName + " : " + e.Message);
+                }
+            }
+
+            Ships = new List<ShipDto>();
+
+            bool exit = false;
+            int count = 0;
+            int previousPosition = 0;
+            List<BsonDocument> Base_ID_Document = null;
+            if (checkForCharAllias)
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = string.Format("https://swgoh.gg/api/ships/?format=json");
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "" && response != "[  ]")
+                    {
+                        Base_ID_Document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    }
+                }
+            }
+            bool ret = true;
+
+            while (!exit)
+            {
+                if (isOnExit) return;
+                previousPosition = Position;
+                ShipDto newchar = GetShip(html, out Position);
+                ret = FillShipData(newchar);
+                if (ret && Position > 0) html = html.Substring(Position);
+                if (Position < 0) exit = true;
+                if (ret)
+                {
+                    if (newchar.Name != null)
+                    {
+                        count++;
+                        newchar.Name = FixCharacterName(newchar.Name);
+                        Ships.Add(newchar);
+                        SWGoH.Log.ConsoleMessage("          " + count.ToString() + ") Added ship : " + newchar.Name);
+
+                        if (checkForCharAllias) { AddShipToAlliasConfig(newchar, Base_ID_Document); }
+
+                        Thread.Sleep(Settings.appSettings.DelayPerCharacter);
+                    }
+                }
+                else
+                {
+                    Thread.Sleep(Settings.appSettings.DelayErrorAtCharacter);
+                    Position = previousPosition;
+                }
+            }
         }
 
         private string TryGetRealURLFromAlliasPlayerName(string pname)
@@ -349,7 +417,7 @@ namespace SWGoH
                     if (newchar.Name != null)
                     {
                         count++;
-                        FixCharacterName(newchar);
+                        newchar.Name = FixCharacterName(newchar.Name);
                         Characters.Add(newchar);
                         SWGoH.Log.ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
 
@@ -366,13 +434,87 @@ namespace SWGoH
             }
         }
 
-        private void FixCharacterName(CharacterDto newchar)
+        private string FixCharacterName(string newchar)
         {
-            newchar.Name = newchar.Name.Replace("\"", "");
-            newchar.Name = newchar.Name.Replace("'", "");
-            newchar.Name = newchar.Name.Replace("Î", "");
+            newchar = newchar.Replace("\"", "");
+            newchar = newchar.Replace("'", "");
+            newchar = newchar.Replace("Î", "");
+            
+            return newchar;
         }
 
+        private void AddShipToAlliasConfig(ShipDto newchar, List<BsonDocument> base_ID_Document)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Ships", "&q={\"Name\" : \"" + newchar.Name + "\" }", "", "", "");
+                string response = client.GetStringAsync(url).Result;
+
+                string replace = "/u/" + PlayerName + "/ships/";
+
+                string Base_ID = "";
+                string lowername = newchar.Name.ToLower();
+                foreach (BsonDocument item in base_ID_Document)
+                {
+                    string name = (string)item[0];
+                    name = name.ToLower();
+                    if (name.Equals(lowername))
+                    {
+                        Base_ID = ((string)item[1]).ToLower(); break;
+                    }
+                }
+
+                if (Base_ID == "") SWGoH.Log.ConsoleMessage("Did not find BaseID for character : " + newchar.Name + "!!!!!!!");
+
+                if (response != "" && response != "[  ]")
+                {
+                    SWGoH.Log.ConsoleMessage("Found Allias Char " + newchar.Name);
+                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    CharacterConfigDto result1 = BsonSerializer.Deserialize<CharacterConfigDto>(document.FirstOrDefault());
+
+                    if (newchar.SWGoHUrl != null)
+                    {
+                        if (result1.Command != "") Base_ID = result1.Command;
+                        JObject data = new JObject(
+                            new JProperty("Name", result1.Name),
+                            new JProperty("Command", Base_ID),
+                            new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
+                            new JProperty("Aliases", result1.Aliases));
+
+                        var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                        var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Config.Ships", result1.Id.ToString());
+                        using (HttpClient client1 = new HttpClient())
+                        {
+                            HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                        }
+                    }
+                }
+                else
+                {
+                    if (newchar.SWGoHUrl == null) newchar.SWGoHUrl = "";
+                    JObject data = new JObject(
+                        new JProperty("Name", newchar.Name),
+                        new JProperty("Command", Base_ID),
+                        new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
+                        new JProperty("Aliases", new List<string> { }));
+                    string json = JsonConvert.SerializeObject(data, Converter.Settings);
+                    using (HttpClient client1 = new HttpClient())
+                    {
+                        client1.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Config.Ships", "", "", "", ""));
+                        HttpResponseMessage response1 = client1.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
+                        SWGoH.Log.ConsoleMessageNotInFile("Added new Allias Char " + newchar.Name + "!!!!!!!");
+                    }
+
+                    //var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                    //var requestUri = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Config.Character/{0}?apiKey={1}", apikey);
+                    //using (HttpClient client1 = new HttpClient())
+                    //{
+                    //    HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
+                    //    SWGoH.Log.ConsoleMessage("Added new Allias Char" + newchar.Name + "!!!!!!!");
+                    //}
+                }
+            }
+        }
         private void AddCharacterToAlliasConfig(CharacterDto newchar, List<BsonDocument> Base_ID_Document)
         {
             //try
@@ -573,6 +715,112 @@ namespace SWGoH
             return true;
         }
 
+        private ShipDto GetShip(string html , out int Position)
+        {
+            ShipDto ret = new ShipDto();
+            
+            string strTosearch = "class=\"collection-ship-name-link\"";
+            int index = html.IndexOf(strTosearch);
+            Position = index;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "href=\"";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "\"";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    string link = html.Substring(start, length);
+                    ret.SWGoHUrl = link;
+                    Position = restindexEnd;
+                }
+
+
+                reststrTosearchStart = "nofollow\">";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "</a>";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    string name = html.Substring(start, length);
+                    ret.Name = WebUtility.HtmlDecode(name);
+                }
+                Position = index + restindexEnd;
+            }
+            
+
+            
+
+            return ret;
+        }
+        private bool FillShipData(ShipDto newchar)
+        {
+            string html = "";
+            bool ret1 = false;
+            int valueint = 0;
+            double valuedecimal = 0;
+
+            using (WebClient web = new System.Net.WebClient())
+            {
+                Uri uri = new Uri("https://swgoh.gg" + newchar.SWGoHUrl);
+                try
+                {
+                    html = web.DownloadString(uri);
+                }
+                catch (Exception e)
+                {
+                    SWGoH.Log.ConsoleMessage("Exception : " + e.Message);
+                    return false;
+                }
+            }
+
+            string strtosearch = "";
+            int index = 0;
+            int Position = 0;
+
+            bool exit = false;
+            int star = 0;
+            while (!exit)
+            {
+                strtosearch = "ship-portrait-full-star-inactive";
+                index = html.IndexOf(strtosearch, Position);
+                if (index == -1) exit = true;
+                else
+                {
+                    star++;
+                    Position = index + strtosearch.Length;
+                }
+            }
+            newchar.Stars = 7 - star;
+
+
+            string value;
+            strtosearch = "ship-portrait-full-frame-level\">";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchEnd = "</div>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, Position);
+                if (restindexEnd != -1)
+                {
+                    int start = Position;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    ret1 = int.TryParse(value, out valueint);
+                    if (ret1) newchar.Level = valueint;
+                }
+            }
+
+
+            return true;
+        }
         private CharacterDto GetChar(string html, out int Position)
         {
             CharacterDto ret = new CharacterDto();
