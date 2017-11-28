@@ -73,9 +73,10 @@ namespace TripleZero.Modules
 
             return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
         }
-        [Command("mods-s")]
+        [Command("mods-s", RunMode = RunMode.Async)]
         [Summary("Get mods sorted by a **secondary** stat of a given player")]
         [Remarks("*mods-s {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n examples \n1) $mods-s playerName defense \n2) $mods-s playerName defense% 5)*")]
+        [Alias("ms")]
         public async Task GetSecondaryStatMods(string playerUserName, string modType, string resultsRows = "20")
         {
             bool rowsIsNumber = int.TryParse(resultsRows, out int rows);
@@ -162,9 +163,10 @@ namespace TripleZero.Modules
 
             return sortedMods.Select(x => new Tuple<string, Mod>(x.Name, x.Mod)).ToList();
         }
-        [Command("mods-p")]
+        [Command("mods-p", RunMode = RunMode.Async)]
         [Summary("Get mods sorted by a **primary** stat of a given player")]
         [Remarks("*mods-p {playerUserName} {modType(add **%** if you want percentage)} { {rows(optional)}\n\n example \n$mods-p playerName speed 5)*")]
+        [Alias("mp")]
         public async Task GetPrimaryStatMods(string playerUserName, string modType, string resultsRows = "20")
         {
             bool rowsIsNumber = int.TryParse(resultsRows, out int rows);

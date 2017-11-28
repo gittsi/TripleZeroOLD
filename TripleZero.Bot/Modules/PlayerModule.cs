@@ -12,9 +12,10 @@ namespace TripleZero.Modules
     {
         private CacheClient cacheClient = IResolver.Current.CacheClient;
 
-        [Command("player-report")]
+        [Command("player-report", RunMode = RunMode.Async)]
         [Summary("Get full report for a player")]
         [Remarks("*player-report {playerUserName}*")]
+        [Alias("pr")]
         public async Task GetPlayerReport(string playerUserName)
         {
             await Task.FromResult(1);
@@ -37,7 +38,7 @@ namespace TripleZero.Modules
 
             await ReplyAsync($"{loadingStr}");
 
-            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;            
+            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName.ToLower()).Result;            
 
             if (playerData == null)
             {
@@ -183,9 +184,10 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
         }
 
-        [Command("player-tw")]
+        [Command("player-tw", RunMode = RunMode.Async)]
         [Summary("Get which characters are ineligible for Territory Wars")]
         [Remarks("*player-tw {playerUserName}*")]
+        [Alias("ptw")]
         public async Task GetPlayerReportTW(string playerUserName)
         {
             await Task.FromResult(1);
@@ -208,7 +210,7 @@ namespace TripleZero.Modules
 
             await ReplyAsync($"{loadingStr}");
 
-            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName).Result;
+            var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName.ToLower()).Result;
 
             if (playerData == null)
             {
