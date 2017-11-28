@@ -171,12 +171,16 @@ namespace TripleZero.Modules
         {
             guildAlias = guildAlias.Trim();
 
-            string retStr = "";
+            string retStr = "";            
+
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to serve players with less than 6k power```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
 
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
-                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
+                await ReplyAsync($"```I couldn't find any guild with alias ***{guildAlias}***```");
                 return;
             }
 
@@ -193,9 +197,24 @@ namespace TripleZero.Modules
                                   players.Power
                               }
                                        ).ToList().OrderBy(p => p.PlayerName);
+            
+            //var charactersNoSlacking = (from character in res
+            //                  from players in character.Players
+            //                  where(from t in players.CombatType ==UnitCombatType.Character )
+            //                  select new
+            //                  {
+            //                      players.PlayerName,
+            //                      character.CharacterName,
+            //                      players.Power
+            //                  }
+            //                           ).ToList().OrderBy(p => p.PlayerName);
 
             var listCharacters = characters.Select(x => new Tuple<string, string, int>(x.PlayerName, x.CharacterName, x.Power)).ToList();
             var sumList = listCharacters.GroupBy(a => a.Item1).Select(p => new { PlayerName = p.Key, Count = p.Count() }).OrderByDescending(p=>p.Count);
+
+            await messageLoading.DeleteAsync();
+
+            retStr += $"```I found **{sumList.Count()}** slackers for guild **{guildConfig.Name}**```";
 
             foreach (var row in sumList)
             {
@@ -204,21 +223,22 @@ namespace TripleZero.Modules
                     await ReplyAsync($"{retStr}");
                     retStr = "";
                 }
-                retStr += $"\n**{row.PlayerName}** : {row.Count} character with less than 6000 power";
+                retStr += $"\n**{row.PlayerName}** : {row.Count} characters with less than 6000 power";
             }
 
             if (retStr.Length > 0)
-                await ReplyAsync($"{retStr}");
+                await ReplyAsync($"{retStr}");            
         }
 
-        [Command("tb", RunMode = RunMode.Async)]
+        [Command("gp", RunMode = RunMode.Async)]
         [Summary("Get details about Galactic Power for the specified guild")]
-        [Remarks("*tb {guildAlias or guildId}*")]
+        [Remarks("*gp {guildAlias or guildId}*")]
         public async Task GetCharacterGP(string guildAlias)
         {
             guildAlias = guildAlias.Trim();
 
             string retStr = "";
+
             //get from cache if possible and exit sub
             string functionName = "tb";
             string key = guildAlias;
@@ -229,21 +249,34 @@ namespace TripleZero.Modules
                 return;
             }
 
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to serve guild's Galactic Power details```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
+
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
                 await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
+                return;
+            }           
+
+            var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+            if(result==null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
                 return;
             }
-            var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+
             List<Player> guildPlayers = new List<Player>();
 
-            retStr += string.Format("\nFound **{0}** players for guild **{1}**\n", result.Players.Count(), guildConfig.Name);
+            retStr += string.Format("```I found **{0}** players for guild **{1}**```", result.Players.Count(), guildConfig.Name);
             retStr += string.Format("\nTotal GP **{0:n0}**", result.GalacticPower);
             retStr += string.Format("\nCharacter GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerCharacters));
             retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerShips));
 
             await ReplyAsync($"{retStr}");
+            await messageLoading.DeleteAsync();
             await cacheClient.AddToModuleCache(functionName, key, retStr);
 
         }
@@ -251,7 +284,7 @@ namespace TripleZero.Modules
         [Command("guildPlayers", RunMode = RunMode.Async)]
         [Summary("Get available players in specified guild")]
         [Remarks("*guildPlayers {guildAlias or guildId} {searchString(optional)}*")]
-        [Alias("gp")]
+        [Alias("guild")]
         public async Task GetGuildPlayers(string guildAlias, string searchStr = "")
         {
             guildAlias = guildAlias.Trim();
@@ -268,19 +301,22 @@ namespace TripleZero.Modules
                 return;
             }
 
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to serve all players in the guild```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
+
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
                 await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
                 return;
             }
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
-            List<Player> guildPlayers = new List<Player>();
-
-            retStr = string.Format("\n These are the players of guild **{0}**", guildConfig.Name);
+            List<Player> guildPlayers = new List<Player>();            
 
             if (searchStr.Length == 0)
             {
+                retStr = string.Format("```These are the players of guild {0}```", guildConfig.Name);
                 guildPlayers = result.Players;
             }
             else
@@ -288,26 +324,24 @@ namespace TripleZero.Modules
                 if (searchStr.Length >= 2)
                 {
                     guildPlayers = result.Players.Where(p => p.PlayerNameInGame.ToLower().Contains(searchStr.ToLower()) || p.PlayerName.ToLower().Contains(searchStr.ToLower())).ToList();
-                    retStr += $" containing \"{searchStr}\"";
+                    retStr += retStr = $"```These are the players of guild {guildConfig.Name} containing \"{searchStr}\"```";
                 }
                 else
                 {
-                    await ReplyAsync($"\nYour search string is not valid. You will get all players of guild {guildConfig.Name}");
+                    await ReplyAsync($"\nYour search string is not valid. You will get all players of guild {guildConfig.Name}\n");
                 }
             }
-
-            retStr += "\n";
+            
             int counter = 1;
             foreach (var player in guildPlayers)
             {
 
                 retStr += $"\n{counter}) {player.PlayerName} ({player.PlayerNameInGame})";
-                counter += 1;
-                //retStr += string.Format("\n{0} {1} {2} {3}", player.GPcharacters.ToString().PadRight(7, ' '), player.GPships.ToString().PadRight(7,' '),player.PlayerNameInGame,player.PlayerName);
+                counter += 1;                
             }
             await cacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
-
+            await messageLoading.DeleteAsync();
         }
 
     }

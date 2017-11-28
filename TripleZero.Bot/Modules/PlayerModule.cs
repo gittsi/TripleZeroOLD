@@ -34,9 +34,8 @@ namespace TripleZero.Modules
                 return;
             }
 
-            loadingStr = string.Format("\n**{0}** is loading...\n", playerUserName);
-
-            await ReplyAsync($"{loadingStr}");
+            loadingStr = string.Format("```{0} is loading...```", playerUserName);
+            var messageLoading = await ReplyAsync($"{loadingStr}");
 
             var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName.ToLower()).Result;            
 
@@ -48,7 +47,8 @@ namespace TripleZero.Modules
             //if (playerData.LoadedFromCache) retStr+= CacheClient.GetCachedDataRepositoryMessage();
             if (playerData.LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
-            retStr += string.Format("\nLast update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
+            retStr += $"```css\nPlayer Report for {playerData.PlayerName} - {playerData.PlayerNameInGame} \n```";
+            retStr += string.Format("```Last update : {0}(UTC)```\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
 
             var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();
 
@@ -126,9 +126,9 @@ namespace TripleZero.Modules
             //build post string
             retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
 
-            retStr += string.Format("Total GP: **{0}**\n", playerData.GalacticPowerShips + playerData.GalacticPowerCharacters);
-            retStr += string.Format("Toons GP: **{0}**\n", playerData.GalacticPowerCharacters);
-            retStr += string.Format("Ships GP: **{0}**\n", playerData.GalacticPowerShips);
+            retStr += string.Format("Total GP: `{0}`\n", playerData.GalacticPowerShips + playerData.GalacticPowerCharacters);
+            retStr += string.Format("Toons GP: `{0}`\n", playerData.GalacticPowerCharacters);
+            retStr += string.Format("Ships GP: `{0}`\n", playerData.GalacticPowerShips);
 
             retStr += "\n**Stars**\n";
             retStr += string.Format("{0} characters at **1***\n", chars1star.Count());
@@ -182,6 +182,7 @@ namespace TripleZero.Modules
 
             await cacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
+            await messageLoading.DeleteAsync();
         }
 
         [Command("player-tw", RunMode = RunMode.Async)]
@@ -206,21 +207,22 @@ namespace TripleZero.Modules
                 return;
             }
 
-            loadingStr = string.Format("\n**{0}** is loading...\n", playerUserName);
-
-            await ReplyAsync($"{loadingStr}");
+            loadingStr = string.Format("```{0} is loading to serve report about TW```", playerUserName);
+            var messageLoading = await ReplyAsync($"{loadingStr}");
 
             var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName.ToLower()).Result;
 
             if (playerData == null)
             {
                 await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
+                await messageLoading.DeleteAsync();
                 return;
             }
             //if (playerData.LoadedFromCache) retStr+= CacheClient.GetCachedDataRepositoryMessage();
             if (playerData.LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
-            retStr += string.Format("\nLast update : {0}(UTC)\n\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
+            retStr += $"```css\nPlayer Report for {playerData.PlayerName} - {playerData.PlayerNameInGame} \n```";
+            retStr += string.Format("```Last update : {0}(UTC)```\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
 
             var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();            
 
@@ -231,14 +233,15 @@ namespace TripleZero.Modules
             retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
 
             //power less than 6k
-            retStr += string.Format("\n**{0}** characters with **less than 6000 power**\n", powerLessThan6k.Count());
+            retStr += string.Format("\n**{0}** characters with **less than** `6000` **power**\n", powerLessThan6k.Count());
             foreach (var character in powerLessThan6k)
             {
-                retStr += string.Format("{0} : **{1}**\n", character.Name, character.Power);
+                retStr += string.Format("{0} : `{1}`\n", character.Name, character.Power);
             }
 
             await cacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
+            await messageLoading.DeleteAsync();
         }
     }
 }
