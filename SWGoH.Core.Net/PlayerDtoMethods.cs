@@ -181,7 +181,7 @@ namespace SWGoH
             if (ret || checkForCharAllias)
             {
                 FillPlayerCharacters(html, Position, checkForCharAllias);
-                FillPlayerShips(pname , Position, checkForCharAllias);
+                FillPlayerShips(pname, checkForCharAllias);
                 retbool = 1;
             }
             else
@@ -193,9 +193,8 @@ namespace SWGoH
             return retbool;
         }
 
-        private void FillPlayerShips(string pname,int Position, bool checkForCharAllias)
+        private void FillPlayerShips(string pname, bool checkForCharAllias)
         {
-            if (Position == -1) return;
             string html = "";
             using (WebClient web = new System.Net.WebClient())
             {
@@ -229,7 +228,7 @@ namespace SWGoH
                 }
             }
             bool ret = true;
-
+            int Position = 0;
             while (!exit)
             {
                 if (isOnExit) return;
@@ -749,7 +748,7 @@ namespace SWGoH
                     string name = html.Substring(start, length);
                     ret.Name = WebUtility.HtmlDecode(name);
                 }
-                Position = index + restindexEnd;
+                Position = restindexEnd;
             }
             
 
