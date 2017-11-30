@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <Compile Remove="Infrastructure\DI\IServiceProvider.cs" />
+    <Compile Remove="Validators\AutofacValidatorFactory.cs" />
+    <Compile Remove="Validators\IocValidatorFactory.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +32,7 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
     <PackageReference Include="Discord.Net" Version="1.0.2" />
     <PackageReference Include="Discord.Net.Commands" Version="1.0.2" />
+    <PackageReference Include="FluentValidation" Version="7.2.1" />
   </ItemGroup>
 
   <ItemGroup>

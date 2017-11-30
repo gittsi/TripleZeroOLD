@@ -26,7 +26,7 @@ namespace TripleZero.Repository._Mapping
                     //playerDto to player
                     cfg.CreateMap<PlayerDto, Player>()
                     .ForMember(dest => dest.EntryUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))
-                    .ForMember(dest => dest.SWGoHUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))
+                    .ForMember(dest => dest.SWGoHUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))                    
                     .ForMember(dest => dest.GalacticPowerCharacters, src => src.MapFrom(source => source.GPcharacters))
                     .ForMember(dest => dest.GalacticPowerShips, src => src.MapFrom(source => source.GPships))
                     .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
@@ -76,6 +76,10 @@ namespace TripleZero.Repository._Mapping
                     .ForMember(dest => dest.OffenseStats, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.Tags, src => src.MapFrom(s => s.CharacterTags))
+                    ;
+
+                    cfg.CreateMap<ShipDto, Ship>()                    
+                    .ForMember(dest => dest.Tags, src => src.Ignore())
                     ;
 
                     //queue
