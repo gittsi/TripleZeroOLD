@@ -93,19 +93,24 @@ namespace TripleZero.Repository._Mapping
                     .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
+                    //ship config
+                    cfg.CreateMap<ShipConfigDto, ShipConfig>()
+                    .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
+                    ;
+
                     //guild config
                     cfg.CreateMap<GuildConfigDto, GuildConfig>()
                     .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
                     //guildCharacter
-                    cfg.CreateMap<GuildCharacterDto, GuildCharacter>()
-                    .ForMember(dest => dest.CharacterName, src => src.MapFrom(source => source.Name))
+                    cfg.CreateMap<GuildUnitDto, GuildUnit>()
+                    .ForMember(dest => dest.Name, src => src.MapFrom(source => source.Name))
                     .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
                     //guildPlayerCharacter
-                    cfg.CreateMap<GuildPlayerCharacterDto, GuildPlayerCharacter>()
+                    cfg.CreateMap<GuildPlayerUnitDto, GuildPlayerUnit>()
                     .ForMember(dest => dest.PlayerName, src => src.MapFrom(source => source.Name))
                     .ForMember(dest => dest.CombatType, src => src.MapFrom(source => source.Combat_Type))
                     ;

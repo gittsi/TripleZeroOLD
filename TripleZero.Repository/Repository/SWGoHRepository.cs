@@ -17,31 +17,31 @@ namespace TripleZero.Repository
         private CacheClient cacheClient = IResolver.Current.CacheClient;
 
         private IMapper _Mapper = IResolver.Current.MappingConfiguration.GetConfigureMapper();        
-        public async Task<GuildCharacter> GetGuildCharacter(int guildId, string characterName)
+        public async Task<GuildUnit> GetGuildUnit(int guildId, string characterName)
         {
-            List<GuildCharacter> chars = null;
-            chars = await GetGuildCharacters(guildId);
-            var res = chars.Where(p => p.CharacterName.ToLower() == characterName.ToLower()).FirstOrDefault();
+            List<GuildUnit> chars = null;
+            chars = await GetGuildUnits(guildId);
+            var res = chars.Where(p => p.Name.ToLower() == characterName.ToLower()).FirstOrDefault();
 
             return res;
         }
-        public async Task<List<GuildCharacter>> GetGuildCharacters(int guildId)
+        public async Task<List<GuildUnit>> GetGuildUnits(int guildId)
         {
-            string functionName = "GetGuildCharactersRepo";
+            string functionName = "GetGuildUnitsRepo";
             string key = guildId.ToString();
             var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
-                var _guildCharacters = (List<GuildCharacter>)objCache;
+                var _guildCharacters = (List<GuildUnit>)objCache;
                 _guildCharacters.ForEach(p => p.LoadedFromCache = true);
                 return _guildCharacters;
             }
 
-
             var configCharacters = await IResolver.Current.CharacterSettings.GetCharactersConfig();
+            var configShips = await IResolver.Current.ShipSettings.GetShipConfig();
 
             var url = string.Format("https://swgoh.gg/api/guilds/{0}/units/", guildId.ToString());
-            List<GuildCharacterDto> chars = new List<GuildCharacterDto>();
+            List<GuildUnitDto> chars = new List<GuildUnitDto>();
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync(url);
@@ -61,30 +61,34 @@ namespace TripleZero.Repository
 
                 foreach (var row in json)
                 {
-                    var charName = row.Key;
-                    if(configCharacters.Where(p => p.Command?.ToLower() == row.Key.ToLower())!=null && configCharacters.Where(p => p.Command?.ToLower() == row.Key.ToLower()).Count()>0)
+                    var unitName = row.Key;
+                    if(configCharacters.Where(p => p.Command?.ToLower() == row.Key.ToLower())!=null && configCharacters.Where(p => p.Command?.ToLower() == row.Key.ToLower()).Count()>0)                    
                     {
-                        charName = configCharacters.Where(p => p.Command?.ToLower() == row.Key.ToLower()).FirstOrDefault().Name;
+                        unitName = configCharacters.Where(p => p.Command?.ToLower() == row.Key.ToLower()).FirstOrDefault().Name;
+                    }
+                    else if (configShips.Where(p => p.Command?.ToLower() == row.Key.ToLower()) != null && configShips.Where(p => p.Command?.ToLower() == row.Key.ToLower()).Count() > 0)
+                        {
+                        unitName = configShips.Where(p => p.Command?.ToLower() == row.Key.ToLower()).FirstOrDefault().Name;
                     }
 
-                    GuildCharacterDto gc = new GuildCharacterDto
+                    GuildUnitDto gc = new GuildUnitDto
                     {
-                        Name = charName
+                        Name = unitName
                     };
 
-                    List<GuildPlayerCharacterDto> players = new List<GuildPlayerCharacterDto>();
+                    List<GuildPlayerUnitDto> players = new List<GuildPlayerUnitDto>();
                     foreach (var player in row.Value)
                     {
-                        players.Add(new GuildPlayerCharacterDto { Name = player["player"].ToString(), Level = (int)player["level"], Power = (int)player["power"], Rarity = (int)player["rarity"], Combat_Type = (int)player["combat_type"] });
+                        players.Add(new GuildPlayerUnitDto { Name = player["player"].ToString(), Level = (int)player["level"], Power = (int)player["power"], Rarity = (int)player["rarity"], Combat_Type = (int)player["combat_type"] });
                         gc.Players = players;
                     }
                     chars.Add(gc);
                 }
             }
-            List<GuildCharacter> guildCharacters = _Mapper.Map<List<GuildCharacter>>(chars);
+            List<GuildUnit> guildCharacters = _Mapper.Map<List<GuildUnit>>(chars);
 
             await cacheClient.AddToRepositoryCache(functionName, key, guildCharacters, 30);
             return guildCharacters;
-        }
+        }       
     }
 }

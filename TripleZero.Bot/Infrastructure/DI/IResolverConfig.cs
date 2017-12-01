@@ -19,6 +19,7 @@ namespace TripleZero.Infrastructure.DI
         public ApplicationSettings ApplicationSettings { get { return Container.Resolve<ApplicationSettings>(); } }        
         public GuildSettings GuildSettings { get { return Container.Resolve<GuildSettings>(); } }
         public CharacterSettings CharacterSettings { get { return Container.Resolve<CharacterSettings>(); } }
+        public ShipSettings ShipSettings { get { return Container.Resolve<ShipSettings>(); } }
         public CacheClient CacheClient { get { return Container.Resolve<CacheClient>(); } }        
         public ISWGoHRepository SWGoHRepository { get { return Container.Resolve<ISWGoHRepository>(); } }
         public IMongoDBRepository MongoDBRepository { get { return Container.Resolve<IMongoDBRepository>(); } }
@@ -32,7 +33,8 @@ namespace TripleZero.Infrastructure.DI
             //configurations            
             builder.RegisterType<ApplicationSettings>().SingleInstance();            
             builder.RegisterType<GuildSettings>().SingleInstance();
-            builder.RegisterType<CharacterSettings>().SingleInstance();            
+            builder.RegisterType<CharacterSettings>().SingleInstance();
+            builder.RegisterType<ShipSettings>().SingleInstance();
             builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();                        
 
             //repositories

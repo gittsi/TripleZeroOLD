@@ -371,6 +371,42 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
+        public async Task<List<ShipConfig>> GetShipsConfig()
+        {
+            string functionName = "GetShipsConfigRepo";
+            string key = "key";
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var shipsConfig = (List<ShipConfig>)objCache;
+                shipsConfig.ForEach(p => p.LoadedFromCache = true);
+                return shipsConfig;
+            }
+
+            string url = BuildApiUrl("Config.Ship", null, null, null, null);            
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+
+                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    List<ShipConfigDto> ret = document.Select(b => BsonSerializer.Deserialize<ShipConfigDto>(b)).ToList();
+
+                    var shipsConfigDto = ret.OrderBy(p => p.Name).ToList();
+
+                    List<ShipConfig> shipsConfig = _Mapper.Map<List<ShipConfig>>(shipsConfigDto);
+                    //load to cache
+                    await cacheClient.AddToRepositoryCache(functionName, key, shipsConfig, 30);
+                    return shipsConfig;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
         public async Task<List<GuildConfig>> GetGuildsConfig()
         {
             string functionName = "GetGuildsConfigRepo";

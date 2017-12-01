@@ -52,7 +52,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId, characterConfig.Name);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildUnit(guildConfig.SWGoHId, characterConfig.Name);
 
             if (res != null)
             {                
@@ -76,6 +76,66 @@ namespace TripleZero.Modules
             await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
+        //needs refactor with strategy
+        [Command("guildShip", RunMode = RunMode.Async)]
+        [Summary("Get report for specific ship in the given guild")]
+        [Remarks("*guildShip {guildAlias or guildId} {shipAlias}*")]
+        [Alias("gs")]
+        public async Task GetGuildShip(string guildAlias, string shipAlias)
+        {
+            guildAlias = guildAlias.Trim();
+            shipAlias = shipAlias.Trim();
+
+            string retStr = "";
+
+            //get from cache if possible and exit sub
+            string functionName = "guildCharacter";
+            string key = string.Concat(guildAlias, shipAlias);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
+            if (guildConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                return;
+            }
+
+            var shipConfig = IResolver.Current.ShipSettings.GetShipConfigByAlias(shipAlias).Result;
+            if (shipConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any ship with alias ***{shipAlias}***");
+                return;
+            }
+
+            var res = await IResolver.Current.SWGoHRepository.GetGuildUnit(guildConfig.SWGoHId, shipConfig.Name);
+
+            if (res != null)
+            {
+                retStr += $"\n***Guild : {guildConfig.Name} - Ship : {shipConfig.Name}***";
+
+                int counter = 1;
+                foreach (var player in res.Players.OrderByDescending(p => p.Rarity).ThenByDescending(t => t.Power))
+                {
+                    retStr += "\n";
+                    retStr += string.Format("{4} : `{3}* - {2} - {1} : {0}`", player.PlayerName, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity, counter);
+                    counter += 1;
+                }
+                await ReplyAsync($"{retStr}");
+            }
+            else
+            {
+                retStr = $"I didn't find any players having `{guildConfig.Name} for guild {shipConfig.Name}`";
+                await ReplyAsync($"{retStr}");
+            }
+
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
+        }
+
         [Command("slackers-level", RunMode = RunMode.Async)]
         [Summary("Get all players of guild with low level characters")]
         [Remarks("*slackers-level {guildAlias or guildId}*")]
@@ -93,7 +153,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildUnits(guildConfig.SWGoHId);
 
             if (res.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
@@ -111,12 +171,12 @@ namespace TripleZero.Modules
                                       from players in character.Players.Where(t => t.CombatType == UnitCombatType.Character && t.Level == level)
                                       select new
                                       {
-                                          character.CharacterName,
+                                          character.Name,
                                           players
                                       }
                                       ).ToList().OrderBy(p=>p.players.PlayerName);
 
-                    var listCharacters = characters.Select(x => new Tuple<string, GuildPlayerCharacter>(x.CharacterName, x.players)).ToList();
+                    var listCharacters = characters.Select(x => new Tuple<string, GuildPlayerUnit>(x.Name, x.players)).ToList();
 
                     if (listCharacters.Count() == 0) continue;                    
 
@@ -184,7 +244,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildUnits(guildConfig.SWGoHId);
 
             if (res.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
@@ -193,7 +253,7 @@ namespace TripleZero.Modules
                               select new
                               {
                                   players.PlayerName,
-                                  character.CharacterName,
+                                  character.Name,
                                   players.Power
                               }
                                        ).ToList().OrderBy(p => p.PlayerName);
@@ -209,7 +269,7 @@ namespace TripleZero.Modules
             //                  }
             //                           ).ToList().OrderBy(p => p.PlayerName);
 
-            var listCharacters = characters.Select(x => new Tuple<string, string, int>(x.PlayerName, x.CharacterName, x.Power)).ToList();
+            var listCharacters = characters.Select(x => new Tuple<string, string, int>(x.PlayerName, x.Name, x.Power)).ToList();
             var sumList = listCharacters.GroupBy(a => a.Item1).Select(p => new { PlayerName = p.Key, Count = p.Count() }).OrderByDescending(p=>p.Count);
 
             await messageLoading.DeleteAsync();
