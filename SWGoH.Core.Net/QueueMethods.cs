@@ -118,7 +118,6 @@ namespace SWGoH
             {
                 MongoDBRepo mongo = new MongoDBRepo();
                 IMongoDatabase db = mongo.Connect();
-                db = null;
                 if (db != null)
                 {
                     SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!! (mongo)");

@@ -1030,7 +1030,7 @@ namespace SWGoH
             if (index != -1)
             {
                 exit = false;
-                strtosearch = "<h4>Gear Needed</h4>";
+                strtosearch = "<h5>Primary Attributes</h5>";
                 int EndIndex = html.IndexOf(strtosearch, Position);
                 if (EndIndex != -1)
                 {
