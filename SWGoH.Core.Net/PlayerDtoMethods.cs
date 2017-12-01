@@ -446,7 +446,7 @@ namespace SWGoH
         {
             using (HttpClient client = new HttpClient())
             {
-                string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Ships", "&q={\"Name\" : \"" + newchar.Name + "\" }", "", "", "");
+                string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Ship", "&q={\"Name\" : \"" + newchar.Name + "\" }", "", "", "");
                 string response = client.GetStringAsync(url).Result;
 
                 string replace = "/u/" + PlayerName + "/ships/";
@@ -481,7 +481,7 @@ namespace SWGoH
                             new JProperty("Aliases", result1.Aliases));
 
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                        var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Config.Ships", result1.Id.ToString());
+                        var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Config.Ship", result1.Id.ToString());
                         using (HttpClient client1 = new HttpClient())
                         {
                             HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
@@ -499,7 +499,7 @@ namespace SWGoH
                     string json = JsonConvert.SerializeObject(data, Converter.Settings);
                     using (HttpClient client1 = new HttpClient())
                     {
-                        client1.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Config.Ships", "", "", "", ""));
+                        client1.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Config.Ship", "", "", "", ""));
                         HttpResponseMessage response1 = client1.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                         SWGoH.Log.ConsoleMessageNotInFile("Added new Allias Char " + newchar.Name + "!!!!!!!");
                     }
