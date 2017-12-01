@@ -296,7 +296,7 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
-        public async Task<List<Player>> GetAllPlayersWithoutCharacters()
+        public async Task<List<Player>> GetAllPlayersNoCharactersNoShips()
         {
             await Task.FromResult(1);
 
@@ -311,7 +311,7 @@ namespace TripleZero.Repository
             }
 
             var orderby = "{\"LastSwGohUpdated\":-1}";
-            var fields = "{\"Characters\": 0}";
+            var fields = "{\"Characters\": 0,\"Ships\": 0}";
 
             string url = BuildApiUrl("Player", null, orderby, null, fields);
             //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", fields, orderby, apiKey);

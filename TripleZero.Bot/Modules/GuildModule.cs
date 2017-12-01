@@ -173,7 +173,7 @@ namespace TripleZero.Modules
 
             string retStr = "";            
 
-            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to serve players with less than 6k power```";
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show players with less than 6k power```";
             var messageLoading = await ReplyAsync($"{loadingStr}");
 
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
@@ -249,7 +249,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to serve guild's Galactic Power details```";
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show guild's Galactic Power details```";
             var messageLoading = await ReplyAsync($"{loadingStr}");
 
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
@@ -301,7 +301,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to serve all players in the guild```";
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show all players in the guild```";
             var messageLoading = await ReplyAsync($"{loadingStr}");
 
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;

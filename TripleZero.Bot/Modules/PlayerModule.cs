@@ -5,8 +5,8 @@ using TripleZero.Infrastructure.DI;
 using TripleZero.Core.Caching;
 using System;
 using TripleZero.Bot.Validators;
-using FluentValidation.Results;
 using FluentValidation;
+
 
 namespace TripleZero.Modules
 {
@@ -42,57 +42,34 @@ namespace TripleZero.Modules
             var messageLoading = await ReplyAsync($"{loadingStr}");
 
             var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName.ToLower()).Result;
+            if (playerData == null)
+            {
+                await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
+                return;
+            }            
 
-            //validation
+            //validation need refactor for DI
             try
             {
-                IValidator validator = new PlayerValidator();
-                validator.Validate(playerData);
-                //IValidator validator3 = IResolver.Current.ValidatorFactory3.CreateInstance(typeof(PlayerValidator));
-                //var validator2 = IResolver.Current.ValidatorFactory.GetValidator(typeof(PlayerValidator));
-                //var validator = IResolver.Current.ValidatorFactory.GetValidator<PlayerValidator>();
-                //var validator3 = IResolver.Current.ValidatorFactory.GetValidator<IValidator>();
-                //var safas = IResolver.Current.ValidatorFactory2;
-                //var aaaa = safas.GetValidator<PlayerValidator>();
-                //var a = IResolver.Current.ValidatorFactory.CreateInstance(typeof(IValidator));
-
-
-                //IValidator validator = IResolver.Current.ValidatorFactory.CreateInstance(typeof(PlayerValidator));
-
-                //ValidationResult validationResult = validator.Validate(playerData);
-                ValidationResult validationResult = validator.Validate(playerData);
-                //ValidationResult validationResult = validator2.Validate(playerData);
+                var validationResult = DefaultValidatorExtensions.Validate(new PlayerValidator(), playerData, ruleSet: "Basic,WithCharacter,WithShip");                
                 if (!validationResult.IsValid)
                 {
                     await messageLoading.DeleteAsync();
-                    await ReplyAsync(string.Join(" - ", validationResult.Errors));
+                    await ReplyAsync(string.Join("\n", validationResult.Errors.Distinct()));
                     return;
                 }
             }
             catch(Exception ex)
             {
-
-            }
-            
-
-
-            if (playerData == null)
-            {
-                await ReplyAsync($"I couldn't find data for player with name : ***{playerUserName}***.");
+                await messageLoading.DeleteAsync();
+                await ReplyAsync($"Problem validating Player data - player-report {playerUserName}");
                 return;
             }
-            //if (playerData.LoadedFromCache) retStr+= CacheClient.GetCachedDataRepositoryMessage();
+
             if (playerData.LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
             retStr += $"```css\nPlayer Report for {playerData.PlayerName} - {playerData.PlayerNameInGame} \n```";
-            retStr += string.Format("```Last update : {0}(UTC)```\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
-
-            //if(playerData==null || playerData.Ships==null || playerData.Characters==null)
-            //{
-            //    await messageLoading.DeleteAsync();
-            //    await ReplyAsync($"Something is wrong with the data retrieving while getting player {playerUserName}");
-            //    return;
-            //}
+            retStr += string.Format("```Last update : {0}(UTC)```\n", playerData.SWGoHUpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));            
 
             var notActivatedChars = playerData.Characters.Where(p => p.Level == 0).ToList();
             var notActivatedShips = playerData.Ships?.Where(p => p.Level == 0).ToList();
@@ -187,29 +164,29 @@ namespace TripleZero.Modules
 
             //build post string
             retStr += string.Format("{0} characters **not activated** (from total characters : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
-            retStr += string.Format("{0} ships **not activated** (from total ships : {1})\n", notActivatedChars.Count(), playerData.Characters.Count());
+            retStr += string.Format("{0} ships **not activated** (from total ships : {1})\n", notActivatedShips.Count(), playerData.Ships.Count());
 
             retStr += string.Format("Total GP: `{0}`\n", playerData.GalacticPowerShips + playerData.GalacticPowerCharacters);
             retStr += string.Format("Toons GP: `{0}`\n", playerData.GalacticPowerCharacters);
             retStr += string.Format("Ships GP: `{0}`\n", playerData.GalacticPowerShips);
 
             retStr += "\n**Stars Characters**\n";
-            retStr += string.Format("{0} characters at **1***\n", chars1star.Count());
-            retStr += string.Format("{0} characters at **2***\n", chars2star.Count());
-            retStr += string.Format("{0} characters at **3***\n", chars3star.Count());
-            retStr += string.Format("{0} characters at **4***\n", chars4star.Count());
-            retStr += string.Format("{0} characters at **5***\n", chars5star.Count());
-            retStr += string.Format("{0} characters at **6***\n", chars6star.Count());
-            retStr += string.Format("{0} characters at **7***\n", chars7star.Count());
+            retStr += string.Format("**1*** : {0}\n", chars1star.Count());
+            retStr += string.Format("**2*** : {0}\n", chars2star.Count());
+            retStr += string.Format("**3*** : {0}\n", chars3star.Count());
+            retStr += string.Format("**4*** : {0}\n", chars4star.Count());
+            retStr += string.Format("**5*** : {0}\n", chars5star.Count());
+            retStr += string.Format("**6*** : {0}\n", chars6star.Count());
+            retStr += string.Format("**7*** : {0}\n", chars7star.Count());
 
             retStr += "\n**Stars Ships**\n";
-            retStr += string.Format("{0} ships at **1***\n", ships1star.Count());
-            retStr += string.Format("{0} ships at **2***\n", ships2star.Count());
-            retStr += string.Format("{0} ships at **3***\n", ships3star.Count());
-            retStr += string.Format("{0} ships at **4***\n", ships4star.Count());
-            retStr += string.Format("{0} ships at **5***\n", ships5star.Count());
-            retStr += string.Format("{0} ships at **6***\n", ships6star.Count());
-            retStr += string.Format("{0} ships at **7***\n", ships7star.Count());
+            retStr += string.Format("**1*** : {0}\n", ships1star.Count());
+            retStr += string.Format("**2*** : {0}\n", ships2star.Count());
+            retStr += string.Format("**3*** : {0}\n", ships3star.Count());
+            retStr += string.Format("**4*** : {0}\n", ships4star.Count());
+            retStr += string.Format("**5*** : {0}\n", ships5star.Count());
+            retStr += string.Format("**6*** : {0}\n", ships6star.Count());
+            retStr += string.Format("**7*** : {0}\n", ships7star.Count());
 
             retStr += "\n**Abilities**\n";
             foreach (var character in missingAbilitiesTop10)
@@ -217,46 +194,46 @@ namespace TripleZero.Modules
                 retStr += string.Format("{0} is missing **{1} abilities**\n", character.Key, character.MissingLevels);
             }
 
-            retStr += "\n**Levels Characters**\n";
-            retStr += string.Format("{0} characters with **lvl<50**\n", charsLessThan50Level.Count());
-            retStr += string.Format("{0} characters with **lvl 50-59**\n", chars50_59Level.Count());
-            retStr += string.Format("{0} characters with **lvl 60-69**\n", chars60_69Level.Count());
-            retStr += string.Format("{0} characters with **lvl 70-79**\n", chars70_79Level.Count());
-            retStr += string.Format("{0} characters with **lvl 80-84**\n", chars80_84Level.Count());
-            retStr += string.Format("{0} characters with **lvl 85**\n", chars85Level.Count());
+            retStr += "\n**Levels Characters** : {0}\n";
+            retStr += string.Format("**lvl<50** : {0}\n", charsLessThan50Level.Count());
+            retStr += string.Format("**lvl 50-59** : {0}\n", chars50_59Level.Count());
+            retStr += string.Format("**lvl 60-69** : {0}\n", chars60_69Level.Count());
+            retStr += string.Format("**lvl 70-79** : {0}\n", chars70_79Level.Count());
+            retStr += string.Format("**lvl 80-84** : {0}\n", chars80_84Level.Count());
+            retStr += string.Format("**lvl 85** : {0}\n", chars85Level.Count());
 
-            retStr += "\n**Levels Ships**\n";
-            retStr += string.Format("{0} ships with **lvl<50**\n", shipsLessThan50Level.Count());
-            retStr += string.Format("{0} ships with **lvl 50-59**\n", ships50_59Level.Count());
-            retStr += string.Format("{0} ships with **lvl 60-69**\n", ships60_69Level.Count());
-            retStr += string.Format("{0} ships with **lvl 70-79**\n", ships70_79Level.Count());
-            retStr += string.Format("{0} ships with **lvl 80-84**\n", ships80_84Level.Count());
-            retStr += string.Format("{0} ships with **lvl 85**\n", ships85Level.Count());
+            retStr += "\n**Levels Ships** : {0}\n";
+            retStr += string.Format("**lvl<50** : {0}\n", shipsLessThan50Level.Count());
+            retStr += string.Format("**lvl 50-59** : {0}\n", ships50_59Level.Count());
+            retStr += string.Format("**lvl 60-69** : {0}\n", ships60_69Level.Count());
+            retStr += string.Format("**lvl 70-79** : {0}\n", ships70_79Level.Count());
+            retStr += string.Format("**lvl 80-84** : {0}\n", ships80_84Level.Count());
+            retStr += string.Format("**lvl 85** : {0}\n", ships85Level.Count());
 
 
 
-            retStr += "\n**Mods**\n";
-            retStr += string.Format("{0} activated characters with **no mods**\n", noMods.Count());
-            retStr += string.Format("{0} characters with **1 mod**\n", oneMod.Count());
-            retStr += string.Format("{0} characters with **2 mods**\n", twoMod.Count());
-            retStr += string.Format("{0} characters with **3 mods**\n", threeMod.Count());
-            retStr += string.Format("{0} characters with **4 mods**\n", fourMod.Count());
-            retStr += string.Format("{0} characters with **5 mods**\n", fiveMod.Count());
-            retStr += string.Format("{0} characters with **6 mods**\n", sixMod.Count());
+            retStr += "\n**Mods** : {0}\n";
+            retStr += string.Format("{0} activated characters with **no mods** : {0}\n", noMods.Count());
+            retStr += string.Format("**1 mod** : {0}\n", oneMod.Count());
+            retStr += string.Format("**2 mods** : {0}\n", twoMod.Count());
+            retStr += string.Format("**3 mods** : {0}\n", threeMod.Count());
+            retStr += string.Format("**4 mods** : {0}\n", fourMod.Count());
+            retStr += string.Format("**5 mods** : {0}\n", fiveMod.Count());
+            retStr += string.Format("**6 mods** : {0}\n", sixMod.Count());
 
-            retStr += "\n**Mods Level**\n";
-            retStr += string.Format("{0} mods at **level <9**\n", modsLevelLessThan9.Count());
-            retStr += string.Format("{0} mods at **level 9-11**\n", modsLevel9_11.Count());
-            retStr += string.Format("{0} mods at **level 12-14**\n", modsLevel12_14.Count());
-            retStr += string.Format("{0} mods at **level 15**\n", modsLevel15.Count());
+            retStr += "\n**Mods Level** : {0}\n";
+            retStr += string.Format("{0} mods at **level <9** : {0}\n", modsLevelLessThan9.Count());
+            retStr += string.Format("{0} mods at **level 9-11** : {0}\n", modsLevel9_11.Count());
+            retStr += string.Format("{0} mods at **level 12-14** : {0}\n", modsLevel12_14.Count());
+            retStr += string.Format("{0} mods at **level 15** : {0}\n", modsLevel15.Count());
 
-            retStr += "\n**Gear**\n";
-            retStr += string.Format("{0} characters with **gear 4 or less**\n", gearLessThan5.Count());
-            retStr += string.Format("{0} characters with **gear 5-7**\n", gear5_7.Count());
-            retStr += string.Format("{0} characters with **gear 8-9**\n", gear8_9.Count());
-            retStr += string.Format("{0} characters with **gear 10**\n", gear10.Count());
-            retStr += string.Format("{0} characters with **gear 11**\n", gear11.Count());
-            retStr += string.Format("{0} characters with **gear 12**\n", gear12.Count());
+            retStr += "\n**Gear** : {0}\n";
+            retStr += string.Format("**4 or less** : {0}\n", gearLessThan5.Count());
+            retStr += string.Format("**5-7** : {0}\n", gear5_7.Count());
+            retStr += string.Format("**8-9** : {0}\n", gear8_9.Count());
+            retStr += string.Format("**10** : {0}\n", gear10.Count());
+            retStr += string.Format("**11** : {0}\n", gear11.Count());
+            retStr += string.Format("**12** : {0}\n", gear12.Count());
 
             //power less than 6k
             retStr += "\n**Power**\n";
@@ -289,7 +266,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            loadingStr = string.Format("```{0} is loading to serve report about TW```", playerUserName);
+            loadingStr = string.Format("```{0} is loading to show report about TW```", playerUserName);
             var messageLoading = await ReplyAsync($"{loadingStr}");
 
             var playerData = IResolver.Current.MongoDBRepository.GetPlayer(playerUserName.ToLower()).Result;
@@ -300,7 +277,25 @@ namespace TripleZero.Modules
                 await messageLoading.DeleteAsync();
                 return;
             }
-            //if (playerData.LoadedFromCache) retStr+= CacheClient.GetCachedDataRepositoryMessage();
+
+            //validation need refactor for DI
+            try
+            {
+                var validationResult = DefaultValidatorExtensions.Validate(new PlayerValidator(), playerData, ruleSet: "Basic,WithCharacter");
+                if (!validationResult.IsValid)
+                {
+                    await messageLoading.DeleteAsync();
+                    await ReplyAsync(string.Join("\n", validationResult.Errors.Distinct()));
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                await messageLoading.DeleteAsync();
+                await ReplyAsync($"Problem validating Player data - player-report {playerUserName}");
+                return;
+            }
+
             if (playerData.LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
             retStr += $"```css\nPlayer Report for {playerData.PlayerName} - {playerData.PlayerNameInGame} \n```";
