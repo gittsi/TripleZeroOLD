@@ -53,7 +53,7 @@ namespace SWGoH
 
             //SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , PriorityEnum.DailyUpdate, Enums.QueueEnum.QueueType.Guild, DateTime.UtcNow);
             //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
-            //ExecuteCommand(Command.UpdatePlayer, "newholborn");
+            //ExecuteCommand(Command.UpdatePlayer, "newholborn", null);
             //ExecuteCommand(Command.Test, "newholborn", null);
             //ExecuteCommand(Command.GetNewCharacters, "aramil", null); return;
 
