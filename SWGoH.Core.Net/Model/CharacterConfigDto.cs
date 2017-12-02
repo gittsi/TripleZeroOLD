@@ -21,6 +21,7 @@ namespace SWGoH
         public string Command { get; set; }
         public List<string> Aliases { get; set; }
         public string SWGoHUrl { get; set; }
+        public List<ConfigAbility> Abilities { get; set; }
     }
 
     public class ShipConfigDto
