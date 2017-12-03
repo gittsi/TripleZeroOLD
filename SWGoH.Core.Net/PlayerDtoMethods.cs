@@ -1001,6 +1001,7 @@ namespace SWGoH
                     if (ret1) newship.Level = valueint;
                 }
             }
+            else return true;  ////not opened ship
             #endregion
 
             #region Skills
