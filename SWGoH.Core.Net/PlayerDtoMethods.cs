@@ -181,7 +181,7 @@ namespace SWGoH
             if (ret || checkForCharAllias)
             {
                 FillPlayerCharacters(html, Position, checkForCharAllias);
-                FillPlayerShips(pname , Position, checkForCharAllias);
+                FillPlayerShips(pname, checkForCharAllias);
                 retbool = 1;
             }
             else
@@ -193,9 +193,8 @@ namespace SWGoH
             return retbool;
         }
 
-        private void FillPlayerShips(string pname,int Position, bool checkForCharAllias)
+        private void FillPlayerShips(string pname, bool checkForCharAllias)
         {
-            if (Position == -1) return;
             string html = "";
             using (WebClient web = new System.Net.WebClient())
             {
@@ -229,7 +228,7 @@ namespace SWGoH
                 }
             }
             bool ret = true;
-
+            int Position = 0;
             while (!exit)
             {
                 if (isOnExit) return;
@@ -374,7 +373,86 @@ namespace SWGoH
                 }
             }
         }
+        //public static void GetNewCharactersAndAbilities()
+        //{
+        //    try
+        //    {
+        //        string html = "";
+        //        using (WebClient web = new System.Net.WebClient())
+        //        {
+        //            Uri uri = new Uri("https://swgoh.gg/");
+        //            try
+        //            {
+        //                html = web.DownloadString(uri);
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                SWGoH.Log.ConsoleMessage("Exception on Getting main page swgoh : " + e.Message);
+        //            }
+        //        }
+        //        if (html != "")
+        //        {
+        //            List<BsonDocument> Base_ID_Document = GetBaseIDList();
 
+        //            string strtosearch = "Star Wars Galaxy of Heroes Characters";
+        //            int index = html.IndexOf(strtosearch);
+        //            int Position = index + strtosearch.Length;
+        //            if (index != -1)
+        //            {
+        //                string reststrTosearchStart = "";
+        //                int restindexStart = 0;
+        //                string reststrTosearchEnd = "";
+        //                int restindexEnd = 0;
+        //                bool exit = false;
+        //                while (!exit)
+        //                {
+        //                    strtosearch = "alt=\\";
+        //                    index = html.IndexOf(strtosearch, Position);
+        //                    Position = index + strtosearch.Length;
+        //                    if (index == -1) exit = true;
+        //                    else
+        //                    {
+
+        //                    }
+
+        //                    reststrTosearchStart = "alt=\\";
+        //                    restindexStart = html.IndexOf(reststrTosearchStart, Position);
+        //                    reststrTosearchEnd = "</a>";
+        //                    restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+        //                    if (restindexStart != -1 && restindexEnd != -1)
+        //                    {
+        //                        int start = restindexStart + reststrTosearchStart.Length;
+        //                        int length = restindexEnd - start;
+        //                        string value = html.Substring(start, length);
+        //                        Position = restindexEnd;
+
+
+        //                    }
+
+
+        //                }
+
+        //            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        SWGoH.Log.ConsoleMessage("Exception on GetNewCharactersAndAbilities : " + e.Message);
+        //    }
+        //}
+        private static List<BsonDocument> GetBaseIDList()
+        {
+            List<BsonDocument> Base_ID_Document = null;
+            using (HttpClient client = new HttpClient())
+            {
+                string url = string.Format("https://swgoh.gg/api/characters/?format=json");
+                string response = client.GetStringAsync(url).Result;
+                if (response != "" && response != "[  ]")
+                {
+                    Base_ID_Document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                }
+            }
+            return Base_ID_Document;
+        }
         /// <summary>
         /// Fills Players characters
         /// </summary>
@@ -394,15 +472,7 @@ namespace SWGoH
             List<BsonDocument> Base_ID_Document = null;
             if (CheckForAllias)
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    string url = string.Format("https://swgoh.gg/api/characters/?format=json");
-                    string response = client.GetStringAsync(url).Result;
-                    if (response != "" && response != "[  ]")
-                    {
-                        Base_ID_Document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
-                    }
-                }
+                Base_ID_Document = GetBaseIDList();
             }
             while (!exit)
             {
@@ -421,7 +491,11 @@ namespace SWGoH
                         Characters.Add(newchar);
                         SWGoH.Log.ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
 
-                        if (CheckForAllias){AddCharacterToAlliasConfig(newchar, Base_ID_Document);}
+                        if (CheckForAllias)
+                        {
+                            List<ConfigAbility> abilities = GetAbilities(newchar);
+                            AddCharacterToAlliasConfig(newchar, Base_ID_Document , abilities);
+                        }
 
                         Thread.Sleep(Settings.appSettings.DelayPerCharacter);
                     }
@@ -431,6 +505,95 @@ namespace SWGoH
                     Thread.Sleep(Settings.appSettings.DelayErrorAtCharacter);
                     Position = previousPosition;
                 }
+            }
+        }
+
+        private List<ConfigAbility> GetAbilities(CharacterDto newchar)
+        {
+            List<ConfigAbility> ret = null;
+            try
+            {
+                string html = "";
+                using (WebClient web = new System.Net.WebClient())
+                {
+                    string replace = "/u/" + PlayerName + "/collection/";
+                    string charurl = newchar.SWGoHUrl.Replace(replace, "");
+                    int index = charurl.IndexOf("/");
+                    charurl = charurl.Substring(index, charurl.Length - index);
+                    Uri uri = new Uri("https://swgoh.gg/characters" + charurl);
+                    try
+                    {
+                        html = web.DownloadString(uri);
+                    }
+                    catch (Exception e)
+                    {
+                        SWGoH.Log.ConsoleMessage("Exception on getting the html : " + e.Message);
+                    }
+                }
+                if (html != "")
+                {
+                    ret = new List<ConfigAbility>();
+
+                    string strtosearch = "Abilities</h3>";
+                    int index = html.IndexOf(strtosearch);
+                    int Position = index + strtosearch.Length;
+                    if (index != -1)
+                    {
+                        bool exit = false;
+                        while (!exit)
+                        {
+                            ConfigAbility ability = new ConfigAbility();
+
+                            string reststrTosearchStart = "alt=\"";
+                            int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                            string reststrTosearchEnd = "\"";
+                            int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                            if (restindexStart != -1 && restindexEnd != -1)
+                            {
+                                int start = restindexStart + reststrTosearchStart.Length;
+                                int length = restindexEnd - start;
+                                string value = html.Substring(start, length);
+                                Position = restindexEnd;
+
+                                ability.Name = value;
+
+                                reststrTosearchStart = "\"tooltip\"";
+                                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                                if (restindexStart != -1)
+                                {
+                                    Position = restindexStart;
+                                    reststrTosearchStart = "title=\"";
+                                    restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                                    reststrTosearchEnd = "\"";
+                                    restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                                    if (restindexStart != -1 && restindexEnd != -1)
+                                    {
+                                        start = restindexStart + reststrTosearchStart.Length;
+                                        length = restindexEnd - start;
+                                        value = html.Substring(start, length);
+                                        Position = restindexEnd;
+
+                                        if (value.ToLower().Contains("zeta")) ability.AbilityType = ConfigAbilityType.Zeta;
+                                        else ability.AbilityType = ConfigAbilityType.Omega;
+                                    }
+
+                                    ret.Add(ability);
+                                }
+                            }
+                            else
+                            {
+                                exit = true;
+                            }
+
+                        }
+                    }
+                }
+                return ret;
+            }
+            catch(Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Exception on GetAbilities : " + e.Message);
+                return null;
             }
         }
 
@@ -447,7 +610,7 @@ namespace SWGoH
         {
             using (HttpClient client = new HttpClient())
             {
-                string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Ships", "&q={\"Name\" : \"" + newchar.Name + "\" }", "", "", "");
+                string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Ship", "&q={\"Name\" : \"" + newchar.Name + "\" }", "", "", "");
                 string response = client.GetStringAsync(url).Result;
 
                 string replace = "/u/" + PlayerName + "/ships/";
@@ -482,7 +645,7 @@ namespace SWGoH
                             new JProperty("Aliases", result1.Aliases));
 
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                        var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Config.Ships", result1.Id.ToString());
+                        var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Config.Ship", result1.Id.ToString());
                         using (HttpClient client1 = new HttpClient())
                         {
                             HttpResponseMessage updateresult = client1.PutAsync(requestUri, httpContent).Result;
@@ -500,7 +663,7 @@ namespace SWGoH
                     string json = JsonConvert.SerializeObject(data, Converter.Settings);
                     using (HttpClient client1 = new HttpClient())
                     {
-                        client1.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Config.Ships", "", "", "", ""));
+                        client1.BaseAddress = new Uri(SWGoH.MongoDBRepo.BuildApiUrl("Config.Ship", "", "", "", ""));
                         HttpResponseMessage response1 = client1.PostAsync("", new StringContent(json.ToString(), Encoding.UTF8, "application/json")).Result;
                         SWGoH.Log.ConsoleMessageNotInFile("Added new Allias Char " + newchar.Name + "!!!!!!!");
                     }
@@ -515,7 +678,7 @@ namespace SWGoH
                 }
             }
         }
-        private void AddCharacterToAlliasConfig(CharacterDto newchar, List<BsonDocument> Base_ID_Document)
+        private void AddCharacterToAlliasConfig(CharacterDto newchar, List<BsonDocument> Base_ID_Document, List<ConfigAbility> abilities)
         {
             //try
             //{
@@ -549,13 +712,23 @@ namespace SWGoH
                     if (newchar.SWGoHUrl != null)
                     {
                         if (result1.Command != "") Base_ID = result1.Command;
-                        JObject data = new JObject(
-                            new JProperty("Name", result1.Name),
-                            new JProperty("Command", Base_ID),
-                            new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
-                            new JProperty("Aliases", result1.Aliases));
 
-                        var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                        CharacterConfigDto data = new CharacterConfigDto();
+                        data.Name = result1.Name;
+                        data.Command = Base_ID;
+                        data.SWGoHUrl = newchar.SWGoHUrl.Replace(replace, "");
+                        data.Aliases = result1.Aliases;
+                        data.Abilities = abilities;
+
+                        //JObject data = new JObject(
+                        //    new JProperty("Name", result1.Name),
+                        //    new JProperty("Command", Base_ID),
+                        //    new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
+                        //    new JProperty("Aliases", result1.Aliases),
+                        //    new JProperty("Abilities", abilities));
+
+                        string json = JsonConvert.SerializeObject(data, Converter.Settings);
+                        var httpContent = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
                         var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Config.Character", result1.Id.ToString());
                         using (HttpClient client1 = new HttpClient())
                         {
@@ -566,11 +739,21 @@ namespace SWGoH
                 else
                 {
                     if (newchar.SWGoHUrl == null) newchar.SWGoHUrl = "";
-                    JObject data = new JObject(
-                        new JProperty("Name", newchar.Name),
-                        new JProperty("Command", Base_ID),
-                        new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
-                        new JProperty("Aliases", new List<string> { }));
+
+                    CharacterConfigDto data = new CharacterConfigDto();
+                    data.Name = newchar.Name;
+                    data.Command = Base_ID;
+                    data.SWGoHUrl = newchar.SWGoHUrl.Replace(replace, "");
+                    data.Aliases = new List<string> { };
+                    data.Abilities = abilities;
+
+                    //JObject data = new JObject(
+                    //    new JProperty("Name", newchar.Name),
+                    //    new JProperty("Command", Base_ID),
+                    //    new JProperty("SWGoHUrl", newchar.SWGoHUrl.Replace(replace, "")),
+                    //    new JProperty("Aliases", new List<string> { }),
+                    //    new JProperty("Abilities", abilities));
+
                     string json = JsonConvert.SerializeObject(data, Converter.Settings);
                     using (HttpClient client1 = new HttpClient())
                     {
@@ -749,7 +932,7 @@ namespace SWGoH
                     string name = html.Substring(start, length);
                     ret.Name = WebUtility.HtmlDecode(name);
                 }
-                Position = index + restindexEnd;
+                Position = restindexEnd;
             }
             
 
@@ -757,7 +940,7 @@ namespace SWGoH
 
             return ret;
         }
-        private bool FillShipData(ShipDto newchar)
+        private bool FillShipData(ShipDto newship)
         {
             string html = "";
             bool ret1 = false;
@@ -766,7 +949,7 @@ namespace SWGoH
 
             using (WebClient web = new System.Net.WebClient())
             {
-                Uri uri = new Uri("https://swgoh.gg" + newchar.SWGoHUrl);
+                Uri uri = new Uri("https://swgoh.gg" + newship.SWGoHUrl);
                 try
                 {
                     html = web.DownloadString(uri);
@@ -781,7 +964,7 @@ namespace SWGoH
             string strtosearch = "";
             int index = 0;
             int Position = 0;
-
+            #region Stars
             bool exit = false;
             int star = 0;
             while (!exit)
@@ -795,9 +978,10 @@ namespace SWGoH
                     Position = index + strtosearch.Length;
                 }
             }
-            newchar.Stars = 7 - star;
+            newship.Stars = 7 - star;
+            #endregion
 
-
+            #region lvl
             string value;
             strtosearch = "ship-portrait-full-frame-level\">";
             index = html.IndexOf(strtosearch);
@@ -814,10 +998,749 @@ namespace SWGoH
                     Position = restindexEnd;
 
                     ret1 = int.TryParse(value, out valueint);
-                    if (ret1) newchar.Level = valueint;
+                    if (ret1) newship.Level = valueint;
                 }
             }
+            else return true;  ////not opened ship
+            #endregion
 
+            #region Skills
+            strtosearch = "<h4>Skills</h4>";
+            index = html.IndexOf(strtosearch, Position);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                exit = false;
+                strtosearch = "<h5>Primary Attributes</h5>";
+                int EndIndex = html.IndexOf(strtosearch, Position);
+                if (EndIndex != -1)
+                {
+                    while (!exit)
+                    {
+                        Ability abil = new Ability();
+
+                        string reststrTosearchStart = "data-title=\"";
+                        int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                        string reststrTosearchEnd = "\">";
+                        int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                        if (restindexStart != -1 && restindexEnd != -1)
+                        {
+                            int start = restindexStart + reststrTosearchStart.Length;
+                            int length = restindexEnd - start;
+                            value = html.Substring(start, length);
+                            Position = restindexEnd;
+                            SetAbilityPropertiesFromString(abil, value);
+                        }
+                        else exit = true;
+
+                        reststrTosearchStart = "pc-skill-name\">";
+                        restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                        reststrTosearchEnd = "</div>";
+                        restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                        if (restindexStart != -1 && restindexEnd != -1)
+                        {
+                            int start = restindexStart + reststrTosearchStart.Length;
+                            int length = restindexEnd - start;
+                            value = html.Substring(start, length);
+                            Position = restindexEnd;
+                            abil.Name = value;
+                            if (newship.Abilities == null) newship.Abilities = new List<Ability>();
+                            newship.Abilities.Add(abil);
+                        }
+                        else exit = true;
+
+                        if (Position == -1 || Position > EndIndex) exit = true;
+                    }
+                }
+            }
+            #endregion
+
+            #region Crew
+            strtosearch = "<h4>Crew</h4>";
+            index = html.IndexOf(strtosearch, Position);
+            Position = index + strtosearch.Length;
+
+            strtosearch = "<h5>Power</h5>";
+            int indexPower = html.IndexOf(strtosearch, Position);
+
+            if (index != -1)
+            {
+                exit = false;
+                while (!exit)
+                {
+                    string reststrTosearchStart = "title=\"";
+                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    string reststrTosearchEnd = "\">";
+                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        if (restindexStart == -1 || restindexEnd == -1 || restindexStart > indexPower) exit = true;
+                        else
+                        {
+                            int start = restindexStart + reststrTosearchStart.Length;
+                            int length = restindexEnd - start;
+                            value = html.Substring(start, length);
+                            Position = restindexEnd;
+
+                            value = FixCharacterName(WebUtility.HtmlDecode(value));
+
+                            if (newship.Crew == null) newship.Crew = new List<string>();
+                            newship.Crew.Add(value);
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Power
+            if (indexPower != -1)
+            {
+                string reststrTosearchStart = "stat-value\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position - 50);
+                string reststrTosearchEnd = "</span>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+
+                    ret1 = int.TryParse(value, out valueint);
+                    if (ret1) newship.Power = valueint;
+                }
+            }
+            #endregion
+
+            #region General
+            strtosearch = "<h5>General</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "group-stat-value\"";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "<";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = int.TryParse(value, out valueint);
+                    if (ret1) newship.Health = valueint;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = int.TryParse(value, out valueint);
+                    if (ret1) newship.Protection = valueint;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = int.TryParse(value, out valueint);
+                    if (ret1) newship.Speed = valueint;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.CriticalDamage = valuedecimal;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.Potency = valuedecimal;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.Tenacity = valuedecimal;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.HealthSteal = valuedecimal;
+                }
+
+            }
+            #endregion
+
+            #region Physical Offense
+            strtosearch = "<h5>Physical Offense</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "group-stat-value\"";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "<";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = int.TryParse(value, out valueint);
+                    if (ret1) newship.PhysicalDamage = valueint;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.PhysicalCriticalChance = valuedecimal;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = int.TryParse(value, out valueint);
+                    if (ret1) newship.ArmorPenetration = valueint;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.PhysicalAccuracy = valuedecimal;
+                }
+            }
+            #endregion
+
+            #region Physical Survivability
+            strtosearch = "<h5>Physical Survivability</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "group-stat-value\"";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "<";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.Armor = valuedecimal;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.DodgeChance = valuedecimal;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.PhysicalCriticalAvoidance = valuedecimal;
+                }
+            }
+            #endregion
+
+            #region Special Offense
+            strtosearch = "<h5>Special Offense</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "group-stat-value\"";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "<";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
+                    if (ret1) newship.SpecialDamage = valueint;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.SpecialCriticalChance = valuedecimal;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = int.TryParse(value.Replace('%', ' ').Trim(), out valueint);
+                    if (ret1) newship.ResistancePenetration = valueint;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.SpecialAccuracy = valuedecimal;
+                }
+            }
+            #endregion
+
+            #region Special Survivability
+            strtosearch = "<h5>Special Survivability</h5>";
+            index = html.IndexOf(strtosearch);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "group-stat-value\"";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "<";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.Resistance = valuedecimal;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.DeflectionChance = valuedecimal;
+                }
+
+                reststrTosearchStart = "group-stat-value\"";
+                restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                reststrTosearchEnd = "<";
+                restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (value.StartsWith('>')) value = value.Remove(0, 1);
+                    else
+                    {
+                        //remove tooltip
+                        reststrTosearchStart = ">";
+                        restindexStart = value.IndexOf(reststrTosearchStart);
+                        if (restindexStart != -1)
+                        {
+                            start = restindexStart + reststrTosearchStart.Length;
+                            value = value.Substring(start);
+                        }
+                    }
+
+                    ret1 = double.TryParse(value.Replace('%', ' ').Trim(), NumberStyles.Any, new CultureInfo("en-US"), out valuedecimal);
+                    if (ret1) newship.SpecialCriticalAvoidance = valuedecimal;
+                }
+            }
+            #endregion
 
             return true;
         }
@@ -1031,7 +1954,7 @@ namespace SWGoH
             if (index != -1)
             {
                 exit = false;
-                strtosearch = "<h4>Gear Needed</h4>";
+                strtosearch = "<h5>Primary Attributes</h5>";
                 int EndIndex = html.IndexOf(strtosearch, Position);
                 if (EndIndex != -1)
                 {

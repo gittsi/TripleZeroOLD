@@ -15,6 +15,13 @@ namespace SWGoH.Enums.ModEnum
         Percentage = 1
     }
 
+    public enum ConfigAbilityType
+    {
+        [Description("omega")]
+        Omega = 1,
+        [Description("zeta")]
+        Zeta = 2
+    }
     public enum ModStatType
     {
         [Description("none")]

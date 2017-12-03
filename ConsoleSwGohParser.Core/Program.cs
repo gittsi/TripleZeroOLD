@@ -53,8 +53,9 @@ namespace SWGoH
 
             //SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , PriorityEnum.DailyUpdate, Enums.QueueEnum.QueueType.Guild, DateTime.UtcNow);
             //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
-            //ExecuteCommand(Command.UpdatePlayer, "newholborn");
+            //ExecuteCommand(Command.UpdatePlayer, "oaraug", null);
             //ExecuteCommand(Command.Test, "newholborn", null);
+            //ExecuteCommand(Command.GetNewCharacters, "aramil", null); return;
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
@@ -163,7 +164,12 @@ namespace SWGoH
                     {
                         SWGoH.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true, true);
-                        QueueMethods.RemoveFromQueu(q);
+                        if (q!= null) QueueMethods.RemoveFromQueu(q);
+                        break;
+                    }
+                case Command.GetNewCharactersAndAbilities:
+                    {
+                        //SWGoH.PlayerDto.GetNewCharactersAndAbilities();
                         break;
                     }
                 case Command.Help:
