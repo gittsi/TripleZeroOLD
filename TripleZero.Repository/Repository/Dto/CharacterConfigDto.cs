@@ -11,6 +11,7 @@ namespace TripleZero.Repository.Dto
         public string Command { get; set; }
         public List<string> Aliases { get; set; }
         public string SWGoHUrl { get; set; }
+        public List<AbilityConfigDto> Abilities { get; set; }
     }
 
     

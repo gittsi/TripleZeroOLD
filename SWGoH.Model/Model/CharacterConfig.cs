@@ -16,6 +16,7 @@ namespace SWGoH.Model
         public string Command { get; set; }
         public List<string> Aliases { get; set; }
         public string SWGoHUrl { get; set; }
+        public List<AbilityConfig> Abilities { get; set; }
         public override bool LoadedFromCache { get => base.LoadedFromCache; set => base.LoadedFromCache = value; }
     }
 }

@@ -296,6 +296,47 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
+        public async Task<List<Player>> GetGuildCharacterAbilities(List<string> playersName,string characterFullName)
+        {
+            await Task.FromResult(1);
+
+            string functionName = "GetGuildCharacterAbilitiesRepo";
+            string key = "key";
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var guild = (List<Player>)objCache;
+                guild.ForEach(p => p.LoadedFromCache = true);
+                return guild;
+            }
+
+            //var queryData = string.Concat("{\"Characters.Nm\":\"", characterFullName, "\"}"); didn't work
+            var orderby = "{\"LastSwGohUpdated\":-1}";
+            var fields = "{\"PlayerName\": 1,\"Characters.Ab\": 1,\"Characters.Nm\": 1}";
+
+            string url = BuildApiUrl("Player", null /*queryData*/, orderby, null, fields);
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+                    List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, JSonConverterSettings.Settings);
+                    List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
+                    p.ForEach(t => t.Characters?.RemoveAll(l => l.Name != characterFullName));
+
+
+                    var players = _Mapper.Map<List<Player>>(p);
+                    //load to cache
+                    await cacheClient.AddToRepositoryCache(functionName, key, players, 30);
+                    return players;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
         public async Task<List<Player>> GetAllPlayersNoCharactersNoShips()
         {
             await Task.FromResult(1);

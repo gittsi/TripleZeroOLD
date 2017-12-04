@@ -404,5 +404,81 @@ namespace TripleZero.Modules
             await messageLoading.DeleteAsync();
         }
 
+        [Command("guildCharacterZeta", RunMode = RunMode.Async)]
+        [Summary("Get zeta report for specific character in specified guild")]
+        [Remarks("*guildZeta {guildAlias or guildId} {characterAlias}*")]
+        [Alias("gz")]
+        public async Task GetGuildZetas(string guildAlias,string characterAlias)
+        {
+            guildAlias = guildAlias.Trim();
+            characterAlias = characterAlias.Trim();
+
+            string retStr = "";
+            //get from cache if possible and exit sub
+            string functionName = "guildZetas";
+            string key = string.Concat(guildAlias);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show all zets in the specified character```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
+
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
+            if (guildConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
+                return;
+            }
+
+            var characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByAlias(characterAlias).Result;
+            if (characterConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any character with alias ***{characterAlias}***");
+                await messageLoading.DeleteAsync();
+                return;
+            }
+
+            var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+
+            var players = IResolver.Current.MongoDBRepository.GetGuildCharacterAbilities(result.Players.Select(p=>p.PlayerName).ToList<string>() , characterConfig.Name).Result;
+
+            //var orderedPlayers =
+            //            players.OrderBy(player =>
+            //                player.Characters?
+            //                                 .OrderByDescending(dir => dir.Abilities?.Sum(t=>t?.Level))
+            //                                 .Select(dir => dir)
+                            
+            //        );
+
+            var orderedPlayers = players.OrderByDescending(t => t?.Characters?[0]?.Abilities?.Sum(m => m?.Level));
+
+
+            foreach (var player in orderedPlayers)
+            {
+                if (player.Characters == null) { retStr += $"{player.PlayerName} don't have characters!!!!\n"; continue; }
+                var character = player.Characters.FirstOrDefault();
+                if (character.Abilities == null) retStr += $"{player.PlayerName} - {character.Name} no abilities!!!!!!\n";
+                retStr += $"{player.PlayerName} {character.Abilities?.Sum(r => r.Level)}\n";
+
+               
+            }
+
+            //int counter = 1;
+            //foreach (var player in result)
+            //{
+
+            //    retStr += $"\n{counter}) {player.PlayerName} ({player.PlayerNameInGame})";
+            //    counter += 1;
+            //}
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
+            await ReplyAsync($"{retStr}");
+            await messageLoading.DeleteAsync();
+        }
+
     }
 }
