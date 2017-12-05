@@ -414,15 +414,15 @@ namespace TripleZero.Modules
             characterAlias = characterAlias.Trim();
 
             string retStr = "";
-            //get from cache if possible and exit sub
-            string functionName = "guildZetas";
-            string key = string.Concat(guildAlias);
-            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
-            if (!string.IsNullOrWhiteSpace(retStr))
-            {
-                await ReplyAsync($"{retStr}");
-                return;
-            }
+            ////get from cache if possible and exit sub
+            //string functionName = "guildZetas";
+            //string key = string.Concat(guildAlias);
+            //retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
+            //if (!string.IsNullOrWhiteSpace(retStr))
+            //{
+            //    await ReplyAsync($"{retStr}");
+            //    return;
+            //}
 
             string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show all zets in the specified character```";
             var messageLoading = await ReplyAsync($"{loadingStr}");
@@ -458,14 +458,71 @@ namespace TripleZero.Modules
             var orderedPlayers = players.OrderByDescending(t => t?.Characters?[0]?.Abilities?.Sum(m => m?.Level));
 
 
+            var dictZeta = new Dictionary<string, int>();
             foreach (var player in orderedPlayers)
             {
-                if (player.Characters == null) { retStr += $"{player.PlayerName} don't have characters!!!!\n"; continue; }
+                retStr += "\n";
+                //playerCount += 1;
+                //if (player.Characters == null) { retStr += $"{playerCount}.{player.PlayerName} don't have characters!!!!\n"; continue; }
                 var character = player.Characters.FirstOrDefault();
-                if (character.Abilities == null) retStr += $"{player.PlayerName} - {character.Name} no abilities!!!!!!\n";
-                retStr += $"{player.PlayerName} {character.Abilities?.Sum(r => r.Level)}\n";
+                //if (character.Abilities == null) retStr += $"{playerCount}.{player.PlayerName} - {character.Name} no abilities!!!!!!\n";
 
-               
+                int countZeta = 0;
+                List<string> zetas = new List<string>();
+                //retStr += $"{playerCount}.{player.PlayerName} : ";
+                
+                foreach (var ability in character.Abilities)
+                {                    
+                    var configAbility = characterConfig.Abilities?.Where(p => p.Name == ability.Name).FirstOrDefault();
+                    
+                    if(configAbility?.AbilityType== AbilityType.Zeta)
+                    {
+                        if(ability.Level==ability.MaxLevel)
+                        {
+                            countZeta += 1;
+                            zetas.Add(ability.Name);
+                        }
+                    }                   
+                }
+
+                dictZeta.Add(string.Concat(player.PlayerName," : ", string.Join(" - ", zetas.ToArray()),"\n"), countZeta);
+
+                
+
+                //if (countZeta > 0)
+                //{                    
+                //    retStr += string.Join(" - ", zetas.ToArray());
+                //}
+
+                //retStr += $"{player.PlayerName} {character.Abilities?.Sum(r => r.Level)}\n";
+
+                //if (retStr.Length > 1800)
+                //{
+                //    await ReplyAsync($"{retStr}");
+                //    retStr = "";
+                //}
+            }
+
+            var dictOrdered = dictZeta.OrderByDescending(p => p.Value);
+            //var finalDict = new Dictionary<int, KeyValuePair<string, int>>();
+
+            //int count = 1;
+            //foreach(var row in dictOrdered)
+            //{
+            //    finalDict.Add(count, row);
+            //    count += 1;
+            //}
+
+            int count = 1;
+            foreach (var keyvalue in dictOrdered)
+            {
+                retStr += $"{count}. {keyvalue.Key}";
+                    count += 1;
+                if (retStr.Length > 1800)
+                {
+                    await ReplyAsync($"{retStr}");
+                    retStr = "";
+                }
             }
 
             //int counter = 1;
@@ -475,7 +532,7 @@ namespace TripleZero.Modules
             //    retStr += $"\n{counter}) {player.PlayerName} ({player.PlayerNameInGame})";
             //    counter += 1;
             //}
-            await cacheClient.AddToModuleCache(functionName, key, retStr);
+            //await cacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
             await messageLoading.DeleteAsync();
         }

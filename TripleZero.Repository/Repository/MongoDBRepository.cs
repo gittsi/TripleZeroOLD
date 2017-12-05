@@ -301,7 +301,7 @@ namespace TripleZero.Repository
             await Task.FromResult(1);
 
             string functionName = "GetGuildCharacterAbilitiesRepo";
-            string key = "key";
+            string key = $"{playersName}-{characterFullName}";
             var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
