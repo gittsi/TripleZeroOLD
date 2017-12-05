@@ -38,7 +38,7 @@ namespace SWGoH
         public static string GetGuildNameFromAlias(string Alias)
         {
             GuildConfigDto guild = GuildConfigDto.GetGuildFromAllias(Alias);
-            if (guild == null) return "";
+            if (guild == null) return Alias;
             return guild.Name;
         }
         public void ParseSwGoh()

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,38 @@ namespace SWGoH
                     else return null;
                 }
                 return null;
+            }
+        }
+
+        public static bool AddGuildToConfig(string pname,int SWGoHId , string SWGoHUrl)
+        {
+            try
+            {
+                if (GetGuildFromName(pname) != null) return true;
+                using (HttpClient client = new HttpClient())
+                {
+                    JObject data = new JObject(
+                            new JProperty("Name", pname),
+                            new JProperty("Aliases", new List<string> { }),
+                            new JProperty("SWGoHId", SWGoHId),
+                            new JProperty("SWGoHUrl", SWGoHUrl));
+
+                    var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                    var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Config.Guild", "", "", "", ""));
+                    HttpResponseMessage response = client.PostAsync(requestUri, httpContent).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        SWGoH.Log.ConsoleMessage("Added Guild To Config.Guild:" + pname);
+                        return true;
+                    }
+                    return false;
+                    
+                }
+            }
+            catch(Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("ERROR Adding guild to Config.Guild :" + pname);
+                return false;
             }
         }
     }
