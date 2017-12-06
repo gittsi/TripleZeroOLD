@@ -296,12 +296,12 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
-        public async Task<List<Player>> GetGuildCharacterAbilities(List<string> playersName,string characterFullName)
+        public async Task<List<Player>> GetGuildCharactersAbilities(List<string> playersName)
         {
             await Task.FromResult(1);
 
-            string functionName = "GetGuildCharacterAbilitiesRepo";
-            string key = $"{playersName}-{characterFullName}";
+            string functionName = "GetGuildCharactersAbilitiesRepo";
+            string key = $"{HashKey.GetStringSha256Hash(string.Join("",playersName))}";
             var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
@@ -323,8 +323,6 @@ namespace TripleZero.Repository
                     var response = await client.GetStringAsync(url);
                     List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, JSonConverterSettings.Settings);
                     List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
-                    p.ForEach(t => t.Characters?.RemoveAll(l => l.Name != characterFullName));
-
 
                     var players = _Mapper.Map<List<Player>>(p);
                     //load to cache
@@ -336,6 +334,21 @@ namespace TripleZero.Repository
             {
                 throw new ApplicationException(ex.Message);
             }
+        }
+        public async Task<List<Player>> GetGuildCharacterAbilities(List<string> playersName,string characterFullName)
+        {
+            var players = await GetGuildCharactersAbilities(playersName);
+            var retPlayers = new List<Player>();
+            retPlayers.AddRange(players);
+
+
+            retPlayers.ForEach(t => t.Characters?.RemoveAll(l => l.Name != characterFullName));
+            //var retPlayers = from player in players
+            //             from character in player.Characters
+            //             where(character.Name==characterFullName)                         
+            //             select player;
+
+            return retPlayers;            
         }
         public async Task<List<Player>> GetAllPlayersNoCharactersNoShips()
         {
