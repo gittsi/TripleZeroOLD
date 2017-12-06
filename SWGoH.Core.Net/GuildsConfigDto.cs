@@ -81,7 +81,7 @@ namespace SWGoH
             }
             catch(Exception e)
             {
-                SWGoH.Log.ConsoleMessage("ERROR Adding guild to Config.Guild :" + pname);
+                SWGoH.Log.ConsoleMessage("ERROR Adding guild to Config.Guild :" + pname + " : " + e.Message);
                 return false;
             }
         }

@@ -312,5 +312,34 @@ namespace SWGoH
             }
             return false;
         }
+        internal static bool FindPlayer(string playername)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var queryData = string.Concat("&q={\"Name\":\"", playername, "\"}");
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", queryData, "", "", "");
+
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "" && response != "[  ]")
+                    {
+                        List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                        QueueDto result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
+                        if (result1 != null)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                return false;
+            }
+            return false;
+        }
     }
 }

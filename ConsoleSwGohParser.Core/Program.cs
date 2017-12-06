@@ -55,7 +55,8 @@ namespace SWGoH
             //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
             //ExecuteCommand(Command.UpdatePlayer, "oaraug", null);
             //ExecuteCommand(Command.Test, "newholborn", null);
-            ExecuteCommand(Command.UpdateUnknownGuild, "122#@#the-allidnce-pi", null); return;
+            //ExecuteCommand(Command.UpdateGuildWithNoChars, "41st", null);return;
+            //ExecuteCommand(Command.UpdateUnknownGuild, "122#@#the-allidnce-pi", null); return;
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
@@ -147,7 +148,7 @@ namespace SWGoH
                             }
                             catch (Exception e)
                             {
-                                SWGoH.Log.ConsoleMessage(pname + " ERROR");
+                                SWGoH.Log.ConsoleMessage(pname + " ERROR : " + e.Message);
                             }
                         }
                         break;
@@ -182,13 +183,15 @@ namespace SWGoH
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0)
                         {
                             guild.UpdateOnlyGuildWithNoChars(mExportMethod);
+                            guild.CheckForNewPlayers();
+
                             if (q != null && q.Priority == PriorityEnum.ManualLoad)
                             {
                                 QueueMethods.RemoveFromQueu(q);
                             }
                             else
                             {
-                                QueueMethods.UpdateQueueAndProcessLater(q, guild, 24.2, false);
+                                QueueMethods.UpdateQueueAndProcessLater(q, guild, 24.1, false);
                             }
                         }
                         break;

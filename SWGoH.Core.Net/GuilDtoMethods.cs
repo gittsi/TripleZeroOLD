@@ -220,6 +220,23 @@ namespace SWGoH
                 }
             }
         }
+        public void CheckForNewPlayers()
+        {
+            //Add new players
+            for (int i = 0; i < PlayerNames.Count; i++)
+            {
+                SWGoH.PlayerDto player = new PlayerDto(PlayerNames[i]);
+                if (!QueueMethods.FindPlayer(PlayerNames[i]))
+                {
+                    SWGoH.Log.ConsoleMessage((i+1).ToString() +   ") NOT Found Player in Queue : " + PlayerNames[i]);
+                    SWGoH.QueueMethods.AddPlayer(PlayerNames[i], Enums.QueueEnum.Command.UpdatePlayer, PriorityEnum.DailyUpdate, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
+                }
+                else
+                {
+                    SWGoH.Log.ConsoleMessage((i + 1).ToString() + ") Found Player in Queue : " + PlayerNames[i] );
+                }
+            }
+        }
         public void UpdateOnlyGuildWithNoChars(ExportMethodEnum ExportMethod)
         {
             int count = 0;
