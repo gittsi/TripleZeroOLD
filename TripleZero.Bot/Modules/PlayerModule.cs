@@ -194,7 +194,7 @@ namespace TripleZero.Modules
                 retStr += string.Format("{0} is missing **{1} abilities**\n", character.Key, character.MissingLevels);
             }
 
-            retStr += "\n**Levels Characters** : {0}\n";
+            retStr += "\n**Level Characters**\n";
             retStr += string.Format("**lvl<50** : {0}\n", charsLessThan50Level.Count());
             retStr += string.Format("**lvl 50-59** : {0}\n", chars50_59Level.Count());
             retStr += string.Format("**lvl 60-69** : {0}\n", chars60_69Level.Count());
@@ -202,7 +202,7 @@ namespace TripleZero.Modules
             retStr += string.Format("**lvl 80-84** : {0}\n", chars80_84Level.Count());
             retStr += string.Format("**lvl 85** : {0}\n", chars85Level.Count());
 
-            retStr += "\n**Levels Ships** : {0}\n";
+            retStr += "\n**Level Ships**\n";
             retStr += string.Format("**lvl<50** : {0}\n", shipsLessThan50Level.Count());
             retStr += string.Format("**lvl 50-59** : {0}\n", ships50_59Level.Count());
             retStr += string.Format("**lvl 60-69** : {0}\n", ships60_69Level.Count());
@@ -212,7 +212,7 @@ namespace TripleZero.Modules
 
 
 
-            retStr += "\n**Mods** : {0}\n";
+            retStr += "\n**Mods**\n";
             retStr += string.Format("{0} activated characters with **no mods** : {0}\n", noMods.Count());
             retStr += string.Format("**1 mod** : {0}\n", oneMod.Count());
             retStr += string.Format("**2 mods** : {0}\n", twoMod.Count());
@@ -221,13 +221,13 @@ namespace TripleZero.Modules
             retStr += string.Format("**5 mods** : {0}\n", fiveMod.Count());
             retStr += string.Format("**6 mods** : {0}\n", sixMod.Count());
 
-            retStr += "\n**Mods Level** : {0}\n";
+            retStr += "\n**Mods Level**\n";
             retStr += string.Format("{0} mods at **level <9** : {0}\n", modsLevelLessThan9.Count());
             retStr += string.Format("{0} mods at **level 9-11** : {0}\n", modsLevel9_11.Count());
             retStr += string.Format("{0} mods at **level 12-14** : {0}\n", modsLevel12_14.Count());
             retStr += string.Format("{0} mods at **level 15** : {0}\n", modsLevel15.Count());
 
-            retStr += "\n**Gear** : {0}\n";
+            retStr += "\n**Gear**\n";
             retStr += string.Format("**4 or less** : {0}\n", gearLessThan5.Count());
             retStr += string.Format("**5-7** : {0}\n", gear5_7.Count());
             retStr += string.Format("**8-9** : {0}\n", gear8_9.Count());
