@@ -191,7 +191,7 @@ namespace SWGoH
                             }
                             else
                             {
-                                QueueMethods.UpdateQueueAndProcessLater(q, guild, 24.1, false);
+                                if (q!=null) QueueMethods.UpdateQueueAndProcessLater(q, guild, 24.1, false);
                             }
                         }
                         break;

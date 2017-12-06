@@ -148,6 +148,7 @@ namespace SWGoH
         }
         public static QueueDto GetQueu()
         {
+            bool onlymanual = SWGoH.Settings.appSettings.UpdateOnlyManual;
             try
             {
                 MongoDBRepo mongo = new MongoDBRepo();
@@ -176,7 +177,7 @@ namespace SWGoH
                         if (found != null)
                         {
                             DateTime nextrun = DateTime.Parse(found.NextRunDate).ToUniversalTime();
-                            if (DateTime.UtcNow < nextrun)
+                            if (DateTime.UtcNow < nextrun || (onlymanual && found.Priority != PriorityEnum.ManualLoad))
                             {
                                 found.Status = QueueStatus.PendingProcess;
 

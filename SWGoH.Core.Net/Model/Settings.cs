@@ -51,6 +51,8 @@ namespace SWGoH
         public  double MinutesUntilNextProcess { get; set; }
         public int LogToFile { get; set; }
         public string Database { get; set; }
+
+        public bool UpdateOnlyManual { get; set; }
         public int DatabaseID1 { get; set; }
         public int DatabaseID2 { get; set; }
         public string ComputerName { get; set; }
