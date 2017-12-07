@@ -9,7 +9,7 @@ namespace SWGoH
     public partial class PlayerDto
     {
         private System.Net.WebClient web = null;
-        
+
         public PlayerDto(string name)
         {
             PlayerName = name;
@@ -24,7 +24,16 @@ namespace SWGoH
         public int GPships { get; set; }
         public List<CharacterDto> Characters { get; set; }
         public List<ShipDto> Ships { get; set; }
+        public ArenaDto Arena { get; set; }
     }
+
+    public class ArenaDto
+    {
+        public int CurrentRank { get; set; }
+        public int AverageRank { get; set; }
+        public List<string> ArenaTeam { get; set; }
+    }
+
     public enum ExportMethodEnum
     {
         File = 1,
