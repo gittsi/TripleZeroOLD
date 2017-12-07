@@ -379,7 +379,7 @@ namespace TripleZero.Repository
 
                     var players = _Mapper.Map<List<Player>>(ret);
                     //load to cache
-                    await cacheClient.AddToRepositoryCache(functionName, key, players,30);
+                    await cacheClient.AddToRepositoryCache(functionName, key, players,60);
                     return players;
                 }
             }
