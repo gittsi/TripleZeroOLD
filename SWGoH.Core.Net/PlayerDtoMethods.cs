@@ -2651,6 +2651,38 @@ namespace SWGoH
             }
         }
 
+        public static void TestZetas()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string url = SWGoH.MongoDBRepo.BuildApiUrl("Config.Character", "&q={}", "", "", "");
+
+                string response = client.GetStringAsync(url).Result;
+                if (response != "" && response != "[  ]")
+                {
+                    List<CharacterConfigDto> document = BsonSerializer.Deserialize<List<CharacterConfigDto>>(response);
+
+                    int totalzetacount = 0;
+                    int characterzeta = 0;
+                    if (document != null)
+                    {
+                        foreach (CharacterConfigDto character in document)
+                        {
+                            characterzeta = 0;
+                            if (character.Abilities != null)
+                            {
+                                foreach (ConfigAbility ability in character.Abilities)
+                                {
+                                    if (ability.AbilityType == ConfigAbilityType.Zeta) characterzeta++;
+                                }
+                            }
+                            totalzetacount += characterzeta;
+                        }
+                    }
+                }
+            }
+        }
+
         #region Convertions
         private ModStat GetModFromString(string value, string value1)
         {
