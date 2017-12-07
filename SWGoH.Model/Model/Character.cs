@@ -12,6 +12,16 @@ namespace SWGoH.Model
         public int Stars { get; set; }
         public int Gear { get; set; }
         public int Level { get; set; }
+        public bool IsUnlocked
+        {
+            get
+            {
+                if (this.Level > 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
         public int Power { get; set; }
         public int StatPower { get; set; }
         public List<Ability> Abilities { get; set; }

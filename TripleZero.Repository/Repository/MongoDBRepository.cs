@@ -296,7 +296,7 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
-        public async Task<List<Player>> GetGuildCharactersAbilities(List<string> playersName)
+        public async Task<IEnumerable<Player>> GetGuildCharactersAbilities(List<string> playersName)
         {
             await Task.FromResult(1);
 
@@ -305,14 +305,18 @@ namespace TripleZero.Repository
             var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
-                var guild = (List<Player>)objCache;
-                guild.ForEach(p => p.LoadedFromCache = true);
-                return guild;
+                var players = (List<Player>)objCache;
+                ////var retGuild = new List<Player>(guild);
+                //List<Player> retGuild=  new List<Player>();
+                //retGuild.AddRange(guild);
+
+                players.ForEach(p => p.LoadedFromCache = true);
+                return players;
             }
 
             //var queryData = string.Concat("{\"Characters.Nm\":\"", characterFullName, "\"}"); didn't work
             var orderby = "{\"LastSwGohUpdated\":-1}";
-            var fields = "{\"PlayerName\": 1,\"Characters.Ab\": 1,\"Characters.Nm\": 1}";
+            var fields = "{\"PlayerName\": 1,\"PlayerNameInGame\": 1,\"Characters.Ab\": 1,\"Characters.Nm\": 1,\"Characters.Lvl\": 1}";
 
             string url = BuildApiUrl("Player", null /*queryData*/, orderby, null, fields);
 
@@ -325,6 +329,7 @@ namespace TripleZero.Repository
                     List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
 
                     var players = _Mapper.Map<List<Player>>(p);
+                    List<Player> retPlayers = new List<Player>();                    
                     //load to cache
                     await cacheClient.AddToRepositoryCache(functionName, key, players, 30);
                     return players;
@@ -335,18 +340,13 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-        public async Task<List<Player>> GetGuildCharacterAbilities(List<string> playersName,string characterFullName)
+        public async Task<IEnumerable<Player>> GetGuildCharacterAbilities(List<string> playersName,string characterFullName)
         {
             var players = await GetGuildCharactersAbilities(playersName);
-            var retPlayers = new List<Player>();
-            retPlayers.AddRange(players);
-
-
-            retPlayers.ForEach(t => t.Characters?.RemoveAll(l => l.Name != characterFullName));
-            //var retPlayers = from player in players
-            //             from character in player.Characters
-            //             where(character.Name==characterFullName)                         
-            //             select player;
+            var retPlayers = from player in players
+                             from character in player.Characters
+                             where (character.Name == characterFullName)
+                             select new Player { PlayerName= player.PlayerName, PlayerNameInGame= player.PlayerNameInGame, Characters = new List<Character>() { character } } ;            
 
             return retPlayers;            
         }
