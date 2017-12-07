@@ -52,10 +52,12 @@ namespace SWGoH
             //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 3, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
 
             //SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , PriorityEnum.DailyUpdate, Enums.QueueEnum.QueueType.Guild, DateTime.UtcNow);
-            //ExecuteCommand(Command.GetNewCharacters, "aramil"); return; 
-            //ExecuteCommand(Command.UpdatePlayer, "oaraug", null);
-            //ExecuteCommand(Command.Test, "newholborn", null);
             //ExecuteCommand(Command.GetNewCharacters, "aramil", null); return;
+            //ExecuteCommand(Command.TestZetas, "aramil", null); return;
+            ExecuteCommand(Command.UpdatePlayer, "newholborn", null);
+            //ExecuteCommand(Command.Test, "newholborn", null);
+            //ExecuteCommand(Command.UpdateGuildWithNoChars, "41st", null);return;
+            //ExecuteCommand(Command.UpdateUnknownGuild, "122#@#the-allidnce-pi", null); return;
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
@@ -127,17 +129,43 @@ namespace SWGoH
                         }
                         return ret;
                     }
+                case Command.UpdateUnknownGuild:
+                    {
+                        string command = pname;
+                        string[] opponent = command.Split("#@#");
+                        if (opponent.Length > 0)
+                        {
+                            try
+                            {
+                                string IDstr = opponent[0];
+                                string guildname = opponent[1];
+                                int guildID = int.Parse(IDstr);
+                                string guildURL = "/" + IDstr + "/" + guildname + "/";
+                                bool ret = SWGoH.GuildConfigDto.AddGuildToConfig(guildname, guildID,guildURL );
+                                if (ret)
+                                {
+                                    ExecuteCommand(Command.UpdateGuild, guildname, null);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                SWGoH.Log.ConsoleMessage(pname + " ERROR : " + e.Message);
+                            }
+                        }
+                        break;
+                    }
                 case Command.UpdateGuild:
                     {
                         SWGoH.GuildDto guild = new GuildDto();
                         guild.Name = GuildDto.GetGuildNameFromAlias(pname);
                         guild.ParseSwGoh();
+                        if (guild.PlayerNames!= null && guild.PlayerNames.Count> 0)
                         for (int i = 0; i < guild.PlayerNames.Count; i++)
                         {
-                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, PriorityEnum.DailyUpdate, QueueType.Player, DateTime.UtcNow);
+                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, PriorityEnum.ManualLoad, QueueType.Player, DateTime.UtcNow);
                         }
-                        QueueMethods.AddPlayer(pname, Command.UpdateGuildWithNoChars, PriorityEnum.DailyUpdate, QueueType.Guild, DateTime.UtcNow);
-
+                        QueueMethods.AddPlayer(pname, Command.UpdateGuildWithNoChars, PriorityEnum.ManualLoad, QueueType.Guild, DateTime.UtcNow);
+                        if (q != null) QueueMethods.RemoveFromQueu(q);
                         break;
                     }
                 case Command.UpdatePlayers:
@@ -156,7 +184,16 @@ namespace SWGoH
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0)
                         {
                             guild.UpdateOnlyGuildWithNoChars(mExportMethod);
-                            QueueMethods.UpdateQueueAndProcessLater(q, guild, 24.2, false);
+                            guild.CheckForNewPlayers();
+
+                            if (q != null && q.Priority == PriorityEnum.ManualLoad)
+                            {
+                                QueueMethods.RemoveFromQueu(q);
+                            }
+                            else
+                            {
+                                if (q!=null) QueueMethods.UpdateQueueAndProcessLater(q, guild, 24.1, false);
+                            }
                         }
                         break;
                     }
@@ -165,11 +202,6 @@ namespace SWGoH
                         SWGoH.PlayerDto player = new PlayerDto(pname);
                         int ret = player.ParseSwGoh(mExportMethod, true, true);
                         if (q!= null) QueueMethods.RemoveFromQueu(q);
-                        break;
-                    }
-                case Command.GetNewCharactersAndAbilities:
-                    {
-                        //SWGoH.PlayerDto.GetNewCharactersAndAbilities();
                         break;
                     }
                 case Command.Help:
@@ -199,14 +231,14 @@ namespace SWGoH
                     {
                         //SwGoh.CharactersConfig.ExportCharacterFilesToDB();
 
-                        SWGoH.GuildDto guild = new GuildDto();
-                        guild.Name = GuildDto.GetGuildNameFromAlias("41st");
-                        guild.ParseSwGoh();
-                        for (int i = 0; i < guild.PlayerNames.Count; i++)
-                        {
-                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, PriorityEnum.DailyUpdate, QueueType.Player,DateTime.UtcNow );
-                        }
-                        QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars, PriorityEnum.DailyUpdate, QueueType.Guild, DateTime.UtcNow);
+                        //SWGoH.GuildDto guild = new GuildDto();
+                        //guild.Name = GuildDto.GetGuildNameFromAlias("41st");
+                        //guild.ParseSwGoh();
+                        //for (int i = 0; i < guild.PlayerNames.Count; i++)
+                        //{
+                        //    QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, PriorityEnum.DailyUpdate, QueueType.Player,DateTime.UtcNow );
+                        //}
+                        //QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars, PriorityEnum.DailyUpdate, QueueType.Guild, DateTime.UtcNow);
 
                         //QueueMethods.AddPlayer("newholborn", "up",3);
                         //QueueMethods.AddPlayer("oaraug", "up", 3);
@@ -217,6 +249,11 @@ namespace SWGoH
                         //{
                         //    QueueMethods.AddPlayer("tsitas_66", "up");
                         //}
+                        break;
+                    }
+                case Command.TestZetas:
+                    {
+                        SWGoH.PlayerDto.TestZetas();
                         break;
                     }
                 default:

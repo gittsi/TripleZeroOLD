@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using MongoDB.Bson.Serialization.Attributes;
-using SWGoH.Enums.ModEnum;
 
 namespace SWGoH
 {

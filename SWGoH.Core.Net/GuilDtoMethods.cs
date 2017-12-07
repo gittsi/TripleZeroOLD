@@ -38,7 +38,7 @@ namespace SWGoH
         public static string GetGuildNameFromAlias(string Alias)
         {
             GuildConfigDto guild = GuildConfigDto.GetGuildFromAllias(Alias);
-            if (guild == null) return "";
+            if (guild == null) return Alias;
             return guild.Name;
         }
         public void ParseSwGoh()
@@ -217,6 +217,23 @@ namespace SWGoH
                         PlayerNames.Add(value);
                     }
                     else exit = true;
+                }
+            }
+        }
+        public void CheckForNewPlayers()
+        {
+            //Add new players
+            for (int i = 0; i < PlayerNames.Count; i++)
+            {
+                SWGoH.PlayerDto player = new PlayerDto(PlayerNames[i]);
+                if (!QueueMethods.FindPlayer(PlayerNames[i]))
+                {
+                    SWGoH.Log.ConsoleMessage((i+1).ToString() +   ") NOT Found Player in Queue : " + PlayerNames[i]);
+                    SWGoH.QueueMethods.AddPlayer(PlayerNames[i], Enums.QueueEnum.Command.UpdatePlayer, PriorityEnum.DailyUpdate, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
+                }
+                else
+                {
+                    SWGoH.Log.ConsoleMessage((i + 1).ToString() + ") Found Player in Queue : " + PlayerNames[i] );
                 }
             }
         }
