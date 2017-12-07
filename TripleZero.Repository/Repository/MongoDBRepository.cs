@@ -296,7 +296,61 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
-        public async Task<List<Player>> GetAllPlayersWithoutCharacters()
+        public async Task<IEnumerable<Player>> GetGuildCharactersAbilities(List<string> playersName)
+        {
+            await Task.FromResult(1);
+
+            string functionName = "GetGuildCharactersAbilitiesRepo";
+            string key = $"{HashKey.GetStringSha256Hash(string.Join("",playersName))}";
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var players = (List<Player>)objCache;
+                ////var retGuild = new List<Player>(guild);
+                //List<Player> retGuild=  new List<Player>();
+                //retGuild.AddRange(guild);
+
+                players.ForEach(p => p.LoadedFromCache = true);
+                return players;
+            }
+
+            //var queryData = string.Concat("{\"Characters.Nm\":\"", characterFullName, "\"}"); didn't work
+            var orderby = "{\"LastSwGohUpdated\":-1}";
+            var fields = "{\"PlayerName\": 1,\"PlayerNameInGame\": 1,\"Characters.Ab\": 1,\"Characters.Nm\": 1,\"Characters.Lvl\": 1}";
+
+            string url = BuildApiUrl("Player", null /*queryData*/, orderby, null, fields);
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+                    List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, JSonConverterSettings.Settings);
+                    List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
+
+                    var players = _Mapper.Map<List<Player>>(p);
+                    List<Player> retPlayers = new List<Player>();                    
+                    //load to cache
+                    await cacheClient.AddToRepositoryCache(functionName, key, players, 30);
+                    return players;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+        public async Task<IEnumerable<Player>> GetGuildCharacterAbilities(List<string> playersName,string characterFullName)
+        {
+            var players = await GetGuildCharactersAbilities(playersName);
+            var retPlayers = from player in players
+                             from character in player.Characters
+                             where (character.Name == characterFullName)
+                             select new Player { PlayerName= player.PlayerName, PlayerNameInGame= player.PlayerNameInGame, Characters = new List<Character>() { character } } ;            
+
+            return retPlayers;            
+        }
+        public async Task<List<Player>> GetAllPlayersNoCharactersNoShips()
         {
             await Task.FromResult(1);
 
@@ -311,7 +365,7 @@ namespace TripleZero.Repository
             }
 
             var orderby = "{\"LastSwGohUpdated\":-1}";
-            var fields = "{\"Characters\": 0}";
+            var fields = "{\"Characters\": 0,\"Ships\": 0}";
 
             string url = BuildApiUrl("Player", null, orderby, null, fields);
             //string url = string.Format("https://api.mlab.com/api/1/databases/triplezero/collections/Player/?{0}&{1}&apiKey={2}", fields, orderby, apiKey);
@@ -325,7 +379,7 @@ namespace TripleZero.Repository
 
                     var players = _Mapper.Map<List<Player>>(ret);
                     //load to cache
-                    await cacheClient.AddToRepositoryCache(functionName, key, players,30);
+                    await cacheClient.AddToRepositoryCache(functionName, key, players,60);
                     return players;
                 }
             }
@@ -364,6 +418,42 @@ namespace TripleZero.Repository
                     //load to cache
                     await cacheClient.AddToRepositoryCache(functionName, key, charactersConfig, 30);
                     return charactersConfig;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
+        public async Task<List<ShipConfig>> GetShipsConfig()
+        {
+            string functionName = "GetShipsConfigRepo";
+            string key = "key";
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var shipsConfig = (List<ShipConfig>)objCache;
+                shipsConfig.ForEach(p => p.LoadedFromCache = true);
+                return shipsConfig;
+            }
+
+            string url = BuildApiUrl("Config.Ship", null, null, null, null);            
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+
+                    List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                    List<ShipConfigDto> ret = document.Select(b => BsonSerializer.Deserialize<ShipConfigDto>(b)).ToList();
+
+                    var shipsConfigDto = ret.OrderBy(p => p.Name).ToList();
+
+                    List<ShipConfig> shipsConfig = _Mapper.Map<List<ShipConfig>>(shipsConfigDto);
+                    //load to cache
+                    await cacheClient.AddToRepositoryCache(functionName, key, shipsConfig, 30);
+                    return shipsConfig;
                 }
             }
             catch (Exception ex)

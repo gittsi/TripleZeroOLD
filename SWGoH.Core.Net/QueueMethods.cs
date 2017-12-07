@@ -22,32 +22,66 @@ namespace SWGoH
         {
             try
             {
-                using (HttpClient client = new HttpClient())
+                MongoDBRepo mongo = new MongoDBRepo();
+                IMongoDatabase db = mongo.Connect();
+                if (db != null)
                 {
-                    JObject data = new JObject(
-                    new JProperty("Name", PlayerName),
-                    new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
-                    new JProperty("ProcessingStartDate", ""),
-                    new JProperty("NextRunDate", nextrundate.ToString ("o")),
-                    new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
-                    new JProperty("Priority", priority),
-                    new JProperty("Type", type),
-                    new JProperty("Command", cmd),
-                    new JProperty("ComputerName", ""));
-
-                    var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                    var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Queue", "", "", "", ""));
-                    HttpResponseMessage response = client.PostAsync(requestUri, httpContent).Result;
-                    if (response.IsSuccessStatusCode)
+                    IMongoCollection<QueueDto> collection = db.GetCollection<QueueDto>("Queue");
+                    if (collection != null)
                     {
-                        SWGoH.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
+                        FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Name", PlayerName);
+                        UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Name", PlayerName)
+                                                                                     .Set("InsertedDate", DateTime.UtcNow.ToString("o"))
+                                                                                     .Set("ProcessingStartDate", "")
+                                                                                     .Set("NextRunDate", nextrundate.ToString("o"))
+                                                                                     .Set("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess)
+                                                                                     .Set("Priority", priority)
+                                                                                     .Set("Type", type)
+                                                                                     .Set("Command", cmd)
+                                                                                     .Set("ComputerName", "");
+                        var opts = new FindOneAndUpdateOptions<QueueDto>()
+                        {
+                            IsUpsert = true,
+                            ReturnDocument = ReturnDocument.After,
+                            Sort = Builders<QueueDto>.Sort.Descending(r => r.Priority).Ascending(r => r.NextRunDate)
+                        };
+                        QueueDto found = collection.FindOneAndUpdate<QueueDto>(filter, update, opts);
+                        if (found != null)
+                        {
+                            SWGoH.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
+                        }
+                    }
+                }
+                else
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        JObject data = new JObject(
+                        new JProperty("Name", PlayerName),
+                        new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
+                        new JProperty("ProcessingStartDate", ""),
+                        new JProperty("NextRunDate", nextrundate.ToString("o")),
+                        new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
+                        new JProperty("Priority", priority),
+                        new JProperty("Type", type),
+                        new JProperty("Command", cmd),
+                        new JProperty("ComputerName", ""));
+
+                        var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                        var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Queue", "", "", "", ""));
+                        HttpResponseMessage response = client.PostAsync(requestUri, httpContent).Result;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            SWGoH.Log.ConsoleMessage("Added Player To Queu:" + PlayerName);
+                        }
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 SWGoH.Log.ConsoleMessage("Error Adding Player To Queu:" + e.Message);
             }
+            
         }
         public static void UpdateQueueAndProcessLater(QueueDto q, object whotoupdate , double hours,bool fromnow)
         {
@@ -63,15 +97,15 @@ namespace SWGoH
                 if (fromnow) nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
 
                 JObject data = new JObject(
-                                   new JProperty("Name", q.Name),
-                                   new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
-                                   new JProperty("ProcessingStartDate", ""),
-                                   new JProperty("NextRunDate", nextrun),
-                                   new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
-                                   new JProperty("Priority", q.Priority),
-                                   new JProperty("Type", q.Type),
-                                   new JProperty("Command", q.Command),
-                                   new JProperty("ComputerName", ""));
+                                    new JProperty("Name", q.Name),
+                                    new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
+                                    new JProperty("ProcessingStartDate", ""),
+                                    new JProperty("NextRunDate", nextrun),
+                                    new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.PendingProcess),
+                                    new JProperty("Priority", q.Priority),
+                                    new JProperty("Type", q.Type),
+                                    new JProperty("Command", q.Command),
+                                    new JProperty("ComputerName", ""));
 
                 var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                 var requestUri = SWGoH.MongoDBRepo.BuildApiUrlFromId("Queue", q.Id.ToString());
@@ -114,11 +148,11 @@ namespace SWGoH
         }
         public static QueueDto GetQueu()
         {
+            bool onlymanual = SWGoH.Settings.appSettings.UpdateOnlyManual;
             try
             {
                 MongoDBRepo mongo = new MongoDBRepo();
                 IMongoDatabase db = mongo.Connect();
-                db = null;
                 if (db != null)
                 {
                     SWGoH.Log.ConsoleMessageNotInFile("Getting from Queu!! (mongo)");
@@ -143,7 +177,7 @@ namespace SWGoH
                         if (found != null)
                         {
                             DateTime nextrun = DateTime.Parse(found.NextRunDate).ToUniversalTime();
-                            if (DateTime.UtcNow < nextrun)
+                            if (DateTime.UtcNow < nextrun || (onlymanual && found.Priority != PriorityEnum.ManualLoad))
                             {
                                 found.Status = QueueStatus.PendingProcess;
 
@@ -257,6 +291,35 @@ namespace SWGoH
                 using (HttpClient client = new HttpClient())
                 {
                     var queryData = string.Concat("&q={\"Name\":\"", playerName, "\",  \"Status\" : 1 }");
+                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", queryData, "", "", "");
+
+                    string response = client.GetStringAsync(url).Result;
+                    if (response != "" && response != "[  ]")
+                    {
+                        List<BsonDocument> document = BsonSerializer.Deserialize<List<BsonDocument>>(response);
+                        QueueDto result1 = BsonSerializer.Deserialize<QueueDto>(document.FirstOrDefault());
+                        if (result1 != null)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Error getting from Queu!!" + e.Message);
+                return false;
+            }
+            return false;
+        }
+        internal static bool FindPlayer(string playername)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var queryData = string.Concat("&q={\"Name\":\"", playername, "\"}");
                     string url = SWGoH.MongoDBRepo.BuildApiUrl("Queue", queryData, "", "", "");
 
                     string response = client.GetStringAsync(url).Result;

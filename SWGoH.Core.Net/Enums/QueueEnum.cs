@@ -14,6 +14,8 @@ namespace SWGoH.Enums.QueueEnum
         Help = 6,
         UnKnown = 7,
         Test = 8,
+        UpdateUnknownGuild = 9,
+        TestZetas = 10,
     }
 
     public enum QueueStatus

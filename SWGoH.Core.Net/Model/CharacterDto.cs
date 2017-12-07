@@ -186,7 +186,15 @@ namespace SWGoH
         public int MaxLevel { get; set; }
     }
 
-
+    public partial class ConfigAbility
+    {
+        public string Name { get; set; }
+        [JsonProperty("Type")]
+        [BsonElement("Type")]
+        [DefaultValue(1)]
+        [BsonDefaultValue(1)]
+        public ConfigAbilityType AbilityType { get; set; }
+    }
     
 
 

@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using MongoDB.Bson.Serialization.Attributes;
+using System.Text;
 
-namespace SWGoH
+namespace TripleZero.Repository.Dto
 {
-    public partial class ShipDto
+    internal class ShipDto
     {
         [BsonElement("Nm")]
         [JsonProperty("Nm")]
@@ -28,10 +30,8 @@ namespace SWGoH
         public int Power { get; set; }
         [JsonProperty("Ab")]
         [BsonElement("Ab")]
-        public List<Ability> Abilities { get; set; }
-
+        public List<ShipAbilityDto> Abilities { get; set; }
         public List<string> Crew { get; set; }
-
         #region General
         [JsonProperty("Hl")]
         [BsonElement("Hl")]
@@ -125,10 +125,5 @@ namespace SWGoH
         [BsonDefaultValue(0.0)]
         public double SpecialCriticalAvoidance { get; set; }
         #endregion
-    }
-
-    public partial class ShipDto
-    {
-        public static ShipDto FromJson(string json) => JsonConvert.DeserializeObject<ShipDto>(json, Converter.Settings);
     }
 }

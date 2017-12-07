@@ -4,14 +4,13 @@ using System.Collections.Generic;
 
 namespace TripleZero.Repository.Dto
 {
-    internal class CharacterConfigDto
+    internal class ShipConfigDto
     {
         public Nullable<ObjectId> Id { get; set; }
         public string Name { get; set; }
         public string Command { get; set; }
         public List<string> Aliases { get; set; }
         public string SWGoHUrl { get; set; }
-        public List<AbilityConfigDto> Abilities { get; set; }
     }
 
     
