@@ -57,7 +57,8 @@ namespace SWGoH
             //ExecuteCommand(Command.UpdatePlayer, "newholborn", null);
             //ExecuteCommand(Command.Test, "newholborn", null);
             //ExecuteCommand(Command.UpdateGuildWithNoChars, "41st", null);return;
-            //ExecuteCommand(Command.UpdateUnknownGuild, "122#@#the-allidnce-pi", null); return;
+            //ExecuteCommand(Command.UpdateGuild , "501st", null); return;
+            //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null); return;
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
@@ -110,7 +111,10 @@ namespace SWGoH
                         if (SWGoH.PlayerDto.isOnExit) return -1;
                         if (ret == 0 || (q != null && q.Priority == PriorityEnum.ManualLoad))
                         {
-                            QueueMethods.RemoveFromQueu(q);
+                            player.LastClassUpdated = DateTime.UtcNow;
+                            player.Export(mExportMethod);
+                            player.DeletePlayerFromDBAsync();
+                            if (q!=null) QueueMethods.RemoveFromQueu(q);
                         }
                         else if (ret == 1 || ret == 2)
                         {
@@ -137,14 +141,15 @@ namespace SWGoH
                         {
                             try
                             {
-                                string IDstr = opponent[0];
-                                string guildname = opponent[1];
+                                string guildRealName = opponent[0];
+                                string IDstr = opponent[1];
+                                string guildname = opponent[2];
                                 int guildID = int.Parse(IDstr);
                                 string guildURL = "/" + IDstr + "/" + guildname + "/";
-                                bool ret = SWGoH.GuildConfigDto.AddGuildToConfig(guildname, guildID,guildURL );
+                                bool ret = SWGoH.GuildConfigDto.AddGuildToConfig(guildname, guildID,guildURL, guildRealName );
                                 if (ret)
                                 {
-                                    ExecuteCommand(Command.UpdateGuild, guildname, null);
+                                    ExecuteCommand(Command.UpdateGuild, guildRealName, null);
                                 }
                             }
                             catch (Exception e)
@@ -160,11 +165,11 @@ namespace SWGoH
                         guild.Name = GuildDto.GetGuildNameFromAlias(pname);
                         guild.ParseSwGoh();
                         if (guild.PlayerNames!= null && guild.PlayerNames.Count> 0)
+                        QueueMethods.AddPlayer(pname, Command.UpdateGuildWithNoChars, PriorityEnum.ManualLoad, QueueType.Guild, DateTime.UtcNow);
                         for (int i = 0; i < guild.PlayerNames.Count; i++)
                         {
-                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, PriorityEnum.ManualLoad, QueueType.Player, DateTime.UtcNow);
+                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, PriorityEnum.ManualLoad, QueueType.Player, DateTime.UtcNow.AddSeconds ((double)i));
                         }
-                        QueueMethods.AddPlayer(pname, Command.UpdateGuildWithNoChars, PriorityEnum.ManualLoad, QueueType.Guild, DateTime.UtcNow);
                         if (q != null) QueueMethods.RemoveFromQueu(q);
                         break;
                     }
