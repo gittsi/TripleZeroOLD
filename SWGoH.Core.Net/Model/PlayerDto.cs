@@ -22,9 +22,9 @@ namespace SWGoH
         public Nullable<DateTime> LastClassUpdated { get; set; }
         public int GPcharacters { get; set; }
         public int GPships { get; set; }
+        public ArenaDto Arena { get; set; }
         public List<CharacterDto> Characters { get; set; }
         public List<ShipDto> Ships { get; set; }
-        public ArenaDto Arena { get; set; }
     }
 
     public class ArenaDto
