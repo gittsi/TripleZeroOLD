@@ -154,6 +154,8 @@ namespace SWGoH
 
             int retbool = -1;
 
+            FillArenaInfo(pname);
+
             web = new System.Net.WebClient();
             Uri uri = new Uri("https://swgoh.gg/u/" + pname + "/collection/");
 
@@ -191,6 +193,94 @@ namespace SWGoH
             }
             web = null;
             return retbool;
+        }
+
+        private void FillArenaInfo(string pname)
+        {
+            web = new System.Net.WebClient();
+            Uri uri = new Uri("https://swgoh.gg/u/" + pname + "/");
+
+            string html = "";
+            try
+            {
+                html = web.DownloadString(uri);
+            
+                Arena = new ArenaDto();
+
+                int valueint = 0;
+                bool ret1 = true;
+                string value = "";
+
+                string strtosearch = "Arena</div>";
+                int index = html.IndexOf(strtosearch);
+                int Position = index + strtosearch.Length;
+                if (index != -1)
+                {
+                    string reststrTosearchStart = "current-rank-value\">";
+                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    string reststrTosearchEnd = "</div>";
+                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value = html.Substring(start, length);
+                        Position = restindexEnd;
+
+                        ret1 = int.TryParse(value, out valueint);
+                        if (ret1) Arena.CurrentRank = valueint;
+                    }
+
+                    strtosearch = "Highest Rank";
+                    int EndArenaTeamindex = html.IndexOf(strtosearch, Position);
+
+                    bool exit = false;
+                    while (!exit)
+                    {
+                        reststrTosearchStart = "alt=\"";
+                        restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                        reststrTosearchEnd = "\"";
+                        restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                        if (restindexStart != -1 && restindexEnd != -1)
+                        {
+                            int start = restindexStart + reststrTosearchStart.Length;
+                            int length = restindexEnd - start;
+                            value = html.Substring(start, length);
+                            Position = restindexEnd;
+
+                            if (Arena.ArenaTeam == null) Arena.ArenaTeam = new List<string>();
+                            Arena.ArenaTeam.Add(value);
+                        }
+                        if (restindexStart == -1 || restindexStart > EndArenaTeamindex || Arena.ArenaTeam.Count == 5) exit = true;
+                    }
+
+                    strtosearch = "Average Rank";
+                    index = html.IndexOf(strtosearch);
+                    Position = index;
+                    if (index != -1)
+                    {
+                        reststrTosearchStart = "stat-item-value\">";
+                        restindexStart = html.IndexOf(reststrTosearchStart, Position-100);
+                        reststrTosearchEnd = "</div>";
+                        restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                        if (restindexStart != -1 && restindexEnd != -1)
+                        {
+                            int start = restindexStart + reststrTosearchStart.Length;
+                            int length = restindexEnd - start;
+                            value = html.Substring(start, length);
+                            Position = restindexEnd;
+
+                            ret1 = int.TryParse(value, out valueint);
+                            if (ret1) Arena.AverageRank = valueint;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Exception on reading Arena Info for Player : " + PlayerName + " : " + e.Message);
+                web = null;
+            }
         }
 
         private void FillPlayerShips(string pname, bool checkForCharAllias)
