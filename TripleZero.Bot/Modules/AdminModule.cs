@@ -10,6 +10,7 @@ using SWGoH.Model.Enums;
 using System.Diagnostics;
 using System.Globalization;
 using Discord;
+using TripleZero.Core.Caching;
 
 namespace TripleZero.Modules
 {
@@ -17,6 +18,8 @@ namespace TripleZero.Modules
     [Summary("Admin Commands")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         [Command("alias-remove", RunMode = RunMode.Async)]
         [Summary("Remove alias for specific character(Admin Command)")]
         [Remarks("*alias-remove {characterFullName} {alias}*")]
@@ -509,6 +512,22 @@ namespace TripleZero.Modules
             bool msIsNumber = int.TryParse(ms, out int delay);
             await Task.Delay(delay);            
             await ReplyAsync($"Delayed for {delay}ms");
+        }
+
+        [Command("clearcache", RunMode = RunMode.Async)]
+        [Summary("Clear Cache")]
+        [Remarks("*clearcache*")]
+        public async Task ClearCache()
+        {
+            try
+            {
+                await cacheClient.ClearAllCaches();
+                await ReplyAsync($"Caching is gone");
+            }
+            catch(Exception ex)
+            {
+                await ReplyAsync($"{ex.Message}");
+            }
         }
 
     }

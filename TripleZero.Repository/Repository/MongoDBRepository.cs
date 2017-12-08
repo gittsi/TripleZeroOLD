@@ -346,7 +346,7 @@ namespace TripleZero.Repository
             var retPlayers = from player in players
                              from character in player.Characters
                              where (character.Name == characterFullName)
-                             select new Player { PlayerName= player.PlayerName, PlayerNameInGame= player.PlayerNameInGame, Characters = new List<Character>() { character } } ;            
+                             select new Player { LoadedFromCache=player.LoadedFromCache, PlayerName= player.PlayerName, PlayerNameInGame= player.PlayerNameInGame, Characters = new List<Character>() { character } } ;            
 
             return retPlayers;            
         }
