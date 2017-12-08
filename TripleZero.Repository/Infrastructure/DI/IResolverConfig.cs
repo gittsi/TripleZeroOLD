@@ -17,6 +17,7 @@ namespace TripleZero.Repository.Infrastructure.DI
         internal SettingsConfiguration SettingsConfiguration { get { return Container.Resolve<SettingsConfiguration>(); } }        
         internal GuildSettings GuildSettings { get { return Container.Resolve<GuildSettings>(); } }
         internal CharacterSettings CharacterSettings { get { return Container.Resolve<CharacterSettings>(); } }
+        internal ShipSettings ShipSettings { get { return Container.Resolve<ShipSettings>(); } }
         internal ISWGoHRepository SWGoHRepository { get { return Container.Resolve<ISWGoHRepository>(); } }
         internal IMongoDBRepository MongoDBRepository { get { return Container.Resolve<IMongoDBRepository>(); } }
         internal IMappingConfiguration MappingConfiguration { get { return Container.Resolve<IMappingConfiguration>(); } }
@@ -29,7 +30,8 @@ namespace TripleZero.Repository.Infrastructure.DI
             builder.RegisterType<MappingConfiguration>().As<IMappingConfiguration>().SingleInstance();
             builder.RegisterType<ApplicationSettings>().SingleInstance();           
             builder.RegisterType<GuildSettings>().SingleInstance();
-            builder.RegisterType<CharacterSettings>().SingleInstance();            
+            builder.RegisterType<CharacterSettings>().SingleInstance();
+            builder.RegisterType<ShipSettings>().SingleInstance();
             builder.RegisterType<SettingsConfiguration>().As<ISettingsConfiguration>().SingleInstance();            
 
             //repositories

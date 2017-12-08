@@ -4,15 +4,19 @@ using System.Text;
 
 namespace SWGoH.Model
 {
-    public class Character
+    public class Character : Unit
     {
-        public string Name { get; set; }
-        public List<string> Tags { get; set; }
-        public string SWGoHUrl { get; set; }
-        public int Stars { get; set; }
         public int Gear { get; set; }
-        public int Level { get; set; }
-        public int Power { get; set; }
+        public bool IsUnlocked
+        {
+            get
+            {
+                if (this.Level > 0)
+                    return true;
+                else
+                    return false;
+            }
+        }
         public int StatPower { get; set; }
         public List<Ability> Abilities { get; set; }
         public GeneralStats GeneralStats { get; set; }
