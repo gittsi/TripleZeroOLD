@@ -16,6 +16,7 @@ namespace TripleZero.Repository
         Task<Guild> GetGuildPlayers(string guildName);
         Task<List<Player>> GetAllPlayersNoCharactersNoShips();
         Task<IEnumerable<Player>> GetGuildCharacterAbilities(List<string> playersName, string characterFullName);
+        Task<IEnumerable<Player>> GetGuildPlayersArena(List<string> playersName);
         Task<string> SendCharacterConfigToQueue();
         Task<string> SendPlayerToQueue(string playerName);
         Task<string> SendGuildToQueue(string guildName);

@@ -29,6 +29,7 @@ namespace TripleZero.Repository._Mapping
                     .ForMember(dest => dest.SWGoHUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))                    
                     .ForMember(dest => dest.GalacticPowerCharacters, src => src.MapFrom(source => source.GPcharacters))
                     .ForMember(dest => dest.GalacticPowerShips, src => src.MapFrom(source => source.GPships))
+                    .ForMember(dest => dest.Arena, src => src.MapFrom(source => source.Arena))
                     .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
@@ -80,6 +81,9 @@ namespace TripleZero.Repository._Mapping
 
                     cfg.CreateMap<ShipDto, Ship>()                    
                     .ForMember(dest => dest.Tags, src => src.Ignore())
+                    ;
+
+                    cfg.CreateMap<ArenaDto, Arena>()                    
                     ;
 
                     //queue
