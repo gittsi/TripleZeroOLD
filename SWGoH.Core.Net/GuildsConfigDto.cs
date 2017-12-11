@@ -54,15 +54,15 @@ namespace SWGoH
             }
         }
 
-        public static bool AddGuildToConfig(string pname,int SWGoHId , string SWGoHUrl)
+        public static bool AddGuildToConfig(string pname,int SWGoHId , string SWGoHUrl, string GuildRealName)
         {
             try
             {
-                if (GetGuildFromName(pname) != null) return true;
+                if (GetGuildFromName(GuildRealName) != null) return true;
                 using (HttpClient client = new HttpClient())
                 {
                     JObject data = new JObject(
-                            new JProperty("Name", pname),
+                            new JProperty("Name", GuildRealName),
                             new JProperty("Aliases", new List<string> { }),
                             new JProperty("SWGoHId", SWGoHId),
                             new JProperty("SWGoHUrl", SWGoHUrl));
