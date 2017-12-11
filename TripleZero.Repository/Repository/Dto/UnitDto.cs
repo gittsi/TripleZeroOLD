@@ -9,6 +9,8 @@ namespace TripleZero.Repository.Dto
 {
     internal class UnitDto
     {
+        public List<string> Tags { get; set; }
+
         [BsonElement("Nm")]
         [JsonProperty("Nm")]
         public string Name { get; set; }
