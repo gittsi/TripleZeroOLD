@@ -29,6 +29,7 @@ namespace SWGoH
         [JsonProperty("Ab")]
         [BsonElement("Ab")]
         public List<Ability> Abilities { get; set; }
+        public List<string> ShipTags { get; set; }
 
         public List<string> Crew { get; set; }
 

@@ -30,7 +30,7 @@ namespace SWGoH
     public class ArenaDto
     {
         public int CurrentRank { get; set; }
-        public int AverageRank { get; set; }
+        public double AverageRank { get; set; }
         public List<string> ArenaTeam { get; set; }
     }
 

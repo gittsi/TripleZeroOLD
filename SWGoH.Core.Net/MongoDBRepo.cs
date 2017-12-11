@@ -62,22 +62,23 @@ namespace SWGoH
                     JObject data = new JObject(
                                            new JProperty("ComputerName", computername),
                                            new JProperty("Working", working));
-
-                    string url = SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "&q={\"ComputerName\":\"" + computername + "\"}", "", "&l=1", "");
-                    string response = client.GetStringAsync(url).Result;
-                    response = response.Replace(" ", "");
-                    if (working && (response == "" || response == "[]"))
+                    if (!working)
                     {
-                        var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
-                        var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
-                        HttpResponseMessage res = client.PostAsync(requestUri, httpContent).Result;
-                    }
-                    else
-                    {
-
                         var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
                         var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
                         HttpResponseMessage res = client.PutAsync(requestUri, httpContent).Result;
+                    }
+                    else {
+
+                        string url = SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "&q={\"ComputerName\":\"" + computername + "\"}", "", "&l=1", "");
+                        string response = client.GetStringAsync(url).Result;
+                        response = response.Replace(" ", "");
+                        if (working && (response == "" || response == "[]"))
+                        {
+                            var httpContent = new StringContent(data.ToString(), Encoding.UTF8, "application/json");
+                            var requestUri = string.Format(SWGoH.MongoDBRepo.BuildApiUrl("Parsers", "", "", "", ""));
+                            HttpResponseMessage res = client.PostAsync(requestUri, httpContent).Result;
+                        }
                     }
                 }
             }
