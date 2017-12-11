@@ -28,6 +28,16 @@ namespace SWGoH
                     appSettings.DatabaseID1 = 161455;
                     appSettings.DatabaseID2 = 61455;
                 }
+
+                try
+                {
+                    string computer = System.Environment.MachineName;
+                    if (computer != null && computer != "") appSettings.ComputerName = computer;
+                }
+                catch (Exception e)
+                {
+                    SWGoH.Log.ConsoleMessage("Error retrieving computer name");
+                }
             }
             else
             {
