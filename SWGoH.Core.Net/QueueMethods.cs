@@ -163,7 +163,7 @@ namespace SWGoH
                         //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Priority", 1);
                         //UpdateOptions opts2 = new UpdateOptions();
                         //opts2.IsUpsert = false;
-                        //UpdateResult res2 = collection.UpdateMany(filter2, update2, opts2);
+                        //DeleteResult res2 = collection.DeleteMany(filter2);
 
                         FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
                         UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o")).Set ("ComputerName" , SWGoH.Settings.appSettings.ComputerName);

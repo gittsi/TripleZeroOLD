@@ -35,5 +35,10 @@ namespace TripleZero.Core.Caching.Strategy
 
             return _cacheFactory.Get(key);
         }
+
+        public override void ClearCache()
+        {
+            _cacheFactory.Clear();
+        }
     }
 }

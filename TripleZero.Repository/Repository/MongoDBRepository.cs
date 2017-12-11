@@ -296,6 +296,46 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
+        public async Task<IEnumerable<Player>> GetGuildPlayersArena(List<string> playersName)
+        {
+            await Task.FromResult(1);
+
+            string functionName = "GetGuildPlayersArenaRepo";
+            string key = $"{HashKey.GetStringSha256Hash(string.Join("", playersName))}";
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var players = (List<Player>)objCache;
+
+                players.ForEach(p => p.LoadedFromCache = true);
+                return players;
+            }
+
+            var orderby = "{\"LastSwGohUpdated\":-1}";
+            var fields = "{\"PlayerName\": 1,\"PlayerNameInGame\": 1,\"Arena\": 1}";
+
+            string url = BuildApiUrl("Player", null /*queryData*/, orderby, null, fields);
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+                    List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, JSonConverterSettings.Settings);
+                    List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
+
+                    var players = _Mapper.Map<List<Player>>(p);
+                    //players.ForEach(pl => pl.Arena.ArenaTeam.Skip(1).ToList().Sort());
+                    //load to cache
+                    await cacheClient.AddToRepositoryCache(functionName, key, players, 30);
+                    return players;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
         public async Task<IEnumerable<Player>> GetGuildCharactersAbilities(List<string> playersName)
         {
             await Task.FromResult(1);
@@ -306,9 +346,6 @@ namespace TripleZero.Repository
             if (objCache != null)
             {
                 var players = (List<Player>)objCache;
-                ////var retGuild = new List<Player>(guild);
-                //List<Player> retGuild=  new List<Player>();
-                //retGuild.AddRange(guild);
 
                 players.ForEach(p => p.LoadedFromCache = true);
                 return players;
@@ -346,7 +383,7 @@ namespace TripleZero.Repository
             var retPlayers = from player in players
                              from character in player.Characters
                              where (character.Name == characterFullName)
-                             select new Player { PlayerName= player.PlayerName, PlayerNameInGame= player.PlayerNameInGame, Characters = new List<Character>() { character } } ;            
+                             select new Player { LoadedFromCache=player.LoadedFromCache, PlayerName= player.PlayerName, PlayerNameInGame= player.PlayerNameInGame, Characters = new List<Character>() { character } } ;            
 
             return retPlayers;            
         }

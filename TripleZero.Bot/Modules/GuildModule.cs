@@ -143,7 +143,7 @@ namespace TripleZero.Modules
             else
             {
                 await messageLoading.DeleteAsync();
-                retStr = $"I didn't find any players having `{guildConfig.Name} for guild {shipConfig.Name}`";
+                retStr = $"I didn't find any players having `{shipConfig.Name} for guild {guildConfig.Name}`";
                 await ReplyAsync($"{retStr}");
             }
             await messageLoading.DeleteAsync();

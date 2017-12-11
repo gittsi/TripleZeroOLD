@@ -9,6 +9,7 @@ namespace TripleZero.Core.Caching.Strategy
     {        
         bool CacheAdd(string key, object obj, Int16 minutesBeforeExpiration);
         bool CacheAdd(string key, object obj);
+        void ClearCache();
         object CacheGetFromKey(string key);
     }
 }

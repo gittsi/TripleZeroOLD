@@ -51,5 +51,15 @@ namespace TripleZero.Core.Caching.Strategy
             //return this._CachingLogDecorator.CacheGetFromKey(key);
             return this._CachingStrategy.CacheGetFromKey(key);
         }
+
+        public void ClearCache()
+        {
+            if (_CachingStrategy is null)
+            {
+                throw new Exception("You have to choose strategy");
+            }
+            //return this._CachingLogDecorator.CacheGetFromKey(key);
+            this._CachingStrategy.ClearCache();
+        }
     }
 }
