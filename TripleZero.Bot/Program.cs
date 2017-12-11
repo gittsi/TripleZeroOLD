@@ -98,15 +98,15 @@ namespace TripleZero
         {
             client.Log += Log;
             client.MessageReceived += HandleCommandAsync;
-            await commands.AddModuleAsync<GuildModule>();
-            await commands.AddModuleAsync<CharacterModule>();
-            await commands.AddModuleAsync<ModsModule>();
             await commands.AddModuleAsync<PlayerModule>();
+            await commands.AddModuleAsync<CharacterModule>();
+            await commands.AddModuleAsync<GuildModule>();
+            await commands.AddModuleAsync<ArenaModule>();            
+            await commands.AddModuleAsync<ModsModule>();            
             await commands.AddModuleAsync<AdminModule>();
             await commands.AddModuleAsync<HelpModule>();
             await commands.AddModuleAsync<FunModule>();
-            await commands.AddModuleAsync<DBStatsModule>();
-            await commands.AddModuleAsync<ArenaModule>();
+            await commands.AddModuleAsync<DBStatsModule>();            
         }
         //public async Task MessageReceived(SocketGuildUser user)
         //{
