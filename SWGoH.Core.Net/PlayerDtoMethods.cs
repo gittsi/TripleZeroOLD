@@ -276,7 +276,7 @@ namespace SWGoH
 
                             double valuedouble = 0.0;
                             ret1 = double.TryParse(value, out valuedouble);
-                            if (ret1) Arena.AverageRank = valueint;
+                            if (ret1) Arena.AverageRank = valuedouble;
                         }
                     }
                 }
