@@ -86,20 +86,19 @@ namespace TripleZero.Modules
                 aliasList.Add(leader);
                 aliasList.AddRange(aliasListNoLeader);
 
-                retStr += $"Player : {player.PlayerName}({player.PlayerNameInGame}) - **{string.Join(", ", aliasList)}**\n";
+                retStr += $"{player.PlayerName}({player.PlayerNameInGame}) - **{string.Join(", ", aliasList)}** - Average Rank : {player.Arena.AverageRank}\n";
 
                 dict.Add($"{player.PlayerName}({player.PlayerNameInGame}", $"{string.Join(", ", aliasList)}");
 
                 if (retStr.Length > 1800)
-                {
-                    await messageLoading.DeleteAsync();
+                {                    
                     await ReplyAsync($"{retStr}");
                     retStr = "";
                 }
             }
             //if(messageLoading!=null)
             //    await messageLoading.DeleteAsync();
-
+            await messageLoading.DeleteAsync();
             await ReplyAsync($"{retStr}");
 
             var groupList=dict.GroupBy(r => r.Value).ToDictionary(t => t.Key, t => t.Select(r => r.Key).ToList());
@@ -110,7 +109,7 @@ namespace TripleZero.Modules
             {
                 retStr2 += $"{row.Key} - **#{row.Value.Count()}**\n";
             }
-
+            
             await ReplyAsync($"{retStr2}");
         }      
 

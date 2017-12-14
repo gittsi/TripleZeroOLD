@@ -222,10 +222,10 @@ namespace TripleZero.Modules
             retStr += string.Format("**6 mods** : {0}\n", sixMod.Count());
 
             retStr += "\n**Mods Level**\n";
-            retStr += string.Format("{0} mods at **level <9** : {0}\n", modsLevelLessThan9.Count());
-            retStr += string.Format("{0} mods at **level 9-11** : {0}\n", modsLevel9_11.Count());
-            retStr += string.Format("{0} mods at **level 12-14** : {0}\n", modsLevel12_14.Count());
-            retStr += string.Format("{0} mods at **level 15** : {0}\n", modsLevel15.Count());
+            retStr += string.Format("{0} mods at **level <9**\n", modsLevelLessThan9.Count());
+            retStr += string.Format("{0} mods at **level 9-11**\n", modsLevel9_11.Count());
+            retStr += string.Format("{0} mods at **level 12-14**\n", modsLevel12_14.Count());
+            retStr += string.Format("{0} mods at **level 15**\n", modsLevel15.Count());
 
             retStr += "\n**Gear**\n";
             retStr += string.Format("**4 or less** : {0}\n", gearLessThan5.Count());

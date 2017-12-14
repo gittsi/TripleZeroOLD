@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using MongoDB.Bson.Serialization.Attributes;
+using System.Text;
 
-namespace SWGoH
+namespace TripleZero.Repository.Dto
 {
-    public partial class ShipDto
+    internal class UnitDto
     {
+        public List<string> Tags { get; set; }
+
         [BsonElement("Nm")]
         [JsonProperty("Nm")]
         public string Name { get; set; }
@@ -18,6 +22,7 @@ namespace SWGoH
         [DefaultValue(7)]
         [BsonDefaultValue(7)]
         public int Stars { get; set; }
+        
         [JsonProperty("Lvl")]
         [BsonElement("Lvl")]
         [DefaultValue(85)]
@@ -26,12 +31,9 @@ namespace SWGoH
         [JsonProperty("Pwr")]
         [BsonElement("Pwr")]
         public int Power { get; set; }
-        [JsonProperty("Ab")]
-        [BsonElement("Ab")]
-        public List<Ability> Abilities { get; set; }
-        public List<string> ShipTags { get; set; }
-
-        public List<string> Crew { get; set; }
+        [JsonProperty("SP")]
+        [BsonElement("SP")]
+        public int StatPower { get; set; }
 
         #region General
         [JsonProperty("Hl")]
@@ -71,8 +73,8 @@ namespace SWGoH
         public int ArmorPenetration { get; set; }
         [JsonProperty("PA")]
         [BsonElement("PA")]
-        [DefaultValue(0.0)]
-        [BsonDefaultValue(0.0)]
+        [DefaultValue(0)]
+        [BsonDefaultValue(0)]
         public double PhysicalAccuracy { get; set; }
         #endregion
 
@@ -125,11 +127,6 @@ namespace SWGoH
         [DefaultValue(0.0)]
         [BsonDefaultValue(0.0)]
         public double SpecialCriticalAvoidance { get; set; }
-        #endregion
-    }
-
-    public partial class ShipDto
-    {
-        public static ShipDto FromJson(string json) => JsonConvert.DeserializeObject<ShipDto>(json, Converter.Settings);
+        #endregion        
     }
 }

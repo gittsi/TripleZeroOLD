@@ -180,6 +180,7 @@ namespace SWGoH
             SWGoH.Log.ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
             if (!AddCharacters) return 1;
             bool ret = CheckLastUpdateWithCurrent(ExportMethod);
+            //ret = true;
             if (ret || checkForCharAllias)
             {
                 FillPlayerCharacters(html, Position, checkForCharAllias);
@@ -248,6 +249,9 @@ namespace SWGoH
                             value = html.Substring(start, length);
                             Position = restindexEnd;
 
+                            value = WebUtility.HtmlDecode(value);
+                            value = FixCharacterName(value);
+
                             if (Arena.ArenaTeam == null) Arena.ArenaTeam = new List<string>();
                             Arena.ArenaTeam.Add(value);
                         }
@@ -270,8 +274,9 @@ namespace SWGoH
                             value = html.Substring(start, length);
                             Position = restindexEnd;
 
-                            ret1 = int.TryParse(value, out valueint);
-                            if (ret1) Arena.AverageRank = valueint;
+                            double valuedouble = 0.0;
+                            ret1 = double.TryParse(value, out valuedouble);
+                            if (ret1) Arena.AverageRank = valuedouble;
                         }
                     }
                 }
@@ -1054,9 +1059,85 @@ namespace SWGoH
             string strtosearch = "";
             int index = 0;
             int Position = 0;
-            #region Stars
+            string value = "";
+
+            #region Labels
+            
+            strtosearch = "char-tag char-alignment";
+            index = html.IndexOf(strtosearch, Position);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position + 40);
+                string reststrTosearchEnd = "</a>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (newship.ShipTags == null) newship.ShipTags = new List<string>();
+                    newship.ShipTags.Add(value);
+                }
+            }
+
+            strtosearch = "char-tag char-role\">";
+            index = html.IndexOf(strtosearch, Position);
+            Position = index + strtosearch.Length;
+            if (index != -1)
+            {
+                string reststrTosearchStart = "\">";
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                string reststrTosearchEnd = "</a>";
+                int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                if (restindexStart != -1 && restindexEnd != -1)
+                {
+                    int start = restindexStart + reststrTosearchStart.Length;
+                    int length = restindexEnd - start;
+                    value = html.Substring(start, length);
+                    Position = restindexEnd;
+
+                    if (newship.ShipTags == null) newship.ShipTags = new List<string>();
+                    newship.ShipTags.Add(value);
+                }
+            }
+
             bool exit = false;
+            while (!exit)
+            {
+                strtosearch = "char-category\"";
+                index = html.IndexOf(strtosearch, Position);
+                Position = index + strtosearch.Length;
+                if (index != -1)
+                {
+                    string reststrTosearchStart = "\">";
+                    int restindexStart = html.IndexOf(reststrTosearchStart, Position);
+                    string reststrTosearchEnd = "</a>";
+                    int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
+                    if (restindexStart != -1 && restindexEnd != -1)
+                    {
+                        int start = restindexStart + reststrTosearchStart.Length;
+                        int length = restindexEnd - start;
+                        value = html.Substring(start, length);
+                        Position = restindexEnd;
+
+                        if (newship.ShipTags == null) newship.ShipTags = new List<string>();
+                        newship.ShipTags.Add(value);
+                    }
+                }
+                else
+                    exit = true;
+            }
+            #endregion
+
+
+            
+            #region Stars
             int star = 0;
+            exit = false;
             while (!exit)
             {
                 strtosearch = "ship-portrait-full-star-inactive";
@@ -1072,7 +1153,6 @@ namespace SWGoH
             #endregion
 
             #region lvl
-            string value;
             strtosearch = "ship-portrait-full-frame-level\">";
             index = html.IndexOf(strtosearch);
             Position = index + strtosearch.Length;

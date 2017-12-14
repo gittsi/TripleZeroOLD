@@ -54,7 +54,7 @@ namespace TripleZero.Repository._Mapping
                     ;
 
                     cfg.CreateMap<CharacterDto, PhysicalOffense>();
-                    cfg.CreateMap<CharacterDto, SpecialOffense>();
+                    cfg.CreateMap<CharacterDto, SpecialOffense>();                    
 
                     cfg.CreateMap<CharacterDto, Survivability>()
                     .ForMember(dest => dest.PhysicalSurvivability, src => src.MapFrom(s => s))
@@ -75,12 +75,35 @@ namespace TripleZero.Repository._Mapping
                     .ForMember(dest => dest.Abilities, src => src.MapFrom(s => s.Abilities))
                     .ForMember(dest => dest.GeneralStats, src => src.MapFrom(s => s))
                     .ForMember(dest => dest.OffenseStats, src => src.MapFrom(s => s))
-                    .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))
-                    .ForMember(dest => dest.Tags, src => src.MapFrom(s => s.CharacterTags))
+                    .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))                    
                     ;
 
-                    cfg.CreateMap<ShipDto, Ship>()                    
-                    .ForMember(dest => dest.Tags, src => src.Ignore())
+                    //shipDto to ship
+                    cfg.CreateMap<ShipAbilityDto, SWGoH.Model.Ability>();
+
+                    cfg.CreateMap<ShipDto, GeneralStats>();
+
+                    cfg.CreateMap<ShipDto, OffenseStats>()
+                    .ForMember(dest => dest.PhysicalOffense, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.SpecialOffense, src => src.MapFrom(s => s))
+                    ;
+
+                    cfg.CreateMap<ShipDto, PhysicalOffense>();
+                    cfg.CreateMap<ShipDto, SpecialOffense>();
+
+                    cfg.CreateMap<ShipDto, Survivability>()
+                    .ForMember(dest => dest.PhysicalSurvivability, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.SpecialSurvivability, src => src.MapFrom(s => s))
+                    ;
+
+                    cfg.CreateMap<ShipDto, PhysicalSurvivability>();
+                    cfg.CreateMap<ShipDto, SpecialSurvivability>();                    
+
+                    cfg.CreateMap<ShipDto, Ship>()
+                    .ForMember(dest => dest.Abilities, src => src.MapFrom(s => s.Abilities))
+                    .ForMember(dest => dest.GeneralStats, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.OffenseStats, src => src.MapFrom(s => s))
+                    .ForMember(dest => dest.Survivability, src => src.MapFrom(s => s))                    
                     ;
 
                     cfg.CreateMap<ArenaDto, Arena>()                    
