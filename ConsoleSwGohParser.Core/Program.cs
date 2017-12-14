@@ -58,7 +58,7 @@ namespace SWGoH
             //ExecuteCommand(Command.Test, "newholborn", null);
             //ExecuteCommand(Command.UpdateGuildWithNoChars, "41st", null);return;
             //ExecuteCommand(Command.UpdateGuild , "501st", null); return;
-            ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null); return;
+            //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null); return;
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
