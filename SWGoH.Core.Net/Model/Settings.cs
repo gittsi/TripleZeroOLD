@@ -12,7 +12,7 @@ namespace SWGoH
         public static bool Get()
         {
             string directory = AppDomain.CurrentDomain.BaseDirectory + "Settings";
-            string fname = directory + "\\" + "Settings" + @".json";
+            string fname = directory + "/" + "Settings" + @".json";
 
             if (File.Exists(fname))
             {
@@ -41,7 +41,7 @@ namespace SWGoH
             }
             else
             {
-                SWGoH.Log.ConsoleMessage("Unable To Load Settings");
+                SWGoH.Log.ConsoleMessage("Unable To Load Settings : " + directory + " : " + fname);
                 return false;
             }
             return true;

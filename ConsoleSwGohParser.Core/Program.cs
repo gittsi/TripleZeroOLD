@@ -20,18 +20,20 @@ namespace SWGoH
 
         static void Main(string[] args)
         {
-            _handler += new EventHandler(Handler);
-            SetConsoleCtrlHandler(_handler, true);
+            //_handler += new EventHandler(Handler);
+            //SetConsoleCtrlHandler(_handler, true);
 
-            if (!Settings.Get()) return;
+            if (Settings.Get())
+            {
 
-            SWGoH.MongoDBRepo.SetWorking(true);
+                SWGoH.MongoDBRepo.SetWorking(true);
 
-            if (SWGoH.Settings.appSettings.LogToFile == 1) SWGoH.Log.Initialize("log.txt" , SWGoH.Settings.appSettings.LogToFile == 1);
+                if (SWGoH.Settings.appSettings.LogToFile == 1) SWGoH.Log.Initialize("log.txt", SWGoH.Settings.appSettings.LogToFile == 1);
 
-            Timer t = new Timer(new TimerCallback(TimerProc));
-            t.Change(0, Settings.appSettings.GlobalConsoleTimerInterval);
+                Timer t = new Timer(new TimerCallback(TimerProc));
+                t.Change(0, Settings.appSettings.GlobalConsoleTimerInterval);
 
+            }
             Console.ReadLine();
 
             if (SWGoH.Settings.appSettings.LogToFile == 1) SWGoH.Log.FileFinalize();
@@ -92,6 +94,7 @@ namespace SWGoH
             }
             else
             {
+                //Update computername + Status : 1
                 Console.WriteLine("Waiting...  " + ((int)(Settings.appSettings.MinutesUntilNextProcess - minutes)).ToString () + " minutes");
             }
             isWorking = false;
@@ -272,44 +275,44 @@ namespace SWGoH
         }
 
 
-        [DllImport("Kernel32")]
-        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+        //[DllImport("Kernel32")]
+        //private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
 
-        private delegate bool EventHandler(CtrlType sig);
-        static EventHandler _handler;
+        //private delegate bool EventHandler(CtrlType sig);
+        //static EventHandler _handler;
 
-        enum CtrlType
-        {
-            CTRL_C_EVENT = 0,
-            CTRL_BREAK_EVENT = 1,
-            CTRL_CLOSE_EVENT = 2,
-            CTRL_LOGOFF_EVENT = 5,
-            CTRL_SHUTDOWN_EVENT = 6
-        }
+        //enum CtrlType
+        //{
+        //    CTRL_C_EVENT = 0,
+        //    CTRL_BREAK_EVENT = 1,
+        //    CTRL_CLOSE_EVENT = 2,
+        //    CTRL_LOGOFF_EVENT = 5,
+        //    CTRL_SHUTDOWN_EVENT = 6
+        //}
 
-        private static bool Handler(CtrlType sig)
-        {
-            switch (sig)
-            {
-                case CtrlType.CTRL_C_EVENT:
-                case CtrlType.CTRL_LOGOFF_EVENT:
-                case CtrlType.CTRL_SHUTDOWN_EVENT:
-                case CtrlType.CTRL_CLOSE_EVENT:
-                    {
-                        PlayerDto.isOnExit = true;
-                        isWorking = true;
-                        SWGoH.MongoDBRepo.SetWorking(false);
-                        if (workingQ != null)
-                        {
-                            QueueMethods.UpdateQueueAndProcessLater(workingQ, null , 0.5, true);
-                        }
-                        Thread.Sleep(5000);
-                        return false;
-                    }
-                default:
-                    return false;
-            }
-        }
+        //private static bool Handler(CtrlType sig)
+        //{
+        //    switch (sig)
+        //    {
+        //        case CtrlType.CTRL_C_EVENT:
+        //        case CtrlType.CTRL_LOGOFF_EVENT:
+        //        case CtrlType.CTRL_SHUTDOWN_EVENT:
+        //        case CtrlType.CTRL_CLOSE_EVENT:
+        //            {
+        //                PlayerDto.isOnExit = true;
+        //                isWorking = true;
+        //                SWGoH.MongoDBRepo.SetWorking(false);
+        //                if (workingQ != null)
+        //                {
+        //                    QueueMethods.UpdateQueueAndProcessLater(workingQ, null , 0.5, true);
+        //                }
+        //                Thread.Sleep(5000);
+        //                return false;
+        //            }
+        //        default:
+        //            return false;
+        //    }
+        //}
 
     }
 }
