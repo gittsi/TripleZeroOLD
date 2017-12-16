@@ -806,7 +806,7 @@ namespace SWGoH
 
                     if (newchar.SWGoHUrl != null)
                     {
-                        if (result1.Command != "") Base_ID = result1.Command;
+                        if (result1.Command == "") Base_ID = result1.Command;
 
                         CharacterConfigDto data = new CharacterConfigDto();
                         data.Name = result1.Name;
