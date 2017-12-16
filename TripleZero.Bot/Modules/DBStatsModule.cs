@@ -44,7 +44,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var result = IResolver.Current.MongoDBRepository.GetAllPlayersWithoutCharacters().Result;
+            var result = IResolver.Current.MongoDBRepository.GetAllPlayersNoCharactersNoShips().Result;
 
             if (result != null)
             {
@@ -80,7 +80,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var result = IResolver.Current.MongoDBRepository.GetAllPlayersWithoutCharacters().Result;
+            var result = IResolver.Current.MongoDBRepository.GetAllPlayersNoCharactersNoShips().Result;
 
             if (result != null)
             {

@@ -14,6 +14,7 @@ namespace TripleZero.Repository.EnumDto
         Help = 6,
         UnKnown = 7,
         Test = 8,
+        GetNewCharactersAndAbilities = 9
     }
     internal enum QueueStatus
     {

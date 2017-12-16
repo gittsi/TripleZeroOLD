@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TripleZero.Repository.Dto
 {
-    internal class GuildPlayerCharacterDto
+    internal class GuildPlayerUnitDto
     {
         public string Name { get; set; }
         public int Rarity { get; set; }

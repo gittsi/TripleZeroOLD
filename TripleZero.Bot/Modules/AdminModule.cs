@@ -10,6 +10,7 @@ using SWGoH.Model.Enums;
 using System.Diagnostics;
 using System.Globalization;
 using Discord;
+using TripleZero.Core.Caching;
 
 namespace TripleZero.Modules
 {
@@ -17,6 +18,8 @@ namespace TripleZero.Modules
     [Summary("Admin Commands")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
+        private CacheClient cacheClient = IResolver.Current.CacheClient;
+
         [Command("alias-remove", RunMode = RunMode.Async)]
         [Summary("Remove alias for specific character(Admin Command)")]
         [Remarks("*alias-remove {characterFullName} {alias}*")]
@@ -214,76 +217,6 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
 
 
-        }
-
-        [Command("characters-config", RunMode = RunMode.Async)]
-        //[Summary("Get config for specific character(Admin Command).\nUsage : ***$characters -config***")]
-        [Summary("Get config all characters(Admin Command)")]
-        [Remarks("*characters-config*")]
-        [Alias("config")]
-        public async Task GetCharacterConfig()
-        {
-            string retStr = "";
-            string chStr = "";
-
-            //check if user is in role in order to proceed with the action
-            var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
-            var userAllowed = DiscordRoles.UserInRole(Context, adminRole);
-            if (!userAllowed)
-            {
-                retStr = "\nNot authorized!!!";
-                await ReplyAsync($"{retStr}");
-                return;
-            }
-
-            var charactersConfig = IResolver.Current.CharacterSettings.GetCharactersConfig().Result;
-            int debugcount = 0;
-            foreach (var characterConfig in charactersConfig)
-            {
-                chStr = string.Format("\n{0}", characterConfig.Name);
-                string aliases = "";
-                int countAliases = 0;
-                foreach (var alias in characterConfig.Aliases)
-                {
-                    if (alias.ToString().ToLower() == "empty") break;
-
-                    countAliases += 1;
-                    aliases += string.Format("{0}", alias);
-                    if (countAliases != characterConfig.Aliases.Count()) aliases += ", ";
-                }
-                debugcount = debugcount + 1;
-                if (debugcount > 2000)
-                {
-                    break;
-                }
-
-                if (countAliases > 0)
-                {
-                    retStr += string.Format("{0} - Aliases:[{1}]", chStr, aliases);
-                }
-                else
-                {
-                    retStr += string.Format("{0} - **No aliases**", chStr);
-                }
-
-                if(string.IsNullOrWhiteSpace(characterConfig.Command))
-                {
-                    retStr += string.Format(" - **No Command**", chStr);
-                }
-                else
-                {
-                    retStr += string.Format(" - Command : {0}", characterConfig.Command);
-                }
-                
-
-                if (retStr.Length > 1800)
-                {
-                    await ReplyAsync($"{retStr}");
-                    retStr = "";
-                }
-            }
-
-            await ReplyAsync($"{retStr}");
         }
 
         [Command("queue", RunMode = RunMode.Async)]
@@ -579,6 +512,22 @@ namespace TripleZero.Modules
             bool msIsNumber = int.TryParse(ms, out int delay);
             await Task.Delay(delay);            
             await ReplyAsync($"Delayed for {delay}ms");
+        }
+
+        [Command("clearcache", RunMode = RunMode.Async)]
+        [Summary("Clear Cache")]
+        [Remarks("*clearcache*")]
+        public async Task ClearCache()
+        {
+            try
+            {
+                await cacheClient.ClearAllCaches();
+                await ReplyAsync($"Caching is gone");
+            }
+            catch(Exception ex)
+            {
+                await ReplyAsync($"{ex.Message}");
+            }
         }
 
     }

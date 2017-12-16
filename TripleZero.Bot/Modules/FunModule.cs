@@ -19,7 +19,7 @@ namespace TripleZero.Modules
 
             int roll = rand1.Next(0, 100);
 
-            await ReplyAsync($"You rolled {roll}!!!");
+            await ReplyAsync($"{this.Context.User.Username} rolled {roll}!!!");
         }
 
         [Command("imba", RunMode = RunMode.Async)]
@@ -27,7 +27,28 @@ namespace TripleZero.Modules
         [Remarks("*imba*")]        
         public async Task SayImba()
         {
-            await ReplyAsync("TSiTaS is imba!\nNo need to retrieve any data!\nFor now and till the end of time!!!");
+            var message = await ReplyAsync("Analyzing Data...");
+            await Task.Delay(200);
+            await message.ModifyAsync(msg => msg.Content = message.Content + ".....");
+            await Task.Delay(200);
+            await message.ModifyAsync(msg => msg.Content = message.Content + ".....");
+            await Task.Delay(200);
+            await message.ModifyAsync(msg => msg.Content = message.Content + ".....");
+            await Task.Delay(200);
+            await message.ModifyAsync(msg => msg.Content = message.Content + ".....");
+            await Task.Delay(200);
+            await message.ModifyAsync(msg => msg.Content = "Analyzing Data...");
+            await Task.Delay(200);
+            await message.ModifyAsync(msg => msg.Content = message.Content + ".....");
+            await Task.Delay(200);
+            await message.ModifyAsync(msg => msg.Content = message.Content + ".....");
+            await Task.Delay(200);
+            await message.ModifyAsync(msg => msg.Content = message.Content + ".....");
+            await Task.Delay(200);
+            await message.ModifyAsync(msg => msg.Content = message.Content + ".....");
+            await Task.Delay(200);
+            await message.DeleteAsync();
+            await ReplyAsync("\n```TSiTaS is imba!\nNo need to retrieve any data!```");
         }
     }
 }

@@ -106,6 +106,7 @@ namespace TripleZero
             await commands.AddModuleAsync<HelpModule>();
             await commands.AddModuleAsync<FunModule>();
             await commands.AddModuleAsync<DBStatsModule>();
+            await commands.AddModuleAsync<ArenaModule>();
         }
         //public async Task MessageReceived(SocketGuildUser user)
         //{

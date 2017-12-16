@@ -1,9 +1,11 @@
 ﻿using Autofac;
 using Discord.Commands;
 using Discord.WebSocket;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TripleZero.Bot.Validators;
 using TripleZero.Core.Settings;
 //using TripleZero.Infrastructure.DI;
 using TripleZero.Modules;
@@ -35,6 +37,7 @@ namespace TripleZero.Infrastructure.DI
             builder.RegisterType<PlayerModule>().InstancePerDependency();
             builder.RegisterType<AdminModule>().InstancePerDependency();
             builder.RegisterType<DBStatsModule>().InstancePerDependency();
+            builder.RegisterType<ArenaModule>().InstancePerDependency();
 
             //discord
             builder.RegisterType<DiscordSocketClient>().SingleInstance();
@@ -45,6 +48,26 @@ namespace TripleZero.Infrastructure.DI
             //repositories
             builder.RegisterType<SWGoHRepository>().As<ISWGoHRepository>().InstancePerDependency();
             builder.RegisterType<MongoDBRepository>().As<IMongoDBRepository>().InstancePerDependency();
+
+            //validator
+            //builder.RegisterType<FluentValidationModelValidatorProvider>().As<ModelValidatorProvider>();
+            builder.RegisterAssemblyTypes(System.Reflection.Assembly.GetExecutingAssembly())
+                   .Where(t => t.Name.EndsWith("Validator"))
+                   .AsImplementedInterfaces()
+                   .InstancePerLifetimeScope();
+
+            
+
+
+            //builder.RegisterType<AutofacValidatorFactory2>().As<IValidatorFactory>().SingleInstance();
+            builder.RegisterAssemblyTypes(System.Reflection.Assembly.GetExecutingAssembly())
+            .Where(t => t.IsClosedTypeOf(typeof(IValidator<>)))
+            .AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<PlayerValidator>().As<IValidator>().SingleInstance();
+
+            //container.Register(typeof(IValidator<>), new[] { System.Reflection.Assembly.GetExecutingAssembly() }, Lifestyle.Singleton);
+            //container.RegisterSingleton<IValidatorFactory>(() => new IocValidatorFactory(container));
 
             return builder.Build();
         }

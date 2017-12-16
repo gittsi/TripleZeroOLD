@@ -84,5 +84,46 @@ namespace TripleZero.Core.Caching
             string strCacheKey = string.Concat(functionName, "-", key);
             return cachingStrategyContext.CacheAdd(strCacheKey, retStr, minutesBeforeExpiration);
         }
+
+        private async Task ClearCache(CachingStrategyContext cachingStrategyContext)
+        {
+            await Task.FromResult(1);
+            cachingStrategyContext.ClearCache();
+        }
+        public async Task ClearRepositoryCache()
+        {
+            await Task.FromResult(1);
+
+            CachingStrategyContext _CachingStrategyContext = IResolver.Current.CachingStrategyContext;
+            CachingRepositoryStrategy _CachingRepositoryStrategy = IResolver.Current.CachingRepositoryStrategy;
+            _CachingStrategyContext.SetStrategy(_CachingRepositoryStrategy);
+
+            await ClearCache(_CachingStrategyContext);
+        }
+        public async Task ClearModuleCache()
+        {
+            await Task.FromResult(1);
+
+            CachingStrategyContext _CachingStrategyContext = IResolver.Current.CachingStrategyContext;
+            CachingModuleStrategy _CachingModuleStrategy = IResolver.Current.CachingModuleStrategy;
+            _CachingStrategyContext.SetStrategy(_CachingModuleStrategy);
+
+            await ClearCache(_CachingStrategyContext);
+        }
+        public async Task ClearAllCaches()
+        {
+            await Task.FromResult(1);
+
+            CachingStrategyContext _CachingStrategyContext = IResolver.Current.CachingStrategyContext;
+            CachingRepositoryStrategy _CachingRepositoryStrategy = IResolver.Current.CachingRepositoryStrategy;
+            CachingModuleStrategy _CachingModuleStrategy = IResolver.Current.CachingModuleStrategy;
+
+            _CachingStrategyContext.SetStrategy(_CachingRepositoryStrategy);
+            await ClearCache(_CachingStrategyContext);
+
+            _CachingStrategyContext.SetStrategy(_CachingModuleStrategy);
+            await ClearCache(_CachingStrategyContext);
+        }
+
     }
 }

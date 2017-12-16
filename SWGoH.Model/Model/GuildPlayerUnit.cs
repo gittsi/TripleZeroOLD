@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SWGoH.Model
 {
-    public class GuildPlayerCharacter
+    public class GuildPlayerUnit
     {
         public string PlayerName { get; set; }
         public int Rarity { get; set; }

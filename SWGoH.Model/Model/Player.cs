@@ -15,6 +15,8 @@ namespace SWGoH.Model
         public int GalacticPowerCharacters { get; set; }
         public int GalacticPowerShips { get; set; }
         public List<Character> Characters { get; set; }
+        public List<Ship> Ships { get; set; }
+        public Arena Arena { get; set; }
         public override bool LoadedFromCache { get => base.LoadedFromCache; set => base.LoadedFromCache = value; }
     }
 }

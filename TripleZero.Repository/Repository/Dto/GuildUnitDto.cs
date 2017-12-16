@@ -4,9 +4,9 @@ using System.Text;
 
 namespace TripleZero.Repository.Dto
 {
-    internal class GuildCharacterDto
+    internal class GuildUnitDto
     {
         public string Name { get; set; }
-        public List<GuildPlayerCharacterDto> Players { get; set; }
+        public List<GuildPlayerUnitDto> Players { get; set; }
     }
 }

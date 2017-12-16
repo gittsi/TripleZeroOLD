@@ -15,5 +15,7 @@ namespace TripleZero.Repository.Dto
         public int GPcharacters { get; set; }
         public int GPships { get; set; }
         public List<CharacterDto> Characters { get; set; }
+        public List<ShipDto> Ships { get; set; }
+        public ArenaDto Arena { get; set; }
     }   
 }

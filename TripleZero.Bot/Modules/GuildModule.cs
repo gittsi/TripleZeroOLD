@@ -18,13 +18,16 @@ namespace TripleZero.Modules
         private CacheClient cacheClient = IResolver.Current.CacheClient;
 
         [Command("guildCharacter", RunMode = RunMode.Async)]
-        [Summary("Get report for specific character in the given guild")]
+        [Summary("Get report for specific character in the specified guild")]
         [Remarks("*guildCharacter {guildAlias or guildId} {characterAlias}*")]
         [Alias("gc")]
         public async Task GetGuildCharacter(string guildAlias, string characterAlias)
         {
             guildAlias = guildAlias.Trim();
             characterAlias = characterAlias.Trim();
+
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show all players having {characterAlias}```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
 
             string retStr = "";
 
@@ -34,6 +37,7 @@ namespace TripleZero.Modules
             retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
             if (!string.IsNullOrWhiteSpace(retStr))
             {
+                await messageLoading.DeleteAsync();
                 await ReplyAsync($"{retStr}");
                 return;
             }
@@ -41,6 +45,7 @@ namespace TripleZero.Modules
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
+                await messageLoading.DeleteAsync();
                 await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
                 return;
             }
@@ -48,29 +53,100 @@ namespace TripleZero.Modules
             var characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByAlias(characterAlias).Result;
             if (characterConfig == null)
             {
+                await messageLoading.DeleteAsync();
                 await ReplyAsync($"I couldn't find any character with alias ***{characterAlias}***");
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacter(guildConfig.SWGoHId, characterConfig.Name);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildUnit(guildConfig.SWGoHId, characterConfig.Name);
 
             if (res != null)
             {                
                 retStr += $"\n***Guild : {guildConfig.Name} - Character : {characterConfig.Name}***";
 
+                int counter = 1;
                 foreach (var player in res.Players.OrderByDescending(p => p.Rarity).ThenByDescending(t => t.Power))
                 {
                     retStr += "\n";
-                    retStr += string.Format("{3}* - {2} - {1} : {0}", player.PlayerName, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity);
+                    retStr += string.Format("{4} : `{3}* - {2} - {1} : {0}`", player.PlayerName, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity, counter);
+                    counter += 1;
                 }
                 await ReplyAsync($"{retStr}");
             }
             else
             {
+                await messageLoading.DeleteAsync();
                 retStr = $"I didn't find any players having `{guildConfig.Name} for guild {characterConfig.Name}`";                
                 await ReplyAsync($"{retStr}");
             }
+            await messageLoading.DeleteAsync();
+            await cacheClient.AddToModuleCache(functionName, key, retStr);
+        }
 
+        //needs refactor with strategy
+        [Command("guildShip", RunMode = RunMode.Async)]
+        [Summary("Get report for specific ship in the specified guild")]
+        [Remarks("*guildShip {guildAlias or guildId} {shipAlias}*")]
+        [Alias("gs")]
+        public async Task GetGuildShip(string guildAlias, string shipAlias)
+        {
+            guildAlias = guildAlias.Trim();
+            shipAlias = shipAlias.Trim();
+
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show all players having {shipAlias}```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
+
+            string retStr = "";
+
+            //get from cache if possible and exit sub
+            string functionName = "guildCharacter";
+            string key = string.Concat(guildAlias, shipAlias);
+            retStr = cacheClient.GetMessageFromModuleCache(functionName, key);
+            if (!string.IsNullOrWhiteSpace(retStr))
+            {
+                await messageLoading.DeleteAsync();
+                await ReplyAsync($"{retStr}");
+                return;
+            }
+
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
+            if (guildConfig == null)
+            {
+                await messageLoading.DeleteAsync();
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                return;
+            }
+
+            var shipConfig = IResolver.Current.ShipSettings.GetShipConfigByAlias(shipAlias).Result;
+            if (shipConfig == null)
+            {
+                await messageLoading.DeleteAsync();
+                await ReplyAsync($"I couldn't find any ship with alias ***{shipAlias}***");
+                return;
+            }
+
+            var res = await IResolver.Current.SWGoHRepository.GetGuildUnit(guildConfig.SWGoHId, shipConfig.Name);
+
+            if (res != null)
+            {
+                retStr += $"\n***Guild : {guildConfig.Name} - Ship : {shipConfig.Name}***";
+
+                int counter = 1;
+                foreach (var player in res.Players.OrderByDescending(p => p.Rarity).ThenByDescending(t => t.Power))
+                {
+                    retStr += "\n";
+                    retStr += string.Format("{4} : `{3}* - {2} - {1} : {0}`", player.PlayerName, player.Level, player.Power.ToString().Length < 5 ? string.Concat(player.Power.ToString(), " ") : player.Power.ToString(), player.Rarity, counter);
+                    counter += 1;
+                }
+                await ReplyAsync($"{retStr}");
+            }
+            else
+            {
+                await messageLoading.DeleteAsync();
+                retStr = $"I didn't find any players having `{shipConfig.Name} for guild {guildConfig.Name}`";
+                await ReplyAsync($"{retStr}");
+            }
+            await messageLoading.DeleteAsync();
             await cacheClient.AddToModuleCache(functionName, key, retStr);
         }
 
@@ -91,7 +167,7 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildUnits(guildConfig.SWGoHId);
 
             if (res.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
@@ -109,12 +185,12 @@ namespace TripleZero.Modules
                                       from players in character.Players.Where(t => t.CombatType == UnitCombatType.Character && t.Level == level)
                                       select new
                                       {
-                                          character.CharacterName,
+                                          character.Name,
                                           players
                                       }
                                       ).ToList().OrderBy(p=>p.players.PlayerName);
 
-                    var listCharacters = characters.Select(x => new Tuple<string, GuildPlayerCharacter>(x.CharacterName, x.players)).ToList();
+                    var listCharacters = characters.Select(x => new Tuple<string, GuildPlayerUnit>(x.Name, x.players)).ToList();
 
                     if (listCharacters.Count() == 0) continue;                    
 
@@ -169,16 +245,20 @@ namespace TripleZero.Modules
         {
             guildAlias = guildAlias.Trim();
 
-            string retStr = "";
+            string retStr = "";            
+
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show players with less than 6k power```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
 
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
-                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
+                await ReplyAsync($"```I couldn't find any guild with alias ***{guildAlias}***```");
                 return;
             }
 
-            var res = await IResolver.Current.SWGoHRepository.GetGuildCharacters(guildConfig.SWGoHId);
+            var res = await IResolver.Current.SWGoHRepository.GetGuildUnits(guildConfig.SWGoHId);
 
             if (res.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
@@ -187,13 +267,28 @@ namespace TripleZero.Modules
                               select new
                               {
                                   players.PlayerName,
-                                  character.CharacterName,
+                                  character.Name,
                                   players.Power
                               }
                                        ).ToList().OrderBy(p => p.PlayerName);
+            
+            //var charactersNoSlacking = (from character in res
+            //                  from players in character.Players
+            //                  where(from t in players.CombatType ==UnitCombatType.Character )
+            //                  select new
+            //                  {
+            //                      players.PlayerName,
+            //                      character.CharacterName,
+            //                      players.Power
+            //                  }
+            //                           ).ToList().OrderBy(p => p.PlayerName);
 
-            var listCharacters = characters.Select(x => new Tuple<string, string, int>(x.PlayerName, x.CharacterName, x.Power)).ToList();
+            var listCharacters = characters.Select(x => new Tuple<string, string, int>(x.PlayerName, x.Name, x.Power)).ToList();
             var sumList = listCharacters.GroupBy(a => a.Item1).Select(p => new { PlayerName = p.Key, Count = p.Count() }).OrderByDescending(p=>p.Count);
+
+            await messageLoading.DeleteAsync();
+
+            retStr += $"```I found **{sumList.Count()}** slackers for guild **{guildConfig.Name}**```";
 
             foreach (var row in sumList)
             {
@@ -202,21 +297,22 @@ namespace TripleZero.Modules
                     await ReplyAsync($"{retStr}");
                     retStr = "";
                 }
-                retStr += $"\n**{row.PlayerName}** : {row.Count} character with less than 6000 power";
+                retStr += $"\n**{row.PlayerName}** : {row.Count} characters with less than 6000 power";
             }
 
             if (retStr.Length > 0)
-                await ReplyAsync($"{retStr}");
+                await ReplyAsync($"{retStr}");            
         }
 
-        [Command("tb", RunMode = RunMode.Async)]
+        [Command("gp", RunMode = RunMode.Async)]
         [Summary("Get details about Galactic Power for the specified guild")]
-        [Remarks("*tb {guildAlias or guildId}*")]
+        [Remarks("*gp {guildAlias or guildId}*")]
         public async Task GetCharacterGP(string guildAlias)
         {
             guildAlias = guildAlias.Trim();
 
             string retStr = "";
+
             //get from cache if possible and exit sub
             string functionName = "tb";
             string key = guildAlias;
@@ -227,21 +323,34 @@ namespace TripleZero.Modules
                 return;
             }
 
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show guild's Galactic Power details```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
+
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
                 await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
+                return;
+            }           
+
+            var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+            if(result==null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
                 return;
             }
-            var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+
             List<Player> guildPlayers = new List<Player>();
 
-            retStr += string.Format("\nFound **{0}** players for guild **{1}**\n", result.Players.Count(), guildConfig.Name);
+            retStr += string.Format("```I found **{0}** players for guild **{1}**```", result.Players.Count(), guildConfig.Name);
             retStr += string.Format("\nTotal GP **{0:n0}**", result.GalacticPower);
             retStr += string.Format("\nCharacter GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerCharacters));
             retStr += string.Format("\nShip GP **{0:n0}**", result.Players.Sum(p => p.GalacticPowerShips));
 
             await ReplyAsync($"{retStr}");
+            await messageLoading.DeleteAsync();
             await cacheClient.AddToModuleCache(functionName, key, retStr);
 
         }
@@ -249,7 +358,7 @@ namespace TripleZero.Modules
         [Command("guildPlayers", RunMode = RunMode.Async)]
         [Summary("Get available players in specified guild")]
         [Remarks("*guildPlayers {guildAlias or guildId} {searchString(optional)}*")]
-        [Alias("gp")]
+        [Alias("guild")]
         public async Task GetGuildPlayers(string guildAlias, string searchStr = "")
         {
             guildAlias = guildAlias.Trim();
@@ -266,19 +375,24 @@ namespace TripleZero.Modules
                 return;
             }
 
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show all players in the guild```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
+
             var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
             if (guildConfig == null)
             {
                 await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
                 return;
             }
             var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
-            List<Player> guildPlayers = new List<Player>();
+            if (result.LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
 
-            retStr = string.Format("\n These are the players of guild **{0}**", guildConfig.Name);
+            List<Player> guildPlayers = new List<Player>();            
 
             if (searchStr.Length == 0)
             {
+                retStr = string.Format("```These are the players of guild {0}```", guildConfig.Name);
                 guildPlayers = result.Players;
             }
             else
@@ -286,27 +400,133 @@ namespace TripleZero.Modules
                 if (searchStr.Length >= 2)
                 {
                     guildPlayers = result.Players.Where(p => p.PlayerNameInGame.ToLower().Contains(searchStr.ToLower()) || p.PlayerName.ToLower().Contains(searchStr.ToLower())).ToList();
-                    retStr += $" containing \"{searchStr}\"";
+                    retStr += retStr = $"```These are the players of guild {guildConfig.Name} containing \"{searchStr}\"```";
                 }
                 else
                 {
-                    await ReplyAsync($"\nYour search string is not valid. You will get all players of guild {guildConfig.Name}");
+                    await ReplyAsync($"\nYour search string is not valid. You will get all players of guild {guildConfig.Name}\n");
                 }
             }
-
-            retStr += "\n";
+            
             int counter = 1;
             foreach (var player in guildPlayers)
             {
 
                 retStr += $"\n{counter}) {player.PlayerName} ({player.PlayerNameInGame})";
-                counter += 1;
-                //retStr += string.Format("\n{0} {1} {2} {3}", player.GPcharacters.ToString().PadRight(7, ' '), player.GPships.ToString().PadRight(7,' '),player.PlayerNameInGame,player.PlayerName);
+                counter += 1;                
             }
             await cacheClient.AddToModuleCache(functionName, key, retStr);
             await ReplyAsync($"{retStr}");
-
+            await messageLoading.DeleteAsync();
         }
 
+        [Command("guildCharacterZeta", RunMode = RunMode.Async)]
+        [Summary("Get zeta report for specific character in specified guild")]
+        [Remarks("*guildZeta {guildAlias or guildId} {characterAlias}*")]
+        [Alias("gz")]
+        public async Task GetGuildZetas(string guildAlias,string characterAlias)
+        {
+            guildAlias = guildAlias.Trim();
+            characterAlias = characterAlias.Trim();
+
+            string retStr = "";
+
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show all zeta in the specified character```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
+
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
+            if (guildConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
+                return;
+            }
+
+            var characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByAlias(characterAlias).Result;
+            if (characterConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any character with alias ***{characterAlias}***");
+                await messageLoading.DeleteAsync();
+                return;
+            }         
+            
+            if(characterConfig.Abilities==null || characterConfig.Abilities.Count()==0)
+            {
+                await ReplyAsync($"```Warning : No Abilities```");
+            }
+
+            var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+            var players = IResolver.Current.MongoDBRepository.GetGuildCharacterAbilities(result.Players.Select(p=>p.PlayerName).ToList<string>() , characterConfig.Name).Result;
+            if (players.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
+            var orderedPlayers = players.OrderByDescending(t => t?.Characters?[0]?.Abilities?.Sum(m => m?.Level));
+
+            var dictZeta = new Dictionary<string, int>();
+            try
+            {
+                foreach (var player in orderedPlayers)
+                {
+                    retStr += "\n";
+                    var character = player.Characters.FirstOrDefault();
+
+                    if(player.PlayerName== "wortheon")
+                    {
+                        var a = 1;
+                    }                    
+
+                    if(!character.IsUnlocked)
+                    {
+                        dictZeta.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***Locked***"), -1);
+                        continue;
+                    }
+
+                    int countZeta = 0;
+                    List<string> zetas = new List<string>();
+                    foreach (var ability in character.Abilities)
+                    {
+                        
+
+                        var configAbility = characterConfig.Abilities?.Where(p => p.Name == ability.Name).FirstOrDefault();
+
+                        if (configAbility?.AbilityType == AbilityType.Zeta)
+                        {
+                            if (ability.Level == ability.MaxLevel)
+                            {
+                                countZeta += 1;
+                                zetas.Add(ability.Name);
+                            }
+                        }
+                    }
+                    if (countZeta == 0)
+                            dictZeta.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***No Zeta***"),countZeta);
+                    else
+                        dictZeta.Add(string.Concat(player.PlayerName,"(", player.PlayerNameInGame , ")", " : ", string.Join(" - ", zetas.ToArray())), countZeta);
+                }
+            }
+            catch(Exception ex)
+            {
+                await ReplyAsync($"***Something bad happened!***");
+                await messageLoading.DeleteAsync();
+                return;
+            }
+            
+
+            var dictOrdered = dictZeta.OrderByDescending(p => p.Value);
+
+            retStr += retStr = $"```This is the zeta report for \"{characterConfig.Name}\" for guild \"{guildConfig.Name}\"```";
+            int count = 1;
+            foreach (var keyvalue in dictOrdered)
+            {
+                retStr += $"{count}. {keyvalue.Key} (total zetas:{keyvalue.Value})\n";
+                    count += 1;
+                if (retStr.Length > 1800)
+                {
+                    await ReplyAsync($"{retStr}");
+                    retStr = "";
+                }
+            }
+
+            await ReplyAsync($"{retStr}");
+            await messageLoading.DeleteAsync();
+        }
     }
 }

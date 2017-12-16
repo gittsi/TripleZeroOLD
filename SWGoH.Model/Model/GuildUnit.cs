@@ -4,10 +4,10 @@ using System.Text;
 
 namespace SWGoH.Model
 {
-    public class GuildCharacter : Cache
+    public class GuildUnit : Cache
     {
-        public string CharacterName { get; set; }
-        public List<GuildPlayerCharacter> Players { get; set; }
+        public string Name { get; set; }
+        public List<GuildPlayerUnit> Players { get; set; }
         public override bool LoadedFromCache { get => base.LoadedFromCache; set => base.LoadedFromCache = value; }
     }
 }

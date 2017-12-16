@@ -26,9 +26,10 @@ namespace TripleZero.Repository._Mapping
                     //playerDto to player
                     cfg.CreateMap<PlayerDto, Player>()
                     .ForMember(dest => dest.EntryUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))
-                    .ForMember(dest => dest.SWGoHUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))
+                    .ForMember(dest => dest.SWGoHUpdateDate, src => src.MapFrom(source => source.LastSwGohUpdated))                    
                     .ForMember(dest => dest.GalacticPowerCharacters, src => src.MapFrom(source => source.GPcharacters))
                     .ForMember(dest => dest.GalacticPowerShips, src => src.MapFrom(source => source.GPships))
+                    .ForMember(dest => dest.Arena, src => src.MapFrom(source => source.Arena))
                     .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
@@ -78,6 +79,13 @@ namespace TripleZero.Repository._Mapping
                     .ForMember(dest => dest.Tags, src => src.MapFrom(s => s.CharacterTags))
                     ;
 
+                    cfg.CreateMap<ShipDto, Ship>()                    
+                    .ForMember(dest => dest.Tags, src => src.Ignore())
+                    ;
+
+                    cfg.CreateMap<ArenaDto, Arena>()                    
+                    ;
+
                     //queue
                     cfg.CreateMap<QueueDto, Queue>()
                     .ForMember(dest => dest.InsertDate, src => src.MapFrom(source => source.InsertedDate))
@@ -89,19 +97,24 @@ namespace TripleZero.Repository._Mapping
                     .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
+                    //ship config
+                    cfg.CreateMap<ShipConfigDto, ShipConfig>()
+                    .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
+                    ;
+
                     //guild config
                     cfg.CreateMap<GuildConfigDto, GuildConfig>()
                     .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
                     //guildCharacter
-                    cfg.CreateMap<GuildCharacterDto, GuildCharacter>()
-                    .ForMember(dest => dest.CharacterName, src => src.MapFrom(source => source.Name))
+                    cfg.CreateMap<GuildUnitDto, GuildUnit>()
+                    .ForMember(dest => dest.Name, src => src.MapFrom(source => source.Name))
                     .ForMember(dest => dest.LoadedFromCache, src => src.Ignore())
                     ;
 
                     //guildPlayerCharacter
-                    cfg.CreateMap<GuildPlayerCharacterDto, GuildPlayerCharacter>()
+                    cfg.CreateMap<GuildPlayerUnitDto, GuildPlayerUnit>()
                     .ForMember(dest => dest.PlayerName, src => src.MapFrom(source => source.Name))
                     .ForMember(dest => dest.CombatType, src => src.MapFrom(source => source.Combat_Type))
                     ;
