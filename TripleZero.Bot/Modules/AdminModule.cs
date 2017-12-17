@@ -504,15 +504,15 @@ namespace TripleZero.Modules
             await lastmessage.DeleteAsync();
         }
 
-        [Command("delay", RunMode = RunMode.Async)]
-        [Summary("delay")]
-        [Remarks("*delay {ms}*")]
-        public async Task Delay(string ms)
-        {
-            bool msIsNumber = int.TryParse(ms, out int delay);
-            await Task.Delay(delay);            
-            await ReplyAsync($"Delayed for {delay}ms");
-        }
+        //[Command("delay", RunMode = RunMode.Async)]
+        //[Summary("delay")]
+        //[Remarks("*delay {ms}*")]
+        //public async Task Delay(string ms)
+        //{
+        //    bool msIsNumber = int.TryParse(ms, out int delay);
+        //    await Task.Delay(delay);            
+        //    await ReplyAsync($"Delayed for {delay}ms");
+        //}
 
         [Command("clearcache", RunMode = RunMode.Async)]
         [Summary("Clear Cache")]

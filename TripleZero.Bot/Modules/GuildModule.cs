@@ -455,8 +455,8 @@ namespace TripleZero.Modules
                 await ReplyAsync($"```Warning : No Abilities```");
             }
 
-            var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
-            var players = IResolver.Current.MongoDBRepository.GetGuildCharacterAbilities(result.Players.Select(p=>p.PlayerName).ToList<string>() , characterConfig.Name).Result;
+           // var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+            var players = IResolver.Current.MongoDBRepository.GetGuildCharacterAbilities(guildConfig.Name, characterConfig.Name).Result;
             if (players.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
             var orderedPlayers = players.OrderByDescending(t => t?.Characters?[0]?.Abilities?.Sum(m => m?.Level));
 

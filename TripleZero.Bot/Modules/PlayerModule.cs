@@ -245,7 +245,7 @@ namespace TripleZero.Modules
         }
 
         [Command("player-tw", RunMode = RunMode.Async)]
-        [Summary("Get which characters are ineligible for Territory Wars")]
+        [Summary("Get which characters of specified player are ineligible for Territory Wars")]
         [Remarks("*player-tw {playerUserName}*")]
         [Alias("ptw")]
         public async Task GetPlayerReportTW(string playerUserName)
