@@ -296,12 +296,12 @@ namespace TripleZero.Repository
                 if (updateresult.StatusCode == HttpStatusCode.OK) return true; else return false;
             }
         }
-        public async Task<IEnumerable<Player>> GetGuildPlayersArena(List<string> playersName)
+        public async Task<IEnumerable<Player>> GetGuildPlayersArena(string guildName)
         {
             await Task.FromResult(1);
 
             string functionName = "GetGuildPlayersArenaRepo";
-            string key = $"{HashKey.GetStringSha256Hash(string.Join("", playersName))}";
+            string key = $"{guildName}";
             var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
@@ -311,20 +311,21 @@ namespace TripleZero.Repository
                 return players;
             }
 
+            var queryData = string.Concat("{\"GuildName\":\"", guildName, "\"}");
             var orderby = "{\"LastSwGohUpdated\":-1}";
             var fields = "{\"PlayerName\": 1,\"PlayerNameInGame\": 1,\"Arena\": 1}";
 
-            string url = BuildApiUrl("Player", null /*queryData*/, orderby, null, fields);
+            string url = BuildApiUrl("Player", queryData, orderby, null, fields);
 
             try
             {
                 using (var client = new HttpClient())
                 {
                     var response = await client.GetStringAsync(url);
-                    List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, JSonConverterSettings.Settings);
-                    List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
+                    List<PlayerDto> playersDto = JsonConvert.DeserializeObject<List<PlayerDto>>(response, JSonConverterSettings.Settings);
+                    //List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
 
-                    var players = _Mapper.Map<List<Player>>(p);
+                    var players = _Mapper.Map<List<Player>>(playersDto);
                     //players.ForEach(pl => pl.Arena.ArenaTeam.Skip(1).ToList().Sort());
                     //load to cache
                     await cacheClient.AddToRepositoryCache(functionName, key, players, 30);
@@ -336,12 +337,12 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-        public async Task<IEnumerable<Player>> GetGuildCharactersAbilities(List<string> playersName)
+        public async Task<IEnumerable<Player>> GetGuildCharactersAbilities(string guildName)
         {
             await Task.FromResult(1);
 
             string functionName = "GetGuildCharactersAbilitiesRepo";
-            string key = $"{HashKey.GetStringSha256Hash(string.Join("",playersName))}";
+            string key = $"{guildName}";
             var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
             if (objCache != null)
             {
@@ -352,20 +353,21 @@ namespace TripleZero.Repository
             }
 
             //var queryData = string.Concat("{\"Characters.Nm\":\"", characterFullName, "\"}"); didn't work
+            var queryData = string.Concat("{\"GuildName\":\"", guildName, "\"}");
             var orderby = "{\"LastSwGohUpdated\":-1}";
             var fields = "{\"PlayerName\": 1,\"PlayerNameInGame\": 1,\"Characters.Ab\": 1,\"Characters.Nm\": 1,\"Characters.Lvl\": 1}";
 
-            string url = BuildApiUrl("Player", null /*queryData*/, orderby, null, fields);
+            string url = BuildApiUrl("Player", queryData, orderby, null, fields);
 
             try
             {
                 using (var client = new HttpClient())
                 {
                     var response = await client.GetStringAsync(url);
-                    List<PlayerDto> ret = JsonConvert.DeserializeObject<List<PlayerDto>>(response, JSonConverterSettings.Settings);
-                    List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
+                    List<PlayerDto> playersDto = JsonConvert.DeserializeObject<List<PlayerDto>>(response, JSonConverterSettings.Settings);
+                    //List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
 
-                    var players = _Mapper.Map<List<Player>>(p);
+                    var players = _Mapper.Map<List<Player>>(playersDto);
                     List<Player> retPlayers = new List<Player>();                    
                     //load to cache
                     await cacheClient.AddToRepositoryCache(functionName, key, players, 30);
@@ -377,9 +379,9 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
-        public async Task<IEnumerable<Player>> GetGuildCharacterAbilities(List<string> playersName,string characterFullName)
+        public async Task<IEnumerable<Player>> GetGuildCharacterAbilities(string guildName,string characterFullName)
         {
-            var players = await GetGuildCharactersAbilities(playersName);
+            var players = await GetGuildCharactersAbilities(guildName);
             var retPlayers = from player in players
                              from character in player.Characters
                              where (character.Name == characterFullName)

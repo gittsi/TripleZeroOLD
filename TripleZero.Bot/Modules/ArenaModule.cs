@@ -49,8 +49,8 @@ namespace TripleZero.Modules
                 return;
             }
 
-            var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
-            var playerData = IResolver.Current.MongoDBRepository.GetGuildPlayersArena(result.Players.Select(p => p.PlayerName).ToList<string>()).Result.OrderBy(t=>t.PlayerName);
+            //var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+            var playerData = IResolver.Current.MongoDBRepository.GetGuildPlayersArena(guildConfig.Name).Result.OrderBy(t=>t.PlayerName);
 
             if (playerData.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
             if (playerData == null || playerData.Count()==0)
