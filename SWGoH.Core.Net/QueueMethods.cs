@@ -18,7 +18,7 @@ namespace SWGoH
 {
     public class QueueMethods
     {
-        public static void AddPlayer(string PlayerName,Command cmd ,PriorityEnum priority , SWGoH.Enums.QueueEnum.QueueType type, DateTime nextrundate)
+        public static void AddPlayer(string PlayerName,string guild , Command cmd ,PriorityEnum priority , SWGoH.Enums.QueueEnum.QueueType type, DateTime nextrundate)
         {
             try
             {
@@ -31,6 +31,7 @@ namespace SWGoH
                     {
                         FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Name", PlayerName);
                         UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Name", PlayerName)
+                                                                                     .Set("Guild" , guild)
                                                                                      .Set("InsertedDate", DateTime.UtcNow.ToString("o"))
                                                                                      .Set("ProcessingStartDate", "")
                                                                                      .Set("NextRunDate", nextrundate.ToString("o"))
@@ -58,6 +59,7 @@ namespace SWGoH
                     {
                         JObject data = new JObject(
                         new JProperty("Name", PlayerName),
+                        new JProperty("Guild", guild),
                         new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
                         new JProperty("ProcessingStartDate", ""),
                         new JProperty("NextRunDate", nextrundate.ToString("o")),
@@ -90,14 +92,27 @@ namespace SWGoH
             try
             {
                 string nextrun = "";
-                if (player != null) nextrun = player.LastSwGohUpdated.AddHours(hours).ToString("o");
-                else if (guild != null) nextrun = guild.LastSwGohUpdated.AddHours(hours).ToString("o");
-                else nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
+                string queueguild = "";
+                if (player != null)
+                {
+                    nextrun = player.LastSwGohUpdated.AddHours(hours).ToString("o");
+                    queueguild = player.GuildName;
+                }
+                else if (guild != null)
+                {
+                    nextrun = guild.LastSwGohUpdated.AddHours(hours).ToString("o");
+                    queueguild = guild.Name;
+                }
+                else
+                {
+                    nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
+                }
 
                 if (fromnow) nextrun = DateTime.UtcNow.AddHours(hours).ToString("o");
 
                 JObject data = new JObject(
                                     new JProperty("Name", q.Name),
+                                    new JProperty("Guild", player.GuildName),
                                     new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
                                     new JProperty("ProcessingStartDate", ""),
                                     new JProperty("NextRunDate", nextrun),
@@ -146,9 +161,52 @@ namespace SWGoH
                 SWGoH.Log.ConsoleMessage("Error Deleting From Queu:" + e.Message);
             }
         }
+        public static void FixQueue()
+        {
+            try
+            {
+                MongoDBRepo mongo = new MongoDBRepo();
+                IMongoDatabase db = mongo.Connect();
+                if (db != null)
+                {
+                    IMongoCollection<QueueDto> collection = db.GetCollection<QueueDto>("Queue");
+                    if (collection != null)
+                    {
+                        FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 1);
+                        List<QueueDto> res = collection.Find(filter).ToList();
+                        if (res != null && res.Count > 0)
+                        {
+                            foreach (QueueDto item in res)
+                            {
+                                DateTime processing = DateTime.Parse(item.ProcessingStartDate);
+                                double minutes = Math.Abs(DateTime.UtcNow.Subtract(processing).TotalMinutes);
+                                if (minutes > 90)
+                                {
+                                    FilterDefinition<QueueDto> filter1 = Builders<QueueDto>.Filter.Eq("_id", item.Id);
+                                    UpdateDefinition<QueueDto> update1 = Builders<QueueDto>.Update.Set("Status", 0).Set("ProcessingStartDate", "").Set("ComputerName", "");
+                                    var opts = new FindOneAndUpdateOptions<QueueDto>()
+                                    {
+                                        IsUpsert = false,
+                                        ReturnDocument = ReturnDocument.After,
+                                    };
+                                    QueueDto found = collection.FindOneAndUpdate<QueueDto>(filter1, update1, opts);
+                                    SWGoH.Log.ConsoleMessage("Fixed Queu!!!!! PlayerName : " + item.Name);
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Error Fixing Queu!!" + e.Message);
+            }
+        }
         public static QueueDto GetQueu()
         {
             bool onlymanual = SWGoH.Settings.appSettings.UpdateOnlyManual;
+            string guild = SWGoH.Settings.appSettings.UpdateOnlyGuild;
             try
             {
                 MongoDBRepo mongo = new MongoDBRepo();
@@ -159,7 +217,7 @@ namespace SWGoH
                     IMongoCollection <QueueDto> collection = db.GetCollection<QueueDto>("Queue");
                     if (collection != null)
                     {
-                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("Priority", 2);
+                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("GuildName", "Order 66 501st Division");
                         //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Priority", 1);
                         //UpdateOptions opts2 = new UpdateOptions();
                         //opts2.IsUpsert = false;
@@ -214,6 +272,7 @@ namespace SWGoH
                                     //UPDATE with Status = 1
                                     JObject data = new JObject(
                                     new JProperty("Name", result1.Name),
+                                    new JProperty("Guild", result1.Guild),
                                     new JProperty("InsertedDate", result1.InsertedDate),
                                     new JProperty("ProcessingStartDate", DateTime.UtcNow.ToString("o")),
                                     new JProperty("NextRunDate", result1.NextRunDate),

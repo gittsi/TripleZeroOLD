@@ -229,7 +229,7 @@ namespace SWGoH
                 if (!QueueMethods.FindPlayer(PlayerNames[i]))
                 {
                     SWGoH.Log.ConsoleMessage((i+1).ToString() +   ") NOT Found Player in Queue : " + PlayerNames[i]);
-                    SWGoH.QueueMethods.AddPlayer(PlayerNames[i], Enums.QueueEnum.Command.UpdatePlayer, PriorityEnum.DailyUpdate, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
+                    SWGoH.QueueMethods.AddPlayer(PlayerNames[i],Name, Enums.QueueEnum.Command.UpdatePlayer, PriorityEnum.DailyUpdate, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
                 }
                 else
                 {

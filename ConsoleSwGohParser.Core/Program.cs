@@ -40,6 +40,8 @@ namespace SWGoH
         }
         private static void TimerProc(Object o)
         {
+            
+
             if (isWorking) return;
             isWorking = true;
             Timer t = o as Timer;
@@ -61,7 +63,7 @@ namespace SWGoH
             //ExecuteCommand(Command.UpdateGuildWithNoChars, "41st", null);return;
             //ExecuteCommand(Command.UpdateGuild , "501st", null); return;
             //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null); return;
-            //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null); return;
+            //ExecuteCommand(Command.UpdateUnknownGuild, "StarForge Jedha#@#4703#@#starforge-jedha", null); return;
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
@@ -95,8 +97,9 @@ namespace SWGoH
             }
             else
             {
-                //Update computername + Status : 1
-                Console.WriteLine("Waiting...  " + ((int)(Settings.appSettings.MinutesUntilNextProcess - minutes)).ToString () + " minutes");
+                int minutes1 = (int)(Settings.appSettings.MinutesUntilNextProcess - minutes);
+                if (minutes1 == 1) QueueMethods.FixQueue();
+                Console.WriteLine("Waiting...  " + minutes1.ToString () + " minutes");
             }
             isWorking = false;
             t.Change(Settings.appSettings.GlobalConsoleTimerInterval, Settings.appSettings.GlobalConsoleTimerInterval);
@@ -169,10 +172,10 @@ namespace SWGoH
                         guild.Name = GuildDto.GetGuildNameFromAlias(pname);
                         guild.ParseSwGoh();
                         if (guild.PlayerNames!= null && guild.PlayerNames.Count> 0)
-                        QueueMethods.AddPlayer(pname, Command.UpdateGuildWithNoChars, PriorityEnum.ManualLoad, QueueType.Guild, DateTime.UtcNow);
+                        QueueMethods.AddPlayer(pname,guild.Name, Command.UpdateGuildWithNoChars, PriorityEnum.ManualLoad, QueueType.Guild, DateTime.UtcNow);
                         for (int i = 0; i < guild.PlayerNames.Count; i++)
                         {
-                            QueueMethods.AddPlayer(guild.PlayerNames[i], Command.UpdatePlayer, PriorityEnum.ManualLoad, QueueType.Player, DateTime.UtcNow.AddSeconds ((double)i));
+                            QueueMethods.AddPlayer(guild.PlayerNames[i], guild.Name, Command.UpdatePlayer, PriorityEnum.ManualLoad, QueueType.Player, DateTime.UtcNow.AddSeconds ((double)i));
                         }
                         if (q != null) QueueMethods.RemoveFromQueu(q);
                         break;
