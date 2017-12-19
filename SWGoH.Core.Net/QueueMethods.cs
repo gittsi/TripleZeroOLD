@@ -169,6 +169,7 @@ namespace SWGoH
                 IMongoDatabase db = mongo.Connect();
                 if (db != null)
                 {
+                    #region Fix Status 1 queues
                     IMongoCollection<QueueDto> collection = db.GetCollection<QueueDto>("Queue");
                     if (collection != null)
                     {
@@ -178,9 +179,9 @@ namespace SWGoH
                         {
                             foreach (QueueDto item in res)
                             {
-                                DateTime processing = DateTime.Parse(item.ProcessingStartDate);
+                                DateTime processing = DateTime.Parse(item.ProcessingStartDate).ToUniversalTime ();
                                 double minutes = Math.Abs(DateTime.UtcNow.Subtract(processing).TotalMinutes);
-                                if (minutes > 90)
+                                if (minutes > 60)
                                 {
                                     FilterDefinition<QueueDto> filter1 = Builders<QueueDto>.Filter.Eq("_id", item.Id);
                                     UpdateDefinition<QueueDto> update1 = Builders<QueueDto>.Update.Set("Status", 0).Set("ProcessingStartDate", "").Set("ComputerName", "");
@@ -196,6 +197,9 @@ namespace SWGoH
                             }
                         }
                     }
+                    #endregion
+
+
                 }
             }
             catch (Exception e)
@@ -217,13 +221,24 @@ namespace SWGoH
                     IMongoCollection <QueueDto> collection = db.GetCollection<QueueDto>("Queue");
                     if (collection != null)
                     {
-                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("GuildName", "Order 66 501st Division");
+                        //collection = db.GetCollection<QueueDto>("Player");
+                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("GuildName", "StarForge Jedha");
+                        //DeleteResult res2 = collection.DeleteMany(filter2);
+
+                        
                         //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Priority", 1);
                         //UpdateOptions opts2 = new UpdateOptions();
                         //opts2.IsUpsert = false;
-                        //DeleteResult res2 = collection.DeleteMany(filter2);
 
-                        FilterDefinition<QueueDto> filter = Builders<QueueDto>.Filter.Eq("Status", 0);
+                        FilterDefinition<QueueDto> filter;
+                        if (guild == null || guild == "")
+                        {
+                            filter = Builders<QueueDto>.Filter.Eq("Status", 0);
+                        }
+                        else
+                        {
+                            filter = Builders<QueueDto>.Filter.Eq("Status", 0) & Builders<QueueDto>.Filter.Eq("Guild", guild);
+                        }
                         UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o")).Set ("ComputerName" , SWGoH.Settings.appSettings.ComputerName);
                         var opts = new FindOneAndUpdateOptions<QueueDto>()
                         {
