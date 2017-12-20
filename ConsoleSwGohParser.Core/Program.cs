@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using SWGoH.Enums.QueueEnum;
 using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace SWGoH
 {
@@ -71,28 +72,37 @@ namespace SWGoH
             bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
             if (check)
             {
-                workingQ = QueueMethods.GetQueu();
-                if (workingQ != null)
+                bool succ = QueueMethods.CheckVersion(Assembly.GetExecutingAssembly().GetName().Version);
+                if (!succ)
                 {
-                    int ret = ExecuteCommand(workingQ.Command, workingQ.Name, workingQ);
-                    if (ret == 1 || ret == 5) mLastProcess = DateTime.UtcNow;
-                    workingQ = null;
+                    SWGoH.Log.ConsoleMessage("A newer Version of this App must be downloaded , please contact the developer!!!!!!");
                 }
-                else
-                {
-                    //int now = DateTime.UtcNow.Minute;
-                    //double minutes = 0.0;
-                    //minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
-                    //bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
-                    //if (check)
-                    //{
-                    //    PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
-                    //    if (player != null)
-                    //    {
-                    //        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.UtcNow);
-                    //    }
-                    //}
-                    Console.WriteLine("Nothing to process");
+                else {
+                    workingQ = QueueMethods.GetQueu();
+                    if (workingQ != null)
+                    {
+
+                        int ret = ExecuteCommand(workingQ.Command, workingQ.Name, workingQ);
+                        if (ret == 1 || ret == 5) mLastProcess = DateTime.UtcNow;
+                        workingQ = null;
+
+                    }
+                    else
+                    {
+                        //int now = DateTime.UtcNow.Minute;
+                        //double minutes = 0.0;
+                        //minutes = DateTime.UtcNow.Subtract(mLastProcess).TotalMinutes;
+                        //bool check = minutes > Settings.appSettings.MinutesUntilNextProcess;
+                        //if (check)
+                        //{
+                        //    PlayerDto player = QueueMethods.GetLastUpdatedPlayer("41st");
+                        //    if (player != null)
+                        //    {
+                        //        QueueMethods.AddPlayer(player.PlayerName, Command.UpdatePlayer, 1 , Enums.QueueEnum.QueueType.Player , DateTime.UtcNow);
+                        //    }
+                        //}
+                        Console.WriteLine("Nothing to process");
+                    }
                 }
             }
             else
@@ -176,6 +186,7 @@ namespace SWGoH
                         for (int i = 0; i < guild.PlayerNames.Count; i++)
                         {
                             QueueMethods.AddPlayer(guild.PlayerNames[i], guild.Name, Command.UpdatePlayer, PriorityEnum.ManualLoad, QueueType.Player, DateTime.UtcNow.AddSeconds ((double)i));
+                            //QueueMethods.AddPlayer(guild.PlayerNames[i], guild.Name, Command.UpdatePlayer, PriorityEnum.DailyUpdate, QueueType.Player, DateTime.UtcNow.AddSeconds((double)i));
                         }
                         if (q != null) QueueMethods.RemoveFromQueu(q);
                         break;

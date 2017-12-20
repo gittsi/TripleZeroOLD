@@ -27,4 +27,10 @@ namespace SWGoH
         public QueueType Type { get; set; }
         public string ComputerName { get; set; }
     }
+
+    public class WorkingVersionDto
+    {
+        public Nullable<ObjectId> Id { get; set; }
+        public string WorkingVersion { get; set; }
+    }
 }

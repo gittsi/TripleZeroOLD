@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SWGoH.Enums.QueueEnum;
 using MongoDB.Driver;
+using System.Reflection;
 
 namespace SWGoH
 {
@@ -85,6 +86,42 @@ namespace SWGoH
             }
             
         }
+
+        public static bool CheckVersion(Version AppVersion)
+        {
+            try
+            {
+                MongoDBRepo mongo = new MongoDBRepo();
+                IMongoDatabase db = mongo.Connect();
+                if (db != null)
+                {
+                    IMongoCollection<WorkingVersionDto> collection = db.GetCollection<WorkingVersionDto>("Parser.Working.Version");
+                    if (collection != null)
+                    {
+                        //WorkingVersionDto
+                        
+                        List<WorkingVersionDto> res = collection.Find(Builders<WorkingVersionDto>.Filter.Empty).ToList();
+                        if (res == null || res.Count < 1) return false;
+                        WorkingVersionDto Workingver = res[0];
+                        if (Workingver == null) return false;
+                        string Workingverstr = Workingver.WorkingVersion;
+                        if (Workingverstr == "") return false;
+                        Version Workingverdbl;
+                        bool succ = Version.TryParse(Workingverstr, out Workingverdbl);
+                        if (!succ) return false;
+                        if (AppVersion.Major < Workingverdbl.Major) return false;
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                SWGoH.Log.ConsoleMessage("Error Checking version:" + e.Message);
+                return false;
+            }
+            return false;
+        }
+
         public static void UpdateQueueAndProcessLater(QueueDto q, object whotoupdate , double hours,bool fromnow)
         {
             PlayerDto player = whotoupdate as PlayerDto;
@@ -224,7 +261,6 @@ namespace SWGoH
                         //collection = db.GetCollection<QueueDto>("Player");
                         //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("GuildName", "StarForge Jedha");
                         //DeleteResult res2 = collection.DeleteMany(filter2);
-
                         
                         //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Priority", 1);
                         //UpdateOptions opts2 = new UpdateOptions();

@@ -18,7 +18,7 @@ namespace SWGoH
                 var client = new MongoClient(uri);
                 
                 IMongoDatabase db = client.GetDatabase(SWGoH.Settings.appSettings.Database);
-                bool isMongoLive = db.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait(2000);
+                bool isMongoLive = db.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait(5000);
                 if (isMongoLive) return db;
                 else return null;
             }
