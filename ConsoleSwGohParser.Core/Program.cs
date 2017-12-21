@@ -183,6 +183,7 @@ namespace SWGoH
                         guild.ParseSwGoh();
                         if (guild.PlayerNames!= null && guild.PlayerNames.Count> 0)
                         QueueMethods.AddPlayer(pname,guild.Name, Command.UpdateGuildWithNoChars, PriorityEnum.ManualLoad, QueueType.Guild, DateTime.UtcNow);
+                        //QueueMethods.AddPlayer(pname, guild.Name, Command.UpdateGuildWithNoChars, PriorityEnum.DailyUpdate, QueueType.Guild, DateTime.UtcNow);
                         for (int i = 0; i < guild.PlayerNames.Count; i++)
                         {
                             QueueMethods.AddPlayer(guild.PlayerNames[i], guild.Name, Command.UpdatePlayer, PriorityEnum.ManualLoad, QueueType.Player, DateTime.UtcNow.AddSeconds ((double)i));

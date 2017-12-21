@@ -267,13 +267,13 @@ namespace SWGoH
                         //opts2.IsUpsert = false;
 
                         FilterDefinition<QueueDto> filter;
-                        if (guild == null || guild == "")
+                        if (guild == null || guild == "" || onlymanual)
                         {
                             filter = Builders<QueueDto>.Filter.Eq("Status", 0);
                         }
                         else
                         {
-                            filter = Builders<QueueDto>.Filter.Eq("Status", 0) & Builders<QueueDto>.Filter.Eq("Guild", guild);
+                            filter = Builders<QueueDto>.Filter.Eq("Status", 0) & (Builders<QueueDto>.Filter.Eq("Guild", guild) | Builders<QueueDto>.Filter.Eq("Priority", PriorityEnum.ManualLoad));
                         }
                         UpdateDefinition<QueueDto> update = Builders<QueueDto>.Update.Set("Status", 1).Set ("ProcessingStartDate" , DateTime.UtcNow.ToString ("o")).Set ("ComputerName" , SWGoH.Settings.appSettings.ComputerName);
                         var opts = new FindOneAndUpdateOptions<QueueDto>()
@@ -288,7 +288,7 @@ namespace SWGoH
                             DateTime nextrun = DateTime.Parse(found.NextRunDate).ToUniversalTime();
                             if (DateTime.UtcNow < nextrun || (onlymanual && found.Priority != PriorityEnum.ManualLoad))
                             {
-                                found.Status = QueueStatus.PendingProcess;
+                               found.Status = QueueStatus.PendingProcess;
 
                                 FilterDefinition<QueueDto> filter1 = Builders<QueueDto>.Filter.Eq("_id", found.Id);
                                 UpdateDefinition<QueueDto> update1 = Builders<QueueDto>.Update.Set("Status", 0).Set("ComputerName", "");
