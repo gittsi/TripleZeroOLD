@@ -61,10 +61,10 @@ namespace SWGoH
             //ExecuteCommand(Command.TestZetas, "aramil", null); return;
             //ExecuteCommand(Command.UpdatePlayer, "newholborn", null);
             //ExecuteCommand(Command.Test, "newholborn", null);
-            //ExecuteCommand(Command.UpdateGuildWithNoChars, "41st", null);return;
+            //ExecuteCommand(Command.UpdateGuildWithNoChars, "dl", null);return;
             //ExecuteCommand(Command.UpdateGuild , "501st", null); return;
             //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null); return;
-            //ExecuteCommand(Command.UpdateUnknownGuild, "StarForge Jedha#@#4703#@#starforge-jedha", null); return;
+            //ExecuteCommand(Command.UpdateUnknownGuild, "Dark Łords#@#3015#@#dark-lords", null); return;
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
