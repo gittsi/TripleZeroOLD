@@ -8,6 +8,7 @@ namespace TripleZero.Repository.Dto
     {
         public Nullable<ObjectId> Id { get; set; }
         public string Name { get; set; }        
+        public string Guild { get; set; }
         public string InsertedDate { get; set; }        
         public string ProcessingStartDate { get; set; }        
         public string NextRunDate { get; set; }
