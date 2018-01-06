@@ -9,6 +9,7 @@ namespace SWGoH.Model
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string GuildName { get; set; }
         public DateTime InsertDate { get; set; }        
         public DateTime? NextRunDate { get; set; }
         public Command Command { get; set; }
