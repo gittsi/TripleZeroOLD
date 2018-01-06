@@ -24,20 +24,41 @@ namespace SWGoH
             //_handler += new EventHandler(Handler);
             //SetConsoleCtrlHandler(_handler, true);
 
-            if (Settings.Get())
+            Console.WriteLine("Hello , this is ConsoleSwGohParser versio :" + Assembly.GetExecutingAssembly().GetName().Version.ToString ());
+
+            if (args.Length > 0 && args.Length == 2)
             {
+                if (Settings.Get())
+                {
+                    
 
-                SWGoH.MongoDBRepo.SetWorking(true);
+                    string arg1 = args[0];
+                    string arg2 = args[1];
 
-                if (SWGoH.Settings.appSettings.LogToFile == 1) SWGoH.Log.Initialize("log.txt", SWGoH.Settings.appSettings.LogToFile == 1);
+                    Console.WriteLine("Executing command : " + arg1);
+                    Console.WriteLine("With Parameter : " + arg2);
 
-                Timer t = new Timer(new TimerCallback(TimerProc));
-                t.Change(0, Settings.appSettings.GlobalConsoleTimerInterval);
-
+                    Command comm = (Command)Enum.Parse(typeof(Command), arg1);
+                    ExecuteCommand(comm, arg2, null);
+                }
             }
-            Console.ReadLine();
+            else
+            {
+                if (Settings.Get())
+                {
 
-            if (SWGoH.Settings.appSettings.LogToFile == 1) SWGoH.Log.FileFinalize();
+                    SWGoH.MongoDBRepo.SetWorking(true);
+
+                    if (SWGoH.Settings.appSettings.LogToFile == 1) SWGoH.Log.Initialize("log.txt", SWGoH.Settings.appSettings.LogToFile == 1);
+
+                    Timer t = new Timer(new TimerCallback(TimerProc));
+                    t.Change(0, Settings.appSettings.GlobalConsoleTimerInterval);
+
+                }
+                Console.ReadLine();
+
+                if (SWGoH.Settings.appSettings.LogToFile == 1) SWGoH.Log.FileFinalize();
+            }
         }
         private static void TimerProc(Object o)
         {

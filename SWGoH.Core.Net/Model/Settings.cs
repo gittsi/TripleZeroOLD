@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace SWGoH
 {
@@ -36,12 +34,14 @@ namespace SWGoH
                 }
                 catch (Exception e)
                 {
-                    SWGoH.Log.ConsoleMessage("Error retrieving computer name");
+                    //SWGoH.Log.ConsoleMessage("Error retrieving computer name");
+                    Console.WriteLine("Error retrieving computer name");
                 }
             }
             else
             {
-                SWGoH.Log.ConsoleMessage("Unable To Load Settings : " + directory + " : " + fname);
+                //SWGoH.Log.ConsoleMessage("Unable To Load Settings : " + directory + " : " + fname);
+                Console.WriteLine("Unable To Load Settings : " + directory + " : " + fname);
                 return false;
             }
             return true;

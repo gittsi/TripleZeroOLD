@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TripleZero.Bot", "TripleZero.Bot\TripleZero.Bot.csproj", "{51B3D272-7116-40C8-BEB7-3574985D4A37}"
 EndProject
@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SWGoH.Model", "SWGoH.Model\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TripleZero.Repository", "TripleZero.Repository\TripleZero.Repository.csproj", "{18E4E11A-06D1-4AC6-8262-23038BEB2840}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripleZero.Core.Settings", "TripleZero.Core.Settings\TripleZero.Core.Settings.csproj", "{8B4C0A56-6A57-4C97-9C85-FC393B386521}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TripleZero.Core.Settings", "TripleZero.Core.Settings\TripleZero.Core.Settings.csproj", "{8B4C0A56-6A57-4C97-9C85-FC393B386521}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripleZero.Core.Caching", "TripleZero.Core.Caching\TripleZero.Core.Caching.csproj", "{2DCD5D59-3E37-4406-BB03-A3C7268425F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TripleZero.Core.Caching", "TripleZero.Core.Caching\TripleZero.Core.Caching.csproj", "{2DCD5D59-3E37-4406-BB03-A3C7268425F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwGohForms", "SwGohForms\SwGohForms.csproj", "{0A8E5DC9-225D-4BB4-96B9-F9D65FF06F61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{2DCD5D59-3E37-4406-BB03-A3C7268425F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DCD5D59-3E37-4406-BB03-A3C7268425F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DCD5D59-3E37-4406-BB03-A3C7268425F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A8E5DC9-225D-4BB4-96B9-F9D65FF06F61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A8E5DC9-225D-4BB4-96B9-F9D65FF06F61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A8E5DC9-225D-4BB4-96B9-F9D65FF06F61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A8E5DC9-225D-4BB4-96B9-F9D65FF06F61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
