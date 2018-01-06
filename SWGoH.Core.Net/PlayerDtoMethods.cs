@@ -157,7 +157,7 @@ namespace SWGoH
             FillArenaInfo(pname);
 
             web = new System.Net.WebClient();
-            Uri uri = new Uri("https://swgoh.gg/u/" + pname + "/collection/");
+            Uri uri = new Uri("https://swgoh.gg/u/" + pname + "/");
 
             string html = "";
             try
@@ -183,7 +183,7 @@ namespace SWGoH
             //ret = true;
             if (ret || checkForCharAllias)
             {
-                FillPlayerCharacters(html, Position, checkForCharAllias);
+                FillPlayerCharacters(pname , checkForCharAllias);
                 FillPlayerShips(pname, checkForCharAllias);
                 retbool = 1;
             }
@@ -553,9 +553,22 @@ namespace SWGoH
         /// </summary>
         /// <param name="html"></param>
         /// <param name="Position"></param>
-        private void FillPlayerCharacters(string html, int Position, bool CheckForAllias)
+        private void FillPlayerCharacters(string pname, bool CheckForAllias)
         {
-            if (Position == -1) return;
+            string html = "";
+            int Position = 0;
+            using (WebClient web = new System.Net.WebClient())
+            {
+                Uri uri = new Uri("https://swgoh.gg/u/" + pname + "/collection/");
+                try
+                {
+                    html = web.DownloadString(uri);
+                }
+                catch (Exception e)
+                {
+                    SWGoH.Log.ConsoleMessage("Exception on Player Ships : " + PlayerName + " : " + e.Message);
+                }
+            }
 
             Characters = new List<CharacterDto>();
 

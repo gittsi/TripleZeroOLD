@@ -149,7 +149,7 @@ namespace SWGoH
 
                 JObject data = new JObject(
                                     new JProperty("Name", q.Name),
-                                    new JProperty("Guild", player.GuildName),
+                                    new JProperty("Guild", queueguild),
                                     new JProperty("InsertedDate", DateTime.UtcNow.ToString("o")),
                                     new JProperty("ProcessingStartDate", ""),
                                     new JProperty("NextRunDate", nextrun),
@@ -258,10 +258,10 @@ namespace SWGoH
                     IMongoCollection <QueueDto> collection = db.GetCollection<QueueDto>("Queue");
                     if (collection != null)
                     {
-                        //collection = db.GetCollection<QueueDto>("Player");
-                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq("GuildName", "StarForge Jedha");
+                        //collection = db.GetCollection<QueueDto>("Queue");
+                        //FilterDefinition<QueueDto> filter2 = Builders<QueueDto>.Filter.Eq( "Guild", "Order 66 501st Division");
                         //DeleteResult res2 = collection.DeleteMany(filter2);
-                        
+
                         //UpdateDefinition<QueueDto> update2 = Builders<QueueDto>.Update.Set("Priority", 1);
                         //UpdateOptions opts2 = new UpdateOptions();
                         //opts2.IsUpsert = false;
