@@ -25,7 +25,7 @@ namespace SwGohForms
         private void butGuildLoad_Click(object sender, EventArgs e)
         {
             //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null);
-            string pathToProgram = "ConsoleSwGohParser.Core.dll";
+            string pathToProgram = "..\\Forms/ConsoleSwGohParser.Core.dll";
             if (File.Exists(pathToProgram))
             {
                 string guildname = textGuildName.Text;

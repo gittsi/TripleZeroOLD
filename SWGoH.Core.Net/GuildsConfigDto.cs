@@ -30,7 +30,7 @@ namespace SWGoH
                 string response = client.GetStringAsync(url).Result;
                 if (response != "" && response != "[  ]")
                 {
-                    List<GuildConfigDto> result = JsonConvert.DeserializeObject< List<GuildConfigDto>>(response);
+                    List<GuildConfigDto> result = JsonConvert.DeserializeObject< List<GuildConfigDto>>(response, Converter.Settings);
                     if (result.Count == 1) return result[0];
                     else return null;
                 }
@@ -46,7 +46,7 @@ namespace SWGoH
                 string response = client.GetStringAsync(url).Result;
                 if (response != "" && response != "[  ]")
                 {
-                    List<GuildConfigDto> result = JsonConvert.DeserializeObject<List<GuildConfigDto>>(response);
+                    List<GuildConfigDto> result = JsonConvert.DeserializeObject<List<GuildConfigDto>>(response, Converter.Settings);
                     if (result.Count == 1) return result[0];
                     else return null;
                 }

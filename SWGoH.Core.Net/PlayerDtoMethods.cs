@@ -29,7 +29,7 @@ namespace SWGoH
                 {
                     var lines = File.ReadAllText(fname);
                     //PlayerDto ret = JsonConvert.DeserializeObject<PlayerDto>(lines, Converter.Settings);
-                    JsonConvert.PopulateObject(lines, this);
+                    JsonConvert.PopulateObject(lines, this, Converter.Settings);
                 }
             }
             else
@@ -40,10 +40,10 @@ namespace SWGoH
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
-                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
                         if (result.Count == 1)
                         {
-                            JsonConvert.PopulateObject(JsonConvert.SerializeObject(result[0]), this);
+                            JsonConvert.PopulateObject(JsonConvert.SerializeObject(result[0]), this, Converter.Settings);
                         }
                     }
                 }
@@ -364,7 +364,7 @@ namespace SWGoH
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
-                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                        List<PlayerDto> result = JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
                         if (result.Count == 1)
                         {
                             PlayerDto Found = result[0];

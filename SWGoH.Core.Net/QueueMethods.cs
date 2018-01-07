@@ -370,7 +370,7 @@ namespace SWGoH
                     string response = client.GetStringAsync(url).Result;
                     if (response != "" && response != "[  ]")
                     {
-                        List<PlayerDto> result = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PlayerDto>>(response);
+                        List<PlayerDto> result = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PlayerDto>>(response, Converter.Settings);
                         if (result.Count > 0 )
                         {
                             foreach (PlayerDto item in result)

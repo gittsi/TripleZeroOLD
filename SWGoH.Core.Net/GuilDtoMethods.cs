@@ -306,7 +306,7 @@ namespace SWGoH
                 string response = client.GetStringAsync(url).Result;
                 if (response != "" && response != "[  ]")
                 {
-                    List<GuildDto> result = JsonConvert.DeserializeObject<List<GuildDto>>(response);
+                    List<GuildDto> result = JsonConvert.DeserializeObject<List<GuildDto>>(response, Converter.Settings);
                     if (result.Count == 1)
                     {
                         GuildDto Found = result[0];

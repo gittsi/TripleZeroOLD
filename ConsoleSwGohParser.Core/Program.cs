@@ -86,6 +86,7 @@ namespace SWGoH
             //ExecuteCommand(Command.UpdateGuild , "501st", null); return;
             //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null); return;
             //ExecuteCommand(Command.UpdateUnknownGuild, "Dark Łords#@#3015#@#dark-lords", null); return;
+            QueueMethods.FixQueue();return;
 
             int now = DateTime.UtcNow.Minute;
             double minutes = 0.0;
