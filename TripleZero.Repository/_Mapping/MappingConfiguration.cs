@@ -113,6 +113,7 @@ namespace TripleZero.Repository._Mapping
                     cfg.CreateMap<QueueDto, Queue>()
                     .ForMember(dest => dest.InsertDate, src => src.MapFrom(source => source.InsertedDate))
                     .ForMember(dest => dest.ProcessingBy, src => src.MapFrom(source => source.ComputerName))
+                    .ForMember(dest => dest.GuildName, src => src.MapFrom(source => source.Guild))
                     ;
 
                     //character config

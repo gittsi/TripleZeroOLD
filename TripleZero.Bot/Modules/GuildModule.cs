@@ -475,7 +475,7 @@ namespace TripleZero.Modules
 
                     if(!character.IsUnlocked)
                     {
-                        dictZeta.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***Locked***"), -1);
+                        dictZeta.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***---Locked---***"), -1);
                         continue;
                     }
 
@@ -516,8 +516,12 @@ namespace TripleZero.Modules
             int count = 1;
             foreach (var keyvalue in dictOrdered)
             {
-                retStr += $"{count}. {keyvalue.Key} (total zetas:{keyvalue.Value})\n";
-                    count += 1;
+                retStr += $"{count}. {keyvalue.Key}";
+                //print zeta number only on unlocked units
+                if(keyvalue.Value>0) retStr += $" (**total zetas:{keyvalue.Value}**)";
+                retStr += "\n";
+
+                count += 1;
                 if (retStr.Length > 1800)
                 {
                     await ReplyAsync($"{retStr}");
