@@ -81,7 +81,7 @@
             this.textGuildFixed.Name = "textGuildFixed";
             this.textGuildFixed.Size = new System.Drawing.Size(142, 20);
             this.textGuildFixed.TabIndex = 6;
-            this.textGuildFixed.Text = "order-66-501st-division";
+            this.textGuildFixed.Text = "order-66";
             // 
             // textGuildID
             // 
@@ -89,7 +89,7 @@
             this.textGuildID.Name = "textGuildID";
             this.textGuildID.Size = new System.Drawing.Size(142, 20);
             this.textGuildID.TabIndex = 5;
-            this.textGuildID.Text = "32";
+            this.textGuildID.Text = "260";
             // 
             // textGuildName
             // 
@@ -97,7 +97,7 @@
             this.textGuildName.Name = "textGuildName";
             this.textGuildName.Size = new System.Drawing.Size(142, 20);
             this.textGuildName.TabIndex = 4;
-            this.textGuildName.Text = "Order 66 501st Division";
+            this.textGuildName.Text = "Order 66";
             // 
             // labFixed
             // 

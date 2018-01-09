@@ -100,25 +100,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SWGoH.Core.Net\Enums\ModEnum.cs">
-      <Link>ModEnum.cs</Link>
+      <Link>Dto\ModEnum.cs</Link>
     </Compile>
     <Compile Include="..\SWGoH.Core.Net\Enums\QueueEnum.cs">
-      <Link>QueueEnum.cs</Link>
+      <Link>Dto\QueueEnum.cs</Link>
     </Compile>
     <Compile Include="..\SWGoH.Core.Net\Model\CharacterDto.cs">
-      <Link>CharacterDto.cs</Link>
+      <Link>Dto\CharacterDto.cs</Link>
     </Compile>
     <Compile Include="..\SWGoH.Core.Net\Model\PlayerDto.cs">
-      <Link>PlayerDto.cs</Link>
+      <Link>Dto\PlayerDto.cs</Link>
     </Compile>
     <Compile Include="..\SWGoH.Core.Net\Model\QueueDto.cs">
-      <Link>QueueDto.cs</Link>
+      <Link>Dto\QueueDto.cs</Link>
     </Compile>
     <Compile Include="..\SWGoH.Core.Net\Model\Settings.cs">
-      <Link>Settings.cs</Link>
+      <Link>Dto\Settings.cs</Link>
     </Compile>
     <Compile Include="..\SWGoH.Core.Net\Model\ShipDto.cs">
-      <Link>ShipDto.cs</Link>
+      <Link>Dto\ShipDto.cs</Link>
     </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -167,5 +167,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

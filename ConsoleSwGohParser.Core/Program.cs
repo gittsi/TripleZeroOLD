@@ -24,14 +24,11 @@ namespace SWGoH
             //_handler += new EventHandler(Handler);
             //SetConsoleCtrlHandler(_handler, true);
 
-            Console.WriteLine("Hello , this is ConsoleSwGohParser versio :" + Assembly.GetExecutingAssembly().GetName().Version.ToString ());
-
+            Console.WriteLine("Hello , this is ConsoleSwGohParser version :" + Assembly.GetExecutingAssembly().GetName().Version.ToString ());
             if (args.Length > 0 && args.Length == 2)
             {
                 if (Settings.Get())
                 {
-                    
-
                     string arg1 = args[0];
                     string arg2 = args[1];
 
@@ -39,7 +36,10 @@ namespace SWGoH
                     Console.WriteLine("With Parameter : " + arg2);
 
                     Command comm = (Command)Enum.Parse(typeof(Command), arg1);
+
                     ExecuteCommand(comm, arg2, null);
+
+                    Console.ReadLine();
                 }
             }
             else
@@ -84,7 +84,7 @@ namespace SWGoH
             //ExecuteCommand(Command.Test, "newholborn", null);
             //ExecuteCommand(Command.UpdateGuildWithNoChars, "dl", null);return;
             //ExecuteCommand(Command.UpdateGuild , "501st", null); return;
-            //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null); return;
+            //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66#@#260#@#order-66", null); return;
             //ExecuteCommand(Command.UpdateUnknownGuild, "Dark Łords#@#3015#@#dark-lords", null); return;
             //QueueMethods.FixQueue();return;
 
