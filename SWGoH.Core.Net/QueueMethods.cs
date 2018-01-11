@@ -328,7 +328,7 @@ namespace SWGoH
                                     new JProperty("ProcessingStartDate", DateTime.UtcNow.ToString("o")),
                                     new JProperty("NextRunDate", result1.NextRunDate),
                                     new JProperty("Status", SWGoH.Enums.QueueEnum.QueueStatus.Processing),
-                                    new JProperty("Priority", result1.Priority),
+                                    new JProperty("Priority", (int)result1.Priority),
                                     new JProperty("Type", result1.Type),
                                     new JProperty("Command", result1.Command),
                                     new JProperty("ComputerName", SWGoH.Settings.appSettings.ComputerName));

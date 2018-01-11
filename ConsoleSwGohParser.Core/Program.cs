@@ -230,7 +230,7 @@ namespace SWGoH
                         if (guild.PlayerNames != null && guild.PlayerNames.Count > 0)
                         {
                             guild.UpdateOnlyGuildWithNoChars(mExportMethod);
-                            guild.CheckForNewPlayers();
+                            if (q.Priority == PriorityEnum.DailyUpdate) guild.CheckForNewPlayers();
 
                             if (q != null && q.Priority == PriorityEnum.ManualLoad)
                             {

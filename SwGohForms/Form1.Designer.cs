@@ -44,6 +44,7 @@
             this.butDelFromP = new System.Windows.Forms.Button();
             this.textDelFromP = new System.Windows.Forms.TextBox();
             this.labDelFromP = new System.Windows.Forms.Label();
+            this.butFullGuildReport = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -97,7 +98,7 @@
             this.textGuildName.Name = "textGuildName";
             this.textGuildName.Size = new System.Drawing.Size(142, 20);
             this.textGuildName.TabIndex = 4;
-            this.textGuildName.Text = "Order 66";
+            this.textGuildName.Text = "Order 66 501st Division";
             // 
             // labFixed
             // 
@@ -204,11 +205,23 @@
             this.labDelFromP.TabIndex = 8;
             this.labDelFromP.Text = "Guild Name : ";
             // 
+            // butFullGuildReport
+            // 
+            this.butFullGuildReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butFullGuildReport.Location = new System.Drawing.Point(251, 18);
+            this.butFullGuildReport.Name = "butFullGuildReport";
+            this.butFullGuildReport.Size = new System.Drawing.Size(114, 23);
+            this.butFullGuildReport.TabIndex = 3;
+            this.butFullGuildReport.Text = "Full Guild Report";
+            this.butFullGuildReport.UseVisualStyleBackColor = true;
+            this.butFullGuildReport.Click += new System.EventHandler(this.butFullGuildReport_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(503, 316);
+            this.ClientSize = new System.Drawing.Size(377, 315);
+            this.Controls.Add(this.butFullGuildReport);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -243,6 +256,7 @@
         private System.Windows.Forms.Button butDelFromP;
         private System.Windows.Forms.TextBox textDelFromP;
         private System.Windows.Forms.Label labDelFromP;
+        private System.Windows.Forms.Button butFullGuildReport;
     }
 }
 

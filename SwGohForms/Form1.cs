@@ -149,5 +149,45 @@ namespace SwGohForms
                 MessageBox.Show("Cannot Load Settings!!!!!");
             }
         }
+
+        private void butFullGuildReport_Click(object sender, EventArgs e)
+        {
+            if (Settings.Get())
+            {
+                string uri = @"mongodb://Dev:dev123qwe@ds" + SWGoH.Settings.appSettings.DatabaseID1.ToString() + ".mlab.com:" + SWGoH.Settings.appSettings.DatabaseID2.ToString() + "/" + SWGoH.Settings.appSettings.Database;
+                var client = new MongoClient(uri);
+                IMongoDatabase db = client.GetDatabase(SWGoH.Settings.appSettings.Database);
+                bool isMongoLive = db.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait(5000);
+                if (isMongoLive)
+                {
+                    string guildname = textGuildName.Text;
+                    IMongoCollection<PlayerDto> collection = db.GetCollection<PlayerDto>("Player");
+                    if (collection != null)
+                    {
+                        FilterDefinition<PlayerDto> filter = Builders<PlayerDto>.Filter.Eq("GuildName", guildname);        
+                        List<PlayerDto> results = collection.Find(filter).ToList ();
+                        List<PlayerDto> orderedPlayers = results.OrderByDescending(t => t?.Characters?[0]?.Abilities?.Sum(m => m?.Level)).ToList ();
+                        foreach (PlayerDto  player in orderedPlayers)
+                        {
+                            player.Characters.Select(p => p.Name , ")
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Cannot connect to database!!!!!");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Cannot Load Settings!!!!!");
+            }
+
+        }
+
+        private void GetPlayerZeta()
+        {
+            
+        }
     }
 }
