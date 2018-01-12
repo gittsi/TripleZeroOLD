@@ -40,18 +40,15 @@
             this.butDelFromQ = new System.Windows.Forms.Button();
             this.textDelFromQ = new System.Windows.Forms.TextBox();
             this.labDelFromQ = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.butDelFromP = new System.Windows.Forms.Button();
-            this.textDelFromP = new System.Windows.Forms.TextBox();
-            this.labDelFromP = new System.Windows.Forms.Label();
             this.butFullGuildReport = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.butFullGuildReport);
             this.groupBox1.Controls.Add(this.butGuildLoad);
             this.groupBox1.Controls.Add(this.textGuildFixed);
             this.groupBox1.Controls.Add(this.textGuildID);
@@ -129,6 +126,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.butDelFromP);
             this.groupBox2.Controls.Add(this.butDelFromQ);
             this.groupBox2.Controls.Add(this.textDelFromQ);
             this.groupBox2.Controls.Add(this.labDelFromQ);
@@ -166,21 +164,9 @@
             this.labDelFromQ.TabIndex = 5;
             this.labDelFromQ.Text = "Guild Name : ";
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.butDelFromP);
-            this.groupBox3.Controls.Add(this.textDelFromP);
-            this.groupBox3.Controls.Add(this.labDelFromP);
-            this.groupBox3.Location = new System.Drawing.Point(12, 221);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(232, 82);
-            this.groupBox3.TabIndex = 2;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Delete Guild From Player";
-            // 
             // butDelFromP
             // 
-            this.butDelFromP.Location = new System.Drawing.Point(117, 45);
+            this.butDelFromP.Location = new System.Drawing.Point(9, 45);
             this.butDelFromP.Name = "butDelFromP";
             this.butDelFromP.Size = new System.Drawing.Size(108, 23);
             this.butDelFromP.TabIndex = 10;
@@ -188,27 +174,10 @@
             this.butDelFromP.UseVisualStyleBackColor = true;
             this.butDelFromP.Click += new System.EventHandler(this.butDelFromP_Click);
             // 
-            // textDelFromP
-            // 
-            this.textDelFromP.Location = new System.Drawing.Point(83, 19);
-            this.textDelFromP.Name = "textDelFromP";
-            this.textDelFromP.Size = new System.Drawing.Size(142, 20);
-            this.textDelFromP.TabIndex = 9;
-            this.textDelFromP.Text = "Order 66 501st Division";
-            // 
-            // labDelFromP
-            // 
-            this.labDelFromP.AutoSize = true;
-            this.labDelFromP.Location = new System.Drawing.Point(6, 22);
-            this.labDelFromP.Name = "labDelFromP";
-            this.labDelFromP.Size = new System.Drawing.Size(71, 13);
-            this.labDelFromP.TabIndex = 8;
-            this.labDelFromP.Text = "Guild Name : ";
-            // 
             // butFullGuildReport
             // 
             this.butFullGuildReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butFullGuildReport.Location = new System.Drawing.Point(251, 18);
+            this.butFullGuildReport.Location = new System.Drawing.Point(19, 82);
             this.butFullGuildReport.Name = "butFullGuildReport";
             this.butFullGuildReport.Size = new System.Drawing.Size(114, 23);
             this.butFullGuildReport.TabIndex = 3;
@@ -220,9 +189,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(377, 315);
-            this.Controls.Add(this.butFullGuildReport);
-            this.Controls.Add(this.groupBox3);
+            this.ClientSize = new System.Drawing.Size(377, 222);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -232,8 +199,6 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -252,10 +217,7 @@
         private System.Windows.Forms.Button butDelFromQ;
         private System.Windows.Forms.TextBox textDelFromQ;
         private System.Windows.Forms.Label labDelFromQ;
-        private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button butDelFromP;
-        private System.Windows.Forms.TextBox textDelFromP;
-        private System.Windows.Forms.Label labDelFromP;
         private System.Windows.Forms.Button butFullGuildReport;
     }
 }

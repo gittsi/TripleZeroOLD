@@ -120,6 +120,7 @@
     <Compile Include="..\SWGoH.Core.Net\Model\ShipDto.cs">
       <Link>Dto\ShipDto.cs</Link>
     </Compile>
+    <Compile Include="Dto\CharacterConfigDto.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

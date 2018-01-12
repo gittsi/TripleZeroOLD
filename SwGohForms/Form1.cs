@@ -24,13 +24,16 @@ namespace SwGohForms
 
         private void butGuildLoad_Click(object sender, EventArgs e)
         {
+            string guildname = textGuildName.Text;
+            DialogResult ress = MessageBox.Show(this, "Guild LOAD : " + guildname, "Caution", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+            if (ress == DialogResult.No) return;
+
             //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66 501st Division#@#32#@#order-66-501st-division", null);
             string pathToProgram = Application.StartupPath + "\\..\\Parser\\ConsoleSwGohParser.Core.dll";
             if (File.Exists(pathToProgram))
             {
                 pathToProgram = "\"" + pathToProgram + "\"";
 
-                string guildname = textGuildName.Text;
                 string guildID = textGuildID.Text;
                 string guildfixedname = textGuildFixed.Text;
 
@@ -120,7 +123,7 @@ namespace SwGohForms
                     IMongoCollection<PlayerDto> collection = db.GetCollection<PlayerDto>("Player");
                     if (collection != null)
                     {
-                        string guildname = textDelFromP.Text;
+                        string guildname = textDelFromQ.Text;
 
                         DialogResult ress = MessageBox.Show(this, "Deleting from Player for guild : " + guildname, "Caution", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
                         if (ress == DialogResult.Yes)
@@ -150,28 +153,158 @@ namespace SwGohForms
             }
         }
 
+        private List<int> GetZetas(List<PlayerDto> orderedPlayers , IMongoDatabase db, string charactername)
+        {
+            List<int> zetas = new List<int>(7) { 0, 0, 0, 0, 0, 0, 0 };
+            CharacterConfigDto characterConfig = null;
+            IMongoCollection<CharacterConfigDto> collection2 = db.GetCollection<CharacterConfigDto>("Config.Character");
+            if (collection2 != null)
+            {
+                FilterDefinition<CharacterConfigDto> filter2 = Builders<CharacterConfigDto>.Filter.Eq("Name", charactername);
+                List<CharacterConfigDto> results = collection2.Find(filter2).ToList();
+                if (results.Count > 0) characterConfig = results[0];
+            }
+            
+            foreach (PlayerDto player in orderedPlayers)
+            {
+                CharacterDto character = player.Characters.FirstOrDefault(charac => charac.Name == charactername);
+                if (character == null) return zetas;
+                if (!(character.Level > 0))
+                {
+                    zetas[0]++;
+                    continue;
+                }
+                int countZeta = 0;
+                foreach (var ability in character.Abilities)
+                {
+                    ConfigAbility configAbility = characterConfig.Abilities?.Where(p => p.Name == ability.Name).FirstOrDefault();
+                    if (configAbility?.AbilityType == SWGoH.Enums.ModEnum.ConfigAbilityType.Zeta)
+                    {
+                        if (ability.Level == ability.MaxLevel)
+                        {
+                            countZeta += 1;
+                        }
+                    }
+                }
+                if (countZeta == 0)
+                    zetas[1]++;
+                else
+                    zetas[countZeta + 1]++;
+            }
+            return zetas;
+        }
+        private string PrepareStrMessage(string charactername , List<int> zetas)
+        {
+            
+
+            int withzeta = 0;
+            for (int i = zetas.Count; i > 1; i--)
+            {
+                int count = i - 2;
+                if (zetas[i - 1] > 0 && count > 0) withzeta += zetas[i - 1];
+            }
+
+            string ret = charactername + ":("+ withzeta.ToString() + " zeta) ";
+
+            //for (int i = zetas.Count; i > 1; i--)         
+            //{
+            //    int count = i - 2;
+            //    if (count == 0) ret += "(" + "No" + " zeta:" + zetas[i - 1].ToString() + ")";
+            //    else if (zetas[i-1] > 0) ret += "(" + count.ToString ()+" zeta : "+ zetas[i-1].ToString () +")";
+            //}
+            if (zetas[0] > 0) ret += "Locked : " + zetas[0].ToString();
+            return ret;
+        }
         private void butFullGuildReport_Click(object sender, EventArgs e)
         {
+            string guildname = textGuildName.Text;
+            DialogResult ress = MessageBox.Show(this, "Full Report for Guild : " + guildname, "Caution", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+            if (ress == DialogResult.No) return;
+
             if (Settings.Get())
             {
+                string finalname = Application.StartupPath + "\\FullReport.txt";
+                StreamWriter stream = new StreamWriter(finalname, false);
+                stream.AutoFlush = false;
+
                 string uri = @"mongodb://Dev:dev123qwe@ds" + SWGoH.Settings.appSettings.DatabaseID1.ToString() + ".mlab.com:" + SWGoH.Settings.appSettings.DatabaseID2.ToString() + "/" + SWGoH.Settings.appSettings.Database;
                 var client = new MongoClient(uri);
                 IMongoDatabase db = client.GetDatabase(SWGoH.Settings.appSettings.Database);
                 bool isMongoLive = db.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait(5000);
                 if (isMongoLive)
                 {
-                    string guildname = textGuildName.Text;
                     IMongoCollection<PlayerDto> collection = db.GetCollection<PlayerDto>("Player");
                     if (collection != null)
                     {
-                        FilterDefinition<PlayerDto> filter = Builders<PlayerDto>.Filter.Eq("GuildName", guildname);        
-                        List<PlayerDto> results = collection.Find(filter).ToList ();
-                        List<PlayerDto> orderedPlayers = results.OrderByDescending(t => t?.Characters?[0]?.Abilities?.Sum(m => m?.Level)).ToList ();
-                        foreach (PlayerDto  player in orderedPlayers)
-                        {
-                            player.Characters.Select(p => p.Name , ")
-                        }
+                        
+
+                        FilterDefinition<PlayerDto> filter = Builders<PlayerDto>.Filter.Eq("GuildName", guildname);
+                        List<PlayerDto> results = collection.Find(filter).ToList();
+                        List<PlayerDto> orderedPlayers = results.OrderByDescending(t => t?.Characters?[0]?.Abilities?.Sum(m => m?.Level)).ToList();
+
+                        stream.WriteLine("KGB Report for guild : " + guildname);
+                        stream.WriteLine();
+
+                        string charactername = "";
+                        List<int> zetas = null;
+
+                        charactername = "Rey (Jedi Training)";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "Barriss Offee";
+                        zetas = GetZetas(orderedPlayers , db, charactername);
+                        stream.WriteLine (PrepareStrMessage(charactername, zetas));
+
+                        charactername = "Commander Luke Skywalker";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "R2-D2";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "Grand Admiral Thrawn";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "BB-8";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "Darth Vader";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "Darth Maul";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "Savage Opress";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "Mother Talzin";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "Wampa";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        charactername = "Hermit Yoda";
+                        zetas = GetZetas(orderedPlayers, db, charactername);
+                        stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        //charactername = "First Order Executioner";
+                        //zetas = GetZetas(orderedPlayers, db, charactername);
+                        //stream.WriteLine(PrepareStrMessage(charactername, zetas));
+
+                        stream.Flush();
+                        stream.Close();
+                        MessageBox.Show("Finished!!!!");
                     }
+
                 }
                 else
                 {
