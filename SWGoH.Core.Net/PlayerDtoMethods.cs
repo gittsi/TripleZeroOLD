@@ -150,7 +150,7 @@ namespace SWGoH
 
             string pname = TryGetRealURLFromAlliasPlayerName(PlayerName);
 
-            PlayerName = pname.Replace("%20", " ");
+            PlayerName = pname.Replace("%20", " ").ToLower();
 
             int retbool = -1;
 
@@ -1057,7 +1057,7 @@ namespace SWGoH
 
             using (WebClient web = new System.Net.WebClient())
             {
-                Uri uri = new Uri("https://swgoh.gg" + newship.SWGoHUrl);
+                Uri uri = new Uri(WebUtility.HtmlDecode("https://swgoh.gg" + newship.SWGoHUrl));
                 try
                 {
                     html = web.DownloadString(uri);
@@ -2015,7 +2015,7 @@ namespace SWGoH
             int valueint = 0;
             double valuedecimal = 0;
 
-            Uri uri = new Uri("https://swgoh.gg" + newchar.SWGoHUrl);
+            Uri uri = new Uri(WebUtility.HtmlDecode("https://swgoh.gg" + newchar.SWGoHUrl));
             try
             {
                 html = web.DownloadString(uri);

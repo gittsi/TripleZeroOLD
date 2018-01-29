@@ -72,7 +72,7 @@ namespace SWGoH
             //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 1, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
             //SWGoH.QueueMethods.AddPlayer("tsitas_66", Command.UpdatePlayer, 4, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow.AddHours (15.0));
             //SWGoH.QueueMethods.AddPlayer("tsitas", Command.UpdatePlayer, 1, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
-            //SWGoH.QueueMethods.AddPlayer("Roukoun", Command.UpdatePlayer, 5, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
+            //SWGoH.QueueMethods.AddPlayer("dom 66","41st", Command.UpdatePlayer, PriorityEnum.ManualLoad , Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);return;
             //SWGoH.QueueMethods.AddPlayer("aramil", Command.GetNewCharacters,  PriorityEnum.ManualLoad , Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);
 
             //SWGoH.QueueMethods.AddPlayer("newholborn", Command.UpdatePlayer, 3, Enums.QueueEnum.QueueType.Player, DateTime.UtcNow);

@@ -255,6 +255,8 @@ namespace SwGohForms
 
             if (Settings.Get())
             {
+                //guildname = "NEW GALAXY ΘRDER";
+
                 string finalname = Application.StartupPath + "\\FullReport.txt";
                 StreamWriter stream = new StreamWriter(finalname, false);
                 stream.AutoFlush = false;
