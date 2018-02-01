@@ -13,9 +13,76 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using SWGoH.Enums.ModEnum;
+using System.Collections.Specialized;
 
 namespace SWGoH
 {
+    public class CookieAwareWebClient : WebClient
+    {
+        public string Method;
+        public CookieContainer CookieContainer { get; set; }
+        public Uri Uri { get; set; }
+
+        public CookieAwareWebClient()
+            : this(new CookieContainer())
+        {
+        }
+
+        public CookieAwareWebClient(CookieContainer cookies)
+        {
+            this.CookieContainer = cookies;
+        }
+
+        protected override WebRequest GetWebRequest(Uri address)
+        {
+            WebRequest request = base.GetWebRequest(address);
+            if (request is HttpWebRequest)
+            {
+                (request as HttpWebRequest).CookieContainer = this.CookieContainer;
+                //(request as HttpWebRequest).ServicePoint.Expect100Continue = false;
+                (request as HttpWebRequest).UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0";
+                (request as HttpWebRequest).Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+                (request as HttpWebRequest).Headers.Add(HttpRequestHeader.AcceptLanguage, "en-US,en;q=0.5");
+                (request as HttpWebRequest).Referer = "https://swgoh.gg/accounts/login/";
+                (request as HttpWebRequest).KeepAlive = true;
+                (request as HttpWebRequest).AutomaticDecompression = DecompressionMethods.Deflate |
+                                                                     DecompressionMethods.GZip;
+                if (Method == "POST")
+                {
+                    (request as HttpWebRequest).ContentType = "application/x-www-form-urlencoded";
+                }
+
+            }
+            HttpWebRequest httpRequest = (HttpWebRequest)request;
+            httpRequest.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            return httpRequest;
+        }
+
+        protected override WebResponse GetWebResponse(WebRequest request)
+        {
+            WebResponse response = base.GetWebResponse(request);
+            String setCookieHeader = response.Headers[HttpResponseHeader.SetCookie];
+
+            if (setCookieHeader != null)
+            {
+                //do something if needed to parse out the cookie.
+                try
+                {
+                    if (setCookieHeader != null)
+                    {
+                        Cookie cookie = new Cookie(); //create cookie
+                        this.CookieContainer.Add(cookie);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            return response;
+
+        }
+    }
     public partial class PlayerDto
     {
         public static bool isOnExit = false;
@@ -180,7 +247,7 @@ namespace SWGoH
             SWGoH.Log.ConsoleMessage("Reading Player " + this.PlayerName + " aka " + PlayerNameInGame);
             if (!AddCharacters) return 1;
             bool ret = CheckLastUpdateWithCurrent(ExportMethod);
-            //ret = true;
+            ret = true;
             if (ret || checkForCharAllias)
             {
                 FillPlayerCharacters(pname , checkForCharAllias);
@@ -1060,7 +1127,8 @@ namespace SWGoH
                 Uri uri = new Uri(WebUtility.HtmlDecode("https://swgoh.gg" + newship.SWGoHUrl));
                 try
                 {
-                    html = web.DownloadString(uri);
+                    html = clientForChars.DownloadString(uri);
+                    //html = web.DownloadString(uri);
                 }
                 catch (Exception e)
                 {
@@ -2007,7 +2075,8 @@ namespace SWGoH
 
             return ret;
         }
-
+        string hiddenToken = "";
+        CookieAwareWebClient clientForChars = null;
         private bool FillCharData(CharacterDto newchar)
         {
             string html = "";
@@ -2018,7 +2087,69 @@ namespace SWGoH
             Uri uri = new Uri(WebUtility.HtmlDecode("https://swgoh.gg" + newchar.SWGoHUrl));
             try
             {
-                html = web.DownloadString(uri);
+                //System.Net.NetworkCredential cred = new NetworkCredential("NewHolborn", "l2456789");
+                //web.Credentials = cred;
+
+                //string valuetoken = "";
+                //Uri urilogin = new Uri(WebUtility.HtmlDecode("https://swgoh.gg/accounts/login/"));
+                //string loginpage = web.DownloadString(uri);
+                //string strtosearchtoken = "name='csrfmiddlewaretoken'";
+                //int tokenindex = loginpage.IndexOf(strtosearchtoken);
+                //if (tokenindex != -1)
+                //{
+                //    int Positiontoken = tokenindex + strtosearchtoken.Length;
+                //    string reststrTosearchStarttoken = "value='";
+                //    int restindexStarttoken = loginpage.IndexOf(reststrTosearchStarttoken, Positiontoken);
+                //    string reststrTosearchEndtoken = "'";
+                //    int restindexEndtoken = loginpage.IndexOf(reststrTosearchEndtoken, restindexStarttoken + reststrTosearchStarttoken.Length);
+                //    if (restindexStarttoken != -1 && restindexEndtoken != -1)
+                //    {
+                //        int start = restindexStarttoken + reststrTosearchStarttoken.Length;
+                //        int length = restindexEndtoken - start;
+                //        valuetoken = loginpage.Substring(start, length);
+                //    }
+                //}
+
+                //var client = new CookieAwareWebClient();
+                //client.BaseAddress = @"https://swgoh.gg/accounts/login/";
+                //var loginData = new NameValueCollection();
+                //loginData.Add("login", "NewHolborn");
+                //loginData.Add("password", "l2456789");
+                //loginData.Add("csrfmiddlewaretoken", valuetoken);
+                //byte[] response = client.UploadValues("https://swgoh.gg/accounts/login/", "POST", loginData);
+                //html = client.DownloadString(uri);
+
+                //string formUrl = @"https://swgoh.gg/accounts/login/";
+                //string formParams = string.Format("csrfmiddlewaretoken={0}&username={1}&password={2}", valuetoken, "NewHolborn", "l2456789");
+                //string cookieHeader;
+                //WebRequest req = WebRequest.Create(formUrl);
+                //req.ContentType = "application/x-www-form-urlencoded";
+                //req.Method = "POST";
+                //byte[] bytes = Encoding.ASCII.GetBytes(formParams);
+                //req.ContentLength = bytes.Length;
+                //using (Stream os = req.GetRequestStream())
+                //{
+                //    os.Write(bytes, 0, bytes.Length);
+                //}
+                //req.UseDefaultCredentials = true;
+                //WebResponse resp = req.GetResponse();
+                //cookieHeader = resp.Headers["Set-cookie"];
+
+                if (clientForChars == null && hiddenToken == "")
+                {
+                    clientForChars = new CookieAwareWebClient();
+
+                    string webData = clientForChars.DownloadString("https://swgoh.gg/accounts/login/");
+                    int place = webData.IndexOf("value='");
+                    hiddenToken = webData.Substring(place + 7, 32);
+
+                    string postData = string.Format("utf8=%E2%9C%93&csrfmiddlewaretoken={0}&username=papakia&password=293nc44Q$bHS&button=", hiddenToken);
+
+                    clientForChars.Method = "POST";
+                    string response = clientForChars.UploadString("https://swgoh.gg/accounts/login/", postData);
+                }
+                
+                html = clientForChars.DownloadString(uri);
             }
             catch (Exception e)
             {

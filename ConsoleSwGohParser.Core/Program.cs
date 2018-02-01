@@ -80,7 +80,7 @@ namespace SWGoH
             //SWGoH.QueueMethods.AddPlayer("41st", Command.UpdateGuildWithNoChars , PriorityEnum.DailyUpdate, Enums.QueueEnum.QueueType.Guild, DateTime.UtcNow);
             //ExecuteCommand(Command.GetNewCharacters, "aramil", null); return;
             //ExecuteCommand(Command.TestZetas, "aramil", null); return;
-            //ExecuteCommand(Command.UpdatePlayer, "BadBoyBarrett", null);return;
+            //ExecuteCommand(Command.UpdatePlayer, "newholborn", null);return;
             //ExecuteCommand(Command.Test, "newholborn", null);
             //ExecuteCommand(Command.UpdateGuildWithNoChars, "dl", null);return;
             //ExecuteCommand(Command.UpdateGuild , "501st", null); return;
