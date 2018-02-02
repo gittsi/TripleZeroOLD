@@ -468,11 +468,6 @@ namespace TripleZero.Modules
                     retStr += "\n";
                     var character = player.Characters.FirstOrDefault();
 
-                    if(player.PlayerName== "wortheon")
-                    {
-                        var a = 1;
-                    }                    
-
                     if(!character.IsUnlocked)
                     {
                         dictZeta.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***---Locked---***"), -1);
@@ -481,25 +476,32 @@ namespace TripleZero.Modules
 
                     int countZeta = 0;
                     List<string> zetas = new List<string>();
-                    foreach (var ability in character.Abilities)
+
+
+                    if(character.Abilities==null)
                     {
-                        
-
-                        var configAbility = characterConfig.Abilities?.Where(p => p.Name == ability.Name).FirstOrDefault();
-
-                        if (configAbility?.AbilityType == AbilityType.Zeta)
+                        dictZeta.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***NULL ABILITIES!!!***"), countZeta);
+                    }
+                    else
+                    {
+                        foreach (var ability in character.Abilities)
                         {
-                            if (ability.Level == ability.MaxLevel)
+                            var configAbility = characterConfig.Abilities?.Where(p => p.Name == ability.Name).FirstOrDefault();
+
+                            if (configAbility?.AbilityType == AbilityType.Zeta)
                             {
-                                countZeta += 1;
-                                zetas.Add(ability.Name);
+                                if (ability.Level == ability.MaxLevel)
+                                {
+                                    countZeta += 1;
+                                    zetas.Add(ability.Name);
+                                }
                             }
                         }
-                    }
-                    if (countZeta == 0)
-                            dictZeta.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***No Zeta***"),countZeta);
-                    else
-                        dictZeta.Add(string.Concat(player.PlayerName,"(", player.PlayerNameInGame , ")", " : ", string.Join(" - ", zetas.ToArray())), countZeta);
+                        if (countZeta == 0)
+                            dictZeta.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***No Zeta***"), countZeta);
+                        else
+                            dictZeta.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ", string.Join(" - ", zetas.ToArray())), countZeta);
+                    }                    
                 }
             }
             catch(Exception ex)
