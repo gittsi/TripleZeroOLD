@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.butParseURL = new System.Windows.Forms.Button();
+            this.textURL = new System.Windows.Forms.TextBox();
+            this.labURL = new System.Windows.Forms.Label();
             this.butFullGuildReport = new System.Windows.Forms.Button();
             this.butGuildLoad = new System.Windows.Forms.Button();
             this.textGuildFixed = new System.Windows.Forms.TextBox();
@@ -42,10 +45,8 @@
             this.butDelFromQ = new System.Windows.Forms.Button();
             this.textDelFromQ = new System.Windows.Forms.TextBox();
             this.labDelFromQ = new System.Windows.Forms.Label();
-            this.labURL = new System.Windows.Forms.Label();
-            this.textURL = new System.Windows.Forms.TextBox();
-            this.butParseURL = new System.Windows.Forms.Button();
             this.butGetNewChars = new System.Windows.Forms.Button();
+            this.butFormerPlayers = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -69,6 +70,33 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "TW opponent Guild Launch";
+            // 
+            // butParseURL
+            // 
+            this.butParseURL.Location = new System.Drawing.Point(419, 25);
+            this.butParseURL.Name = "butParseURL";
+            this.butParseURL.Size = new System.Drawing.Size(50, 23);
+            this.butParseURL.TabIndex = 8;
+            this.butParseURL.Text = "Parse";
+            this.butParseURL.UseVisualStyleBackColor = true;
+            this.butParseURL.Click += new System.EventHandler(this.butParseURL_Click);
+            // 
+            // textURL
+            // 
+            this.textURL.Location = new System.Drawing.Point(49, 27);
+            this.textURL.Name = "textURL";
+            this.textURL.Size = new System.Drawing.Size(364, 20);
+            this.textURL.TabIndex = 9;
+            this.textURL.Text = "https://swgoh.gg/g/53/order-66-41st-division/";
+            // 
+            // labURL
+            // 
+            this.labURL.AutoSize = true;
+            this.labURL.Location = new System.Drawing.Point(8, 30);
+            this.labURL.Name = "labURL";
+            this.labURL.Size = new System.Drawing.Size(35, 13);
+            this.labURL.TabIndex = 8;
+            this.labURL.Text = "URL :";
             // 
             // butFullGuildReport
             // 
@@ -189,33 +217,6 @@
             this.labDelFromQ.TabIndex = 5;
             this.labDelFromQ.Text = "Guild Name : ";
             // 
-            // labURL
-            // 
-            this.labURL.AutoSize = true;
-            this.labURL.Location = new System.Drawing.Point(8, 30);
-            this.labURL.Name = "labURL";
-            this.labURL.Size = new System.Drawing.Size(35, 13);
-            this.labURL.TabIndex = 8;
-            this.labURL.Text = "URL :";
-            // 
-            // textURL
-            // 
-            this.textURL.Location = new System.Drawing.Point(49, 27);
-            this.textURL.Name = "textURL";
-            this.textURL.Size = new System.Drawing.Size(364, 20);
-            this.textURL.TabIndex = 9;
-            this.textURL.Text = "https://swgoh.gg/g/53/order-66-41st-division/";
-            // 
-            // butParseURL
-            // 
-            this.butParseURL.Location = new System.Drawing.Point(419, 25);
-            this.butParseURL.Name = "butParseURL";
-            this.butParseURL.Size = new System.Drawing.Size(50, 23);
-            this.butParseURL.TabIndex = 8;
-            this.butParseURL.Text = "Parse";
-            this.butParseURL.UseVisualStyleBackColor = true;
-            this.butParseURL.Click += new System.EventHandler(this.butParseURL_Click);
-            // 
             // butGetNewChars
             // 
             this.butGetNewChars.Location = new System.Drawing.Point(493, 12);
@@ -226,11 +227,22 @@
             this.butGetNewChars.UseVisualStyleBackColor = true;
             this.butGetNewChars.Click += new System.EventHandler(this.butGetNewChars_Click);
             // 
+            // butFormerPlayers
+            // 
+            this.butFormerPlayers.Location = new System.Drawing.Point(493, 77);
+            this.butFormerPlayers.Name = "butFormerPlayers";
+            this.butFormerPlayers.Size = new System.Drawing.Size(99, 48);
+            this.butFormerPlayers.TabIndex = 3;
+            this.butFormerPlayers.Text = "Check For Former Players";
+            this.butFormerPlayers.UseVisualStyleBackColor = true;
+            this.butFormerPlayers.Click += new System.EventHandler(this.butFormerPlayers_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(604, 273);
+            this.Controls.Add(this.butFormerPlayers);
             this.Controls.Add(this.butGetNewChars);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -265,6 +277,7 @@
         private System.Windows.Forms.TextBox textURL;
         private System.Windows.Forms.Label labURL;
         private System.Windows.Forms.Button butGetNewChars;
+        private System.Windows.Forms.Button butFormerPlayers;
     }
 }
 

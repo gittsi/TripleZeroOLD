@@ -83,7 +83,7 @@ namespace SWGoH
             //ExecuteCommand(Command.UpdatePlayer, "newholborn", null);return;
             //ExecuteCommand(Command.Test, "newholborn", null);
             //ExecuteCommand(Command.UpdateGuildWithNoChars, "dl", null);return;
-            //ExecuteCommand(Command.UpdateGuild , "501st", null); return;
+            //ExecuteCommand(Command.UpdateGuild , "41st", null); return;
             //ExecuteCommand(Command.UpdateUnknownGuild, "Order 66#@#260#@#order-66", null); return;
             //ExecuteCommand(Command.UpdateUnknownGuild, "Dark Łords#@#3015#@#dark-lords", null); return;
             //QueueMethods.FixQueue();return;

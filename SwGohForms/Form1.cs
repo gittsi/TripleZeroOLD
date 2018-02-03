@@ -460,5 +460,69 @@ namespace SwGohForms
                 MessageBox.Show("Cannot Find " + pathToProgram);
             }
         }
+
+        private void butFormerPlayers_Click(object sender, EventArgs e)
+        {
+            string guild1 = "Order 66 41st Division";
+            string guild2 = "Order 66 501st Division";
+
+            if (Settings.Get())
+            {
+                string uri = @"mongodb://Dev:dev123qwe@ds" + SWGoH.Settings.appSettings.DatabaseID1.ToString() + ".mlab.com:" + SWGoH.Settings.appSettings.DatabaseID2.ToString() + "/" + SWGoH.Settings.appSettings.Database;
+                var client = new MongoClient(uri);
+
+                IMongoDatabase db = client.GetDatabase(SWGoH.Settings.appSettings.Database);
+                bool isMongoLive = db.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait(5000);
+                if (isMongoLive)
+                {
+                    IMongoCollection<PlayerDto> CollectionPlayers = db.GetCollection<PlayerDto>("Player");
+                    IMongoCollection<QueueDto> collectionQueue = db.GetCollection<QueueDto>("Queue");
+                    if (CollectionPlayers != null)
+                    {
+                        FilterDefinition<PlayerDto> filter = Builders<PlayerDto>.Filter.Ne("GuildName", guild1) & Builders<PlayerDto>.Filter.Ne("GuildName", guild2);
+                        FilterDefinition<QueueDto> filterQueue = Builders<QueueDto>.Filter.Ne("Guild", guild1) & Builders<QueueDto>.Filter.Ne("Guild", guild2);
+
+                        List<PlayerDto> resultsPlayers = CollectionPlayers.Find(filter).ToList();
+                        List<QueueDto> resultsQueue = collectionQueue.Find(filterQueue).ToList();
+
+                        if (resultsPlayers.Count > 0 || resultsQueue.Count > 0)
+                        {
+                            string message = "Found these players : \r\n";
+                            foreach (PlayerDto item in resultsPlayers)
+                            {
+                                message += item.PlayerNameInGame + "\r\n";
+                            }
+                            message += "And these in Queue : \r\n";
+                            foreach (QueueDto item in resultsQueue)
+                            {
+                                message += item.Name + "\r\n";
+                            }
+
+                            DialogResult res = MessageBox.Show(message + "Delete Them????", "Found Players" , MessageBoxButtons.YesNo);
+                            if (res == DialogResult.Yes)
+                            {
+                                DeleteResult delresPlayers = CollectionPlayers.DeleteMany(filter);
+                                DeleteResult delresQueue = collectionQueue.DeleteMany(filterQueue);
+
+                                MessageBox.Show("Deleted Players : " + delresPlayers.DeletedCount.ToString() + "\r\n" + "Deleted Queue : " + delresQueue.DeletedCount.ToString());
+                                
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Did not find any player that is not in the friendly guilds");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Cannot connect to database!!!!!");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Cannot Load Settings!!!!!");
+            }
+        }
     }
 }

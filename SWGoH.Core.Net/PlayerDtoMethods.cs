@@ -654,17 +654,17 @@ namespace SWGoH
                 if (isOnExit) return;
                 previousPosition = Position;
                 CharacterDto newchar = GetChar(html, out Position);
-                bool ret = FillCharData(newchar);
-                if (ret && Position > 0) html = html.Substring(Position);
+                int ret = FillCharData(newchar);
+                if (ret==1 && Position > 0) html = html.Substring(Position);
                 if (Position < 0) exit = true;
-                if (ret)
+                if (ret==1)
                 {
                     if (newchar.Name != null)
                     {
                         count++;
                         newchar.Name = FixCharacterName(newchar.Name);
                         Characters.Add(newchar);
-                        SWGoH.Log.ConsoleMessage("          " + count.ToString() + ") Added character : " + newchar.Name);
+                        SWGoH.Log.ConsoleMessageNotInFile("          " + count.ToString() + ") Added character : " + newchar.Name);
 
                         if (CheckForAllias)
                         {
@@ -675,8 +675,14 @@ namespace SWGoH
                         Thread.Sleep(Settings.appSettings.DelayPerCharacter);
                     }
                 }
-                else
+                else if (ret == 0)
                 {
+                    Thread.Sleep(Settings.appSettings.DelayErrorAtCharacter);
+                    Position = previousPosition;
+                }
+                else if (ret == 2)
+                {
+                    SWGoH.Log.ConsoleMessageNotInFile("Cannot read characters , possibly wrong Login!!!!!");
                     Thread.Sleep(Settings.appSettings.DelayErrorAtCharacter);
                     Position = previousPosition;
                 }
@@ -2077,7 +2083,7 @@ namespace SWGoH
         }
         string hiddenToken = "";
         CookieAwareWebClient clientForChars = null;
-        private bool FillCharData(CharacterDto newchar)
+        private int FillCharData(CharacterDto newchar)
         {
             string html = "";
             bool ret1 = false;
@@ -2087,54 +2093,6 @@ namespace SWGoH
             Uri uri = new Uri(WebUtility.HtmlDecode("https://swgoh.gg" + newchar.SWGoHUrl));
             try
             {
-                //System.Net.NetworkCredential cred = new NetworkCredential("NewHolborn", "l2456789");
-                //web.Credentials = cred;
-
-                //string valuetoken = "";
-                //Uri urilogin = new Uri(WebUtility.HtmlDecode("https://swgoh.gg/accounts/login/"));
-                //string loginpage = web.DownloadString(uri);
-                //string strtosearchtoken = "name='csrfmiddlewaretoken'";
-                //int tokenindex = loginpage.IndexOf(strtosearchtoken);
-                //if (tokenindex != -1)
-                //{
-                //    int Positiontoken = tokenindex + strtosearchtoken.Length;
-                //    string reststrTosearchStarttoken = "value='";
-                //    int restindexStarttoken = loginpage.IndexOf(reststrTosearchStarttoken, Positiontoken);
-                //    string reststrTosearchEndtoken = "'";
-                //    int restindexEndtoken = loginpage.IndexOf(reststrTosearchEndtoken, restindexStarttoken + reststrTosearchStarttoken.Length);
-                //    if (restindexStarttoken != -1 && restindexEndtoken != -1)
-                //    {
-                //        int start = restindexStarttoken + reststrTosearchStarttoken.Length;
-                //        int length = restindexEndtoken - start;
-                //        valuetoken = loginpage.Substring(start, length);
-                //    }
-                //}
-
-                //var client = new CookieAwareWebClient();
-                //client.BaseAddress = @"https://swgoh.gg/accounts/login/";
-                //var loginData = new NameValueCollection();
-                //loginData.Add("login", "NewHolborn");
-                //loginData.Add("password", "l2456789");
-                //loginData.Add("csrfmiddlewaretoken", valuetoken);
-                //byte[] response = client.UploadValues("https://swgoh.gg/accounts/login/", "POST", loginData);
-                //html = client.DownloadString(uri);
-
-                //string formUrl = @"https://swgoh.gg/accounts/login/";
-                //string formParams = string.Format("csrfmiddlewaretoken={0}&username={1}&password={2}", valuetoken, "NewHolborn", "l2456789");
-                //string cookieHeader;
-                //WebRequest req = WebRequest.Create(formUrl);
-                //req.ContentType = "application/x-www-form-urlencoded";
-                //req.Method = "POST";
-                //byte[] bytes = Encoding.ASCII.GetBytes(formParams);
-                //req.ContentLength = bytes.Length;
-                //using (Stream os = req.GetRequestStream())
-                //{
-                //    os.Write(bytes, 0, bytes.Length);
-                //}
-                //req.UseDefaultCredentials = true;
-                //WebResponse resp = req.GetResponse();
-                //cookieHeader = resp.Headers["Set-cookie"];
-
                 if (clientForChars == null && hiddenToken == "")
                 {
                     clientForChars = new CookieAwareWebClient();
@@ -2143,7 +2101,9 @@ namespace SWGoH
                     int place = webData.IndexOf("value='");
                     hiddenToken = webData.Substring(place + 7, 32);
 
-                    string postData = string.Format("utf8=%E2%9C%93&csrfmiddlewaretoken={0}&username=papakia&password=293nc44Q$bHS&button=", hiddenToken);
+                    string username = SWGoH.Settings.appSettings.username;//"papakia";
+                    string pass = SWGoH.Settings.appSettings.password; //"293nc44Q$bHS";
+                    string postData = string.Format("utf8=%E2%9C%93&csrfmiddlewaretoken={0}&username={1}&password={2}&button=", hiddenToken,username,pass);
 
                     clientForChars.Method = "POST";
                     string response = clientForChars.UploadString("https://swgoh.gg/accounts/login/", postData);
@@ -2154,10 +2114,12 @@ namespace SWGoH
             catch (Exception e)
             {
                 SWGoH.Log.ConsoleMessage("Exception : " + e.Message);
-                return false;
+                return 0;
             }
 
             string value;
+
+
 
             #region Labels
             bool exit = false;
@@ -2165,13 +2127,17 @@ namespace SWGoH
             string strtosearch = "";
             int index = 0;
 
+            strtosearch = SWGoH.Settings.appSettings.username;
+            index = html.IndexOf(strtosearch, Position);
+            if (strtosearch != "" && index == -1) return 2;
+
             strtosearch = "char-tag char-alignment";
             index = html.IndexOf(strtosearch, Position);
             Position = index + strtosearch.Length;
             if (index != -1)
             {
                 string reststrTosearchStart = "\">";
-                int restindexStart = html.IndexOf(reststrTosearchStart, Position+40);
+                int restindexStart = html.IndexOf(reststrTosearchStart, Position + 40);
                 string reststrTosearchEnd = "</a>";
                 int restindexEnd = html.IndexOf(reststrTosearchEnd, restindexStart + reststrTosearchStart.Length);
                 if (restindexStart != -1 && restindexEnd != -1)
@@ -2345,7 +2311,7 @@ namespace SWGoH
                     if (ret1) newchar.StatPower = valueint;
                 }
             }
-
+            
 
 
             #region General
@@ -2706,7 +2672,7 @@ namespace SWGoH
 
             LoadMods(html, newchar);
 
-            return true;
+            return 1;
         }
 
         private void LoadMods(string html, CharacterDto newchar)

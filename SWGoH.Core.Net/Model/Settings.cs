@@ -67,5 +67,7 @@ namespace SWGoH
         public int DatabaseID2 { get; set; }
         public string ComputerName { get; set; }
         public string UpdateOnlyGuild { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
     }
 }
