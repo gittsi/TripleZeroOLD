@@ -298,7 +298,7 @@ namespace TripleZero.Repository
         }
         public async Task<IEnumerable<Player>> GetGuildPlayersArena(string guildName)
         {
-            await Task.FromResult(1);
+            //await Task.FromResult(1);
 
             string functionName = "GetGuildPlayersArenaRepo";
             string key = $"{guildName}";
@@ -339,7 +339,7 @@ namespace TripleZero.Repository
         }
         public async Task<IEnumerable<Player>> GetGuildCharactersAbilities(string guildName)
         {
-            await Task.FromResult(1);
+            //await Task.FromResult(1);
 
             string functionName = "GetGuildCharactersAbilitiesRepo";
             string key = $"{guildName}";
