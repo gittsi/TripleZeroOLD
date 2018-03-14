@@ -484,7 +484,7 @@ namespace TripleZero.Modules
             if (!rowsIsNumber) { await ReplyAsync($"If you want to specify how many results want, you have to put a number as a parameter! '{rows}' is not a number!"); return; }
 
             string retStr = "";
-            await Context.Message.DeleteAsync();
+            //await Context.Message.DeleteAsync();
 
             //check if user is in role in order to proceed with the action
             var adminRole = IResolver.Current.ApplicationSettings.GetTripleZeroBotSettings().DiscordSettings.BotAdminRole;
