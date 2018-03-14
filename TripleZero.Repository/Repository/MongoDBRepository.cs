@@ -379,6 +379,48 @@ namespace TripleZero.Repository
                 throw new ApplicationException(ex.Message);
             }
         }
+        public async Task<IEnumerable<Player>> GetGuildCharacterGeneralStats(string guildName)
+        {
+            await Task.FromResult(1);
+
+            string functionName = "GetGuildCharactersGeneralStatsRepo";
+            string key = $"{guildName}";
+            var objCache = cacheClient.GetDataFromRepositoryCache(functionName, key);
+            if (objCache != null)
+            {
+                var players = (List<Player>)objCache;
+
+                players.ForEach(p => p.LoadedFromCache = true);
+                return players;
+            }
+
+            //var queryData = string.Concat("{\"Characters.Nm\":\"", characterFullName, "\"}"); didn't work
+            var queryData = string.Concat("{\"GuildName\":\"", guildName, "\"}");
+            var orderby = "{\"LastSwGohUpdated\":-1}";
+            var fields = "{\"PlayerName\": 1,\"PlayerNameInGame\": 1,\"Characters.Sp\": 1,\"Characters.Nm\": 1,\"Characters.Lvl\": 1}";
+
+            string url = BuildApiUrl("Player", queryData, orderby, null, fields);
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(url);
+                    List<PlayerDto> playersDto = JsonConvert.DeserializeObject<List<PlayerDto>>(response, JSonConverterSettings.Settings);
+                    //List<PlayerDto> p = ret.Where(pl => playersName.Contains(pl.PlayerName)).ToList();
+
+                    var players = _Mapper.Map<List<Player>>(playersDto);
+                    List<Player> retPlayers = new List<Player>();
+                    //load to cache
+                    await cacheClient.AddToRepositoryCache(functionName, key, players, 30);
+                    return players;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+        }
         public async Task<IEnumerable<Player>> GetGuildCharacterAbilities(string guildName,string characterFullName)
         {
             var players = await GetGuildCharactersAbilities(guildName);
@@ -388,6 +430,16 @@ namespace TripleZero.Repository
                              select new Player { LoadedFromCache=player.LoadedFromCache, PlayerName= player.PlayerName, PlayerNameInGame= player.PlayerNameInGame, Characters = new List<Character>() { character } } ;            
 
             return retPlayers;            
+        }
+        public async Task<IEnumerable<Player>> GetGuildCharacterGeneralStats(string guildName, string characterFullName)
+        {
+            var players = await GetGuildCharacterGeneralStats(guildName);
+            var retPlayers = from player in players
+                             from character in player.Characters
+                             where (character.Name == characterFullName)
+                             select new Player { LoadedFromCache = player.LoadedFromCache, PlayerName = player.PlayerName, PlayerNameInGame = player.PlayerNameInGame, Characters = new List<Character>() { character } };
+
+            return retPlayers;
         }
         public async Task<List<Player>> GetAllPlayersNoCharactersNoShips()
         {

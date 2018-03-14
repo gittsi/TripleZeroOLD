@@ -534,5 +534,105 @@ namespace TripleZero.Modules
             await ReplyAsync($"{retStr}");
             await messageLoading.DeleteAsync();
         }
+
+        [Command("guildCharacterSpeed", RunMode = RunMode.Async)]
+        [Summary("Get speed report for specific character in specified guild")]
+        [Remarks("*guildSpeed {guildAlias or guildId} {characterAlias}*")]
+        [Alias("gcsp")]
+        public async Task GetGuildCharacterSpeed(string guildAlias, string characterAlias)
+        {
+            guildAlias = guildAlias.Trim();
+            characterAlias = characterAlias.Trim();
+
+            string retStr = "";
+
+            string loadingStr = $"```I am trying to load guild with alias '{guildAlias}' to show speed in the specified character```";
+            var messageLoading = await ReplyAsync($"{loadingStr}");
+
+            var guildConfig = IResolver.Current.GuildSettings.GetGuildConfigByAlias(guildAlias).Result;
+            if (guildConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any guild with alias ***{guildAlias}***");
+                await messageLoading.DeleteAsync();
+                return;
+            }
+
+            var characterConfig = IResolver.Current.CharacterSettings.GetCharacterConfigByAlias(characterAlias).Result;
+            if (characterConfig == null)
+            {
+                await ReplyAsync($"I couldn't find any character with alias ***{characterAlias}***");
+                await messageLoading.DeleteAsync();
+                return;
+            }
+
+            if (characterConfig.Abilities == null || characterConfig.Abilities.Count() == 0)
+            {
+                await ReplyAsync($"```Warning : No Abilities```");
+            }
+
+            // var result = IResolver.Current.MongoDBRepository.GetGuildPlayers(guildConfig.Name).Result;
+            var players = IResolver.Current.MongoDBRepository.GetGuildCharacterGeneralStats(guildConfig.Name, characterConfig.Name).Result;
+            if (players.FirstOrDefault().LoadedFromCache) await ReplyAsync($"{cacheClient.GetCachedDataRepositoryMessage()}");
+            var orderedPlayers = players.OrderByDescending(t => t?.Characters?[0]?.GeneralStats.Speed);
+
+            var dictSpeed = new Dictionary<string, int>();
+            try
+            {
+                foreach (var player in orderedPlayers)
+                {
+                    retStr += "\n";
+                    var character = player.Characters.FirstOrDefault();
+
+                    if (!character.IsUnlocked)
+                    {
+                        dictSpeed.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***---Locked---***"), -1);
+                        continue;
+                    }
+
+                    int speed = 0;
+                    List<string> zetas = new List<string>();
+
+
+                    if (character.GeneralStats == null)
+                    {
+                        dictSpeed.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ***NULL GENERAL STATS!!!***"), speed);
+                    }
+                    else
+                    {
+                        speed = character.GeneralStats.Speed;
+                        dictSpeed.Add(string.Concat(player.PlayerName, "(", player.PlayerNameInGame, ")", " : ", string.Join(" - ", zetas.ToArray())), speed);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await ReplyAsync($"***Something bad happened!***");
+                await messageLoading.DeleteAsync();
+                return;
+            }
+
+
+            var dictOrdered = dictSpeed.OrderByDescending(p => p.Value);
+
+            retStr += retStr = $"```This is the speed report for \"{characterConfig.Name}\" for guild \"{guildConfig.Name}\"```";
+            int count = 1;
+            foreach (var keyvalue in dictOrdered)
+            {
+                retStr += $"{count}. {keyvalue.Key}";
+                //print zeta number only on unlocked units
+                if (keyvalue.Value > 0) retStr += $" (**speed : {keyvalue.Value}**)";
+                retStr += "\n";
+
+                count += 1;
+                if (retStr.Length > 1800)
+                {
+                    await ReplyAsync($"{retStr}");
+                    retStr = "";
+                }
+            }
+
+            await ReplyAsync($"{retStr}");
+            await messageLoading.DeleteAsync();
+        }
     }
 }
