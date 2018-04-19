@@ -68,6 +68,12 @@ namespace TripleZero.Modules
                 int count = 1;
                 string leader = "";
                 List<string> aliasListNoLeader = new List<string>();
+
+                if (player.Arena == null)
+                {
+                    continue;
+                }
+
                 foreach(var arenaCharacter in player.Arena.ArenaTeam)
                 {                    
                     var alias = characterConfig.Where(p => p.Name == arenaCharacter).FirstOrDefault()?.Aliases?.FirstOrDefault();
@@ -99,7 +105,7 @@ namespace TripleZero.Modules
             //if(messageLoading!=null)
             //    await messageLoading.DeleteAsync();
             await messageLoading.DeleteAsync();
-            await ReplyAsync($"{retStr}");
+            if(!string.IsNullOrEmpty(retStr)) await ReplyAsync($"{retStr}");
 
             var groupList=dict.GroupBy(r => r.Value).ToDictionary(t => t.Key, t => t.Select(r => r.Key).ToList());
             var orderedList = groupList.OrderByDescending(p => p.Value.Count()).ThenBy(t=>t.Key).ToList();
@@ -109,6 +115,7 @@ namespace TripleZero.Modules
             {
                 retStr2 += $"{row.Key} - **#{row.Value.Count()}**\n";
             }
+
             
             await ReplyAsync($"{retStr2}");
         }      
